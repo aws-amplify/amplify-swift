@@ -113,7 +113,8 @@ final class GraphQLCartCustomer4Tests: AWSAPIPluginGen2GraphQLBaseTest {
             guard let queriedCart = try await Amplify.API.query(
                 request: .get(
                     Cart.self,
-                    byIdentifier: existingCart.identifier)).get() else {
+                    byIdentifier: existingCart.identifier)).get()
+            else {
                 print("Missing cart")
                 // Code Snippet Ends
                 XCTFail("Missing cart")

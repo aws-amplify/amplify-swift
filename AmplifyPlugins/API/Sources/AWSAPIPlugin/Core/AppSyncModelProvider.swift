@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
 
@@ -38,22 +38,22 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
 
         switch loadedState {
         case .notLoaded(let identifiers):
-            guard let identifiers = identifiers else {
-                self.loadedState = .loaded(model: nil)
+            guard let identifiers else {
+                loadedState = .loaded(model: nil)
                 return nil
             }
             let request = GraphQLRequest<ModelType?>.getRequest(ModelType.self,
                                                                 byIdentifiers: identifiers,
-                                                                apiName: apiName, 
+                                                                apiName: apiName,
                                                                 authMode: authMode)
             log.verbose("Loading \(ModelType.modelName) with \(identifiers)")
             let graphQLResponse = try await Amplify.API.query(request: request)
             switch graphQLResponse {
             case .success(let model):
-                self.loadedState = .loaded(model: model)
+                loadedState = .loaded(model: model)
                 return model
             case .failure(let graphQLError):
-                self.log.error(error: graphQLError)
+                log.error(error: graphQLError)
                 throw graphQLError
             }
         case .loaded(let element):

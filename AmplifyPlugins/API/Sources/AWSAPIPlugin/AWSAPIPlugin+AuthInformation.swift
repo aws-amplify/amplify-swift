@@ -9,12 +9,12 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
-extension AWSAPIPlugin {
-    public func defaultAuthType() throws -> AWSAuthorizationType {
+public extension AWSAPIPlugin {
+    func defaultAuthType() throws -> AWSAuthorizationType {
         try defaultAuthType(for: nil)
     }
 
-    public func defaultAuthType(for apiName: String?) throws -> AWSAuthorizationType {
+    func defaultAuthType(for apiName: String?) throws -> AWSAuthorizationType {
         try pluginConfig.endpoints.getConfig(for: apiName).authorizationType
     }
 }

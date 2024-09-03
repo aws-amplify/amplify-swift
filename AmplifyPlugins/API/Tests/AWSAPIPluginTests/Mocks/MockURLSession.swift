@@ -6,8 +6,8 @@
 //
 
 import Foundation
-@testable import AWSAPIPlugin
 @testable import Amplify
+@testable import AWSAPIPlugin
 
 class MockURLSession: URLSessionBehavior {
     weak var sessionBehaviorDelegate: URLSessionBehaviorDelegate?
@@ -18,7 +18,8 @@ class MockURLSession: URLSessionBehavior {
     var onReset: ((BasicClosure?) -> Void)?
 
     init(onTaskForRequest: @escaping (URLRequest) -> URLSessionDataTaskBehavior,
-         onReset: ((BasicClosure?) -> Void)? = MockURLSession.defaultOnReset) {
+         onReset: ((BasicClosure?) -> Void)? = MockURLSession.defaultOnReset)
+    {
         self.onTaskForRequest = onTaskForRequest
         self.onReset = onReset
     }

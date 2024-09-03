@@ -5,10 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import XCTest
-import Combine
 import Amplify
+import Combine
+import XCTest
 @_spi(WebSocket) import AWSPluginsCore
 @testable import AWSAPIPlugin
 
@@ -58,7 +57,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
             }
         }
         Task {
-            try await Task.sleep(nanoseconds: 80 * 1000)
+            try await Task.sleep(nanoseconds: 80 * 1_000)
             await appSyncClient.subject.send(.success(.init(id: nil, payload: nil, type: .connectionAck)))
         }
         await fulfillment(of: [finishExpectation], timeout: timeout + 1)
@@ -90,7 +89,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
             }
         }
         Task {
-            try await Task.sleep(nanoseconds: 80 * 1000)
+            try await Task.sleep(nanoseconds: 80 * 1_000)
             await appSyncClient.subject.send(.success(.init(
                 id: id,
                 payload: .object([
@@ -133,7 +132,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
         }
 
         Task {
-            try await Task.sleep(nanoseconds: 80 * 1000)
+            try await Task.sleep(nanoseconds: 80 * 1_000)
             await appSyncClient.subject.send(.success(.init(
                 id: id,
                 payload: .object([
@@ -180,7 +179,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
         }
 
         Task {
-            try await Task.sleep(nanoseconds: 80 * 1000)
+            try await Task.sleep(nanoseconds: 80 * 1_000)
             await appSyncClient.subject.send(.success(.init(
                 id: id,
                 payload: .object([

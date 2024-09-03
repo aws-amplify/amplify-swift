@@ -17,11 +17,12 @@ extension GraphQLRequest {
                                                    limit: Int? = nil,
                                                    nextToken: String? = nil,
                                                    apiName: String? = nil,
-                                                   authMode: AWSAuthorizationType?) -> GraphQLRequest<ResponseType> {
+                                                   authMode: AWSAuthorizationType?) -> GraphQLRequest<ResponseType>
+    {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
-        if let filter = filter {
+        if let filter {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))
         }
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
@@ -37,7 +38,8 @@ extension GraphQLRequest {
     static func getRequest<M: Model>(_ modelType: M.Type,
                                      byIdentifiers identifiers: [LazyReferenceIdentifier],
                                      apiName: String?,
-                                     authMode: AWSAuthorizationType?) -> GraphQLRequest<M?> {
+                                     authMode: AWSAuthorizationType?) -> GraphQLRequest<M?>
+    {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))

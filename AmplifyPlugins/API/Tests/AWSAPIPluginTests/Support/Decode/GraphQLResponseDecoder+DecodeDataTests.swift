@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+@_implementationOnly import AmplifyAsyncTesting
+import AWSPluginsCore
 import XCTest
 @testable import Amplify
-import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
-@_implementationOnly import AmplifyAsyncTesting
 
 extension GraphQLResponseDecoderTests {
 

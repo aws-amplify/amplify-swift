@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -12,14 +19,15 @@ public struct ListIntContainer: Model {
   public var nullableIntNullableList: [Int?]?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
+
   public init(id: String = UUID().uuidString,
       test: Int,
       nullableInt: Int? = nil,
       intList: [Int] = [],
       intNullableList: [Int]? = nil,
       nullableIntList: [Int?] = [],
-      nullableIntNullableList: [Int?]? = nil) {
+      nullableIntNullableList: [Int?]? = nil)
+  {
     self.init(id: id,
       test: test,
       nullableInt: nullableInt,
@@ -30,7 +38,7 @@ public struct ListIntContainer: Model {
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       test: Int,
       nullableInt: Int? = nil,
       intList: [Int] = [],
@@ -38,7 +46,8 @@ public struct ListIntContainer: Model {
       nullableIntList: [Int?] = [],
       nullableIntNullableList: [Int?]? = nil,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.test = test
       self.nullableInt = nullableInt

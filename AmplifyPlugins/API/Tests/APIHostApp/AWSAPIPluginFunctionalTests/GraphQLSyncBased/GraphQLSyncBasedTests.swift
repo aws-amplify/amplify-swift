@@ -6,9 +6,9 @@
 //
 
 import XCTest
-@testable import AWSAPIPlugin
 @testable import Amplify
 @testable import APIHostApp
+@testable import AWSAPIPlugin
 
 // swiftlint:disable type_body_length
 class GraphQLSyncBasedTests: XCTestCase {
@@ -280,7 +280,8 @@ class GraphQLSyncBasedTests: XCTestCase {
                 XCTAssertEqual(errors.count, 1)
                 guard let error = errors.first,
                     let extensions = error.extensions,
-                    case let .string(errorTypeValue) = extensions["errorType"] else {
+                    case let .string(errorTypeValue) = extensions["errorType"]
+                else {
                         XCTFail("Failed to get errorType from extensions of the GraphQL error")
                         return
                 }

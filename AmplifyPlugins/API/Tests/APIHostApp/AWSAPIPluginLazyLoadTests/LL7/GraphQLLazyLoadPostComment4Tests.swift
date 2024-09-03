@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
 
@@ -21,7 +21,7 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
         try await mutate(.create(post))
         try await mutate(.create(comment))
     }
-    
+
     // Without `includes` and latest codegenerated types with the model path, the post should be lazy loaded
     func testCommentWithLazyLoadPost() async throws {
         await setup(withModels: PostComment4Models())
@@ -29,10 +29,10 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
         let comment = Comment(content: "content", post: post)
         let createdPost = try await mutate(.create(post))
         let createdComment = try await mutate(.create(comment))
-        
+
         XCTAssertEqual(createdComment.post4CommentsPostId, post.postId)
         XCTAssertEqual(createdComment.post4CommentsTitle, post.title)
-        
+
         // The created post should have comments that are also not loaded
         let comments = createdPost.comments!
         assertList(comments, state: .isNotLoaded(associatedIdentifiers: [createdPost.postId, createdPost.title],
@@ -43,7 +43,7 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
         XCTAssertEqual(comments.first!.post4CommentsPostId, post.postId)
         XCTAssertEqual(comments.first!.post4CommentsTitle, post.title)
     }
-    
+
     // Without `includes` and latest codegenerated types with the model path, the post's comments should be lazy loaded
     func testPostWithLazyLoadComments() async throws {
         await setup(withModels: PostComment4Models())
@@ -60,7 +60,7 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
         XCTAssertEqual(comments.first!.post4CommentsPostId, post.postId)
         XCTAssertEqual(comments.first!.post4CommentsTitle, post.title)
     }
-    
+
     // With `includes` on `post.comments` should eager load the post's comments
     func testPostWithEagerLoadComments() async throws {
         await setup(withModels: PostComment4Models())
@@ -74,26 +74,26 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
         XCTAssertEqual(comments.first!.post4CommentsPostId, post.postId)
         XCTAssertEqual(comments.first!.post4CommentsTitle, post.title)
     }
-    
+
     func testListPostsListComments() async throws {
         await setup(withModels: PostComment4Models())
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         _ = try await mutate(.create(post))
         _ = try await mutate(.create(comment))
-        
+
         let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.postId == post.postId))
         assertList(queriedPosts, state: .isLoaded(count: 1))
         assertList(queriedPosts.first!.comments!,
                    state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title],
                                        associatedFields: ["post4CommentsPostId", "post4CommentsTitle"]))
-        
+
         let queriedComments = try await listQuery(.list(Comment.self, where: Comment.keys.commentId == comment.commentId))
         assertList(queriedComments, state: .isLoaded(count: 1))
         XCTAssertEqual(queriedComments.first!.post4CommentsPostId, post.postId)
         XCTAssertEqual(queriedComments.first!.post4CommentsTitle, post.title)
     }
-    
+
     func testCreateWithoutPost() async throws {
         await setup(withModels: PostComment4Models())
         let comment = Comment(content: "content")
@@ -110,7 +110,7 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
         XCTAssertEqual(queriedCommentAfterUpdate.post4CommentsPostId, post.postId)
         XCTAssertEqual(queriedCommentAfterUpdate.post4CommentsTitle, post.title)
     }
-    
+
     func testUpdateToNewPost() async throws {
         await setup(withModels: PostComment4Models())
         let post = Post(title: "title")
@@ -130,7 +130,7 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
         XCTAssertEqual(queriedCommentAfterUpdate.post4CommentsPostId, newPost.postId)
         XCTAssertEqual(queriedCommentAfterUpdate.post4CommentsTitle, newPost.title)
     }
-    
+
     func testUpdateRemovePost() async throws {
         await setup(withModels: PostComment4Models())
         let post = Post(title: "title")
@@ -140,7 +140,7 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
         var queriedComment = try await query(for: comment)!
         XCTAssertEqual(queriedComment.post4CommentsPostId, post.postId)
         XCTAssertEqual(queriedComment.post4CommentsTitle, post.title)
-        
+
         queriedComment.post4CommentsPostId = nil
         queriedComment.post4CommentsTitle = nil
         let updateCommentRemovePost = try await mutate(.update(queriedComment))
@@ -148,14 +148,14 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
         XCTAssertEqual(queriedCommentAfterUpdate.post4CommentsPostId, nil)
         XCTAssertEqual(queriedCommentAfterUpdate.post4CommentsTitle, nil)
     }
-    
+
     func testDelete() async throws {
         await setup(withModels: PostComment4Models())
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         let createdPost = try await mutate(.create(post))
         try await mutate(.create(comment))
-            
+
         try await mutate(.delete(createdPost))
         let queriedPost = try await query(for: post)
         XCTAssertNil(queriedPost)
@@ -166,7 +166,7 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
         let queryDeletedComment = try await query(for: comment)
         XCTAssertNil(queryDeletedComment)
     }
-    
+
     func testSubscribeToComments() async throws {
         await setup(withModels: PostComment4Models())
         let post = Post(title: "title")
@@ -199,18 +199,18 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
                 XCTFail("Subscription has terminated with \(error)")
             }
         }
-        
+
         await fulfillment(of: [connected], timeout: 10)
         let comment = Comment(content: "content", post: post)
         try await mutate(.create(comment))
         await fulfillment(of: [onCreatedComment], timeout: 10)
         subscription.cancel()
     }
-    
+
     func testSubscribeToPosts() async throws {
         await setup(withModels: PostComment4Models())
         let post = Post(title: "title")
-        
+
         let connected = expectation(description: "subscription connected")
         let onCreatedPost = expectation(description: "onCreatedPost received")
         let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onCreate))
@@ -241,17 +241,17 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
                 XCTFail("Subscription has terminated with \(error)")
             }
         }
-        
+
         await fulfillment(of: [connected], timeout: 10)
         try await mutate(.create(post))
         await fulfillment(of: [onCreatedPost], timeout: 10)
         subscription.cancel()
     }
-    
+
     func testSubscribeToPostsIncludes() async throws {
         await setup(withModels: PostComment4Models())
         let post = Post(title: "title")
-        
+
         let connected = expectation(description: "subscription connected")
         let onCreatedPost = expectation(description: "onCreatedPost received")
         let subscriptionIncludes = Amplify.API.subscribe(request: .subscription(of: Post.self,
@@ -281,7 +281,7 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
                 XCTFail("Subscription has terminated with \(error)")
             }
         }
-        
+
         await fulfillment(of: [connected], timeout: 10)
         try await mutate(.create(post, includes: { post in [post.comments]}))
         await fulfillment(of: [onCreatedPost], timeout: 10)
@@ -294,7 +294,7 @@ extension GraphQLLazyLoadPostComment4Tests: DefaultLogger { }
 extension GraphQLLazyLoadPostComment4Tests {
     typealias Post = Post4
     typealias Comment = Comment4
-    
+
     struct PostComment4Models: AmplifyModelRegistration {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
@@ -312,7 +312,8 @@ extension Post4 {
 
 extension Comment4 {
     init(content: String,
-         post: Post4? = nil) {
+         post: Post4? = nil)
+    {
         self.init(commentId: UUID().uuidString,
                   content: content,
                   post4CommentsPostId: post?.postId,

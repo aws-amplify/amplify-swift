@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 final class RESTOperationRequestUtils {
     private init() {}
@@ -29,11 +29,11 @@ final class RESTOperationRequestUtils {
             )
         }
 
-        if let path = path {
+        if let path {
             components.path.append(path)
         }
 
-        if let queryParameters = queryParameters {
+        if let queryParameters {
             components.queryItems = try prepareQueryParamsForSigning(params: queryParameters)
         }
 

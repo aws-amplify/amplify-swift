@@ -50,7 +50,7 @@ final class GraphQLPost11Tests: AWSAPIPluginGen2GraphQLBaseTest {
             print("Number of posts:", queriedPosts.count)
 
             // Code Snippet Ends
-            XCTAssertTrue(queriedPosts.count > 0 || queriedPosts.hasNextPage())
+            XCTAssertTrue(!queriedPosts.isEmpty || queriedPosts.hasNextPage())
             // Code Snippet Begins
         } catch {
             print("Failed to list posts", error)

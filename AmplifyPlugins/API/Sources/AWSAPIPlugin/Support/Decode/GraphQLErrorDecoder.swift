@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-struct GraphQLErrorDecoder {
+enum GraphQLErrorDecoder {
     static func decodeErrors(graphQLErrors: [JSONValue]) throws -> [GraphQLError] {
         var responseErrors = [GraphQLError]()
         for error in graphQLErrors {
@@ -60,9 +60,9 @@ struct GraphQLErrorDecoder {
             return graphQLError
         }
 
-        graphQLErrorObject.forEach { key, value in
+        for (key, value) in graphQLErrorObject {
             if keys.contains(key) {
-                return
+                continue
             }
 
             mergedExtensions[key] = value

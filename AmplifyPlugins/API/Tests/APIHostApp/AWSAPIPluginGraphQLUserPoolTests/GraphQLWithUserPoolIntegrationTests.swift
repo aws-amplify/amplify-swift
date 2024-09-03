@@ -5,20 +5,21 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import Foundation
 import AWSAPIPlugin
 import AWSCognitoAuthPlugin
+import Foundation
+import XCTest
 
 @testable import Amplify
 @testable import APIHostApp
+
 // swiftlint:disable type_body_length
 class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     let amplifyConfigurationFile = "testconfiguration/GraphQLWithUserPoolIntegrationTests-amplifyconfiguration"
 
     let username = "integTest\(UUID().uuidString)"
     let password = "P123@\(UUID().uuidString)"
-  
+
     override func setUp() {
         do {
             try Amplify.add(plugin: AWSAPIPlugin())
@@ -35,7 +36,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         await signOut()
         await Amplify.reset()
     }
-    
+
     /// Given: A CreateTodo mutation request, and user signed in, graphql has userpools as auth mode.
     /// When: Call mutate API
     /// Then: The operation completes successfully with no errors and todo in response
@@ -105,12 +106,12 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
             XCTFail("Missing successful response")
             return
         }
-        
+
         guard let todo = data else {
             XCTFail("Missing Todo")
             return
         }
-        
+
         XCTAssertEqual(todo.id, expectedId)
         XCTAssertEqual(todo.name, expectedName)
         XCTAssertEqual(todo.description, expectedDescription)
@@ -162,7 +163,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
             XCTFail("Unexpected event: \(graphQLResponse)")
             return
         }
-        
+
         guard case .transformationError = graphQLResponseError else {
             XCTFail("Should be transformation error")
             return
@@ -195,7 +196,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
             XCTFail("Missing Todo")
             return
         }
-        
+
         XCTAssertEqual(todo.id, todo.id)
         XCTAssertEqual(todo.name, name)
         XCTAssertEqual(todo.description, description)
@@ -280,7 +281,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
             XCTFail("Missing deleteTodo")
             return
         }
-        
+
         XCTAssertEqual(deleteTodo.id, todo.id)
         XCTAssertEqual(deleteTodo.name, name)
         XCTAssertEqual(deleteTodo.description, description)
@@ -291,12 +292,12 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                             responseType: GetTodoQuery.Data.self)
         let graphQLResponse2 = try await Amplify.API.query(request: getTodoRequest)
         XCTAssertNotNil(graphQLResponse2)
-        
+
         guard case let .success(data) = graphQLResponse2 else {
             XCTFail("Missing successful response")
             return
         }
-        
+
         XCTAssertNil(data.getTodo)
     }
 
@@ -421,7 +422,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                     progressInvoked.fulfill()
                 }
             }
-            
+
             completedInvoked.fulfill()
         }
         await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -553,25 +554,25 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         }
 
         await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
-        
+
         subscriptions.cancel()
         await fulfillment(of: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testCreateMultipleSubscriptions() async throws {
         try await createAuthenticatedUser()
-        let subscriptions = [await createTodoSubscription(),
-                             await createTodoSubscription(),
-                             await createTodoSubscription(),
-                             await createTodoSubscription(),
-                             await createTodoSubscription()]
+        let subscriptions = await [createTodoSubscription(),
+                             createTodoSubscription(),
+                             createTodoSubscription(),
+                             createTodoSubscription(),
+                             createTodoSubscription()]
         for subscription in subscriptions {
             subscription.cancel()
         }
     }
-    
+
     // MARK: - Auth Helpers
-    
+
     func createAuthenticatedUser() async throws {
         if try await isSignedIn() {
             await signOut()
@@ -579,12 +580,12 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         try await signUp()
         try await signIn()
     }
-    
+
     func isSignedIn() async throws -> Bool {
         let authSession = try await Amplify.Auth.fetchAuthSession()
         return authSession.isSignedIn
     }
-    
+
     func signUp() async throws {
         let signUpResult = try await Amplify.Auth.signUp(username: username, password: password)
         guard signUpResult.isSignUpComplete else {
@@ -601,13 +602,13 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
             return
         }
     }
-    
+
     func signOut() async {
         _ = await Amplify.Auth.signOut()
     }
 
     // MARK: - Helpers
-    
+
     func createTodo(id: String, name: String, description: String) async throws -> Todo? {
         let request = GraphQLRequest(document: CreateTodoMutation.document,
                                      variables: CreateTodoMutation.variables(id: id,

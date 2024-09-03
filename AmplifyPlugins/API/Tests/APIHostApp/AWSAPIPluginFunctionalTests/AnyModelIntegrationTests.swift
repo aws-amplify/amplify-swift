@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import Foundation
 import AWSAPIPlugin
-@testable import APIHostApp
+import Foundation
+import XCTest
 @testable import Amplify
+@testable import APIHostApp
 
 class AnyModelIntegrationTests: XCTestCase {
     let networkTimeout: TimeInterval = 180.0

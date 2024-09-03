@@ -57,12 +57,12 @@ class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol  {
         }
         return subject.eraseToAnyPublisher()
     }
-    
+
     func unsubscribe(id: String) async throws {
         try await Task.sleep(seconds: 0.45)
         subject.send(.unsubscribed)
     }
-    
+
     func connect() async throws { }
 
     func disconnectWhenIdel() async { }
@@ -138,6 +138,6 @@ actor MockWebSocketClient: AppSyncWebSocketClientProtocol {
     }
 
     func setStateToConnected() {
-        self.state = .connected
+        state = .connected
     }
 }

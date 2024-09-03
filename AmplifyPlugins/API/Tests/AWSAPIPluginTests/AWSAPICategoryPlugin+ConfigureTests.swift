@@ -43,7 +43,8 @@ class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
         let plugin = AWSAPIPlugin()
         XCTAssertThrowsError(try plugin.configure(using: nil)) { error in
             guard let apiError = error as? PluginError,
-                case .pluginConfigurationError = apiError else {
+                case .pluginConfigurationError = apiError
+            else {
                     XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
                     return
             }
@@ -82,7 +83,8 @@ class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
         let plugin = AWSAPIPlugin()
         XCTAssertThrowsError(try plugin.configure(using: config)) { error in
             guard let apiError = error as? PluginError,
-                case .pluginConfigurationError = apiError else {
+                case .pluginConfigurationError = apiError
+            else {
                     XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
                     return
             }
@@ -102,7 +104,8 @@ class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
         let plugin = AWSAPIPlugin()
         XCTAssertThrowsError(try plugin.configure(using: config)) { error in
             guard let apiError = error as? PluginError,
-                case .pluginConfigurationError = apiError else {
+                case .pluginConfigurationError = apiError
+            else {
                     XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
                     return
             }

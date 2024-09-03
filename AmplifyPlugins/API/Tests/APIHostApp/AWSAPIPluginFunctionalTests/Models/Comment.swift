@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -8,22 +15,24 @@ public struct Comment: Model {
   public var createdAt: Temporal.DateTime
   public var post: Post?
   public var updatedAt: Temporal.DateTime?
-  
+
   public init(id: String = UUID().uuidString,
       content: String,
       createdAt: Temporal.DateTime,
-      post: Post? = nil) {
+      post: Post? = nil)
+  {
     self.init(id: id,
       content: content,
       createdAt: createdAt,
       post: post,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       content: String,
       createdAt: Temporal.DateTime,
       post: Post? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.content = content
       self.createdAt = createdAt

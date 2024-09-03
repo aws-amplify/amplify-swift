@@ -85,7 +85,7 @@ class GraphQLSubscribeTests: OperationTestBase {
     func testHappyPath() async throws {
         let testJSON: JSONValue = ["foo": true]
         let testData: JSONValue = [
-            "data": [ "foo": true ]
+            "data": ["foo": true]
         ]
         receivedCompletionFinish.shouldTrigger = true
         receivedCompletionFailure.shouldTrigger = false
@@ -102,7 +102,7 @@ class GraphQLSubscribeTests: OperationTestBase {
         mockAppSyncRealTimeClient.triggerEvent(.data(testData))
         mockAppSyncRealTimeClient.triggerEvent(.unsubscribed)
 
-        await fulfillment(of: [receivedCompletionFinish, 
+        await fulfillment(of: [receivedCompletionFinish,
                                receivedCompletionFailure,
                                receivedConnected,
                                receivedDisconnected,
@@ -196,8 +196,8 @@ class GraphQLSubscribeTests: OperationTestBase {
     /// - The completion handler is invoked with a normal termination
     func testDecodingError() async throws {
         let testData: JSONValue = [
-            "data": [ "foo": true ],
-            "errors": [ ]
+            "data": ["foo": true],
+            "errors": []
         ]
         receivedCompletionFinish.shouldTrigger = true
         receivedCompletionFailure.shouldTrigger = false
@@ -344,7 +344,7 @@ class GraphQLSubscribeTests: OperationTestBase {
                 case .data(let result):
                     switch result {
                     case .success(let actualValue):
-                        if let expectedValue = expectedValue {
+                        if let expectedValue {
                             XCTAssertEqual(actualValue, expectedValue)
                         }
                         self.receivedSubscriptionEventData.fulfill()

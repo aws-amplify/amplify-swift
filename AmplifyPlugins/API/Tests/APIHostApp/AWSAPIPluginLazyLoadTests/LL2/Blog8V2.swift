@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -10,12 +17,13 @@ public struct Blog8V2: Model {
   public var posts: List<Post8V2>?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
+
   public init(id: String = UUID().uuidString,
       name: String,
       customs: [MyCustomModel8?]? = nil,
       notes: [String?]? = nil,
-      posts: List<Post8V2>? = []) {
+      posts: List<Post8V2>? = [])
+  {
     self.init(id: id,
       name: name,
       customs: customs,
@@ -24,13 +32,14 @@ public struct Blog8V2: Model {
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       name: String,
       customs: [MyCustomModel8?]? = nil,
       notes: [String?]? = nil,
       posts: List<Post8V2>? = [],
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.name = name
       self.customs = customs

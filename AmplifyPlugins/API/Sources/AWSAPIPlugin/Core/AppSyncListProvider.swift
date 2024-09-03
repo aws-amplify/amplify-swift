@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
@@ -73,7 +73,8 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
          apiName: String? = nil,
          authMode: AWSAuthorizationType? = nil,
          limit: Int? = nil,
-         filter: [String: Any]? = nil) {
+         filter: [String: Any]? = nil)
+    {
         self.loadedState = .loaded(elements: elements,
                                    nextToken: nextToken,
                                    filter: filter)
@@ -84,9 +85,10 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     // Internal initializer for testing
     init(associatedIdentifiers: [String],
-         associatedFields: [String], 
+         associatedFields: [String],
          apiName: String? = nil,
-         authMode: AWSAuthorizationType? = nil) {
+         authMode: AWSAuthorizationType? = nil)
+    {
         self.loadedState = .notLoaded(associatedIdentifiers: associatedIdentifiers,
                                       associatedFields: associatedFields)
         self.apiName = apiName
@@ -115,11 +117,13 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     //// Internal `load` to perform the retrieval of the first page and storing it in memory
     func load(associatedIdentifiers: [String],
-              associatedFields: [String]) async throws -> [Element] {
+              associatedFields: [String]) async throws -> [Element]
+    {
         let filter: GraphQLFilter
         if associatedIdentifiers.count == 1,
             let associatedId = associatedIdentifiers.first,
-            let associatedField = associatedFields.first {
+            let associatedField = associatedFields.first
+        {
             let predicate: QueryPredicate = field(associatedField) == associatedId
             filter = predicate.graphQLFilter(for: Element.schema)
         } else {
@@ -147,15 +151,16 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             case .success(let graphQLData):
                 guard let listResponse = try? AppSyncListResponse.initWithMetadata(type: Element.self,
                                                                                    graphQLData: graphQLData,
-                                                                                   apiName: self.apiName, 
-                                                                                   authMode: self.authMode) else {
+                                                                                   apiName: apiName,
+                                                                                   authMode: authMode)
+                else {
                     throw CoreError.listOperation("""
                                             The AppSync response return successfully, but could not decode to
                                             AWSAppSyncListResponse from: \(graphQLData)
                                             """, "", nil)
                 }
 
-                self.loadedState = .loaded(elements: listResponse.items,
+                loadedState = .loaded(elements: listResponse.items,
                                            nextToken: listResponse.nextToken,
                                            filter: filter)
                 return listResponse.items
@@ -203,7 +208,8 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     /// Internal `getNextPage` to retrieve the next page and return it as a new List object
     func getNextPage(nextToken: String,
-                     filter: [String: Any]?) async throws -> List<Element> {
+                     filter: [String: Any]?) async throws -> List<Element>
+    {
         let request = GraphQLRequest<List<Element>>.listQuery(responseType: List<Element>.self,
                                                               modelSchema: Element.schema,
                                                               filter: filter,

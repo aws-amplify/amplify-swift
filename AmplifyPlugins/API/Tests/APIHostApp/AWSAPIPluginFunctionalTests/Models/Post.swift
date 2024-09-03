@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -12,7 +19,7 @@ public struct Post: Model {
   public var rating: Double?
   public var status: PostStatus?
   public var comments: List<Comment>?
-  
+
   public init(id: String = UUID().uuidString,
       title: String,
       content: String,
@@ -21,7 +28,8 @@ public struct Post: Model {
       draft: Bool? = nil,
       rating: Double? = nil,
       status: PostStatus? = nil,
-      comments: List<Comment>? = []) {
+      comments: List<Comment>? = [])
+  {
       self.id = id
       self.title = title
       self.content = content

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AmplifyTestCommon
 import AWSPluginsCore
+import XCTest
 @testable import Amplify
 @testable import AWSAPIPlugin
 
@@ -60,7 +60,8 @@ class GraphQLRequestToListQueryTests: XCTestCase {
         XCTAssertEqual(variables["limit"] as? Int, 1_000)
         guard let filter = variables["filter"] as? GraphQLFilter,
               let filterJSON = try? JSONSerialization.data(withJSONObject: filter,
-                                                           options: .prettyPrinted) else {
+                                                           options: .prettyPrinted)
+        else {
             XCTFail("variables should contain a valid filter JSON")
             return
         }
@@ -158,7 +159,8 @@ class GraphQLRequestToListQueryTests: XCTestCase {
         guard let filter = variables["filter"] as? GraphQLFilter,
               JSONSerialization.isValidJSONObject(filter),
               let filterJSON = try? JSONSerialization.data(withJSONObject: filter,
-                                                           options: .prettyPrinted) else {
+                                                           options: .prettyPrinted)
+        else {
             XCTFail("variables should contain a valid filter JSON")
             return
         }

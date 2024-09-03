@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import AWSPluginsCore
+import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
-import AWSPluginsCore
 
 class AppSyncListDecoderTests: XCTestCase {
 
@@ -79,7 +79,7 @@ class AppSyncListDecoderTests: XCTestCase {
     func testShouldDecodeFromModelMetadata() throws {
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
                                                         appSyncAssociatedFields: ["post"],
-                                                        apiName: "apiName", 
+                                                        apiName: "apiName",
                                                         authMode: nil)
         let data = try encoder.encode(modelMetadata)
         let harness = try decoder.decode(AppSyncListDecoderHarness<Comment4>.self, from: data)
@@ -119,8 +119,8 @@ class AppSyncListDecoderTests: XCTestCase {
     func testInvalidPayload() throws {
         let json = "json"
         let data = try encoder.encode(json)
-        let result = try self.decoder.decode(AppSyncListDecoderHarness<Comment4>.self, from: data)
+        let result = try decoder.decode(AppSyncListDecoderHarness<Comment4>.self, from: data)
         XCTAssertNil(result.listProvider)
-        
+
     }
 }

@@ -6,10 +6,10 @@
 //
 
 import XCTest
-@testable import AWSPluginsTestCommon
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
+@testable import AWSPluginsTestCommon
 
 class OperationTestBase: XCTestCase {
 

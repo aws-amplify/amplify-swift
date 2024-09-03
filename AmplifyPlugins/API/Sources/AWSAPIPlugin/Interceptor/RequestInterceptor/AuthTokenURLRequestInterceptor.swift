@@ -7,8 +7,8 @@
 
 import Amplify
 import AWSPluginsCore
-import InternalAmplifyCredentials
 import Foundation
+import InternalAmplifyCredentials
 
 struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
 
@@ -18,8 +18,9 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
     let authTokenProvider: AuthTokenProvider
     let isTokenExpired: ((String) -> Bool)?
 
-    init(authTokenProvider: AuthTokenProvider, 
-         isTokenExpired: ((String) -> Bool)? = nil) {
+    init(authTokenProvider: AuthTokenProvider,
+         isTokenExpired: ((String) -> Bool)? = nil)
+    {
         self.authTokenProvider = authTokenProvider
         self.isTokenExpired = isTokenExpired
     }
@@ -45,7 +46,7 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
         } catch {
             throw APIError.operationError("Failed to retrieve authorization token.", "", error)
         }
-        
+
         if isTokenExpired?(token) ?? false {
             // If the access token has expired, we send back the underlying "AuthError.sessionExpired" error.
             // Without a more specific AuthError case like "tokenExpired", this is the closest representation.

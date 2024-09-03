@@ -6,9 +6,9 @@
 //
 
 import XCTest
-@testable import AWSAPIPlugin
 @testable import Amplify
 @testable import APIHostApp
+@testable import AWSAPIPlugin
 
 class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
 
@@ -49,7 +49,8 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
         /// Create order
         let customerOrder = CustomerOrder(orderId: UUID().uuidString, email: "test@abc.com")
         guard let createMutationSyncResult = createCustomerOrder(customerOrder: customerOrder),
-              let createdCustomerOrder = createMutationSyncResult.model.instance as? CustomerOrder else {
+              let createdCustomerOrder = createMutationSyncResult.model.instance as? CustomerOrder
+        else {
             XCTFail("Failed to create customer order")
             return
         }
@@ -58,7 +59,8 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
         guard let queryMutationSyncResult = queryCustomerOrder(modelName: CustomerOrder.modelName,
                                                           byId: createdCustomerOrder.id,
                                                           orderId: createdCustomerOrder.orderId),
-              var queriedCustomerOrder = queryMutationSyncResult.model.instance as? CustomerOrder else {
+              var queriedCustomerOrder = queryMutationSyncResult.model.instance as? CustomerOrder
+        else {
             XCTFail("Failed to query customer order")
             return
         }
@@ -70,7 +72,8 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
         guard let updateMutationSyncResult = updateCustomerOrder(of: queriedCustomerOrder,
                                                                  modelSchema: queriedCustomerOrder.schema,
                                                                  version: queryMutationSyncResult.syncMetadata.version),
-              let updatedCustomerOrder = updateMutationSyncResult.model.instance as? CustomerOrder else {
+              let updatedCustomerOrder = updateMutationSyncResult.model.instance as? CustomerOrder
+        else {
             XCTFail("Failed to update customer order")
             return
         }
@@ -81,7 +84,8 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
         guard let deleteMutationSyncResult = deleteCustomerOrder(of: updatedCustomerOrder,
                                         modelSchema: updatedCustomerOrder.schema,
                                         version: updateMutationSyncResult.syncMetadata.version),
-              let deletedCustomerOrder = deleteMutationSyncResult.model.instance as? CustomerOrder else {
+              let deletedCustomerOrder = deleteMutationSyncResult.model.instance as? CustomerOrder
+        else {
             XCTFail("Failed to update customer order")
             return
         }
@@ -92,7 +96,8 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
         guard let queryAfterDeleteMutationSyncResult = queryCustomerOrder(modelName: CustomerOrder.modelName,
                                                                           byId: deletedCustomerOrder.id,
                                                                           orderId: deletedCustomerOrder.orderId),
-              let queryDeletedCustomerOrder = queryAfterDeleteMutationSyncResult.model.instance as? CustomerOrder else {
+              let queryDeletedCustomerOrder = queryAfterDeleteMutationSyncResult.model.instance as? CustomerOrder
+        else {
             XCTFail("Failed to query customer order")
             return
         }
@@ -128,7 +133,8 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
 
     func queryCustomerOrder(modelName: String,
                             byId id: String,
-                            orderId: String) -> MutationSyncResult? {
+                            orderId: String) -> MutationSyncResult?
+    {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: id, fields: ["orderId": orderId]))
@@ -162,7 +168,8 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
 
     func updateCustomerOrder(of model: Model,
                              modelSchema: ModelSchema,
-                             version: Int) -> MutationSyncResult? {
+                             version: Int) -> MutationSyncResult?
+    {
         let updateSuccess = expectation(description: "update successful")
         let updateRequest = GraphQLRequest<MutationSyncResult>.updateMutation(
             of: model,
@@ -190,7 +197,8 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
 
     func deleteCustomerOrder(of model: Model,
                              modelSchema: ModelSchema,
-                             version: Int) -> MutationSyncResult? {
+                             version: Int) -> MutationSyncResult?
+    {
         let deleteSuccess = expectation(description: "delete successful")
         let deleteRequest = GraphQLRequest<MutationSyncResult>.deleteMutation(
             of: model,

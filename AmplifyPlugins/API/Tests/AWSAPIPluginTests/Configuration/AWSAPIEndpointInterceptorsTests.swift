@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
 import AWSPluginsCore
 import InternalAmplifyCredentials
+import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
 @testable import AWSPluginsTestCommon
@@ -86,21 +86,21 @@ class AWSAPIEndpointInterceptorsTests: XCTestCase {
         let authService = MockAWSAuthService()
         authService.tokenClaims = ["exp": validToken as AnyObject]
         let interceptorConfig = createAPIInterceptorConfig(authService: authService)
-        
+
         let result = interceptorConfig.expiryValidator("")
         XCTAssertFalse(result)
     }
-    
+
     func testExpiryValidator_Expired() {
         let expiredToken = Date().timeIntervalSince1970 - 1
         let authService = MockAWSAuthService()
         authService.tokenClaims = ["exp": expiredToken as AnyObject]
         let interceptorConfig = createAPIInterceptorConfig(authService: authService)
-        
+
         let result = interceptorConfig.expiryValidator("")
         XCTAssertTrue(result)
     }
-    
+
     // MARK: - Test Helpers
 
     func createAPIInterceptorConfig(authService: AWSAuthCredentialsProviderBehavior = MockAWSAuthService()) -> AWSAPIEndpointInterceptors {

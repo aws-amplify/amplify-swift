@@ -9,14 +9,14 @@ import Combine
 import XCTest
 
 import Amplify
+@_implementationOnly import AmplifyAsyncTesting
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
-@_implementationOnly import AmplifyAsyncTesting
 
 class GraphQLSubscribeCombineTests: OperationTestBase {
 
     var sink: AnyCancellable?
-    
+
     // Setup expectations
     var onSubscribeInvoked: XCTestExpectation!
     var receivedCompletionSuccess: XCTestExpectation!
@@ -54,17 +54,17 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
     }
 
     override func tearDown() async throws {
-        self.sink?.cancel()
-        self.connectionStateSink?.cancel()
-        self.subscriptionDataSink?.cancel()
-        self.onSubscribeInvoked = nil
-        self.receivedCompletionFailure = nil
-        self.receivedCompletionSuccess = nil
-        self.receivedDataValueError = nil
-        self.receivedDataValueSuccess = nil
-        self.receivedStateValueConnected = nil
-        self.receivedStateValueConnecting = nil
-        self.receivedStateValueDisconnected = nil
+        sink?.cancel()
+        connectionStateSink?.cancel()
+        subscriptionDataSink?.cancel()
+        onSubscribeInvoked = nil
+        receivedCompletionFailure = nil
+        receivedCompletionSuccess = nil
+        receivedDataValueError = nil
+        receivedDataValueSuccess = nil
+        receivedStateValueConnected = nil
+        receivedStateValueConnecting = nil
+        receivedStateValueDisconnected = nil
         try await super.tearDown()
     }
 
@@ -77,7 +77,7 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
                                    receivedDataValueSuccess,
                                    receivedDataValueError], timeout: 0.05)
     }
-    
+
     func testHappyPath() async throws {
         receivedCompletionFailure.isInverted = true
         receivedDataValueError.isInverted = true
@@ -254,7 +254,7 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
             case .data(let result):
                 switch result {
                 case .success(let actualValue):
-                    if let expectedValue = expectedValue {
+                    if let expectedValue {
                         XCTAssertEqual(actualValue, expectedValue)
                     }
                     self.receivedDataValueSuccess.fulfill()

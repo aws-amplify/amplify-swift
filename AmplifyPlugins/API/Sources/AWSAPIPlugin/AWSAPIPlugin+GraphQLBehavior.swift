@@ -10,7 +10,8 @@ import Amplify
 public extension AWSAPIPlugin {
 
     func query<R: Decodable>(request: GraphQLRequest<R>,
-                             listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> {
+                             listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R>
+    {
         let operation = AWSGraphQLOperation(request: request.toOperationRequest(operationType: .query),
                                             session: session,
                                             mapper: mapper,
@@ -32,7 +33,8 @@ public extension AWSAPIPlugin {
     }
 
     func mutate<R: Decodable>(request: GraphQLRequest<R>,
-                              listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> {
+                              listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R>
+    {
         let operation = AWSGraphQLOperation(request: request.toOperationRequest(operationType: .mutation),
                                             session: session,
                                             mapper: mapper,

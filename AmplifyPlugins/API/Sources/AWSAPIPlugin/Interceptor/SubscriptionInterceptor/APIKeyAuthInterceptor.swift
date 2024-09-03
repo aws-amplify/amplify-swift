@@ -5,9 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import Foundation
 import Amplify
+import Foundation
 @_spi(WebSocket) import AWSPluginsCore
 
 class APIKeyAuthInterceptor {
@@ -43,7 +42,7 @@ extension APIKeyAuthInterceptor: AppSyncRequestInterceptor {
      }
 }
 
-fileprivate func authHeaderBuilder() -> (String, String) -> AppSyncRealTimeRequestAuth.ApiKey {
+private func authHeaderBuilder() -> (String, String) -> AppSyncRealTimeRequestAuth.ApiKey {
     let formatter = DateFormatter()
     formatter.timeZone = TimeZone(secondsFromGMT: 0)
     formatter.locale = Locale(identifier: "en_US_POSIX")

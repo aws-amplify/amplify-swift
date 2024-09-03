@@ -16,24 +16,24 @@ import XCTest
 
 // swiftlint:disable type_body_length
 class GraphQLModelBasedTests: XCTestCase {
-    
+
     static let amplifyConfiguration = "testconfiguration/GraphQLModelBasedTests-amplifyconfiguration"
 
-    final public class PostCommentModelRegistration: AmplifyModelRegistration {
+    public final class PostCommentModelRegistration: AmplifyModelRegistration {
         public func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post.self)
             ModelRegistry.register(modelType: Comment.self)
         }
-        
+
         public let version: String = "1"
     }
-    
-    
+
+
     override func setUp() async throws {
         await Amplify.reset()
         Amplify.Logging.logLevel = .verbose
         let plugin = AWSAPIPlugin(modelRegistration: PostCommentModelRegistration())
-        
+
         do {
             try Amplify.add(plugin: plugin)
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
@@ -42,16 +42,16 @@ class GraphQLModelBasedTests: XCTestCase {
 
             ModelRegistry.register(modelType: Comment.self)
             ModelRegistry.register(modelType: Post.self)
-            
+
         } catch {
             XCTFail("Error during setup: \(error)")
         }
     }
-    
+
     override func tearDown() async throws {
         await Amplify.reset()
     }
-    
+
     func testQuerySinglePostWithModel() async throws {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -67,11 +67,11 @@ class GraphQLModelBasedTests: XCTestCase {
             XCTFail("Missing post from query")
             return
         }
-        
+
         XCTAssertEqual(resultPost.id, post.id)
         XCTAssertEqual(resultPost.title, title)
     }
-    
+
     /// Test custom GraphQLRequest with nested list deserializes to generated Post Model
     ///
     /// - Given: A post containing a single comment
@@ -90,7 +90,7 @@ class GraphQLModelBasedTests: XCTestCase {
                               createdAt: .now(),
                               post: post)
         _ = try await Amplify.API.mutate(request: .create(comment))
-        
+
         let document = """
     query getPost($id: ID!) {
       getPost(id: $id){
@@ -137,7 +137,7 @@ class GraphQLModelBasedTests: XCTestCase {
             XCTFail("Missing post from query")
             return
         }
-        
+
         XCTAssertEqual(resultPost.id, post.id)
         XCTAssertEqual(resultPost.title, title)
         guard let comments = resultPost.comments else {
@@ -146,14 +146,14 @@ class GraphQLModelBasedTests: XCTestCase {
         }
         XCTAssertEqual(comments.count, 1)
     }
-    
+
     func testListQueryWithModel() async throws {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
         let post = Post(id: uuid, title: title, content: "content", createdAt: .now())
         _ = try await Amplify.API.mutate(request: .create(post))
-        
+
         let graphQLResponse = try await Amplify.API.query(request: .list(Post.self))
         guard case .success(let posts) = graphQLResponse else {
             XCTFail("Missing successful response")
@@ -161,7 +161,7 @@ class GraphQLModelBasedTests: XCTestCase {
         }
         XCTAssertTrue(!posts.isEmpty)
     }
-    
+
     func testListQueryWithPredicate() async throws {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -180,14 +180,14 @@ class GraphQLModelBasedTests: XCTestCase {
         post.createdAt == createdPost.createdAt &&
         post.rating == 12.3 &&
         post.draft == true
-        
-        let graphQLResponse = try await Amplify.API.query(request: .list(Post.self, where: predicate, limit: 1000))
+
+        let graphQLResponse = try await Amplify.API.query(request: .list(Post.self, where: predicate, limit: 1_000))
         guard case .success(var posts) = graphQLResponse else {
             XCTFail("Missing successful response")
             return
         }
-        
-        while posts.count == 0 && posts.hasNextPage() {
+
+        while posts.isEmpty && posts.hasNextPage() {
             posts = try await posts.getNextPage()
         }
         XCTAssertEqual(posts.count, 1)
@@ -202,7 +202,7 @@ class GraphQLModelBasedTests: XCTestCase {
         XCTAssertEqual(singlePost.rating, 12.3)
         XCTAssertEqual(singlePost.draft, true)
     }
-    
+
     func testCreatPostWithModel() async throws {
         let post = Post(title: "title", content: "content", createdAt: .now())
         let createdPostResult = try await Amplify.API.mutate(request: .create(post))
@@ -212,7 +212,7 @@ class GraphQLModelBasedTests: XCTestCase {
         }
         XCTAssertEqual(resultedPost.title, "title")
     }
-    
+
     func testCreateCommentWithModel() async throws {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -230,7 +230,7 @@ class GraphQLModelBasedTests: XCTestCase {
         XCTAssertEqual(resultComment.content, "commentContent")
         XCTAssertNotNil(resultComment.post)
     }
-    
+
     func testDeletePostWithModel() async throws {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -254,7 +254,7 @@ class GraphQLModelBasedTests: XCTestCase {
             XCTFail("Failed with: \(response)")
         }
     }
-    
+
     func testUpdatePostWithModel() async throws {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -270,7 +270,7 @@ class GraphQLModelBasedTests: XCTestCase {
         }
         XCTAssertEqual(updatedPosts.title, updatedTitle)
     }
-    
+
     func testOnCreatePostSubscriptionWithModel() async throws {
         let connectedInvoked = expectation(description: "Connection established")
         let progressInvoked = expectation(description: "progress invoked")
@@ -308,16 +308,16 @@ class GraphQLModelBasedTests: XCTestCase {
                 XCTFail("Unexpected subscription failure")
             }
         }
-        
+
         await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
-        
+
         let post = Post(id: uuid, title: title, content: "content", createdAt: .now())
         _ = try await Amplify.API.mutate(request: .create(post))
         let post2 = Post(id: uuid2, title: title, content: "content", createdAt: .now())
         _ = try await Amplify.API.mutate(request: .create(post2))
         await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     func testOnUpdatePostSubscriptionWithModel() async throws {
         let connectingInvoked = expectation(description: "Connection connecting")
         let connectedInvoked = expectation(description: "Connection established")
@@ -346,24 +346,24 @@ class GraphQLModelBasedTests: XCTestCase {
                 XCTFail("Unexpected subscription failure")
             }
         }
-        
+
         await fulfillment(of: [connectingInvoked, connectedInvoked], timeout: TestCommonConstants.networkTimeout)
-        
+
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
         let post = Post(id: uuid, title: title, content: "content", createdAt: .now())
         _ = try await Amplify.API.mutate(request: .create(post))
         _ = try await Amplify.API.mutate(request: .update(post))
-        
+
         await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     func testOnDeletePostSubscriptionWithModel() async throws {
         let connectingInvoked = expectation(description: "Connection connecting")
         let connectedInvoked = expectation(description: "Connection established")
         let progressInvoked = expectation(description: "progress invoked")
-        
+
         let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onDelete))
         Task {
             do {
@@ -386,19 +386,19 @@ class GraphQLModelBasedTests: XCTestCase {
                 XCTFail("Unexpected subscription failure")
             }
         }
-        
+
         await fulfillment(of: [connectingInvoked, connectedInvoked], timeout: TestCommonConstants.networkTimeout)
-        
+
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
         let post = Post(id: uuid, title: title, content: "content", createdAt: .now())
         _ = try await Amplify.API.mutate(request: .create(post))
         _ = try await Amplify.API.mutate(request: .delete(post))
-        
+
         await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     func testOnCreateCommentSubscriptionWithModel() async throws {
         let connectedInvoked = expectation(description: "Connection established")
         let progressInvoked = expectation(description: "progress invoked")
@@ -436,7 +436,7 @@ class GraphQLModelBasedTests: XCTestCase {
                 XCTFail("Unexpected subscription failure")
             }
         }
-        
+
         await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let post = Post(id: uuid, title: title, content: "content", createdAt: .now())
         _ = try await Amplify.API.mutate(request: .create(post))
@@ -456,10 +456,10 @@ class GraphQLModelBasedTests: XCTestCase {
         let allSubscribedExpectation = expectation(description: "All subscriptions are subscribed")
         allSubscribedExpectation.expectedFulfillmentCount = numberOfSubscription
 
-        let subscriptions = (0..<5).map { _ in
+        let subscriptions = (0 ..< 5).map { _ in
             Amplify.API.subscribe(request: .subscription(of: Comment.self, type: .onCreate))
         }
-        subscriptions.forEach { subscription in
+        for subscription in subscriptions {
             Task {
                 do {
                     for try await subscriptionEvent in subscription {

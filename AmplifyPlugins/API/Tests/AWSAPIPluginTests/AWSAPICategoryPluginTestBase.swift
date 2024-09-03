@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Foundation
+import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
@@ -38,7 +38,7 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
         self.authService = authService
 
         do {
-            let endpointConfig = [apiName: try AWSAPICategoryPluginConfiguration.EndpointConfig(
+            let endpointConfig = try [apiName: AWSAPICategoryPluginConfiguration.EndpointConfig(
                 name: apiName,
                 baseURL: baseURL,
                 region: region,

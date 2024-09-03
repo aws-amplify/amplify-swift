@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 class GraphQLResponseDecoder<R: Decodable> {
 
@@ -77,7 +77,8 @@ class GraphQLResponseDecoder<R: Decodable> {
     }
 
     func decodePartial(graphQLData: [String: JSONValue],
-                       graphQLErrors: [JSONValue]) throws -> GraphQLResponse<R> {
+                       graphQLErrors: [JSONValue]) throws -> GraphQLResponse<R>
+    {
         do {
             if let first = graphQLData.first, case .null = first.value {
                 let responseErrors = try GraphQLErrorDecoder.decodeErrors(graphQLErrors: graphQLErrors)

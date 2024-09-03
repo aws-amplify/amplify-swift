@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSAPIPlugin
 import AWSCognitoAuthPlugin
+import XCTest
 
 @testable import Amplify
 #if os(watchOS)
@@ -19,7 +19,7 @@ import AWSCognitoAuthPlugin
 class RESTWithIAMIntegrationTests: XCTestCase {
 
     static let amplifyConfiguration = "testconfiguration/RESTWithIAMIntegrationTests-amplifyconfiguration"
-    
+
     override func setUp() async throws {
 
         do {
@@ -58,7 +58,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
                 XCTFail("Error should be APIError")
                 return
             }
-            
+
             guard case let .httpStatusError(statusCode, response) = apiError else {
                 XCTFail("Error should be httpStatusError")
                 return
@@ -136,7 +136,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
                 XCTFail("Error should be httpStatusError")
                 return
             }
-            
+
             XCTAssertEqual(statusCode, 403)
         }
     }
@@ -155,7 +155,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
                 XCTFail("Error should be httpStatusError")
                 return
             }
-            
+
             XCTAssertEqual(statusCode, 404)
         }
     }

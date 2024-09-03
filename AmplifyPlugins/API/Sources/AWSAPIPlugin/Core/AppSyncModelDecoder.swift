@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 /// This decoder is registered and used to detect various data payloads to store
 /// inside an `AppSyncModelProvider` when decoding to the `LazyReference` as a "not yet loaded" Reference. If the data payload
@@ -24,7 +24,8 @@ public struct AppSyncModelDecoder: ModelProviderDecoder {
         init(identifiers: [LazyReferenceIdentifier],
              apiName: String?,
              authMode: AWSAuthorizationType?,
-             source: String = ModelProviderRegistry.DecoderSource.appSync) {
+             source: String = ModelProviderRegistry.DecoderSource.appSync)
+        {
             self.identifiers = identifiers
             self.apiName = apiName
             self.authMode = authMode

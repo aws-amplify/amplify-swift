@@ -6,8 +6,8 @@
 //
 
 import XCTest
-@testable import AWSAPIPlugin
 @testable import Amplify
+@testable import AWSAPIPlugin
 #if os(watchOS)
 @testable import APIWatchApp
 #else
@@ -69,7 +69,8 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
               let post1 = try await createPost(title: "title".withUUID, blog: blog),
               try await createPost(title: "title", blog: blog) != nil,
               let comment1post1 = try await createComment(post: post1, content: commentContent),
-              let comment2post1 = try await createComment(post: post1, content: commentContent) else {
+              let comment2post1 = try await createComment(post: post1, content: commentContent)
+        else {
             XCTFail("Could not create blog, posts, and comments")
             return
         }
@@ -98,7 +99,7 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
 
         let allPosts = try await getAll(list: resultPosts)
         XCTAssertEqual(allPosts.count, 2)
-        guard let fetchedPost = allPosts.first(where: { (post) -> Bool in
+        guard let fetchedPost = allPosts.first(where: { post -> Bool in
             post.id == post1.id
         }), let comments = fetchedPost.comments else {
             XCTFail("Could not set up - failed to get a post and its comments")
@@ -113,16 +114,16 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
         await fulfillment(of: [fetchCommentsCompleted], timeout: TestCommonConstants.networkTimeout)
         let allComments = try await getAll(list: resultComments)
         XCTAssertEqual(allComments.count, 2)
-        XCTAssertTrue(allComments.contains(where: { (comment) -> Bool in
+        XCTAssertTrue(allComments.contains(where: { comment -> Bool in
             comment.id == comment1post1.id
         }))
-        XCTAssertTrue(allComments.contains(where: { (comment) -> Bool in
+        XCTAssertTrue(allComments.contains(where: { comment -> Bool in
             comment.id == comment2post1.id
         }))
     }
 
     func getAll<M>(list: List<M>?) async throws -> [M] {
-        guard var list = list else {
+        guard var list else {
             return []
         }
         var results = [M]()

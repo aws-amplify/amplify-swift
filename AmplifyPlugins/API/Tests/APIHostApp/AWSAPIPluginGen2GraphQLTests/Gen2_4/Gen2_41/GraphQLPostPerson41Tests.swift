@@ -32,7 +32,8 @@ final class GraphQLPostPerson41Tests: AWSAPIPluginGen2GraphQLBaseTest {
             guard let queriedPost = try await Amplify.API.query(
                 request: .get(
                     Post.self,
-                    byIdentifier: post.identifier)).get() else {
+                    byIdentifier: post.identifier)).get()
+            else {
                 print("Missing post")
                 // Code Snippet Ends
                 XCTFail("Missing post")

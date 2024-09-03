@@ -45,7 +45,7 @@ class AWSHTTPURLResponseTests: XCTestCase {
             XCTFail("Failed to initialize `AWSHTTPURLResponse`")
             return
         }
-        let data : Data
+        let data: Data
         do {
             data = try NSKeyedArchiver.archivedData(withRootObject: response, requiringSecureCoding: false)
             XCTAssertNotNil(data)
@@ -53,7 +53,7 @@ class AWSHTTPURLResponseTests: XCTestCase {
             XCTFail("Failed to archive data : \(error)")
             return
         }
-        
+
         do {
             guard let unarchivedResponse = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? AWSHTTPURLResponse else {
                 XCTFail("Failure while unarchiving")

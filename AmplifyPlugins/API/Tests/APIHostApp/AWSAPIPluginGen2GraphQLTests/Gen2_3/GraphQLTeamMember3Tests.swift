@@ -122,7 +122,7 @@ final class GraphQLTeamMember3Tests: AWSAPIPluginGen2GraphQLBaseTest {
             try await members.fetch()
             print("Number of members: \(members.count)")
             // Code Snippet Ends
-            XCTAssertTrue(members.count > 0)
+            XCTAssertTrue(!members.isEmpty)
             // Code Snippet Begins
         } catch {
             print("Failed to fetch team or members", error)
@@ -160,7 +160,7 @@ final class GraphQLTeamMember3Tests: AWSAPIPluginGen2GraphQLBaseTest {
             }
             print("Number of members: \(members.count)")
             // Code Snippet Ends
-            XCTAssertTrue(members.count > 0)
+            XCTAssertTrue(!members.isEmpty)
             // Code Snippet Begins
         } catch {
             print("Failed to fetch team with members", error)

@@ -24,7 +24,7 @@ final class GraphQLSalary18Tests: AWSAPIPluginGen2GraphQLBaseTest {
         } catch {
             XCTFail("Could not sign up and sign in user \(error)")
         }
-        
+
         // Code Snippet begins
         do {
             let salary = Salary(

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AmplifyTestCommon
+import XCTest
 @testable import Amplify
 @testable import AWSAPIPlugin
 
@@ -54,7 +54,7 @@ class ModelMetadataTests: XCTestCase {
                 "__typename": "Post4"
             ]
         ]
-        let posts = AppSyncModelMetadataUtils.addMetadata(toModelArray: jsonArray, 
+        let posts = AppSyncModelMetadataUtils.addMetadata(toModelArray: jsonArray,
                                                           apiName: "apiName",
                                                           authMode: .amazonCognitoUserPools)
         XCTAssertEqual(posts.count, 2)
@@ -63,7 +63,8 @@ class ModelMetadataTests: XCTestCase {
                   case .array(let associatedFields) = associationData["appSyncAssociatedFields"],
                   case .array(let associatedIdentifiers) = associationData["appSyncAssociatedIdentifiers"],
                   case .string(let apiName) = associationData["apiName"],
-                  case .string(let authMode) = associationData["authMode"] else {
+                  case .string(let authMode) = associationData["authMode"]
+            else {
                 XCTFail("Missing association metadata for comments")
                 return
             }
@@ -86,7 +87,8 @@ class ModelMetadataTests: XCTestCase {
               case .array(let associatedFields) = associationData["appSyncAssociatedFields"],
               case .array(let associatedIdentifiers) = associationData["appSyncAssociatedIdentifiers"],
               case .string(let apiName) = associationData["apiName"],
-              case .string(let authMode) = associationData["authMode"] else {
+              case .string(let authMode) = associationData["authMode"]
+        else {
             XCTFail("Missing association metadata for comments")
             return
         }
@@ -111,7 +113,8 @@ class ModelMetadataTests: XCTestCase {
         let post = AppSyncModelMetadataUtils.addMetadata(toModel: json, apiName: "apiName", authMode: nil)
         guard case .object(let postObject) = post,
               case .string = postObject["id"],
-              case .string = postObject["title"] else {
+              case .string = postObject["title"]
+        else {
             XCTFail("Should have exactly the number of fields in original json object")
             return
         }
@@ -129,7 +132,8 @@ class ModelMetadataTests: XCTestCase {
         guard case .object(let postObject) = post,
               case .string = postObject["id"],
               case .string = postObject["title"],
-              case .string = postObject["__typename"] else {
+              case .string = postObject["__typename"]
+        else {
             XCTFail("Should have exactly the number of fields in original json object")
             return
         }
@@ -145,7 +149,8 @@ class ModelMetadataTests: XCTestCase {
         let post = AppSyncModelMetadataUtils.addMetadata(toModel: json, apiName: "apiName", authMode: nil)
         guard case .object(let postObject) = post,
               case .string = postObject["title"],
-              case .string = postObject["__typename"] else {
+              case .string = postObject["__typename"]
+        else {
             XCTFail("Should have exactly the number of fields in original json object")
             return
         }
@@ -169,7 +174,8 @@ class ModelMetadataTests: XCTestCase {
         guard case .object(let associationData) = post["comments"],
               associationData["appSyncAssociatedField"] == nil,
               associationData["appSyncAssociatedIdentifiers"] == nil,
-              associationData["apiName"] == nil else {
+              associationData["apiName"] == nil
+        else {
             XCTFail("Nested levels of data should not have metadata added")
             return
         }

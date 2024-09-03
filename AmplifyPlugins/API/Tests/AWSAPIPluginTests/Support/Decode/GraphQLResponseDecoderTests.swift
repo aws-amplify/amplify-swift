@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSPluginsCore
 import XCTest
 @testable import Amplify
-import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
 
@@ -101,7 +101,8 @@ class GraphQLResponseDecoderTests: XCTestCase {
         let result = try decoder.decodeToGraphQLResponse()
 
         guard case let .failure(response) = result,
-              case .error = response else {
+              case .error = response
+        else {
             XCTFail("Could not get failure response")
             return
         }
@@ -129,7 +130,8 @@ class GraphQLResponseDecoderTests: XCTestCase {
         let result = try decoder.decodeToGraphQLResponse()
 
         guard case let .failure(response) = result,
-              case .partial = response else {
+              case .partial = response
+        else {
             XCTFail("Could not get failure response")
             return
         }
@@ -187,7 +189,8 @@ class GraphQLResponseDecoderTests: XCTestCase {
         let result = try decoder.decodeToGraphQLResponse()
 
         guard case let .failure(response) = result,
-              case .error = response else {
+              case .error = response
+        else {
             XCTFail("Could not get failure response")
             return
         }

@@ -5,16 +5,16 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import Foundation
 import AWSAPIPlugin
 import AWSCognitoAuthPlugin
+import Foundation
+import XCTest
 
 @testable import Amplify
 @testable import APIHostApp
 
 extension GraphQLWithUserPoolIntegrationTests {
-   
+
     func createTodoAPISwift() async throws {
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
@@ -26,8 +26,8 @@ extension GraphQLWithUserPoolIntegrationTests {
         let request = GraphQLRequest(document: APISwift.CreateTodoMutation.operationString,
                                      variables: mutation.variables?.jsonObject,
                                      responseType: APISwift.CreateTodoMutation.Data.self)
-        
-        
+
+
         let event = try await Amplify.API.mutate(request: request)
         switch event {
         case .success(let data):
@@ -45,7 +45,7 @@ extension GraphQLWithUserPoolIntegrationTests {
             XCTFail("Unexpected .failed event: \(error)")
         }
     }
-    
+
     func testCreateTodoMutationWithUserPoolWithSignedInUserAPISwift() async throws {
         try await createAuthenticatedUser()
         try await createTodoAPISwift()

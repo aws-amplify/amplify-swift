@@ -14,7 +14,7 @@ extension GraphQLResponseDecoder {
     /*
      The sequence of `responseType` checking attempts to decode to specific types before falling back to (5)
      serializing the data and letting the default decode run its course (6).
-     
+
      1. String, special case where the object is serialized as a JSON string.
      2. AnyModel, used by DataStore's sync engine
      3. ModelListMarker, checks if it is a List type, inject additional information to create a loaded list.
@@ -45,17 +45,17 @@ extension GraphQLResponseDecoder {
             serializedJSON = try encoder.encode(anyModel)
         } else if request.responseType is ModelListMarker.Type, // 3
                   case .object(var graphQLDataObject) = graphQLData,
-                  case .array(var graphQLDataArray) = graphQLDataObject["items"] {
+                  case .array(var graphQLDataArray) = graphQLDataObject["items"]
+        {
             for (index, item) in graphQLDataArray.enumerated() {
-                let modelJSON: JSONValue
-                if let _ = (request.options.pluginOptions as? AWSAPIPluginDataStoreOptions) {
-                    modelJSON = AppSyncModelMetadataUtils.addMetadata(
+                let modelJSON: JSONValue = if let _ = (request.options.pluginOptions as? AWSAPIPluginDataStoreOptions) {
+                    AppSyncModelMetadataUtils.addMetadata(
                         toModel: item,
                         apiName: request.apiName,
                         authMode: request.authMode as? AWSAuthorizationType,
                         source: ModelProviderRegistry.DecoderSource.dataStore)
                 } else {
-                    modelJSON = AppSyncModelMetadataUtils.addMetadata(
+                    AppSyncModelMetadataUtils.addMetadata(
                         toModel: item,
                         apiName: request.apiName,
                         authMode: request.authMode as? AWSAuthorizationType)
@@ -63,10 +63,10 @@ extension GraphQLResponseDecoder {
                 graphQLDataArray[index] = modelJSON
             }
             graphQLDataObject["items"] = JSONValue.array(graphQLDataArray)
-            let payload = AppSyncListPayload(graphQLData: JSONValue.object(graphQLDataObject),
+            let payload = try AppSyncListPayload(graphQLData: JSONValue.object(graphQLDataObject),
                                              apiName: request.apiName,
                                              authMode: request.authMode as? AWSAuthorizationType,
-                                             variables: try getVariablesJSON())
+                                             variables: getVariablesJSON())
             serializedJSON = try encoder.encode(payload)
         } else if AppSyncModelMetadataUtils.shouldAddMetadata(toModel: graphQLData) { // 4
             let modelJSON = AppSyncModelMetadataUtils.addMetadata(toModel: graphQLData,
@@ -124,7 +124,8 @@ extension GraphQLResponseDecoder {
            request.responseType == MutationSync<AnyModel>.self,
            case var .object(modelJSON) = graphQLData,
            // No need to replace existing response payloads that have it already
-           modelJSON["__typename"] == nil {
+           modelJSON["__typename"] == nil
+        {
             modelJSON["__typename"] = .string(modelName)
             return JSONValue.object(modelJSON)
         } else {

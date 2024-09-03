@@ -5,10 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import Foundation
 import Amplify
 import Combine
+import Foundation
 import InternalAmplifyCredentials
 @_spi(WebSocket) import AWSPluginsCore
 
@@ -47,8 +46,8 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
     ) throws -> AppSyncRealTimeClientProtocol {
         let apiName = endpointConfig.name
 
-        let authInterceptor = try self.getInterceptor(
-            for: self.getOrCreateAuthConfiguration(from: endpointConfig, authType: authType),
+        let authInterceptor = try getInterceptor(
+            for: getOrCreateAuthConfiguration(from: endpointConfig, authType: authType),
             authService: authService,
             apiAuthProviderFactory: apiAuthProviderFactory
         )
@@ -82,7 +81,7 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
         authType: AWSAuthorizationType?
     ) throws -> AWSAuthorizationConfiguration {
         // create a configuration if there's an override auth type
-        if let authType = authType {
+        if let authType {
             return try endpointConfig.authorizationConfigurationFor(authType: authType)
         }
 

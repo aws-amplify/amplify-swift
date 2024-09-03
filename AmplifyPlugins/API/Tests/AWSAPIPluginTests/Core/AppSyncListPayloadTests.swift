@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 @testable import AWSAPIPlugin
 
 class AppSyncListPayloadTests: XCTestCase {
@@ -35,7 +35,8 @@ class AppSyncListPayloadTests: XCTestCase {
             return
         }
         guard let postFilter = filter["postID"] as? [String: String],
-              let postId = postFilter["eq"] else {
+              let postId = postFilter["eq"]
+        else {
             XCTFail("Could not retrieve filter values")
             return
         }
@@ -52,7 +53,7 @@ class AppSyncListPayloadTests: XCTestCase {
             "missingLimit": 500
         ]
         let payload = AppSyncListPayload(graphQLData: JSONValue.null,
-                                         apiName: "apiName", 
+                                         apiName: "apiName",
                                          authMode: nil,
                                          variables: variables)
 
@@ -62,7 +63,7 @@ class AppSyncListPayloadTests: XCTestCase {
 
     func testRetrieveNilFilterAndLimit_MissingVariables() {
         let payload = AppSyncListPayload(graphQLData: JSONValue.null,
-                                         apiName: "apiName", 
+                                         apiName: "apiName",
                                          authMode: nil,
                                          variables: nil)
 

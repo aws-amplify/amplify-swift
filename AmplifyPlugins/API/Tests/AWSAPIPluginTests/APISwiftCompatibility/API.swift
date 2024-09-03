@@ -1,26 +1,34 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 //  This file was automatically generated and should not be edited.
 #if canImport(AWSAPIPlugin)
 import Foundation
+
 public protocol GraphQLInputValue {
 }
 public struct GraphQLVariable {
   let name: String
-  
+
   public init(_ name: String) {
     self.name = name
   }
 }
 extension GraphQLVariable: GraphQLInputValue {
 }
-extension JSONEncodable {
-  public func evaluate(with variables: [String: JSONEncodable]?) throws -> Any {
+public extension JSONEncodable {
+  func evaluate(with variables: [String: JSONEncodable]?) throws -> Any {
     return jsonValue
   }
 }
 public typealias GraphQLMap = [String: JSONEncodable?]
-extension Dictionary where Key == String, Value == JSONEncodable? {
-  public var withNilValuesRemoved: Dictionary<String, JSONEncodable> {
-    var filtered = Dictionary<String, JSONEncodable>(minimumCapacity: count)
+public extension [String: JSONEncodable?] {
+  var withNilValuesRemoved: [String: JSONEncodable] {
+    var filtered = [String: JSONEncodable](minimumCapacity: count)
     for (key, value) in self {
       if value != nil {
         filtered[key] = value
@@ -39,13 +47,13 @@ public extension GraphQLMapConvertible {
 }
 public typealias GraphQLID = String
 public protocol APISwiftGraphQLOperation: AnyObject {
-  
+
   static var operationString: String { get }
   static var requestString: String { get }
   static var operationIdentifier: String? { get }
-  
+
   var variables: GraphQLMap? { get }
-  
+
   associatedtype Data: GraphQLSelectionSet
 }
 public extension APISwiftGraphQLOperation {
@@ -68,12 +76,12 @@ public protocol GraphQLFragment: GraphQLSelectionSet {
 public typealias Snapshot = [String: Any?]
 public protocol GraphQLSelectionSet: Decodable {
   static var selections: [GraphQLSelection] { get }
-  
+
   var snapshot: Snapshot { get }
   init(snapshot: Snapshot)
 }
-extension GraphQLSelectionSet {
-    public init(from decoder: Decoder) throws {
+public extension GraphQLSelectionSet {
+    init(from decoder: Decoder) throws {
         if let jsonObject = try? APISwiftJSONValue(from: decoder) {
             let encoder = JSONEncoder()
             let jsonData = try encoder.encode(jsonObject)
@@ -92,10 +100,10 @@ enum APISwiftJSONValue: Codable {
     case object([String: APISwiftJSONValue])
     case string(String)
     case null
-    
+
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        
+
         if let value = try? container.decode([String: APISwiftJSONValue].self) {
             self = .object(value)
         } else if let value = try? container.decode([APISwiftJSONValue].self) {
@@ -110,10 +118,10 @@ enum APISwiftJSONValue: Codable {
             self = .null
         }
     }
-    
+
     func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-        
+
         switch self {
         case .array(let value):
             try container.encode(value)
@@ -136,19 +144,19 @@ public struct GraphQLField: GraphQLSelection {
   let name: String
   let alias: String?
   let arguments: [String: GraphQLInputValue]?
-  
+
   var responseKey: String {
     return alias ?? name
   }
-  
+
   let type: GraphQLOutputType
-  
+
   public init(_ name: String, alias: String? = nil, arguments: [String: GraphQLInputValue]? = nil, type: GraphQLOutputType) {
     self.name = name
     self.alias = alias
-    
+
     self.arguments = arguments
-    
+
     self.type = type
   }
 }
@@ -157,7 +165,7 @@ public indirect enum GraphQLOutputType {
   case object([GraphQLSelection])
   case nonNull(GraphQLOutputType)
   case list(GraphQLOutputType)
-  
+
   var namedType: GraphQLOutputType {
     switch self {
     case .nonNull(let innerType), .list(let innerType):
@@ -171,25 +179,25 @@ public struct GraphQLBooleanCondition: GraphQLSelection {
   let variableName: String
   let inverted: Bool
   let selections: [GraphQLSelection]
-  
+
   public init(variableName: String, inverted: Bool, selections: [GraphQLSelection]) {
     self.variableName = variableName
-    self.inverted = inverted;
-    self.selections = selections;
+    self.inverted = inverted
+    self.selections = selections
   }
 }
 public struct GraphQLTypeCondition: GraphQLSelection {
   let possibleTypes: [String]
   let selections: [GraphQLSelection]
-  
+
   public init(possibleTypes: [String], selections: [GraphQLSelection]) {
     self.possibleTypes = possibleTypes
-    self.selections = selections;
+    self.selections = selections
   }
 }
 public struct GraphQLFragmentSpread: GraphQLSelection {
   let fragment: GraphQLFragment.Type
-  
+
   public init(_ fragment: GraphQLFragment.Type) {
     self.fragment = fragment
   }
@@ -197,10 +205,10 @@ public struct GraphQLFragmentSpread: GraphQLSelection {
 public struct GraphQLTypeCase: GraphQLSelection {
   let variants: [String: [GraphQLSelection]]
   let `default`: [GraphQLSelection]
-  
+
   public init(variants: [String: [GraphQLSelection]], default: [GraphQLSelection]) {
     self.variants = variants
-    self.default = `default`;
+    self.default = `default`
   }
 }
 public typealias JSONObject = [String: Any]
@@ -215,7 +223,7 @@ public enum JSONDecodingError: Error, LocalizedError {
   case nullValue
   case wrongType
   case couldNotConvert(value: Any, to: Any.Type)
-  
+
   public var errorDescription: String? {
     switch self {
     case .missingValue:
@@ -284,8 +292,8 @@ extension Bool: JSONDecodable, JSONEncodable {
     return self
   }
 }
-extension RawRepresentable where RawValue: JSONDecodable {
-  public init(jsonValue value: Any) throws {
+public extension RawRepresentable where RawValue: JSONDecodable {
+  init(jsonValue value: Any) throws {
     let rawValue = try RawValue(jsonValue: value)
     if let tempSelf = Self(rawValue: rawValue) {
       self = tempSelf
@@ -294,17 +302,17 @@ extension RawRepresentable where RawValue: JSONDecodable {
     }
   }
 }
-extension RawRepresentable where RawValue: JSONEncodable {
-  public var jsonValue: Any {
+public extension RawRepresentable where RawValue: JSONEncodable {
+  var jsonValue: Any {
     return rawValue.jsonValue
   }
 }
-extension Optional where Wrapped: JSONDecodable {
-  public init(jsonValue value: Any) throws {
+public extension Optional where Wrapped: JSONDecodable {
+  init(jsonValue value: Any) throws {
     if value is NSNull {
       self = .none
     } else {
-      self = .some(try Wrapped(jsonValue: value))
+      self = try .some(Wrapped(jsonValue: value))
     }
   }
 }
@@ -324,7 +332,7 @@ extension Dictionary: JSONEncodable {
   public var jsonValue: Any {
     return jsonObject
   }
-  
+
   public var jsonObject: JSONObject {
     var jsonObject = JSONObject(minimumCapacity: count)
     for (key, value) in self {
@@ -339,7 +347,7 @@ extension Dictionary: JSONEncodable {
 }
 extension Array: JSONEncodable {
   public var jsonValue: Any {
-    return map() { element -> (Any) in
+    return map { element -> (Any) in
       if case let element as JSONEncodable = element {
         return element.jsonValue
       } else {
@@ -356,12 +364,12 @@ extension URL: JSONDecodable, JSONEncodable {
     self.init(string: string)!
   }
   public var jsonValue: Any {
-    return self.absoluteString
+    return absoluteString
   }
 }
 extension Dictionary {
   static func += (lhs: inout Dictionary, rhs: Dictionary) {
-    lhs.merge(rhs) { (_, new) in new }
+    lhs.merge(rhs) { _, new in new }
   }
 }
 #elseif canImport(AWSAppSync)
@@ -372,7 +380,7 @@ public struct CreateBlogInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(id: GraphQLID? = nil, name: String, file: S3ObjectInput? = nil, version: Int? = nil) {
-    graphQLMap = ["id": id, "name": name, "file": file, "_version": version]
+    self.graphQLMap = ["id": id, "name": name, "file": file, "_version": version]
   }
 
   public var id: GraphQLID? {
@@ -416,7 +424,7 @@ public struct S3ObjectInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(bucket: String, key: String, region: String) {
-    graphQLMap = ["bucket": bucket, "key": key, "region": region]
+    self.graphQLMap = ["bucket": bucket, "key": key, "region": region]
   }
 
   public var bucket: String {
@@ -451,7 +459,7 @@ public struct ModelBlogConditionInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(name: ModelStringInput? = nil, and: [ModelBlogConditionInput?]? = nil, or: [ModelBlogConditionInput?]? = nil, not: ModelBlogConditionInput? = nil) {
-    graphQLMap = ["name": name, "and": and, "or": or, "not": not]
+    self.graphQLMap = ["name": name, "and": and, "or": or, "not": not]
   }
 
   public var name: ModelStringInput? {
@@ -495,7 +503,7 @@ public struct ModelStringInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(ne: String? = nil, eq: String? = nil, le: String? = nil, lt: String? = nil, ge: String? = nil, gt: String? = nil, contains: String? = nil, notContains: String? = nil, between: [String?]? = nil, beginsWith: String? = nil, attributeExists: Bool? = nil, attributeType: ModelAttributeTypes? = nil, size: ModelSizeInput? = nil) {
-    graphQLMap = ["ne": ne, "eq": eq, "le": le, "lt": lt, "ge": ge, "gt": gt, "contains": contains, "notContains": notContains, "between": between, "beginsWith": beginsWith, "attributeExists": attributeExists, "attributeType": attributeType, "size": size]
+    self.graphQLMap = ["ne": ne, "eq": eq, "le": le, "lt": lt, "ge": ge, "gt": gt, "contains": contains, "notContains": notContains, "between": between, "beginsWith": beginsWith, "attributeExists": attributeExists, "attributeType": attributeType, "size": size]
   }
 
   public var ne: String? {
@@ -685,7 +693,7 @@ public struct ModelSizeInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(ne: Int? = nil, eq: Int? = nil, le: Int? = nil, lt: Int? = nil, ge: Int? = nil, gt: Int? = nil, between: [Int?]? = nil) {
-    graphQLMap = ["ne": ne, "eq": eq, "le": le, "lt": lt, "ge": ge, "gt": gt, "between": between]
+    self.graphQLMap = ["ne": ne, "eq": eq, "le": le, "lt": lt, "ge": ge, "gt": gt, "between": between]
   }
 
   public var ne: Int? {
@@ -756,7 +764,7 @@ public struct UpdateBlogInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(id: GraphQLID, name: String? = nil, file: S3ObjectInput? = nil, version: Int? = nil) {
-    graphQLMap = ["id": id, "name": name, "file": file, "_version": version]
+    self.graphQLMap = ["id": id, "name": name, "file": file, "_version": version]
   }
 
   public var id: GraphQLID {
@@ -800,7 +808,7 @@ public struct DeleteBlogInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(id: GraphQLID, version: Int? = nil) {
-    graphQLMap = ["id": id, "_version": version]
+    self.graphQLMap = ["id": id, "_version": version]
   }
 
   public var id: GraphQLID {
@@ -826,7 +834,7 @@ public struct CreatePostInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(id: GraphQLID? = nil, title: String, version: Int? = nil, blogPostsId: GraphQLID? = nil) {
-    graphQLMap = ["id": id, "title": title, "_version": version, "blogPostsId": blogPostsId]
+    self.graphQLMap = ["id": id, "title": title, "_version": version, "blogPostsId": blogPostsId]
   }
 
   public var id: GraphQLID? {
@@ -870,7 +878,7 @@ public struct ModelPostConditionInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(title: ModelStringInput? = nil, and: [ModelPostConditionInput?]? = nil, or: [ModelPostConditionInput?]? = nil, not: ModelPostConditionInput? = nil, blogPostsId: ModelIDInput? = nil) {
-    graphQLMap = ["title": title, "and": and, "or": or, "not": not, "blogPostsId": blogPostsId]
+    self.graphQLMap = ["title": title, "and": and, "or": or, "not": not, "blogPostsId": blogPostsId]
   }
 
   public var title: ModelStringInput? {
@@ -923,7 +931,7 @@ public struct ModelIDInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(ne: GraphQLID? = nil, eq: GraphQLID? = nil, le: GraphQLID? = nil, lt: GraphQLID? = nil, ge: GraphQLID? = nil, gt: GraphQLID? = nil, contains: GraphQLID? = nil, notContains: GraphQLID? = nil, between: [GraphQLID?]? = nil, beginsWith: GraphQLID? = nil, attributeExists: Bool? = nil, attributeType: ModelAttributeTypes? = nil, size: ModelSizeInput? = nil) {
-    graphQLMap = ["ne": ne, "eq": eq, "le": le, "lt": lt, "ge": ge, "gt": gt, "contains": contains, "notContains": notContains, "between": between, "beginsWith": beginsWith, "attributeExists": attributeExists, "attributeType": attributeType, "size": size]
+    self.graphQLMap = ["ne": ne, "eq": eq, "le": le, "lt": lt, "ge": ge, "gt": gt, "contains": contains, "notContains": notContains, "between": between, "beginsWith": beginsWith, "attributeExists": attributeExists, "attributeType": attributeType, "size": size]
   }
 
   public var ne: GraphQLID? {
@@ -1048,7 +1056,7 @@ public struct UpdatePostInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(id: GraphQLID, title: String? = nil, version: Int? = nil, blogPostsId: GraphQLID? = nil) {
-    graphQLMap = ["id": id, "title": title, "_version": version, "blogPostsId": blogPostsId]
+    self.graphQLMap = ["id": id, "title": title, "_version": version, "blogPostsId": blogPostsId]
   }
 
   public var id: GraphQLID {
@@ -1092,7 +1100,7 @@ public struct DeletePostInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(id: GraphQLID, version: Int? = nil) {
-    graphQLMap = ["id": id, "_version": version]
+    self.graphQLMap = ["id": id, "_version": version]
   }
 
   public var id: GraphQLID {
@@ -1118,7 +1126,7 @@ public struct CreateCommentInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(id: GraphQLID? = nil, content: String, version: Int? = nil, postCommentsId: GraphQLID? = nil) {
-    graphQLMap = ["id": id, "content": content, "_version": version, "postCommentsId": postCommentsId]
+    self.graphQLMap = ["id": id, "content": content, "_version": version, "postCommentsId": postCommentsId]
   }
 
   public var id: GraphQLID? {
@@ -1162,7 +1170,7 @@ public struct ModelCommentConditionInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(content: ModelStringInput? = nil, and: [ModelCommentConditionInput?]? = nil, or: [ModelCommentConditionInput?]? = nil, not: ModelCommentConditionInput? = nil, postCommentsId: ModelIDInput? = nil) {
-    graphQLMap = ["content": content, "and": and, "or": or, "not": not, "postCommentsId": postCommentsId]
+    self.graphQLMap = ["content": content, "and": and, "or": or, "not": not, "postCommentsId": postCommentsId]
   }
 
   public var content: ModelStringInput? {
@@ -1215,7 +1223,7 @@ public struct UpdateCommentInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(id: GraphQLID, content: String? = nil, version: Int? = nil, postCommentsId: GraphQLID? = nil) {
-    graphQLMap = ["id": id, "content": content, "_version": version, "postCommentsId": postCommentsId]
+    self.graphQLMap = ["id": id, "content": content, "_version": version, "postCommentsId": postCommentsId]
   }
 
   public var id: GraphQLID {
@@ -1259,7 +1267,7 @@ public struct DeleteCommentInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(id: GraphQLID, version: Int? = nil) {
-    graphQLMap = ["id": id, "_version": version]
+    self.graphQLMap = ["id": id, "_version": version]
   }
 
   public var id: GraphQLID {
@@ -1285,7 +1293,7 @@ public struct ModelBlogFilterInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(id: ModelIDInput? = nil, name: ModelStringInput? = nil, and: [ModelBlogFilterInput?]? = nil, or: [ModelBlogFilterInput?]? = nil, not: ModelBlogFilterInput? = nil) {
-    graphQLMap = ["id": id, "name": name, "and": and, "or": or, "not": not]
+    self.graphQLMap = ["id": id, "name": name, "and": and, "or": or, "not": not]
   }
 
   public var id: ModelIDInput? {
@@ -1338,7 +1346,7 @@ public struct ModelPostFilterInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(id: ModelIDInput? = nil, title: ModelStringInput? = nil, and: [ModelPostFilterInput?]? = nil, or: [ModelPostFilterInput?]? = nil, not: ModelPostFilterInput? = nil, blogPostsId: ModelIDInput? = nil) {
-    graphQLMap = ["id": id, "title": title, "and": and, "or": or, "not": not, "blogPostsId": blogPostsId]
+    self.graphQLMap = ["id": id, "title": title, "and": and, "or": or, "not": not, "blogPostsId": blogPostsId]
   }
 
   public var id: ModelIDInput? {
@@ -1400,7 +1408,7 @@ public struct ModelCommentFilterInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(id: ModelIDInput? = nil, content: ModelStringInput? = nil, and: [ModelCommentFilterInput?]? = nil, or: [ModelCommentFilterInput?]? = nil, not: ModelCommentFilterInput? = nil, postCommentsId: ModelIDInput? = nil) {
-    graphQLMap = ["id": id, "content": content, "and": and, "or": or, "not": not, "postCommentsId": postCommentsId]
+    self.graphQLMap = ["id": id, "content": content, "and": and, "or": or, "not": not, "postCommentsId": postCommentsId]
   }
 
   public var id: ModelIDInput? {
@@ -1462,7 +1470,7 @@ public struct ModelSubscriptionBlogFilterInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(id: ModelSubscriptionIDInput? = nil, name: ModelSubscriptionStringInput? = nil, and: [ModelSubscriptionBlogFilterInput?]? = nil, or: [ModelSubscriptionBlogFilterInput?]? = nil) {
-    graphQLMap = ["id": id, "name": name, "and": and, "or": or]
+    self.graphQLMap = ["id": id, "name": name, "and": and, "or": or]
   }
 
   public var id: ModelSubscriptionIDInput? {
@@ -1505,8 +1513,8 @@ public struct ModelSubscriptionBlogFilterInput: GraphQLMapConvertible {
 public struct ModelSubscriptionIDInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(ne: GraphQLID? = nil, eq: GraphQLID? = nil, le: GraphQLID? = nil, lt: GraphQLID? = nil, ge: GraphQLID? = nil, gt: GraphQLID? = nil, contains: GraphQLID? = nil, notContains: GraphQLID? = nil, between: [GraphQLID?]? = nil, beginsWith: GraphQLID? = nil, `in`: [GraphQLID?]? = nil, notIn: [GraphQLID?]? = nil) {
-    graphQLMap = ["ne": ne, "eq": eq, "le": le, "lt": lt, "ge": ge, "gt": gt, "contains": contains, "notContains": notContains, "between": between, "beginsWith": beginsWith, "in": `in`, "notIn": notIn]
+  public init(ne: GraphQLID? = nil, eq: GraphQLID? = nil, le: GraphQLID? = nil, lt: GraphQLID? = nil, ge: GraphQLID? = nil, gt: GraphQLID? = nil, contains: GraphQLID? = nil, notContains: GraphQLID? = nil, between: [GraphQLID?]? = nil, beginsWith: GraphQLID? = nil, in: [GraphQLID?]? = nil, notIn: [GraphQLID?]? = nil) {
+    self.graphQLMap = ["ne": ne, "eq": eq, "le": le, "lt": lt, "ge": ge, "gt": gt, "contains": contains, "notContains": notContains, "between": between, "beginsWith": beginsWith, "in": `in`, "notIn": notIn]
   }
 
   public var ne: GraphQLID? {
@@ -1621,8 +1629,8 @@ public struct ModelSubscriptionIDInput: GraphQLMapConvertible {
 public struct ModelSubscriptionStringInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(ne: String? = nil, eq: String? = nil, le: String? = nil, lt: String? = nil, ge: String? = nil, gt: String? = nil, contains: String? = nil, notContains: String? = nil, between: [String?]? = nil, beginsWith: String? = nil, `in`: [String?]? = nil, notIn: [String?]? = nil) {
-    graphQLMap = ["ne": ne, "eq": eq, "le": le, "lt": lt, "ge": ge, "gt": gt, "contains": contains, "notContains": notContains, "between": between, "beginsWith": beginsWith, "in": `in`, "notIn": notIn]
+  public init(ne: String? = nil, eq: String? = nil, le: String? = nil, lt: String? = nil, ge: String? = nil, gt: String? = nil, contains: String? = nil, notContains: String? = nil, between: [String?]? = nil, beginsWith: String? = nil, in: [String?]? = nil, notIn: [String?]? = nil) {
+    self.graphQLMap = ["ne": ne, "eq": eq, "le": le, "lt": lt, "ge": ge, "gt": gt, "contains": contains, "notContains": notContains, "between": between, "beginsWith": beginsWith, "in": `in`, "notIn": notIn]
   }
 
   public var ne: String? {
@@ -1738,7 +1746,7 @@ public struct ModelSubscriptionPostFilterInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(id: ModelSubscriptionIDInput? = nil, title: ModelSubscriptionStringInput? = nil, and: [ModelSubscriptionPostFilterInput?]? = nil, or: [ModelSubscriptionPostFilterInput?]? = nil) {
-    graphQLMap = ["id": id, "title": title, "and": and, "or": or]
+    self.graphQLMap = ["id": id, "title": title, "and": and, "or": or]
   }
 
   public var id: ModelSubscriptionIDInput? {
@@ -1782,7 +1790,7 @@ public struct ModelSubscriptionCommentFilterInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(id: ModelSubscriptionIDInput? = nil, content: ModelSubscriptionStringInput? = nil, and: [ModelSubscriptionCommentFilterInput?]? = nil, or: [ModelSubscriptionCommentFilterInput?]? = nil) {
-    graphQLMap = ["id": id, "content": content, "and": and, "or": or]
+    self.graphQLMap = ["id": id, "content": content, "and": and, "or": or]
   }
 
   public var id: ModelSubscriptionIDInput? {
@@ -1854,7 +1862,7 @@ public final class CreateBlogMutation: GraphQLMutation {
     }
 
     public init(createBlog: CreateBlog? = nil) {
-      self.init(snapshot: ["__typename": "Mutation", "createBlog": createBlog.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Mutation", "createBlog": createBlog.flatMap(\.snapshot)])
     }
 
     public var createBlog: CreateBlog? {
@@ -1889,7 +1897,7 @@ public final class CreateBlogMutation: GraphQLMutation {
       }
 
       public init(id: GraphQLID, name: String, posts: Post? = nil, file: File? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "Blog", "id": id, "name": name, "posts": posts.flatMap { $0.snapshot }, "file": file.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        self.init(snapshot: ["__typename": "Blog", "id": id, "name": name, "posts": posts.flatMap(\.snapshot), "file": file.flatMap(\.snapshot), "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -2144,7 +2152,7 @@ public final class UpdateBlogMutation: GraphQLMutation {
     }
 
     public init(updateBlog: UpdateBlog? = nil) {
-      self.init(snapshot: ["__typename": "Mutation", "updateBlog": updateBlog.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Mutation", "updateBlog": updateBlog.flatMap(\.snapshot)])
     }
 
     public var updateBlog: UpdateBlog? {
@@ -2179,7 +2187,7 @@ public final class UpdateBlogMutation: GraphQLMutation {
       }
 
       public init(id: GraphQLID, name: String, posts: Post? = nil, file: File? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "Blog", "id": id, "name": name, "posts": posts.flatMap { $0.snapshot }, "file": file.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        self.init(snapshot: ["__typename": "Blog", "id": id, "name": name, "posts": posts.flatMap(\.snapshot), "file": file.flatMap(\.snapshot), "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -2434,7 +2442,7 @@ public final class DeleteBlogMutation: GraphQLMutation {
     }
 
     public init(deleteBlog: DeleteBlog? = nil) {
-      self.init(snapshot: ["__typename": "Mutation", "deleteBlog": deleteBlog.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Mutation", "deleteBlog": deleteBlog.flatMap(\.snapshot)])
     }
 
     public var deleteBlog: DeleteBlog? {
@@ -2469,7 +2477,7 @@ public final class DeleteBlogMutation: GraphQLMutation {
       }
 
       public init(id: GraphQLID, name: String, posts: Post? = nil, file: File? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "Blog", "id": id, "name": name, "posts": posts.flatMap { $0.snapshot }, "file": file.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        self.init(snapshot: ["__typename": "Blog", "id": id, "name": name, "posts": posts.flatMap(\.snapshot), "file": file.flatMap(\.snapshot), "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -2722,7 +2730,7 @@ public final class CreatePostMutation: GraphQLMutation {
     }
 
     public init(createPost: CreatePost? = nil) {
-      self.init(snapshot: ["__typename": "Mutation", "createPost": createPost.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Mutation", "createPost": createPost.flatMap(\.snapshot)])
     }
 
     public var createPost: CreatePost? {
@@ -2758,7 +2766,7 @@ public final class CreatePostMutation: GraphQLMutation {
       }
 
       public init(id: GraphQLID, title: String, blog: Blog? = nil, comments: Comment? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, blogPostsId: GraphQLID? = nil) {
-        self.init(snapshot: ["__typename": "Post", "id": id, "title": title, "blog": blog.flatMap { $0.snapshot }, "comments": comments.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "blogPostsId": blogPostsId])
+        self.init(snapshot: ["__typename": "Post", "id": id, "title": title, "blog": blog.flatMap(\.snapshot), "comments": comments.flatMap(\.snapshot), "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "blogPostsId": blogPostsId])
       }
 
       public var __typename: String {
@@ -3037,7 +3045,7 @@ public final class UpdatePostMutation: GraphQLMutation {
     }
 
     public init(updatePost: UpdatePost? = nil) {
-      self.init(snapshot: ["__typename": "Mutation", "updatePost": updatePost.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Mutation", "updatePost": updatePost.flatMap(\.snapshot)])
     }
 
     public var updatePost: UpdatePost? {
@@ -3073,7 +3081,7 @@ public final class UpdatePostMutation: GraphQLMutation {
       }
 
       public init(id: GraphQLID, title: String, blog: Blog? = nil, comments: Comment? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, blogPostsId: GraphQLID? = nil) {
-        self.init(snapshot: ["__typename": "Post", "id": id, "title": title, "blog": blog.flatMap { $0.snapshot }, "comments": comments.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "blogPostsId": blogPostsId])
+        self.init(snapshot: ["__typename": "Post", "id": id, "title": title, "blog": blog.flatMap(\.snapshot), "comments": comments.flatMap(\.snapshot), "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "blogPostsId": blogPostsId])
       }
 
       public var __typename: String {
@@ -3352,7 +3360,7 @@ public final class DeletePostMutation: GraphQLMutation {
     }
 
     public init(deletePost: DeletePost? = nil) {
-      self.init(snapshot: ["__typename": "Mutation", "deletePost": deletePost.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Mutation", "deletePost": deletePost.flatMap(\.snapshot)])
     }
 
     public var deletePost: DeletePost? {
@@ -3388,7 +3396,7 @@ public final class DeletePostMutation: GraphQLMutation {
       }
 
       public init(id: GraphQLID, title: String, blog: Blog? = nil, comments: Comment? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, blogPostsId: GraphQLID? = nil) {
-        self.init(snapshot: ["__typename": "Post", "id": id, "title": title, "blog": blog.flatMap { $0.snapshot }, "comments": comments.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "blogPostsId": blogPostsId])
+        self.init(snapshot: ["__typename": "Post", "id": id, "title": title, "blog": blog.flatMap(\.snapshot), "comments": comments.flatMap(\.snapshot), "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "blogPostsId": blogPostsId])
       }
 
       public var __typename: String {
@@ -3667,7 +3675,7 @@ public final class CreateCommentMutation: GraphQLMutation {
     }
 
     public init(createComment: CreateComment? = nil) {
-      self.init(snapshot: ["__typename": "Mutation", "createComment": createComment.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Mutation", "createComment": createComment.flatMap(\.snapshot)])
     }
 
     public var createComment: CreateComment? {
@@ -3702,7 +3710,7 @@ public final class CreateCommentMutation: GraphQLMutation {
       }
 
       public init(id: GraphQLID, post: Post? = nil, content: String, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, postCommentsId: GraphQLID? = nil) {
-        self.init(snapshot: ["__typename": "Comment", "id": id, "post": post.flatMap { $0.snapshot }, "content": content, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "postCommentsId": postCommentsId])
+        self.init(snapshot: ["__typename": "Comment", "id": id, "post": post.flatMap(\.snapshot), "content": content, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "postCommentsId": postCommentsId])
       }
 
       public var __typename: String {
@@ -3935,7 +3943,7 @@ public final class UpdateCommentMutation: GraphQLMutation {
     }
 
     public init(updateComment: UpdateComment? = nil) {
-      self.init(snapshot: ["__typename": "Mutation", "updateComment": updateComment.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Mutation", "updateComment": updateComment.flatMap(\.snapshot)])
     }
 
     public var updateComment: UpdateComment? {
@@ -3970,7 +3978,7 @@ public final class UpdateCommentMutation: GraphQLMutation {
       }
 
       public init(id: GraphQLID, post: Post? = nil, content: String, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, postCommentsId: GraphQLID? = nil) {
-        self.init(snapshot: ["__typename": "Comment", "id": id, "post": post.flatMap { $0.snapshot }, "content": content, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "postCommentsId": postCommentsId])
+        self.init(snapshot: ["__typename": "Comment", "id": id, "post": post.flatMap(\.snapshot), "content": content, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "postCommentsId": postCommentsId])
       }
 
       public var __typename: String {
@@ -4203,7 +4211,7 @@ public final class DeleteCommentMutation: GraphQLMutation {
     }
 
     public init(deleteComment: DeleteComment? = nil) {
-      self.init(snapshot: ["__typename": "Mutation", "deleteComment": deleteComment.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Mutation", "deleteComment": deleteComment.flatMap(\.snapshot)])
     }
 
     public var deleteComment: DeleteComment? {
@@ -4238,7 +4246,7 @@ public final class DeleteCommentMutation: GraphQLMutation {
       }
 
       public init(id: GraphQLID, post: Post? = nil, content: String, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, postCommentsId: GraphQLID? = nil) {
-        self.init(snapshot: ["__typename": "Comment", "id": id, "post": post.flatMap { $0.snapshot }, "content": content, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "postCommentsId": postCommentsId])
+        self.init(snapshot: ["__typename": "Comment", "id": id, "post": post.flatMap(\.snapshot), "content": content, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "postCommentsId": postCommentsId])
       }
 
       public var __typename: String {
@@ -4471,7 +4479,7 @@ public final class GetBlogQuery: GraphQLQuery {
     }
 
     public init(getBlog: GetBlog? = nil) {
-      self.init(snapshot: ["__typename": "Query", "getBlog": getBlog.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Query", "getBlog": getBlog.flatMap(\.snapshot)])
     }
 
     public var getBlog: GetBlog? {
@@ -4506,7 +4514,7 @@ public final class GetBlogQuery: GraphQLQuery {
       }
 
       public init(id: GraphQLID, name: String, posts: Post? = nil, file: File? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "Blog", "id": id, "name": name, "posts": posts.flatMap { $0.snapshot }, "file": file.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        self.init(snapshot: ["__typename": "Blog", "id": id, "name": name, "posts": posts.flatMap(\.snapshot), "file": file.flatMap(\.snapshot), "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -4761,7 +4769,7 @@ public final class ListBlogsQuery: GraphQLQuery {
     }
 
     public init(listBlogs: ListBlog? = nil) {
-      self.init(snapshot: ["__typename": "Query", "listBlogs": listBlogs.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Query", "listBlogs": listBlogs.flatMap(\.snapshot)])
     }
 
     public var listBlogs: ListBlog? {
@@ -4790,7 +4798,7 @@ public final class ListBlogsQuery: GraphQLQuery {
       }
 
       public init(items: [Item?], nextToken: String? = nil, startedAt: Int? = nil) {
-        self.init(snapshot: ["__typename": "ModelBlogConnection", "items": items.map { $0.flatMap { $0.snapshot } }, "nextToken": nextToken, "startedAt": startedAt])
+        self.init(snapshot: ["__typename": "ModelBlogConnection", "items": items.map { $0.flatMap(\.snapshot) }, "nextToken": nextToken, "startedAt": startedAt])
       }
 
       public var __typename: String {
@@ -4807,7 +4815,7 @@ public final class ListBlogsQuery: GraphQLQuery {
           return (snapshot["items"] as! [Snapshot?]).map { $0.flatMap { Item(snapshot: $0) } }
         }
         set {
-          snapshot.updateValue(newValue.map { $0.flatMap { $0.snapshot } }, forKey: "items")
+          snapshot.updateValue(newValue.map { $0.flatMap(\.snapshot) }, forKey: "items")
         }
       }
 
@@ -4963,7 +4971,7 @@ public final class SyncBlogsQuery: GraphQLQuery {
     }
 
     public init(syncBlogs: SyncBlog? = nil) {
-      self.init(snapshot: ["__typename": "Query", "syncBlogs": syncBlogs.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Query", "syncBlogs": syncBlogs.flatMap(\.snapshot)])
     }
 
     public var syncBlogs: SyncBlog? {
@@ -4992,7 +5000,7 @@ public final class SyncBlogsQuery: GraphQLQuery {
       }
 
       public init(items: [Item?], nextToken: String? = nil, startedAt: Int? = nil) {
-        self.init(snapshot: ["__typename": "ModelBlogConnection", "items": items.map { $0.flatMap { $0.snapshot } }, "nextToken": nextToken, "startedAt": startedAt])
+        self.init(snapshot: ["__typename": "ModelBlogConnection", "items": items.map { $0.flatMap(\.snapshot) }, "nextToken": nextToken, "startedAt": startedAt])
       }
 
       public var __typename: String {
@@ -5009,7 +5017,7 @@ public final class SyncBlogsQuery: GraphQLQuery {
           return (snapshot["items"] as! [Snapshot?]).map { $0.flatMap { Item(snapshot: $0) } }
         }
         set {
-          snapshot.updateValue(newValue.map { $0.flatMap { $0.snapshot } }, forKey: "items")
+          snapshot.updateValue(newValue.map { $0.flatMap(\.snapshot) }, forKey: "items")
         }
       }
 
@@ -5159,7 +5167,7 @@ public final class GetPostQuery: GraphQLQuery {
     }
 
     public init(getPost: GetPost? = nil) {
-      self.init(snapshot: ["__typename": "Query", "getPost": getPost.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Query", "getPost": getPost.flatMap(\.snapshot)])
     }
 
     public var getPost: GetPost? {
@@ -5195,7 +5203,7 @@ public final class GetPostQuery: GraphQLQuery {
       }
 
       public init(id: GraphQLID, title: String, blog: Blog? = nil, comments: Comment? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, blogPostsId: GraphQLID? = nil) {
-        self.init(snapshot: ["__typename": "Post", "id": id, "title": title, "blog": blog.flatMap { $0.snapshot }, "comments": comments.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "blogPostsId": blogPostsId])
+        self.init(snapshot: ["__typename": "Post", "id": id, "title": title, "blog": blog.flatMap(\.snapshot), "comments": comments.flatMap(\.snapshot), "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "blogPostsId": blogPostsId])
       }
 
       public var __typename: String {
@@ -5476,7 +5484,7 @@ public final class ListPostsQuery: GraphQLQuery {
     }
 
     public init(listPosts: ListPost? = nil) {
-      self.init(snapshot: ["__typename": "Query", "listPosts": listPosts.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Query", "listPosts": listPosts.flatMap(\.snapshot)])
     }
 
     public var listPosts: ListPost? {
@@ -5505,7 +5513,7 @@ public final class ListPostsQuery: GraphQLQuery {
       }
 
       public init(items: [Item?], nextToken: String? = nil, startedAt: Int? = nil) {
-        self.init(snapshot: ["__typename": "ModelPostConnection", "items": items.map { $0.flatMap { $0.snapshot } }, "nextToken": nextToken, "startedAt": startedAt])
+        self.init(snapshot: ["__typename": "ModelPostConnection", "items": items.map { $0.flatMap(\.snapshot) }, "nextToken": nextToken, "startedAt": startedAt])
       }
 
       public var __typename: String {
@@ -5522,7 +5530,7 @@ public final class ListPostsQuery: GraphQLQuery {
           return (snapshot["items"] as! [Snapshot?]).map { $0.flatMap { Item(snapshot: $0) } }
         }
         set {
-          snapshot.updateValue(newValue.map { $0.flatMap { $0.snapshot } }, forKey: "items")
+          snapshot.updateValue(newValue.map { $0.flatMap(\.snapshot) }, forKey: "items")
         }
       }
 
@@ -5688,7 +5696,7 @@ public final class SyncPostsQuery: GraphQLQuery {
     }
 
     public init(syncPosts: SyncPost? = nil) {
-      self.init(snapshot: ["__typename": "Query", "syncPosts": syncPosts.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Query", "syncPosts": syncPosts.flatMap(\.snapshot)])
     }
 
     public var syncPosts: SyncPost? {
@@ -5717,7 +5725,7 @@ public final class SyncPostsQuery: GraphQLQuery {
       }
 
       public init(items: [Item?], nextToken: String? = nil, startedAt: Int? = nil) {
-        self.init(snapshot: ["__typename": "ModelPostConnection", "items": items.map { $0.flatMap { $0.snapshot } }, "nextToken": nextToken, "startedAt": startedAt])
+        self.init(snapshot: ["__typename": "ModelPostConnection", "items": items.map { $0.flatMap(\.snapshot) }, "nextToken": nextToken, "startedAt": startedAt])
       }
 
       public var __typename: String {
@@ -5734,7 +5742,7 @@ public final class SyncPostsQuery: GraphQLQuery {
           return (snapshot["items"] as! [Snapshot?]).map { $0.flatMap { Item(snapshot: $0) } }
         }
         set {
-          snapshot.updateValue(newValue.map { $0.flatMap { $0.snapshot } }, forKey: "items")
+          snapshot.updateValue(newValue.map { $0.flatMap(\.snapshot) }, forKey: "items")
         }
       }
 
@@ -5894,7 +5902,7 @@ public final class GetCommentQuery: GraphQLQuery {
     }
 
     public init(getComment: GetComment? = nil) {
-      self.init(snapshot: ["__typename": "Query", "getComment": getComment.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Query", "getComment": getComment.flatMap(\.snapshot)])
     }
 
     public var getComment: GetComment? {
@@ -5929,7 +5937,7 @@ public final class GetCommentQuery: GraphQLQuery {
       }
 
       public init(id: GraphQLID, post: Post? = nil, content: String, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, postCommentsId: GraphQLID? = nil) {
-        self.init(snapshot: ["__typename": "Comment", "id": id, "post": post.flatMap { $0.snapshot }, "content": content, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "postCommentsId": postCommentsId])
+        self.init(snapshot: ["__typename": "Comment", "id": id, "post": post.flatMap(\.snapshot), "content": content, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "postCommentsId": postCommentsId])
       }
 
       public var __typename: String {
@@ -6164,7 +6172,7 @@ public final class ListCommentsQuery: GraphQLQuery {
     }
 
     public init(listComments: ListComment? = nil) {
-      self.init(snapshot: ["__typename": "Query", "listComments": listComments.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Query", "listComments": listComments.flatMap(\.snapshot)])
     }
 
     public var listComments: ListComment? {
@@ -6193,7 +6201,7 @@ public final class ListCommentsQuery: GraphQLQuery {
       }
 
       public init(items: [Item?], nextToken: String? = nil, startedAt: Int? = nil) {
-        self.init(snapshot: ["__typename": "ModelCommentConnection", "items": items.map { $0.flatMap { $0.snapshot } }, "nextToken": nextToken, "startedAt": startedAt])
+        self.init(snapshot: ["__typename": "ModelCommentConnection", "items": items.map { $0.flatMap(\.snapshot) }, "nextToken": nextToken, "startedAt": startedAt])
       }
 
       public var __typename: String {
@@ -6210,7 +6218,7 @@ public final class ListCommentsQuery: GraphQLQuery {
           return (snapshot["items"] as! [Snapshot?]).map { $0.flatMap { Item(snapshot: $0) } }
         }
         set {
-          snapshot.updateValue(newValue.map { $0.flatMap { $0.snapshot } }, forKey: "items")
+          snapshot.updateValue(newValue.map { $0.flatMap(\.snapshot) }, forKey: "items")
         }
       }
 
@@ -6376,7 +6384,7 @@ public final class SyncCommentsQuery: GraphQLQuery {
     }
 
     public init(syncComments: SyncComment? = nil) {
-      self.init(snapshot: ["__typename": "Query", "syncComments": syncComments.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Query", "syncComments": syncComments.flatMap(\.snapshot)])
     }
 
     public var syncComments: SyncComment? {
@@ -6405,7 +6413,7 @@ public final class SyncCommentsQuery: GraphQLQuery {
       }
 
       public init(items: [Item?], nextToken: String? = nil, startedAt: Int? = nil) {
-        self.init(snapshot: ["__typename": "ModelCommentConnection", "items": items.map { $0.flatMap { $0.snapshot } }, "nextToken": nextToken, "startedAt": startedAt])
+        self.init(snapshot: ["__typename": "ModelCommentConnection", "items": items.map { $0.flatMap(\.snapshot) }, "nextToken": nextToken, "startedAt": startedAt])
       }
 
       public var __typename: String {
@@ -6422,7 +6430,7 @@ public final class SyncCommentsQuery: GraphQLQuery {
           return (snapshot["items"] as! [Snapshot?]).map { $0.flatMap { Item(snapshot: $0) } }
         }
         set {
-          snapshot.updateValue(newValue.map { $0.flatMap { $0.snapshot } }, forKey: "items")
+          snapshot.updateValue(newValue.map { $0.flatMap(\.snapshot) }, forKey: "items")
         }
       }
 
@@ -6584,7 +6592,7 @@ public final class OnCreateBlogSubscription: GraphQLSubscription {
     }
 
     public init(onCreateBlog: OnCreateBlog? = nil) {
-      self.init(snapshot: ["__typename": "Subscription", "onCreateBlog": onCreateBlog.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Subscription", "onCreateBlog": onCreateBlog.flatMap(\.snapshot)])
     }
 
     public var onCreateBlog: OnCreateBlog? {
@@ -6619,7 +6627,7 @@ public final class OnCreateBlogSubscription: GraphQLSubscription {
       }
 
       public init(id: GraphQLID, name: String, posts: Post? = nil, file: File? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "Blog", "id": id, "name": name, "posts": posts.flatMap { $0.snapshot }, "file": file.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        self.init(snapshot: ["__typename": "Blog", "id": id, "name": name, "posts": posts.flatMap(\.snapshot), "file": file.flatMap(\.snapshot), "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -6872,7 +6880,7 @@ public final class OnUpdateBlogSubscription: GraphQLSubscription {
     }
 
     public init(onUpdateBlog: OnUpdateBlog? = nil) {
-      self.init(snapshot: ["__typename": "Subscription", "onUpdateBlog": onUpdateBlog.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Subscription", "onUpdateBlog": onUpdateBlog.flatMap(\.snapshot)])
     }
 
     public var onUpdateBlog: OnUpdateBlog? {
@@ -6907,7 +6915,7 @@ public final class OnUpdateBlogSubscription: GraphQLSubscription {
       }
 
       public init(id: GraphQLID, name: String, posts: Post? = nil, file: File? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "Blog", "id": id, "name": name, "posts": posts.flatMap { $0.snapshot }, "file": file.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        self.init(snapshot: ["__typename": "Blog", "id": id, "name": name, "posts": posts.flatMap(\.snapshot), "file": file.flatMap(\.snapshot), "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -7160,7 +7168,7 @@ public final class OnDeleteBlogSubscription: GraphQLSubscription {
     }
 
     public init(onDeleteBlog: OnDeleteBlog? = nil) {
-      self.init(snapshot: ["__typename": "Subscription", "onDeleteBlog": onDeleteBlog.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Subscription", "onDeleteBlog": onDeleteBlog.flatMap(\.snapshot)])
     }
 
     public var onDeleteBlog: OnDeleteBlog? {
@@ -7195,7 +7203,7 @@ public final class OnDeleteBlogSubscription: GraphQLSubscription {
       }
 
       public init(id: GraphQLID, name: String, posts: Post? = nil, file: File? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "Blog", "id": id, "name": name, "posts": posts.flatMap { $0.snapshot }, "file": file.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        self.init(snapshot: ["__typename": "Blog", "id": id, "name": name, "posts": posts.flatMap(\.snapshot), "file": file.flatMap(\.snapshot), "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -7446,7 +7454,7 @@ public final class OnCreatePostSubscription: GraphQLSubscription {
     }
 
     public init(onCreatePost: OnCreatePost? = nil) {
-      self.init(snapshot: ["__typename": "Subscription", "onCreatePost": onCreatePost.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Subscription", "onCreatePost": onCreatePost.flatMap(\.snapshot)])
     }
 
     public var onCreatePost: OnCreatePost? {
@@ -7482,7 +7490,7 @@ public final class OnCreatePostSubscription: GraphQLSubscription {
       }
 
       public init(id: GraphQLID, title: String, blog: Blog? = nil, comments: Comment? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, blogPostsId: GraphQLID? = nil) {
-        self.init(snapshot: ["__typename": "Post", "id": id, "title": title, "blog": blog.flatMap { $0.snapshot }, "comments": comments.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "blogPostsId": blogPostsId])
+        self.init(snapshot: ["__typename": "Post", "id": id, "title": title, "blog": blog.flatMap(\.snapshot), "comments": comments.flatMap(\.snapshot), "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "blogPostsId": blogPostsId])
       }
 
       public var __typename: String {
@@ -7759,7 +7767,7 @@ public final class OnUpdatePostSubscription: GraphQLSubscription {
     }
 
     public init(onUpdatePost: OnUpdatePost? = nil) {
-      self.init(snapshot: ["__typename": "Subscription", "onUpdatePost": onUpdatePost.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Subscription", "onUpdatePost": onUpdatePost.flatMap(\.snapshot)])
     }
 
     public var onUpdatePost: OnUpdatePost? {
@@ -7795,7 +7803,7 @@ public final class OnUpdatePostSubscription: GraphQLSubscription {
       }
 
       public init(id: GraphQLID, title: String, blog: Blog? = nil, comments: Comment? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, blogPostsId: GraphQLID? = nil) {
-        self.init(snapshot: ["__typename": "Post", "id": id, "title": title, "blog": blog.flatMap { $0.snapshot }, "comments": comments.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "blogPostsId": blogPostsId])
+        self.init(snapshot: ["__typename": "Post", "id": id, "title": title, "blog": blog.flatMap(\.snapshot), "comments": comments.flatMap(\.snapshot), "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "blogPostsId": blogPostsId])
       }
 
       public var __typename: String {
@@ -8072,7 +8080,7 @@ public final class OnDeletePostSubscription: GraphQLSubscription {
     }
 
     public init(onDeletePost: OnDeletePost? = nil) {
-      self.init(snapshot: ["__typename": "Subscription", "onDeletePost": onDeletePost.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Subscription", "onDeletePost": onDeletePost.flatMap(\.snapshot)])
     }
 
     public var onDeletePost: OnDeletePost? {
@@ -8108,7 +8116,7 @@ public final class OnDeletePostSubscription: GraphQLSubscription {
       }
 
       public init(id: GraphQLID, title: String, blog: Blog? = nil, comments: Comment? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, blogPostsId: GraphQLID? = nil) {
-        self.init(snapshot: ["__typename": "Post", "id": id, "title": title, "blog": blog.flatMap { $0.snapshot }, "comments": comments.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "blogPostsId": blogPostsId])
+        self.init(snapshot: ["__typename": "Post", "id": id, "title": title, "blog": blog.flatMap(\.snapshot), "comments": comments.flatMap(\.snapshot), "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "blogPostsId": blogPostsId])
       }
 
       public var __typename: String {
@@ -8385,7 +8393,7 @@ public final class OnCreateCommentSubscription: GraphQLSubscription {
     }
 
     public init(onCreateComment: OnCreateComment? = nil) {
-      self.init(snapshot: ["__typename": "Subscription", "onCreateComment": onCreateComment.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Subscription", "onCreateComment": onCreateComment.flatMap(\.snapshot)])
     }
 
     public var onCreateComment: OnCreateComment? {
@@ -8420,7 +8428,7 @@ public final class OnCreateCommentSubscription: GraphQLSubscription {
       }
 
       public init(id: GraphQLID, post: Post? = nil, content: String, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, postCommentsId: GraphQLID? = nil) {
-        self.init(snapshot: ["__typename": "Comment", "id": id, "post": post.flatMap { $0.snapshot }, "content": content, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "postCommentsId": postCommentsId])
+        self.init(snapshot: ["__typename": "Comment", "id": id, "post": post.flatMap(\.snapshot), "content": content, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "postCommentsId": postCommentsId])
       }
 
       public var __typename: String {
@@ -8651,7 +8659,7 @@ public final class OnUpdateCommentSubscription: GraphQLSubscription {
     }
 
     public init(onUpdateComment: OnUpdateComment? = nil) {
-      self.init(snapshot: ["__typename": "Subscription", "onUpdateComment": onUpdateComment.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Subscription", "onUpdateComment": onUpdateComment.flatMap(\.snapshot)])
     }
 
     public var onUpdateComment: OnUpdateComment? {
@@ -8686,7 +8694,7 @@ public final class OnUpdateCommentSubscription: GraphQLSubscription {
       }
 
       public init(id: GraphQLID, post: Post? = nil, content: String, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, postCommentsId: GraphQLID? = nil) {
-        self.init(snapshot: ["__typename": "Comment", "id": id, "post": post.flatMap { $0.snapshot }, "content": content, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "postCommentsId": postCommentsId])
+        self.init(snapshot: ["__typename": "Comment", "id": id, "post": post.flatMap(\.snapshot), "content": content, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "postCommentsId": postCommentsId])
       }
 
       public var __typename: String {
@@ -8917,7 +8925,7 @@ public final class OnDeleteCommentSubscription: GraphQLSubscription {
     }
 
     public init(onDeleteComment: OnDeleteComment? = nil) {
-      self.init(snapshot: ["__typename": "Subscription", "onDeleteComment": onDeleteComment.flatMap { $0.snapshot }])
+      self.init(snapshot: ["__typename": "Subscription", "onDeleteComment": onDeleteComment.flatMap(\.snapshot)])
     }
 
     public var onDeleteComment: OnDeleteComment? {
@@ -8952,7 +8960,7 @@ public final class OnDeleteCommentSubscription: GraphQLSubscription {
       }
 
       public init(id: GraphQLID, post: Post? = nil, content: String, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, postCommentsId: GraphQLID? = nil) {
-        self.init(snapshot: ["__typename": "Comment", "id": id, "post": post.flatMap { $0.snapshot }, "content": content, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "postCommentsId": postCommentsId])
+        self.init(snapshot: ["__typename": "Comment", "id": id, "post": post.flatMap(\.snapshot), "content": content, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "postCommentsId": postCommentsId])
       }
 
       public var __typename: String {

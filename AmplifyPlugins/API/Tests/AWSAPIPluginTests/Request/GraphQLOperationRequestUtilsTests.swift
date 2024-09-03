@@ -4,8 +4,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-import XCTest
+
 import Amplify
+import XCTest
 @testable import AWSAPIPlugin
 
 class GraphQLOperationRequestUtilsTests: XCTestCase {

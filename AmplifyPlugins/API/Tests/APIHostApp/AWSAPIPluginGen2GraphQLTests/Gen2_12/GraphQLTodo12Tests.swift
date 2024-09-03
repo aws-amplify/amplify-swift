@@ -15,7 +15,7 @@ final class GraphQLTodo12Tests: AWSAPIPluginGen2GraphQLBaseTest {
     // https://docs.amplify.aws/react/build-a-backend/data/customize-authz/public-data-access/#add-public-authorization-rule-using-api-key-based-authentication
     func testCodeSnippet() async throws {
         await setup(withModels: Todo12Models())
-        
+
         // Code Snippet begins
         do {
             let todo = Todo(content: "My new todo")

@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
+import AWSPluginsCore
 import Foundation
+import InternalAmplifyCredentials
+import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
 @testable import AWSPluginsTestCommon
-import AWSPluginsCore
-import InternalAmplifyCredentials
 
 class AWSAPICategoryPluginConfigurationTests: XCTestCase {
     let graphQLAPI = "graphQLAPI"
@@ -129,7 +129,7 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
     }
 
     struct MockTokenProvider: AuthTokenProvider {
-        
+
         func getUserPoolAccessToken() async throws -> String {
             "token"
         }

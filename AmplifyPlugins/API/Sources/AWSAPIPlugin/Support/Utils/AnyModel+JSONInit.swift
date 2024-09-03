@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 extension AnyModel {
     /// Initializes an AnyModel instance from incoming JSONValue. The JSONValue is expected to be provided by the AWS
@@ -27,7 +27,8 @@ extension AnyModel {
         }
 
         guard let underlyingModelData = try? JSONEncoder().encode(modelJSON),
-            let underlyingModelString = String(data: underlyingModelData, encoding: .utf8) else {
+            let underlyingModelString = String(data: underlyingModelData, encoding: .utf8)
+        else {
             throw APIError.operationError(
                 "Could not convert model data to string",
                 """

@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 import XCTest
 @testable @_spi(AmplifyAPI) import AWSAPIPlugin
 

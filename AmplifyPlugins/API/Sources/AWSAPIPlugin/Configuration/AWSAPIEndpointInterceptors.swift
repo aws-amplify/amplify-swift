@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSPluginsCore
+import Foundation
 import InternalAmplifyCredentials
 
 /// The order of interceptor decoration is as follows:
@@ -31,23 +31,25 @@ struct AWSAPIEndpointInterceptors {
 
     var postludeInterceptors: [URLRequestInterceptor] = []
 
-    /// Validates whether the access token has expired. A best-effort attempt is made, 
+    /// Validates whether the access token has expired. A best-effort attempt is made,
     /// and it returns `false` if the expiration cannot be determined.
-    var expiryValidator: ((String) -> Bool) {
+    var expiryValidator: (String) -> Bool {
         { token in
             guard let authService,
                   let claims = try? authService.getTokenClaims(tokenString: token).get(),
-                  let tokenExpiration = claims["exp"]?.doubleValue else {
+                  let tokenExpiration = claims["exp"]?.doubleValue
+            else {
                 return false
             }
             let currentTime = Date().timeIntervalSince1970
             return currentTime > tokenExpiration
         }
     }
-    
+
     init(endpointName: APIEndpointName,
          apiAuthProviderFactory: APIAuthProviderFactory,
-         authService: AWSAuthCredentialsProviderBehavior? = nil) {
+         authService: AWSAuthCredentialsProviderBehavior? = nil)
+    {
         self.apiEndpointName = endpointName
         self.apiAuthProviderFactory = apiAuthProviderFactory
         self.authService = authService
@@ -61,7 +63,8 @@ struct AWSAPIEndpointInterceptors {
 
     /// Initialize authorization interceptors
     mutating func addAuthInterceptorsToEndpoint(endpointType: AWSAPICategoryPluginEndpointType,
-                                                authConfiguration: AWSAuthorizationConfiguration) throws {
+                                                authConfiguration: AWSAuthorizationConfiguration) throws
+    {
         switch authConfiguration {
         case .none:
             // No interceptors needed
@@ -71,7 +74,7 @@ struct AWSAPIEndpointInterceptors {
             let interceptor = APIKeyURLRequestInterceptor(apiKeyProvider: provider)
             preludeInterceptors.append(interceptor)
         case .awsIAM(let iamConfig):
-            guard let authService = authService else {
+            guard let authService else {
                 throw PluginError.pluginConfigurationError("AuthService is not set for IAM",
                                                            "")
             }
@@ -81,7 +84,7 @@ struct AWSAPIEndpointInterceptors {
                                                        endpointType: endpointType)
             postludeInterceptors.append(interceptor)
         case .amazonCognitoUserPools:
-            guard let authService = authService else {
+            guard let authService else {
                 throw PluginError.pluginConfigurationError("AuthService not set for cognito user pools",
                                                            "")
             }

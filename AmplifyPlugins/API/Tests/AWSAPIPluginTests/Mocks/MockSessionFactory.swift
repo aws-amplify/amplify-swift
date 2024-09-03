@@ -6,8 +6,8 @@
 //
 
 @testable import Amplify
-@testable import AWSAPIPlugin
 @testable import AmplifyTestCommon
+@testable import AWSAPIPlugin
 
 struct MockSessionFactory: URLSessionBehaviorFactory {
     let session: MockURLSession

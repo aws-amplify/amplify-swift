@@ -51,7 +51,7 @@ final class GraphQLCustomer8Tests: AWSAPIPluginGen2GraphQLBaseTest {
             request: request).get()
 
         // Code Snippet Ends
-        XCTAssertTrue(queriedCustomers.items.count != 0 || queriedCustomers.nextToken != nil)
+        XCTAssertTrue(!queriedCustomers.items.isEmpty || queriedCustomers.nextToken != nil)
     }
 }
 

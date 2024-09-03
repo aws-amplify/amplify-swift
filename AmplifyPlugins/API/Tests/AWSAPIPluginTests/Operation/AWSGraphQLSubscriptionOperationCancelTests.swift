@@ -8,8 +8,8 @@
 import XCTest
 
 @testable import Amplify
-@testable import AWSAPIPlugin
 @testable import AmplifyTestCommon
+@testable import AWSAPIPlugin
 @testable @_spi(WebSocket) import AWSPluginsCore
 @testable import AWSPluginsTestCommon
 
@@ -36,7 +36,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
         self.authService = authService
 
         do {
-            let endpointConfig = [apiName: try AWSAPICategoryPluginConfiguration.EndpointConfig(
+            let endpointConfig = try [apiName: AWSAPICategoryPluginConfiguration.EndpointConfig(
                 name: apiName,
                 baseURL: baseURL,
                 region: region,
@@ -135,7 +135,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
                 receivedCompletion.fulfill()
             }
         })
-        
+
         operation.cancel()
         XCTAssert(operation.isCancelled)
 
@@ -144,7 +144,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             timeout: 1
         )
     }
-    
+
     func testFailureOnConnection() async {
         let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
             throw APIError.invalidConfiguration("something went wrong", "", nil)
@@ -203,8 +203,8 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
                                      document: testDocument,
                                      variables: nil,
                                      responseType: JSONValue.self)
-        
-        
+
+
         let receivedValue = expectation(description: "Received value for connecting")
         receivedValue.assertForOverFulfill = false
 
@@ -225,7 +225,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
         let receivedFailure = expectation(description: "Received failure")
         receivedFailure.isInverted = true
         let receivedCompletion = expectation(description: "Received completion")
-        
+
         _ = operation.subscribe(resultListener: { result in
             switch result {
             case .failure:
@@ -234,7 +234,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
                 receivedCompletion.fulfill()
             }
         })
-        
+
         operation.cancel()
         XCTAssert(operation.isCancelled)
         await fulfillment(

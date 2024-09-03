@@ -5,30 +5,30 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 extension GraphQLLazyLoadCompositePKTests {
 
     // MARK: - CompositePKParent / CompositePKChild
-    
+
     func initChild(with parent: CompositePKParent? = nil) -> CompositePKChild {
         CompositePKChild(childId: UUID().uuidString, content: "content", parent: parent)
     }
-    
+
     func testSaveCompositePKChild() async throws {
         await setup(withModels: CompositePKModels())
-        
+
         let parent = initParent()
         let savedParent = try await mutate(.create(parent))
         let child = initChild(with: savedParent)
         try await mutate(.create(child))
     }
-    
+
     func testUpdateCompositePKChild() async throws {
         await setup(withModels: CompositePKModels())
         let parent = initParent()
@@ -37,7 +37,7 @@ extension GraphQLLazyLoadCompositePKTests {
         var savedChild = try await mutate(.create(child))
         let loadedParent = try await savedChild.parent
         XCTAssertEqual(loadedParent?.identifier, savedParent.identifier)
-        
+
         // update the child to a new parent
         let newParent = initParent()
         let savedNewParent = try await mutate(.create(newParent))
@@ -46,37 +46,37 @@ extension GraphQLLazyLoadCompositePKTests {
         let loadedNewParent = try await updatedChild.parent
         XCTAssertEqual(loadedNewParent?.identifier, savedNewParent.identifier)
     }
-    
+
     func testUpdateFromNoParentCompositePKChild() async throws {
         await setup(withModels: CompositePKModels())
         let parent = initParent()
         let savedParent = try await mutate(.create(parent))
-        
+
         let childWithoutParent = initChild()
         var savedChild = try await mutate(.create(childWithoutParent))
         let nilParent = try await savedChild.parent
         XCTAssertNil(nilParent)
-        
+
         // update the child to a parent
         savedChild.setParent(savedParent)
         let savedChildWithParent = try await mutate(.update(savedChild))
         let loadedParent = try await savedChildWithParent.parent
         XCTAssertEqual(loadedParent?.identifier, savedParent.identifier)
     }
-    
+
     func testDeleteCompositePKChild() async throws {
         await setup(withModels: CompositePKModels())
         let parent = initParent()
         let savedParent = try await mutate(.create(parent))
         let child = initChild(with: parent)
         let savedChild = try await mutate(.create(child))
-        
+
         try await mutate(.delete(savedParent))
         try await assertModelDoesNotExist(savedParent)
         try await mutate(.delete(savedChild))
         try await assertModelDoesNotExist(savedChild)
     }
-    
+
     func testGetCompositePKChild() async throws {
         await setup(withModels: CompositePKModels())
 

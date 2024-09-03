@@ -21,7 +21,8 @@ public struct AppSyncListPayload: Codable {
     public init(graphQLData: JSONValue,
                 apiName: String?,
                 authMode: AWSAuthorizationType?,
-                variables: [String: JSONValue]?) {
+                variables: [String: JSONValue]?)
+    {
         self.apiName = apiName
         self.authMode = authMode
         self.variables = variables
@@ -35,7 +36,8 @@ public struct AppSyncListPayload: Codable {
     var graphQLFilter: [String: Any]? {
         guard let storedVariables = variables,
            let filters = storedVariables["filter"],
-           case let .object(filterValue) = filters else {
+           case let .object(filterValue) = filters
+        else {
             return nil
         }
 
@@ -46,7 +48,8 @@ public struct AppSyncListPayload: Codable {
         // `GraphQLFilter`.
         guard let filterVariablesData = try? encoder.encode(filterValue),
               let filterVariablesJSON = try? JSONSerialization.jsonObject(with: filterVariablesData)
-                as? GraphQLFilter else {
+                as? GraphQLFilter
+        else {
 
             assertionFailure("Filter variables is not a valid JSON object: \(filterValue)")
             return nil
@@ -60,7 +63,8 @@ public struct AppSyncListPayload: Codable {
     var limit: Int? {
         if let storedVariables = variables,
            let limit = storedVariables["limit"],
-           case let .number(limitValue) = limit {
+           case let .number(limitValue) = limit
+        {
             return Int(limitValue)
         }
 

@@ -6,9 +6,9 @@
 //
 
 import Foundation
-@testable import AWSAPIPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
+@testable import AWSAPIPlugin
 
 class MockURLSessionTask: URLSessionDataTaskBehavior {
     static var counter = AtomicValue(initialValue: 0)
@@ -28,7 +28,8 @@ class MockURLSessionTask: URLSessionDataTaskBehavior {
 
     init(onCancel: BasicClosure? = nil,
          onPause: BasicClosure? = nil,
-         onResume: BasicClosure? = nil) {
+         onResume: BasicClosure? = nil)
+    {
         self.onCancel = onCancel
         self.onPause = onPause
         self.onResume = onResume

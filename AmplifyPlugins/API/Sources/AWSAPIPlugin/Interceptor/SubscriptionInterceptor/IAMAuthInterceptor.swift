@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-@_spi(WebSocket) import AWSPluginsCore
-import InternalAmplifyCredentials
 import Amplify
 import AWSClientRuntime
+import Foundation
+@_spi(WebSocket) import AWSPluginsCore
 import ClientRuntime
+import InternalAmplifyCredentials
 
 class IAMAuthInterceptor {
 
@@ -54,7 +54,8 @@ class IAMAuthInterceptor {
                                                                  credentialsProvider: authProvider,
                                                                  signingName: "appsync",
                                                                  signingRegion: region,
-                                                                 date: Date()) else {
+                                                                 date: Date())
+            else {
                 Amplify.Logging.error("Unable to sign request")
                 return nil
             }
@@ -93,7 +94,7 @@ extension IAMAuthInterceptor: WebSocketInterceptor {
         guard let authHeader = await getAuthHeader(connectUrl, with: "{}") else {
             return connectUrl
         }
-        
+
         return AppSyncRealTimeRequestAuth.URLQuery(
             header: .iam(authHeader)
         ).withBaseURL(url)

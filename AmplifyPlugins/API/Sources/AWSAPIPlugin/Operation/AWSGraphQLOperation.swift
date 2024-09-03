@@ -9,7 +9,7 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
-final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
+public final class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
 
     let session: URLSessionBehavior
     let mapper: OperationTaskMapper
@@ -20,7 +20,8 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
          session: URLSessionBehavior,
          mapper: OperationTaskMapper,
          pluginConfig: AWSAPICategoryPluginConfiguration,
-         resultListener: AWSGraphQLOperation.ResultListener?) {
+         resultListener: AWSGraphQLOperation.ResultListener?)
+    {
 
         self.session = session
         self.mapper = mapper
@@ -124,12 +125,13 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         if Amplify.API.log.logLevel == .verbose,
            let serializedJSON = try? JSONSerialization.data(withJSONObject: queryDocument,
                                                             options: .prettyPrinted),
-           let prettyPrintedQueryDocument = String(data: serializedJSON, encoding: .utf8) {
+           let prettyPrintedQueryDocument = String(data: serializedJSON, encoding: .utf8)
+        {
             Amplify.API.log.verbose("\(prettyPrintedQueryDocument)")
         }
 
         do {
-            return .success(try JSONSerialization.data(withJSONObject: queryDocument))
+            return try .success(JSONSerialization.data(withJSONObject: queryDocument))
         } catch {
             return .failure(APIError.operationError(
                 "Failed to serialize query document",
@@ -141,7 +143,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
 
     private func getEndpointConfig(from request: GraphQLOperationRequest<R>) -> Result<AWSAPICategoryPluginConfiguration.EndpointConfig, APIError> {
         do {
-            return .success(try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL))
+            return try .success(pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL))
         } catch let error as APIError {
             return .failure(error)
 
@@ -154,13 +156,14 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         getEndpointConfig(from: request).flatMap { endpointConfig in
             do {
                 if let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions,
-                   let authType = pluginOptions.authType {
-                    return .success(try pluginConfig.interceptorsForEndpoint(
+                   let authType = pluginOptions.authType
+                {
+                    return try .success(pluginConfig.interceptorsForEndpoint(
                         withConfig: endpointConfig,
                         authType: authType
                     ))
                 } else if let authType = request.authMode as? AWSAuthorizationType {
-                    return .success(try pluginConfig.interceptorsForEndpoint(
+                    return try .success(pluginConfig.interceptorsForEndpoint(
                         withConfig: endpointConfig,
                         authType: authType
                     ))
@@ -177,7 +180,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
 
     private func applyInterceptor(_ interceptor: URLRequestInterceptor, request: URLRequest) async -> Result<URLRequest, APIError> {
         do {
-            return .success(try await interceptor.intercept(request))
+            return try await .success(interceptor.intercept(request))
         } catch let error as APIError {
             return .failure(error)
         } catch {

@@ -5,39 +5,39 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2GraphQLBaseTest {
 
     func testSave() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
-        
+
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         let savedPost = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
     }
-    
+
     func testCommentWithLazyLoadPost() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
-        
+
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         let createdPost = try await mutate(.create(post))
         let createdComment = try await mutate(.create(comment))
-        
+
         // The comment's post should not be loaded, since no `includes` is passed in.
         // And the codegenerated swift models have the new modelPath properties.
         assertLazyReference(createdComment._post, state: .notLoaded(identifiers: [.init(name: "id", value: createdPost.id),
                                                                               .init(name: "title", value: createdPost.title)]))
         let loadedPost = try await createdComment.post!
         XCTAssertEqual(loadedPost.id, createdPost.id)
-        
+
         // The loaded post should have comments that are also not loaded
         let comments = loadedPost.comments!
         assertList(comments, state: .isNotLoaded(associatedIdentifiers: [post.id, post.title],
@@ -47,7 +47,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2Gra
         assertLazyReference(comments.first!._post, state: .notLoaded(identifiers: [.init(name: "id", value: createdPost.id),
                                                                                .init(name: "title", value: createdPost.title)]))
     }
-    
+
     // With `includes` on `comment.post`, the comment's post should be eager loaded.
     func testCommentWithEagerLoadPost() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
@@ -70,7 +70,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2Gra
         assertLazyReference(comments.first!._post, state: .notLoaded(identifiers: [.init(name: "id", value: createdPost.id),
                                                                                .init(name: "title", value: createdPost.title)]))
     }
-    
+
     // With `includes` on `comment.post.comments`,
     func testCommentWithEagerLoadPostAndPostComments() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
@@ -121,7 +121,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2Gra
         assertLazyReference(comments.first!._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.id),
                                                                                .init(name: "title", value: post.title)]))
     }
-    
+
     // Without `includes` and latest codegenerated types with the model path, the post's comments should be lazy loaded
     func testPostWithLazyLoadComments() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
@@ -137,7 +137,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2Gra
         assertLazyReference(comments.first!._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.id),
                                                                                .init(name: "title", value: post.title)]))
     }
-    
+
     // With `includes` on `post.comments` should eager load the post's comments
     func testPostWithEagerLoadComments() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
@@ -151,7 +151,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2Gra
         assertLazyReference(comments.first!._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.id),
                                                                                .init(name: "title", value: post.title)]))
     }
-    
+
     // With `includes` on `post.comments.post` should eager load the post's comments' post
     func testPostWithEagerLoadCommentsAndPost() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
@@ -167,19 +167,19 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2Gra
         assertList(comments, state: .isLoaded(count: 1))
         assertLazyReference(comments.first!._post, state: .loaded(model: createdPost))
     }
-    
+
     func testListPostsListComments() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         try await mutate(.create(post))
         try await mutate(.create(comment))
-        
+
         let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.id == post.id))
         assertList(queriedPosts, state: .isLoaded(count: 1))
         assertList(queriedPosts.first!.comments!,
                    state: .isNotLoaded(associatedIdentifiers: [post.id, post.title], associatedFields: ["post"]))
-        
+
         let queriedComments = try await listQuery(.list(Comment.self, where: Comment.keys.id == comment.id))
         assertList(queriedComments, state: .isLoaded(count: 1))
         assertLazyReference(queriedComments.first!._post,
@@ -187,7 +187,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2Gra
                                 .init(name: "id", value: post.id),
                                 .init(name: "title", value: "title")]))
     }
-    
+
     func testCreateWithoutPost() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
         let comment = Comment(content: "content")
@@ -209,7 +209,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2Gra
                                                           includes: { comment in [comment.post]}))!
         assertLazyReference(queriedCommentWithPost._post, state: .loaded(model: createdPost))
     }
-    
+
     func testUpdateToNewPost() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
@@ -219,7 +219,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2Gra
         var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(id: comment.id, content: comment.content)))!
         assertLazyReference(queriedComment._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.id),
                                                                               .init(name: "title", value: post.title)]))
-        
+
         let newPost = Post(title: "title")
         let createdNewPost = try await mutate(.create(newPost))
         queriedComment.setPost(newPost)
@@ -235,7 +235,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2Gra
                                                           includes: { comment in [comment.post]}))!
         assertLazyReference(queriedCommentWithPost._post, state: .loaded(model: createdNewPost))
     }
-    
+
     func testUpdateRemovePost() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
@@ -245,20 +245,20 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2Gra
         var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(id: comment.id, content: comment.content)))!
         assertLazyReference(queriedComment._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.id),
                                                                               .init(name: "title", value: post.title)]))
-        
+
         queriedComment.setPost(nil)
         let updateCommentRemovePost = try await mutate(.update(queriedComment))
         let queriedCommentAfterUpdate = try await query(.get(Comment.self, byIdentifier: .identifier(id: updateCommentRemovePost.id, content: updateCommentRemovePost.content)))!
         assertLazyReference(queriedCommentAfterUpdate._post, state: .notLoaded(identifiers: nil))
     }
-    
+
     func testDelete() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         let createdPost = try await mutate(.create(post))
         try await mutate(.create(comment))
-            
+
         try await mutate(.delete(createdPost))
         let queriedPost = try await query(.get(Post.self, byIdentifier: .identifier(id: post.id, title: post.title)))
         XCTAssertNil(queriedPost)
@@ -268,7 +268,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2Gra
         let queryDeletedComment = try await query(.get(Comment.self, byIdentifier: .identifier(id: comment.id, content: comment.content)))
         XCTAssertNil(queryDeletedComment)
     }
-    
+
     func testSubscribeToComments() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
@@ -301,14 +301,14 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2Gra
                 XCTFail("Subscription has terminated with \(error)")
             }
         }
-        
+
         await fulfillment(of: [connected], timeout: 10)
         let comment = Comment(content: "content", post: post)
         try await mutate(.create(comment))
         await fulfillment(of: [onCreatedComment], timeout: 10)
         subscription.cancel()
     }
-    
+
     // The identical `includes` parameter should be used because the selection set of the mutation
     // has to match the selection set of the subscription.
     func testSubscribeToCommentsIncludesPost() async throws {
@@ -344,18 +344,18 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2Gra
                 XCTFail("Subscription has terminated with \(error)")
             }
         }
-        
+
         await fulfillment(of: [connected], timeout: 20)
         let comment = Comment(content: "content", post: post)
         try await mutate(.create(comment, includes: { comment in [comment.post] }))
         await fulfillment(of: [onCreatedComment], timeout: 20)
         subscriptionIncludes.cancel()
     }
-    
+
     func testSubscribeToPosts() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
-        
+
         let connected = expectation(description: "subscription connected")
         let onCreatedPost = expectation(description: "onCreatedPost received")
         let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onCreate))
@@ -383,17 +383,17 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2Gra
                 XCTFail("Subscription has terminated with \(error)")
             }
         }
-        
+
         await fulfillment(of: [connected], timeout: 10)
         try await mutate(.create(post))
         await fulfillment(of: [onCreatedPost], timeout: 10)
         subscription.cancel()
     }
-    
+
     func testSubscribeToPostsIncludes() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
-        
+
         let connected = expectation(description: "subscription connected")
         let onCreatedPost = expectation(description: "onCreatedPost received")
         let subscriptionIncludes = Amplify.API.subscribe(request: .subscription(of: Post.self,
@@ -423,7 +423,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: AWSAPIPluginGen2Gra
                 XCTFail("Subscription has terminated with \(error)")
             }
         }
-        
+
         await fulfillment(of: [connected], timeout: 10)
         try await mutate(.create(post, includes: { post in [post.comments]}))
         await fulfillment(of: [onCreatedPost], timeout: 10)
@@ -436,7 +436,7 @@ extension GraphQLLazyLoadPostCommentWithCompositeKeyTests: DefaultLogger { }
 extension GraphQLLazyLoadPostCommentWithCompositeKeyTests {
     typealias Post = PostWithCompositeKey
     typealias Comment = CommentWithCompositeKey
-    
+
     struct PostCommentWithCompositeKeyModels: AmplifyModelRegistration {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {

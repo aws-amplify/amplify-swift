@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSPluginsCore
+import Foundation
 
 /// Resembles the AppSync's GraphQL response for a list operation.
 struct AppSyncListResponse<Element: Model>: Codable {
@@ -27,7 +27,8 @@ extension AppSyncListResponse {
     static func initWithMetadata(type: Element.Type,
                                  graphQLData: JSONValue,
                                  apiName: String?,
-                                 authMode: AWSAuthorizationType?) throws -> AppSyncListResponse<Element> {
+                                 authMode: AWSAuthorizationType?) throws -> AppSyncListResponse<Element>
+    {
         var elements = [Element]()
         if case let .array(jsonArray) = graphQLData["items"] {
             let jsonArrayWithMetadata = AppSyncModelMetadataUtils.addMetadata(

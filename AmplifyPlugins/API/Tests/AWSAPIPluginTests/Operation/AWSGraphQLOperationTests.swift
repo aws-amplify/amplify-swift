@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSPluginsCore
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
 @testable import AWSPluginsTestCommon
-import AWSPluginsCore
 
 class AWSGraphQLOperationTests: AWSAPICategoryPluginTestBase {
 
@@ -50,9 +50,9 @@ class AWSGraphQLOperationTests: AWSAPICategoryPluginTestBase {
                                                 authMode: AWSAuthorizationType.amazonCognitoUserPools)
         let task = try OperationTestBase.makeSingleValueErrorMockTask()
         let mockSession = MockURLSession(onTaskForRequest: { _ in task })
-        let pluginConfig = AWSAPICategoryPluginConfiguration(
+        let pluginConfig = try AWSAPICategoryPluginConfiguration(
             endpoints: [
-                apiName: try .init(
+                apiName: .init(
                     name: apiName,
                     baseURL: URL(string: "url")!,
                     region: "us-test-1",
@@ -74,7 +74,8 @@ class AWSGraphQLOperationTests: AWSAPICategoryPluginTestBase {
         // Assert
         guard case let .success(interceptors) = results,
               let interceptor = interceptors?.preludeInterceptors.first,
-              (interceptor as? AuthTokenURLRequestInterceptor) != nil else {
+              (interceptor as? AuthTokenURLRequestInterceptor) != nil
+        else {
             XCTFail("Should be token interceptor for Cognito User Pool")
             return
         }
