@@ -7,8 +7,8 @@
 
 import CoreGraphics
 
-extension Predictions {
-    public struct Selection {
+public extension Predictions {
+    struct Selection {
         public let boundingBox: CGRect
         public let polygon: Polygon
         public let isSelected: Bool

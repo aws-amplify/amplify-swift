@@ -9,7 +9,7 @@ import Foundation
 import os.log
 
 /// A Logging category plugin that forwards calls to the OS's Unified Logging system
-final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
+public final class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
 
     /// Convenience property. Each instance of `AWSUnifiedLoggingPlugin` has the same key
     public static var key: String {
@@ -49,7 +49,7 @@ final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
     /// Look for optional configuration to disable logging, console logging is enabled by default unless configured otherwise
     public func configure(using configuration: Any?) throws {
         if let consoleConfiguration = ConsoleLoggingConfiguration(bundle: Bundle.main), consoleConfiguration.enable == false {
-            self.disable()
+            disable()
         }
     }
 
@@ -85,25 +85,25 @@ final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
     }
 }
 
-extension AWSUnifiedLoggingPlugin {
-    public var `default`: Logger {
+public extension AWSUnifiedLoggingPlugin {
+    var `default`: Logger {
         // We register the default logger at initialization, and protect access via a setter method, so this is safe
         // to force-unwrap
         registeredLogs["default"]!
     }
 
-    public func logger(forCategory category: String) -> Logger {
+    func logger(forCategory category: String) -> Logger {
         let wrapper = logWrapper(for: category)
         return wrapper
     }
 
-    public func logger(forCategory category: String, logLevel: LogLevel) -> Logger {
+    func logger(forCategory category: String, logLevel: LogLevel) -> Logger {
         let wrapper = logWrapper(for: category)
         wrapper.logLevel = logLevel
         return wrapper
     }
 
-    public func enable() {
+    func enable() {
         enabled = true
         lock.execute {
             for (_, logger) in registeredLogs {
@@ -112,7 +112,7 @@ extension AWSUnifiedLoggingPlugin {
         }
     }
 
-    public func disable() {
+    func disable() {
         enabled = false
         lock.execute {
             for (_, logger) in registeredLogs {
@@ -121,12 +121,12 @@ extension AWSUnifiedLoggingPlugin {
         }
     }
 
-    public func logger(forNamespace namespace: String) -> Logger {
+    func logger(forNamespace namespace: String) -> Logger {
         let wrapper = logWrapper(for: namespace)
         return wrapper
     }
 
-    public func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
+    func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
         let wrapper = logWrapper(for: category + namespace)
         return wrapper
     }

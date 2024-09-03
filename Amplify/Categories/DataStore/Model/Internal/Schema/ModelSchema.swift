@@ -24,7 +24,7 @@ public enum ModelAttribute: Equatable {
     /// Convenience factory method to initialize a `.primaryKey` attribute by
     /// using the model coding keys
     public static func primaryKey(fields: [CodingKey]) -> ModelAttribute {
-        return .primaryKey(fields: fields.map { $0.stringValue })
+        return .primaryKey(fields: fields.map(\.stringValue))
     }
 }
 
@@ -60,7 +60,8 @@ public struct ModelField {
                 isArray: Bool = false,
                 attributes: [ModelFieldAttribute] = [],
                 association: ModelAssociation? = nil,
-                authRules: AuthRules = []) {
+                authRules: AuthRules = [])
+    {
         self.name = name
         self.type = type
         self.isRequired = isRequired
@@ -113,7 +114,8 @@ public struct ModelSchema {
                 authRules: AuthRules = [],
                 attributes: [ModelAttribute] = [],
                 fields: ModelFields = [:],
-                primaryKeyFieldKeys: [ModelFieldName] = []) {
+                primaryKeyFieldKeys: [ModelFieldName] = [])
+    {
         self.name = name
         self.pluralName = pluralName
         self.listPluralName = listPluralName
@@ -141,7 +143,8 @@ extension ModelAttribute {
     /// Convenience method to check if a model attribute is a primary key index
     var isPrimaryKeyIndex: Bool {
         if case let .index(fields: fields, name: name) = self,
-           name == nil, fields.count >= 1 {
+           name == nil, fields.count >= 1
+        {
             return true
         }
         return false
@@ -150,7 +153,7 @@ extension ModelAttribute {
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
-extension Array where Element == ModelAttribute {
+extension [ModelAttribute] {
     var indexes: [ModelAttribute] {
         filter {
             switch $0 {
@@ -179,7 +182,7 @@ public extension ModelSchema {
 
 // MARK: - Dictionary + ModelField
 
-extension Dictionary where Key == String, Value == ModelField {
+extension [String: ModelField] {
 
     /// Returns an array of the values sorted by some pre-defined rules:
     ///
@@ -192,7 +195,8 @@ extension Dictionary where Key == String, Value == ModelField {
     func sortedFields(indexOfPrimaryKeyField: (ModelFieldName) -> Int?) -> [Value] {
         return values.sorted { one, other in
             if let oneIndex = indexOfPrimaryKeyField(one.name),
-               let otherIndex = indexOfPrimaryKeyField(other.name) {
+               let otherIndex = indexOfPrimaryKeyField(other.name)
+            {
                 return oneIndex < otherIndex
             }
 

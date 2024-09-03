@@ -10,7 +10,7 @@
 /// between modules and components in your app. Hub enables different categories to
 /// communicate with one another when specific events occur, such as authentication
 /// events like a user sign-in or notification of a file download.
-final public class HubCategory: Category {
+public final class HubCategory: Category {
 
     enum ConfigurationState {
         /// Default configuration at initialization

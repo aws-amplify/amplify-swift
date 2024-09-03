@@ -25,7 +25,8 @@ public struct AuthConfirmResetPasswordRequest: AmplifyOperationRequest {
     public init(username: String,
                 newPassword: String,
                 confirmationCode: String,
-                options: Options) {
+                options: Options)
+    {
         self.username = username
         self.newPassword = newPassword
         self.confirmationCode = confirmationCode

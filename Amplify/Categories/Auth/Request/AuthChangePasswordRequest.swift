@@ -21,7 +21,8 @@ public struct AuthChangePasswordRequest: AmplifyOperationRequest {
 
     public init(oldPassword: String,
                 newPassword: String,
-                options: Options) {
+                options: Options)
+    {
         self.oldPassword = oldPassword
         self.newPassword = newPassword
         self.options = options

@@ -19,7 +19,8 @@ extension AuthCategory: AuthCategoryBehavior {
 
     public func confirmSignUp(for username: String,
                               confirmationCode: String,
-                              options: AuthConfirmSignUpRequest.Options? = nil) async throws -> AuthSignUpResult {
+                              options: AuthConfirmSignUpRequest.Options? = nil) async throws -> AuthSignUpResult
+    {
         return try await plugin.confirmSignUp(for: username, confirmationCode: confirmationCode, options: options)
     }
 
@@ -32,7 +33,8 @@ extension AuthCategory: AuthCategoryBehavior {
 
     public func signIn(username: String? = nil,
                        password: String? = nil,
-                       options: AuthSignInRequest.Options? = nil) async throws -> AuthSignInResult {
+                       options: AuthSignInRequest.Options? = nil) async throws -> AuthSignInResult
+    {
         return try await plugin.signIn(username: username, password: password, options: options)
     }
 
@@ -46,7 +48,8 @@ extension AuthCategory: AuthCategoryBehavior {
     public func signInWithWebUI(
         for authProvider: AuthProvider,
         presentationAnchor: AuthUIPresentationAnchor? = nil,
-        options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
+        options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult
+    {
         return try await plugin.signInWithWebUI(for: authProvider,
                                       presentationAnchor: presentationAnchor,
                                       options: options)

@@ -30,7 +30,7 @@ extension Temporal.Date: Persistable {}
 extension Temporal.DateTime: Persistable {}
 extension Temporal.Time: Persistable {}
 
-struct PersistableHelper {
+enum PersistableHelper {
 
     /// Polymorphic utility that allows two persistable references to be checked
     /// for equality regardless of their concrete type.

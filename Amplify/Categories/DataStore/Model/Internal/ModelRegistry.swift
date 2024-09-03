@@ -9,7 +9,7 @@ import Foundation
 
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
-public struct ModelRegistry {
+public enum ModelRegistry {
     private static let concurrencyQueue = DispatchQueue(label: "com.amazonaws.ModelRegistry.concurrency",
                                                         target: DispatchQueue.global())
 
@@ -36,7 +36,8 @@ public struct ModelRegistry {
 
     public static func register(modelType: Model.Type) {
         register(modelType: modelType,
-                 modelSchema: modelType.schema) { (jsonString, jsonDecoder) -> Model in
+                 modelSchema: modelType.schema)
+        { jsonString, jsonDecoder -> Model in
             let model = try modelType.from(json: jsonString, decoder: jsonDecoder)
             return model
         }
@@ -44,7 +45,8 @@ public struct ModelRegistry {
 
     public static func register(modelType: Model.Type,
                                 modelSchema: ModelSchema,
-                                jsonDecoder: @escaping (String, JSONDecoder?) throws -> Model) {
+                                jsonDecoder: @escaping (String, JSONDecoder?) throws -> Model)
+    {
         concurrencyQueue.sync {
             let modelDecoder: ModelDecoder = { jsonString, decoder in
                 return try jsonDecoder(jsonString, decoder)
@@ -77,7 +79,8 @@ public struct ModelRegistry {
 
     public static func decode(modelName: ModelName,
                               from jsonString: String,
-                              jsonDecoder: JSONDecoder? = nil) throws -> Model {
+                              jsonDecoder: JSONDecoder? = nil) throws -> Model
+    {
         try concurrencyQueue.sync {
             guard let decoder = modelDecoders[modelName] else {
                 throw DataStoreError.decodingError(

@@ -41,7 +41,8 @@ public struct GraphQLRequest<R: Decodable> {
                 responseType: R.Type,
                 decodePath: String? = nil,
                 authMode: AuthorizationMode? = nil,
-                options: GraphQLRequest<R>.Options? = nil) {
+                options: GraphQLRequest<R>.Options? = nil)
+    {
         self.apiName = apiName
         self.document = document
         self.variables = variables

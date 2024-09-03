@@ -43,7 +43,7 @@ struct DeviceInfoItem: Identifiable, InfoItemProvider {
         case .localizedModelName(let value):
             return value ?? DevMenuStringConstants.notAvailable
         case .isSimulator(let value):
-            guard  let value = value else {
+            guard  let value else {
                 return DevMenuStringConstants.notAvailable
             }
             return value ? "Yes" : "No"

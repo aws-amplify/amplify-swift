@@ -16,7 +16,8 @@ public struct AuthResetPasswordRequest: AmplifyOperationRequest {
     public var options: Options
 
     public init(username: String,
-                options: Options) {
+                options: Options)
+    {
         self.username = username
         self.options = options
     }

@@ -37,22 +37,22 @@ open class AsynchronousOperation: Operation {
     // MARK: - Various `Operation` properties
 
     /// `true` if the operation is ready to be executed
-    open override var isReady: Bool {
+    override open var isReady: Bool {
         return state == .notExecuting && super.isReady
     }
 
     /// `true` if the operation is currently executing
-    public final override var isExecuting: Bool {
+    override public final var isExecuting: Bool {
         return state == .executing
     }
 
     /// `true` if the operation has completed executing, either successfully or with an error
-    public final override var isFinished: Bool {
+    override public final var isFinished: Bool {
         return state == .finished
     }
 
     /// KVN for dependent properties
-    open override class func keyPathsForValuesAffectingValue(forKey key: String) -> Set<String> {
+    override open class func keyPathsForValuesAffectingValue(forKey key: String) -> Set<String> {
         if ["isReady", "isFinished", "isExecuting"].contains(key) {
             return [#keyPath(state)]
         }
@@ -61,7 +61,7 @@ open class AsynchronousOperation: Operation {
     }
 
     /// Starts the operation
-    public final override func start() {
+    override public final func start() {
         if isCancelled {
             state = .finished
             return
@@ -73,7 +73,7 @@ open class AsynchronousOperation: Operation {
 
     /// Subclasses must implement this to perform their work and they must not call `super`.
     /// The default implementation of this function throws an exception.
-    open override func main() {
+    override open func main() {
         fatalError("Subclasses must implement `main`.")
     }
 

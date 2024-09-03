@@ -57,7 +57,8 @@ public struct AuthRule {
                 groups: [String] = [],
                 groupsField: String? = nil,
                 provider: AuthRuleProvider? = nil,
-                operations: [ModelOperation] = []) {
+                operations: [ModelOperation] = [])
+    {
         self.allow = allow
         self.ownerField = ownerField
         self.identityClaim = identityClaim

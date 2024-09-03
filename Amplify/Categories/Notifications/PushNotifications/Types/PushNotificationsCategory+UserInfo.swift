@@ -7,12 +7,12 @@
 
 import Foundation
 
-extension Notifications.Push {
+public extension Notifications.Push {
     #if canImport(UIKit)
         /// A dictionary that contains information related to the remote notification
-        public typealias UserInfo = [AnyHashable: Any]
+        typealias UserInfo = [AnyHashable: Any]
     #elseif canImport(AppKit)
         /// A dictionary that contains information related to the remote notification
-        public typealias UserInfo = [String: Any]
+        typealias UserInfo = [String: Any]
     #endif
 }

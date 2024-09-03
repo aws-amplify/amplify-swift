@@ -123,7 +123,7 @@ public enum ModelFieldNullability {
 ///   directly by host applications. The behavior of this may change without warning.
 public struct ModelSchemaDefinition {
 
-    internal let name: String
+    let name: String
 
     @available(*, deprecated, message: "Use of pluralName is deprecated, use syncPluralName instead.")
     public var pluralName: String?
@@ -132,16 +132,17 @@ public struct ModelSchemaDefinition {
     public var syncPluralName: String?
 
     public var authRules: AuthRules
-    internal var fields: ModelFields
-    internal var primarykeyFields: [ModelFieldName]
-    internal var attributes: [ModelAttribute]
+    var fields: ModelFields
+    var primarykeyFields: [ModelFieldName]
+    var attributes: [ModelAttribute]
 
     init(name: String,
          pluralName: String? = nil,
          listPluralName: String? = nil,
          syncPluralName: String? = nil,
          authRules: AuthRules = [],
-         attributes: [ModelAttribute] = []) {
+         attributes: [ModelAttribute] = [])
+    {
         self.name = name
         self.pluralName = pluralName
         self.listPluralName = listPluralName
@@ -153,7 +154,7 @@ public struct ModelSchemaDefinition {
     }
 
     public mutating func fields(_ fields: ModelFieldDefinition...) {
-        fields.forEach { definition in
+        for definition in fields {
             let field = definition.modelField
             self.fields[field.name] = field
         }
@@ -174,7 +175,7 @@ public struct ModelSchemaDefinition {
         primarykeyFields = primaryKeyDefinition.first ?? []
     }
 
-    internal func build() -> ModelSchema {
+    func build() -> ModelSchema {
         return ModelSchema(name: name,
                            pluralName: pluralName,
                            listPluralName: listPluralName,
@@ -203,7 +204,8 @@ public enum ModelFieldDefinition {
                              ofType type: ModelFieldType = .string,
                              attributes: [ModelFieldAttribute] = [],
                              association: ModelAssociation? = nil,
-                             authRules: AuthRules = []) -> ModelFieldDefinition {
+                             authRules: AuthRules = []) -> ModelFieldDefinition
+    {
         return .field(name: key.stringValue,
                       type: type,
                       nullability: nullability,
@@ -233,7 +235,8 @@ public enum ModelFieldDefinition {
                                is nullability: ModelFieldNullability = .required,
                                isReadOnly: Bool = false,
                                ofType type: Model.Type,
-                               associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
+                               associatedWith associatedKey: CodingKey) -> ModelFieldDefinition
+    {
         return .field(key,
                       is: nullability,
                       isReadOnly: isReadOnly,
@@ -245,7 +248,8 @@ public enum ModelFieldDefinition {
                                is nullability: ModelFieldNullability = .required,
                                isReadOnly: Bool = false,
                                ofType type: Model.Type,
-                               associatedFields associatedKeys: [CodingKey]) -> ModelFieldDefinition {
+                               associatedFields associatedKeys: [CodingKey]) -> ModelFieldDefinition
+    {
         return .field(key,
                       is: nullability,
                       isReadOnly: isReadOnly,
@@ -258,7 +262,8 @@ public enum ModelFieldDefinition {
                               isReadOnly: Bool = false,
                               ofType type: Model.Type,
                               associatedWith associatedKey: CodingKey,
-                              targetName: String? = nil) -> ModelFieldDefinition {
+                              targetName: String? = nil) -> ModelFieldDefinition
+    {
         return .field(key,
                       is: nullability,
                       isReadOnly: isReadOnly,
@@ -271,7 +276,8 @@ public enum ModelFieldDefinition {
                               isReadOnly: Bool = false,
                               ofType type: Model.Type,
                               associatedWith associatedKey: CodingKey,
-                              targetNames: [String]) -> ModelFieldDefinition {
+                              targetNames: [String]) -> ModelFieldDefinition
+    {
         return .field(key,
                       is: nullability,
                       isReadOnly: isReadOnly,
@@ -284,7 +290,8 @@ public enum ModelFieldDefinition {
                               isReadOnly: Bool = false,
                               ofType type: Model.Type,
                               associatedFields associatedKeys: [CodingKey],
-                              targetNames: [String] = []) -> ModelFieldDefinition {
+                              targetNames: [String] = []) -> ModelFieldDefinition
+    {
         return .field(key,
                       is: nullability,
                       isReadOnly: isReadOnly,
@@ -299,7 +306,8 @@ public enum ModelFieldDefinition {
                                  isReadOnly: Bool = false,
                                  ofType type: Model.Type,
                                  associatedWith associatedKey: CodingKey? = nil,
-                                 targetName: String? = nil) -> ModelFieldDefinition {
+                                 targetName: String? = nil) -> ModelFieldDefinition
+    {
         return .field(key,
                       is: nullability,
                       isReadOnly: isReadOnly,
@@ -312,7 +320,8 @@ public enum ModelFieldDefinition {
                                  isReadOnly: Bool = false,
                                  ofType type: Model.Type,
                                  associatedWith associatedKey: CodingKey? = nil,
-                                 targetNames: [String]) -> ModelFieldDefinition {
+                                 targetNames: [String]) -> ModelFieldDefinition
+    {
         return .field(key,
                       is: nullability,
                       isReadOnly: isReadOnly,
@@ -327,7 +336,8 @@ public enum ModelFieldDefinition {
                               isReadOnly,
                               association,
                               attributes,
-                              authRules) = self else {
+                              authRules) = self
+        else {
             return Fatal.preconditionFailure("Unexpected enum value found: \(String(describing: self))")
         }
         return ModelField(name: name,

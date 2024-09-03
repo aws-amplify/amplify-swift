@@ -59,7 +59,8 @@ public struct UserProfileLocation {
                 postalCode: String? = nil,
                 city: String? = nil,
                 region: String? = nil,
-                country: String? = nil) {
+                country: String? = nil)
+    {
         self.latitude = latitude
         self.longitude = longitude
         self.postalCode = postalCode

@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Predictions {
+public extension Predictions {
     /// Describes syntactical information resulting from text interpretation as
     /// a result of interpret() API
-    public struct SyntaxToken {
+    struct SyntaxToken {
         public let tokenId: Int
         public let text: String
         public let range: Range<String.Index>

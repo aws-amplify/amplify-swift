@@ -7,9 +7,9 @@
 
 import Combine
 
-extension DataStoreResult where Success: Any {
+public extension DataStoreResult where Success: Any {
 
-    public func resolve(promise: Future<Success, DataStoreError>.Promise) {
+    func resolve(promise: Future<Success, DataStoreError>.Promise) {
         switch self {
         case .success(let result):
             promise(.success(result))

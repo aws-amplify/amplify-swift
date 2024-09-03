@@ -82,7 +82,8 @@ public extension StorageDownloadFileRequest {
         @available(*, deprecated, message: "Use init(pluginOptions)")
         public init(accessLevel: StorageAccessLevel = .guest,
                     targetIdentityId: String? = nil,
-                    pluginOptions: Any? = nil) {
+                    pluginOptions: Any? = nil)
+        {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
             self.pluginOptions = pluginOptions

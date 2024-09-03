@@ -107,9 +107,9 @@ extension JSONValue: ExpressibleByStringLiteral {
     }
 }
 
-extension JSONValue {
+public extension JSONValue {
 
-    public var asObject: [String: JSONValue]? {
+    var asObject: [String: JSONValue]? {
         if case .object(let object) = self {
             return object
         }
@@ -117,7 +117,7 @@ extension JSONValue {
         return nil
     }
 
-    public var asArray: [JSONValue]? {
+    var asArray: [JSONValue]? {
         if case .array(let array) = self {
             return array
         }
@@ -125,7 +125,7 @@ extension JSONValue {
         return nil
     }
 
-    public var stringValue: String? {
+    var stringValue: String? {
         if case .string(let string) = self {
             return string
         }
@@ -133,15 +133,16 @@ extension JSONValue {
         return nil
     }
 
-    public var intValue: Int? {
+    var intValue: Int? {
         if case .number(let double) = self,
-           double < Double(Int.max) && double >= Double(Int.min) {
+           double < Double(Int.max) && double >= Double(Int.min)
+        {
             return Int(double)
         }
         return nil
     }
 
-    public var doubleValue: Double? {
+    var doubleValue: Double? {
         if case .number(let double) = self {
             return double
         }
@@ -149,7 +150,7 @@ extension JSONValue {
         return nil
     }
 
-    public var booleanValue: Bool? {
+    var booleanValue: Bool? {
         if case .boolean(let bool) = self {
             return bool
         }
@@ -157,7 +158,7 @@ extension JSONValue {
         return nil
     }
 
-    public var isNull: Bool {
+    var isNull: Bool {
         if case .null = self {
             return true
         }

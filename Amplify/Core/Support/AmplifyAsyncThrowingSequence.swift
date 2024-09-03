@@ -18,9 +18,10 @@ public class AmplifyAsyncThrowingSequence<Element: Sendable>: AsyncSequence, Can
     public private(set) var isCancelled: Bool = false
 
     public init(parent: Cancellable? = nil,
-                bufferingPolicy: AsyncThrowingStream<Element, Error>.Continuation.BufferingPolicy = .unbounded) {
+                bufferingPolicy: AsyncThrowingStream<Element, Error>.Continuation.BufferingPolicy = .unbounded)
+    {
         self.parent = parent
-        (asyncStream, continuation) = AsyncThrowingStream.makeStream(of: Element.self, bufferingPolicy: bufferingPolicy)
+        (self.asyncStream, self.continuation) = AsyncThrowingStream.makeStream(of: Element.self, bufferingPolicy: bufferingPolicy)
     }
 
     public func makeAsyncIterator() -> Iterator {

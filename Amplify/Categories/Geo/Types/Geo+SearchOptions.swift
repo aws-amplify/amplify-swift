@@ -24,7 +24,8 @@ public extension Geo {
         public init(area: Geo.SearchArea? = nil,
                     countries: [Geo.Country]? = nil,
                     maxResults: Int? = nil,
-                    pluginOptions: Any? = nil) {
+                    pluginOptions: Any? = nil)
+        {
             self.area = area
             self.countries = countries
             self.maxResults = maxResults
@@ -44,7 +45,8 @@ public extension Geo {
         public var pluginOptions: Any?
 
         public init(maxResults: Int? = nil,
-                    pluginOptions: Any? = nil) {
+                    pluginOptions: Any? = nil)
+        {
             self.maxResults = maxResults
             self.pluginOptions = pluginOptions
         }

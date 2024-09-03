@@ -8,7 +8,7 @@
 import Foundation
 
 /// AWS Amplify writes console logs through Logger. You can use Logger in your apps for the same purpose.
-final public class LoggingCategory: Category {
+public final class LoggingCategory: Category {
     enum ConfigurationState {
         /// Default configuration at initialization
         case `default`

@@ -19,7 +19,8 @@ public struct AuthForgetDeviceRequest: AmplifyOperationRequest {
     public var options: Options
 
     public init(device: AuthDevice? = nil,
-                options: Options) {
+                options: Options)
+    {
         self.device = device
         self.options = options
     }

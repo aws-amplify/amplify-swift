@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension AtomicValue where Value == Bool {
+public extension AtomicValue where Value == Bool {
 
     /// Toggles the boolean's value, and returns the **old** value.
     ///
@@ -15,7 +15,7 @@ extension AtomicValue where Value == Bool {
     /// print(atomicBool.getAndToggle()) // prints "true"
     /// print(atomicBool.get()) // prints "false"
     /// ```
-    public func getAndToggle() -> Value {
+    func getAndToggle() -> Value {
         lock.execute {
             let oldValue = value
             value.toggle()

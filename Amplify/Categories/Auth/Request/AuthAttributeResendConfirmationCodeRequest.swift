@@ -19,7 +19,8 @@ public struct AuthAttributeResendConfirmationCodeRequest: AmplifyOperationReques
     public var options: Options
 
     public init(attributeKey: AuthUserAttributeKey,
-                options: Options) {
+                options: Options)
+    {
         self.attributeKey = attributeKey
         self.options = options
     }

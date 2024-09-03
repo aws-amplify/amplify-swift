@@ -8,7 +8,7 @@
 import Combine
 
 extension DataStoreCategory: DataStoreSubscribeBehavior {
-    public func observe<M: Model>(_ modelType: M.Type) -> AmplifyAsyncThrowingSequence<MutationEvent> {
+    public func observe(_ modelType: (some Model).Type) -> AmplifyAsyncThrowingSequence<MutationEvent> {
         return plugin.observe(modelType)
     }
 

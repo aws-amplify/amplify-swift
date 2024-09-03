@@ -7,16 +7,16 @@
 
 import Foundation
 
-extension Predictions.Convert {
-    public enum TextToSpeech {}
+public extension Predictions.Convert {
+    enum TextToSpeech {}
 }
 
-extension Predictions.Convert.Request where
+public extension Predictions.Convert.Request where
 Input == String,
 Options == Predictions.Convert.TextToSpeech.Options,
 Output == Predictions.Convert.TextToSpeech.Result {
 
-    public static func textToSpeech(_ text: String) -> Self {
+    static func textToSpeech(_ text: String) -> Self {
         .init(input: text, kind: .textToSpeech(.lift))
     }
 }

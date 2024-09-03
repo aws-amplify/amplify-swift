@@ -39,7 +39,8 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
                 responseType: R.Type,
                 decodePath: String? = nil,
                 authMode: AuthorizationMode? = nil,
-                options: Options) {
+                options: Options)
+    {
         self.apiName = apiName
         self.operationType = operationType
         self.document = document

@@ -35,15 +35,16 @@ public extension AuthFetchSessionRequest {
 
         public init(
             forceRefresh: Bool = false,
-            pluginOptions: Any? = nil) {
+            pluginOptions: Any? = nil)
+        {
             self.forceRefresh = forceRefresh
             self.pluginOptions = pluginOptions
         }
     }
 }
 
-extension AuthFetchSessionRequest.Options {
-    public static func forceRefresh() -> AuthFetchSessionRequest.Options {
+public extension AuthFetchSessionRequest.Options {
+    static func forceRefresh() -> AuthFetchSessionRequest.Options {
         return AuthFetchSessionRequest.Options(forceRefresh: true)
     }
 }

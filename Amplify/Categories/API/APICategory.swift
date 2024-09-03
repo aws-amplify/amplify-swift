@@ -6,7 +6,7 @@
 //
 
 /// The API category provides a solution for making HTTP requests to REST and GraphQL endpoints.
-final public class APICategory: Category {
+public final class APICategory: Category {
     /// The category type for API
     public var categoryType: CategoryType {
         .api

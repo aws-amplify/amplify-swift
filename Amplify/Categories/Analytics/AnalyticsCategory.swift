@@ -6,7 +6,7 @@
 //
 
 /// The Analytics category enables you to collect analytics data for your app.
-final public class AnalyticsCategory: Category {
+public final class AnalyticsCategory: Category {
     /// Analytics category type
     public let categoryType = CategoryType.analytics
 

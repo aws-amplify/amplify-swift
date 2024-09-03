@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 // Note: It's important to check for WatchKit first because a stripped-down version of UIKit is also
 // available on watchOS
 #if canImport(WatchKit)
@@ -34,7 +35,7 @@ public struct DeviceInfo {
     private init() {}
 
     /// - Tag: DeviceInfo.current
-    public static var current: DeviceInfo = DeviceInfo()
+    public static var current: DeviceInfo = .init()
 
     /// Returns the name of the host or device
     ///

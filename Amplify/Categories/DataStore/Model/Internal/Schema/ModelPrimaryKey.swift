@@ -15,7 +15,8 @@ public struct ModelPrimaryKey {
 
     init?(allFields: ModelFields,
           attributes: [ModelAttribute],
-          primaryKeyFieldKeys: [String] = []) {
+          primaryKeyFieldKeys: [String] = [])
+    {
         self.fields = resolvePrimaryKeyFields(allFields: allFields,
                                               attributes: attributes,
                                               primaryKeyFieldKeys: primaryKeyFieldKeys)
@@ -24,7 +25,7 @@ public struct ModelPrimaryKey {
             return nil
         }
 
-        self.fieldsLookup = Set(fields.map { $0.name })
+        self.fieldsLookup = Set(fields.map(\.name))
     }
 
     /// Returns the list of fields that make up the primary key for the model.
@@ -51,7 +52,8 @@ public struct ModelPrimaryKey {
     /// - Returns: an array of model fields
     func resolvePrimaryKeyFields(allFields: ModelFields,
                                  attributes: [ModelAttribute],
-                                 primaryKeyFieldKeys: [String]) -> [ModelField] {
+                                 primaryKeyFieldKeys: [String]) -> [ModelField]
+    {
         var primaryKeyFields: [ModelField] = []
 
         if !primaryKeyFieldKeys.isEmpty {
@@ -64,8 +66,8 @@ public struct ModelPrimaryKey {
 
         /// if indexes aren't defined most likely the model has a default `id` as PK
         /// so we have to rely on the `.primaryKey` attribute of each individual field
-        } else if attributes.indexes.filter({ $0.isPrimaryKeyIndex }).isEmpty {
-            primaryKeyFields = allFields.values.filter { $0.isPrimaryKey }
+        } else if attributes.indexes.filter(\.isPrimaryKeyIndex).isEmpty {
+            primaryKeyFields = allFields.values.filter(\.isPrimaryKey)
 
         /// Use the array of fields with a primary key index
         } else if let fieldNames = primaryFieldsFromIndexes(attributes: attributes) {

@@ -26,7 +26,8 @@ public struct HubPayload {
 
     public init(eventName: String,
                 context: Any? = nil,
-                data: Any? = nil) {
+                data: Any? = nil)
+    {
         self.eventName = eventName
         self.context = context
         self.data = data

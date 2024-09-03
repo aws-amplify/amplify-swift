@@ -65,12 +65,12 @@ public enum QueryOperator: Encodable {
         switch self {
         case .notEqual(let value):
             try container.encode("notEqual", forKey: .type)
-            if let value = value {
+            if let value {
                 try container.encode(value, forKey: .value)
             }
         case .equals(let value):
             try container.encode("equals", forKey: .type)
-            if let value = value {
+            if let value {
                 try container.encode(value, forKey: .value)
             }
         case .lessOrEqual(let value):

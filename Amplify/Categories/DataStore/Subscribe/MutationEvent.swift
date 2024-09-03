@@ -29,7 +29,8 @@ public struct MutationEvent: Model {
                 createdAt: Temporal.DateTime = .now(),
                 version: Int? = nil,
                 inProcess: Bool = false,
-                graphQLFilterJSON: String? = nil) {
+                graphQLFilterJSON: String? = nil)
+    {
         self.id = id
         self.modelId = modelId
         self.modelName = modelName
@@ -41,11 +42,12 @@ public struct MutationEvent: Model {
         self.graphQLFilterJSON = graphQLFilterJSON
     }
 
-    public init<M: Model>(model: M,
+    public init(model: some Model,
                           modelSchema: ModelSchema,
                           mutationType: MutationType,
                           version: Int? = nil,
-                          graphQLFilterJSON: String? = nil) throws {
+                          graphQLFilterJSON: String? = nil) throws
+    {
         let json = try model.toJSON()
         self.init(modelId: model.identifier(schema: modelSchema).stringValue,
                   modelName: modelSchema.name,
@@ -63,7 +65,8 @@ public struct MutationEvent: Model {
     public init<M: Model>(model: M,
                           mutationType: MutationType,
                           version: Int? = nil,
-                          graphQLFilterJSON: String? = nil) throws {
+                          graphQLFilterJSON: String? = nil) throws
+    {
         try self.init(model: model,
                       modelSchema: model.schema,
                       mutationType: mutationType,

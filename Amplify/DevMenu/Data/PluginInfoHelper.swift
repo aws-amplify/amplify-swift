@@ -9,7 +9,7 @@
 import Foundation
 
 /// Helper class to fetch Amplify plugin information
-struct PluginInfoHelper {
+enum PluginInfoHelper {
 
     static func getPluginInformation() -> [PluginInfoItem] {
         var pluginList = [PluginInfoItem]()

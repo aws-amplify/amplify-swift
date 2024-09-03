@@ -87,7 +87,8 @@ public extension StorageGetURLRequest {
         public init(accessLevel: StorageAccessLevel = .guest,
                     targetIdentityId: String? = nil,
                     expires: Int = Options.defaultExpireInSeconds,
-                    pluginOptions: Any? = nil) {
+                    pluginOptions: Any? = nil)
+        {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
             self.expires = expires
@@ -96,7 +97,8 @@ public extension StorageGetURLRequest {
 
         /// - Tag: StorageGetURLRequest.Options.init
         public init(expires: Int = Options.defaultExpireInSeconds,
-                    pluginOptions: Any? = nil) {
+                    pluginOptions: Any? = nil)
+        {
             self.expires = expires
             self.pluginOptions = pluginOptions
             self.accessLevel = .guest

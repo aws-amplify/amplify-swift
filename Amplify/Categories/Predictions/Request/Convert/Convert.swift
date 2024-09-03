@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension Predictions {
-    public enum Convert {
+public extension Predictions {
+    enum Convert {
         public struct Request<Input, Options, Output> {
             public let input: Input
             @_spi(PredictionsConvertRequestKind)
@@ -17,9 +17,9 @@ extension Predictions {
     }
 }
 
-extension Predictions.Convert.Request {
+public extension Predictions.Convert.Request {
     @_spi(PredictionsConvertRequestKind)
-    public enum Kind {
+    enum Kind {
         public typealias BidirectionalLift<T, U> = ((T) -> U, (U) -> T)
 
         case textToSpeech(

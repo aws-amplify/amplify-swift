@@ -30,7 +30,8 @@ public struct BasicUserProfile: UserProfile {
                 email: String? = nil,
                 plan: String? = nil,
                 location: UserProfileLocation? = nil,
-                customProperties: [String: UserProfilePropertyValue]? = nil) {
+                customProperties: [String: UserProfilePropertyValue]? = nil)
+    {
         self.name = name
         self.email = email
         self.plan = plan

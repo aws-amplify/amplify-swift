@@ -29,7 +29,8 @@ extension Geo.Error: AmplifyError {
     /// Initializer
     public init(errorDescription: ErrorDescription = "An unknown error occurred",
                 recoverySuggestion: RecoverySuggestion = "See `underlyingError` for more details",
-                error: Error) {
+                error: Error)
+    {
         if let error = error as? Self {
             self = error
         } else if error.isOperationCancelledError {

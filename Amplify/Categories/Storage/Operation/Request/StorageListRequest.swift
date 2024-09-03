@@ -100,9 +100,10 @@ public extension StorageListRequest {
                     targetIdentityId: String? = nil,
                     path: String? = nil,
                     subpathStrategy: SubpathStrategy = .include,
-                    pageSize: UInt = 1000,
+                    pageSize: UInt = 1_000,
                     nextToken: String? = nil,
-                    pluginOptions: Any? = nil) {
+                    pluginOptions: Any? = nil)
+        {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
             self.path = path

@@ -36,7 +36,8 @@ public struct AnalyticsUserProfile {
                 email: String? = nil,
                 plan: String? = nil,
                 location: Location? = nil,
-                properties: AnalyticsProperties? = nil) {
+                properties: AnalyticsProperties? = nil)
+    {
         self.name = name
         self.email = email
         self.plan = plan
@@ -45,10 +46,10 @@ public struct AnalyticsUserProfile {
     }
 }
 
-extension AnalyticsUserProfile {
+public extension AnalyticsUserProfile {
 
     /// Location specific data
-    public typealias Location = UserProfileLocation
+    typealias Location = UserProfileLocation
 }
 
 extension AnalyticsUserProfile: UserProfile {

@@ -43,7 +43,8 @@ public extension Geo {
                     region: String?,
                     subRegion: String?,
                     postalCode: String?,
-                    country: String?) {
+                    country: String?)
+        {
             self.coordinates = coordinates
             self.label = label
             self.addressNumber = addressNumber

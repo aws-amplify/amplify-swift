@@ -21,7 +21,8 @@ public struct AuthConfirmUserAttributeRequest: AmplifyOperationRequest {
 
     public init(attributeKey: AuthUserAttributeKey,
                 confirmationCode: String,
-                options: Options) {
+                options: Options)
+    {
         self.attributeKey = attributeKey
         self.confirmationCode = confirmationCode
         self.options = options

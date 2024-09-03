@@ -66,7 +66,8 @@ public struct AmplifyConfiguration: Codable {
                 logging: LoggingCategoryConfiguration? = nil,
                 notifications: NotificationsCategoryConfiguration? = nil,
                 predictions: PredictionsCategoryConfiguration? = nil,
-                storage: StorageCategoryConfiguration? = nil) {
+                storage: StorageCategoryConfiguration? = nil)
+    {
         self.analytics = analytics
         self.api = api
         self.auth = auth

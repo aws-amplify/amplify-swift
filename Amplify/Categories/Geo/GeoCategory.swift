@@ -6,7 +6,7 @@
 //
 
 /// The Geo category enables you to interact with geospacial services.
-final public class GeoCategory: Category {
+public final class GeoCategory: Category {
     /// Geo category type
     public let categoryType = CategoryType.geo
 

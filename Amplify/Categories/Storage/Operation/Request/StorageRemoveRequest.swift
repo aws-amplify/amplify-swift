@@ -65,7 +65,8 @@ public extension StorageRemoveRequest {
 
         /// - Tag: StorageRemoveRequestOptions.init
         public init(accessLevel: StorageAccessLevel = .guest,
-                    pluginOptions: Any? = nil) {
+                    pluginOptions: Any? = nil)
+        {
             self.accessLevel = accessLevel
             self.pluginOptions = pluginOptions
         }

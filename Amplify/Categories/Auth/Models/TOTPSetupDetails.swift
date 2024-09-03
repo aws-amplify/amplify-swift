@@ -28,7 +28,8 @@ public struct TOTPSetupDetails {
         appName: String,
         accountName: String? = nil) throws -> URL {
             guard let URL = URL(
-                string: "otpauth://totp/\(appName):\(accountName ?? username)?secret=\(sharedSecret)&issuer=\(appName)") else {
+                string: "otpauth://totp/\(appName):\(accountName ?? username)?secret=\(sharedSecret)&issuer=\(appName)")
+            else {
 
                 throw AuthError.validation(
                     "appName or accountName",

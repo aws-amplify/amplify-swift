@@ -7,14 +7,14 @@
 
 import Foundation
 
-extension Temporal {
+public extension Temporal {
     /// `Temporal.DateTime` represents a `DateTime` with specific allowable formats.
     ///
     ///  * `.short` => `yyyy-MM-dd'T'HH:mm`
     ///  * `.medium` => `yyyy-MM-dd'T'HH:mm:ss`
     ///  * `.long` => `yyyy-MM-dd'T'HH:mm:ssZZZZZ`
     ///  * `.full` => `yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ`
-    public struct DateTime: TemporalSpec {
+    struct DateTime: TemporalSpec {
 
         // Inherits documentation from `TemporalSpec`
         public let foundationDate: Foundation.Date
@@ -42,7 +42,7 @@ extension Temporal {
 
             self.timeZone = timeZone
 
-            foundationDate = calendar
+            self.foundationDate = calendar
                 .date(from: components) ?? date
         }
 

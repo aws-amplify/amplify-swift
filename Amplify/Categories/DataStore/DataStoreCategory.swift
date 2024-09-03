@@ -7,7 +7,7 @@
 
 import Foundation
 
-final public class DataStoreCategory: Category {
+public final class DataStoreCategory: Category {
 
     /// Always .dataStore
     public let categoryType: CategoryType = .dataStore

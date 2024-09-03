@@ -9,11 +9,12 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-struct DefaultHubPluginPerformanceTestHelpers {
+enum DefaultHubPluginPerformanceTestHelpers {
 
-    static func makeTestObjectsForSingleChannel<T: Dispatcher>(listenerCount: Int,
-                                                               dispatcherType: T.Type,
-                                                               testCase: XCTestCase) -> PerformanceTestObjects {
+    static func makeTestObjectsForSingleChannel(listenerCount: Int,
+                                                               dispatcherType: (some Dispatcher).Type,
+                                                               testCase: XCTestCase) -> PerformanceTestObjects
+    {
         let dispatcherChannels = [HubChannel.storage]
 
         let listenerChannels = [HubChannel.storage]
@@ -28,9 +29,10 @@ struct DefaultHubPluginPerformanceTestHelpers {
                                                  testCase: testCase)
     }
 
-    static func makeTestObjectsForSingleDispatcher<T: Dispatcher>(listenerCount: Int,
-                                                                  dispatcherType: T.Type,
-                                                                  testCase: XCTestCase) -> PerformanceTestObjects {
+    static func makeTestObjectsForSingleDispatcher(listenerCount: Int,
+                                                                  dispatcherType: (some Dispatcher).Type,
+                                                                  testCase: XCTestCase) -> PerformanceTestObjects
+    {
         let dispatcherChannels = [HubChannel.storage]
 
         let listenerChannels = [HubChannel.storage,
@@ -49,9 +51,10 @@ struct DefaultHubPluginPerformanceTestHelpers {
                                                  testCase: testCase)
     }
 
-    static func makeTestObjectsForMultipleDispatchers<T: Dispatcher>(listenerCount: Int,
-                                                                     dispatcherType: T.Type,
-                                                                     testCase: XCTestCase) -> PerformanceTestObjects {
+    static func makeTestObjectsForMultipleDispatchers(listenerCount: Int,
+                                                                     dispatcherType: (some Dispatcher).Type,
+                                                                     testCase: XCTestCase) -> PerformanceTestObjects
+    {
         let dispatcherChannels = [HubChannel.storage, .custom("CustomChannel1")]
 
         let listenerChannels = [HubChannel.storage,
@@ -71,12 +74,13 @@ struct DefaultHubPluginPerformanceTestHelpers {
     }
 
     // swiftlint:disable:next function_parameter_count
-    static func makeTestObjectsForDispatcherTypes<T: Dispatcher>(listenerCount: Int,
+    static func makeTestObjectsForDispatcherTypes(listenerCount: Int,
                                                                  listenerChannels: [HubChannel],
-                                                                 dispatcherType: T.Type,
+                                                                 dispatcherType: (some Dispatcher).Type,
                                                                  dispatcherChannels: [HubChannel],
                                                                  expectedChannels: [HubChannel],
-                                                                 testCase: XCTestCase) -> PerformanceTestObjects {
+                                                                 testCase: XCTestCase) -> PerformanceTestObjects
+    {
 
         var dispatchers = [Dispatcher]()
         for channel in dispatcherChannels {
@@ -115,7 +119,8 @@ struct DefaultHubPluginPerformanceTestHelpers {
     static func makeListeners(count: Int,
                               for channels: [HubChannel],
                               expectedChannels: [HubChannel],
-                              testCase: XCTestCase) -> ([FilteredListener], [XCTestExpectation]) {
+                              testCase: XCTestCase) -> ([FilteredListener], [XCTestExpectation])
+    {
         var listeners = [FilteredListener]()
         var expectations = [XCTestExpectation]()
 

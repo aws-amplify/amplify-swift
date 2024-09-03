@@ -38,7 +38,8 @@ public struct RESTOperationRequest: AmplifyOperationRequest {
                 headers: [String: String]? = nil,
                 queryParameters: [String: String]? = nil,
                 body: Data? = nil,
-                options: Options) {
+                options: Options)
+    {
         self.apiName = apiName
         self.operationType = operationType
         self.path = path

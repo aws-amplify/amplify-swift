@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AuthenticationServices
+import Foundation
 
 /// Request for sign out user
 public struct AuthSignOutRequest: AmplifyOperationRequest {
@@ -39,7 +39,8 @@ public extension AuthSignOutRequest {
 
         public init(globalSignOut: Bool = false,
                     presentationAnchor: AuthUIPresentationAnchor? = nil,
-                    pluginOptions: Any? = nil) {
+                    pluginOptions: Any? = nil)
+        {
             self.globalSignOut = globalSignOut
             self.pluginOptions = pluginOptions
             self.presentationAnchorForWebUI = presentationAnchor
@@ -55,8 +56,8 @@ public extension AuthSignOutRequest {
 }
 
 #if os(iOS) || os(macOS)
-extension AuthSignOutRequest.Options {
-    public static func presentationAnchor(_ anchor: AuthUIPresentationAnchor) -> AuthSignOutRequest.Options {
+public extension AuthSignOutRequest.Options {
+    static func presentationAnchor(_ anchor: AuthUIPresentationAnchor) -> AuthSignOutRequest.Options {
         return AuthSignOutRequest.Options(presentationAnchor: anchor)
     }
 }

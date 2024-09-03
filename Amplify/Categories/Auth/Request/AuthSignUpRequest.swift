@@ -39,7 +39,8 @@ public extension AuthSignUpRequest {
         public let pluginOptions: Any?
 
         public init(userAttributes: [AuthUserAttribute]? = nil,
-                    pluginOptions: Any? = nil) {
+                    pluginOptions: Any? = nil)
+        {
             self.userAttributes = userAttributes
             self.pluginOptions = pluginOptions
         }

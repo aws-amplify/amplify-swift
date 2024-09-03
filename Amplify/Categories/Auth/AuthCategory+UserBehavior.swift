@@ -28,7 +28,8 @@ extension AuthCategory: AuthCategoryUserBehavior {
 
     public func update(userAttributes: [AuthUserAttribute],
                        options: AuthUpdateUserAttributesRequest.Options? = nil)
-        async throws -> [AuthUserAttributeKey: AuthUpdateAttributeResult] {
+        async throws -> [AuthUserAttributeKey: AuthUpdateAttributeResult]
+    {
             try await plugin.update(userAttributes: userAttributes, options: options)
     }
 
@@ -49,7 +50,8 @@ extension AuthCategory: AuthCategoryUserBehavior {
 
     public func confirm(userAttribute: AuthUserAttributeKey,
                         confirmationCode: String,
-                        options: AuthConfirmUserAttributeRequest.Options? = nil) async throws {
+                        options: AuthConfirmUserAttributeRequest.Options? = nil) async throws
+    {
         try await plugin.confirm(
             userAttribute: userAttribute,
             confirmationCode: confirmationCode,

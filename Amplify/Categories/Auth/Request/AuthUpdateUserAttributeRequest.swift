@@ -17,7 +17,8 @@ public struct AuthUpdateUserAttributeRequest: AmplifyOperationRequest {
     public var options: Options
 
     public init(userAttribute: AuthUserAttribute,
-                options: Options) {
+                options: Options)
+    {
         self.userAttribute = userAttribute
         self.options = options
     }

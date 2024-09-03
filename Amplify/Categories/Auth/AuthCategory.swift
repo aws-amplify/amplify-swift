@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-final public class AuthCategory: Category {
+public final class AuthCategory: Category {
 
     public let categoryType =  CategoryType.auth
 

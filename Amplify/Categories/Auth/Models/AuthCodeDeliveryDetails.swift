@@ -19,7 +19,8 @@ public struct AuthCodeDeliveryDetails {
     public let attributeKey: AuthUserAttributeKey?
 
     public init(destination: DeliveryDestination,
-                attributeKey: AuthUserAttributeKey? = nil) {
+                attributeKey: AuthUserAttributeKey? = nil)
+    {
         self.destination = destination
         self.attributeKey = attributeKey
     }

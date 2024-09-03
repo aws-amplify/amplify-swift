@@ -72,7 +72,7 @@ public extension AmplifyError {
             components.append("Recovery suggestion: \(recoverySuggestion)")
         }
 
-        if let underlyingError = underlyingError {
+        if let underlyingError {
             if let underlyingAmplifyError = underlyingError as? AmplifyError {
                 components.append("Caused by:\n\(underlyingAmplifyError.debugDescription)")
             } else {

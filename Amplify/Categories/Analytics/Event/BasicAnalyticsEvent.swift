@@ -21,7 +21,8 @@ public struct BasicAnalyticsEvent: AnalyticsEvent {
     ///   - name: The name of the event
     ///   - properties: Properties of the event
     public init(name: String,
-                properties: AnalyticsProperties? = nil) {
+                properties: AnalyticsProperties? = nil)
+    {
         self.name = name
         self.properties = properties
     }
