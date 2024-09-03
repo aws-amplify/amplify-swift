@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 typealias GraphQLInput = [String: Any?]
 
@@ -21,7 +21,8 @@ extension Model {
         modelSchema.sortedFields.compactMap { field in
             guard !field.isReadOnly,
                   let fieldValue = getFieldValue(for: field.name,
-                                                 modelSchema: modelSchema) else {
+                                                 modelSchema: modelSchema)
+            else {
                 return nil
             }
             return (field, fieldValue)
@@ -114,7 +115,8 @@ extension Model {
     /// Only a subset of data types are applicable as custom indexes such as
     /// `date`, `dateTime`, `time`, `enum`, `string`, `double`, and `int`.
     func graphQLInputForPrimaryKey(modelFieldName: ModelFieldName,
-                                   modelSchema: ModelSchema) -> String? {
+                                   modelSchema: ModelSchema) -> String?
+    {
 
         guard let modelField = modelSchema.field(withName: modelFieldName) else {
             return nil
@@ -127,7 +129,7 @@ extension Model {
         }
 
         // swiftlint:disable:next syntactic_sugar
-        guard case .some(Optional<Any>.some(let value)) = fieldValue else {
+        guard case .some(Any?.some(let value)) = fieldValue else {
             return nil
         }
 
@@ -160,7 +162,8 @@ extension Model {
     private func associatedModelIdentifierFields(fromModelValue value: Any,
                                                  field: ModelField,
                                                  associatedModelName: String,
-                                                 mutationType: GraphQLMutationType) -> [(String, Persistable?)] {
+                                                 mutationType: GraphQLMutationType) -> [(String, Persistable?)]
+    {
         guard let associateModelSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
             preconditionFailure("Associated model \(associatedModelName) not found.")
         }
@@ -194,18 +197,19 @@ extension Model {
         if let modelValue = value as? Model {
             return modelValue.identifier(schema: modelSchema).values
         } else if let optionalModel = value as? Model?,
-                  let modelValue = optionalModel {
+                  let modelValue = optionalModel
+        {
             return modelValue.identifier(schema: modelSchema).values
         } else if let lazyModel = value as? (any _LazyReferenceValue) {
             switch lazyModel._state {
             case .notLoaded(let identifiers):
-                if let identifiers = identifiers {
+                if let identifiers {
                     return identifiers.map { identifier in
                         return identifier.value
                     }
                 }
             case .loaded(let model):
-                if let model = model {
+                if let model {
                     return model.identifier(schema: modelSchema).values
                 }
             }
@@ -230,7 +234,8 @@ extension Model {
         if case let .belongsTo(_, targetNames) = modelField.association, !targetNames.isEmpty {
             return targetNames
         } else if case let .hasOne(_, _, targetNames) = modelField.association,
-                  !targetNames.isEmpty {
+                  !targetNames.isEmpty
+        {
             return targetNames
         }
 

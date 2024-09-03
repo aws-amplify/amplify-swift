@@ -13,26 +13,25 @@ extension ModelSchema {
 
     /// The GraphQL directive name translated from a GraphQL query operation and model schema data
     func graphQLName(queryType: GraphQLQueryType) -> String {
-        let graphQLName: String
-        switch queryType {
+        let graphQLName: String = switch queryType {
         case .list:
-            if let listPluralName = listPluralName {
-                graphQLName = queryType.rawValue + listPluralName
-            } else if let pluralName = pluralName {
-                graphQLName = queryType.rawValue + pluralName
+            if let listPluralName {
+                queryType.rawValue + listPluralName
+            } else if let pluralName {
+                queryType.rawValue + pluralName
             } else {
-                graphQLName = (queryType.rawValue + name).pluralize()
+                (queryType.rawValue + name).pluralize()
             }
         case .sync:
-            if let syncPluralName = syncPluralName {
-                graphQLName = queryType.rawValue + syncPluralName
-            } else if let pluralName = pluralName {
-                graphQLName = queryType.rawValue + pluralName
+            if let syncPluralName {
+                queryType.rawValue + syncPluralName
+            } else if let pluralName {
+                queryType.rawValue + pluralName
             } else {
-                graphQLName = (queryType.rawValue + name).pluralize()
+                (queryType.rawValue + name).pluralize()
             }
         case .get:
-            graphQLName = queryType.rawValue + name
+            queryType.rawValue + name
         }
 
         return graphQLName

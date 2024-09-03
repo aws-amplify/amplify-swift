@@ -89,7 +89,7 @@ class AuthModeStrategyTests: XCTestCase {
         let authMode = AWSMultiAuthModeStrategy()
         let delegate = UnauthenticatedUserDelegate()
         authMode.authDelegate = delegate
-        
+
         var authTypesIterator = await authMode.authTypesFor(schema: ModelWithOwnerAndPublicAuth.schema,
                                                             operation: .create)
         XCTAssertEqual(authTypesIterator.count, 1)

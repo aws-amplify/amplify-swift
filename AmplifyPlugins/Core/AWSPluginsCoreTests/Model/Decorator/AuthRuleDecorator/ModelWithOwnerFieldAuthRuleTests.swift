@@ -328,7 +328,8 @@ public struct ModelWithOwnerField: Model {
     public var author: String?
     public init(id: String = UUID().uuidString,
                 content: String,
-                author: String?) {
+                author: String?)
+    {
         self.id = id
         self.content = content
         self.author = author
@@ -368,7 +369,8 @@ public struct ModelWithOIDCOwnerField: Model {
     public var author: String?
     public init(id: String = UUID().uuidString,
                 content: String,
-                author: String?) {
+                author: String?)
+    {
         self.id = id
         self.content = content
         self.author = author
@@ -414,7 +416,8 @@ public struct ModelWithMultipleAuthRules: Model {
     public var author: String?
     public init(id: String = UUID().uuidString,
                 content: String,
-                author: String?) {
+                author: String?)
+    {
         self.id = id
         self.content = content
         self.author = author

@@ -14,7 +14,8 @@ public struct GraphQLSubscription: SingleDirectiveGraphQLDocument {
     public init(operationType: GraphQLOperationType,
                 name: String,
                 inputs: [GraphQLParameterName: GraphQLDocumentInput],
-                selectionSet: SelectionSet?) {
+                selectionSet: SelectionSet?)
+    {
         self.operationType = operationType
         self.name = name
         self.inputs = inputs

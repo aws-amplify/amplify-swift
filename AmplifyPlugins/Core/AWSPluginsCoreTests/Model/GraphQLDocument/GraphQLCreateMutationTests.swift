@@ -118,7 +118,7 @@ class GraphQLCreateMutationTests: XCTestCase {
         }
         XCTAssertEqual(input["commentPostId"] as? String, post.id)
     }
-    
+
     /// - Given: a `Model` instance
     /// - When:
     ///   - the model is of type `Comment`
@@ -276,7 +276,7 @@ class GraphQLCreateMutationTests: XCTestCase {
         }
         XCTAssertEqual(input["commentPostId"] as? String, post.id)
     }
-    
+
     /// - Given: a `Model` instance
     /// - When:
     ///   - the model is of type `Comment`

@@ -34,14 +34,16 @@ public struct OIDCGroupPost: Model {
 
   public init(id: String = UUID().uuidString,
               title: String,
-              owner: String? = nil) {
+              owner: String? = nil)
+  {
       self.id = id
       self.title = title
       self.owner = owner
   }
 
     // MARK: - CodingKeys
-     public enum CodingKeys: String, ModelKey {
+     public enum CodingKeys: String, ModelKey
+    {
       case id
       case title
       case owner

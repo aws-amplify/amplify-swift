@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import ClientRuntime
 import AWSClientRuntime
 import AwsCommonRuntimeKit
+import ClientRuntime
+import Foundation
 
 public protocol AWSSignatureV4Signer {
     func sigV4SignedRequest(requestBuilder: SdkHttpRequestBuilder,
@@ -27,7 +27,8 @@ public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
                                    credentialsProvider: AWSClientRuntime.CredentialsProviding,
                                    signingName: Swift.String,
                                    signingRegion: Swift.String,
-                                   date: ClientRuntime.Date) async throws -> SdkHttpRequest? {
+                                   date: ClientRuntime.Date) async throws -> SdkHttpRequest?
+    {
         do {
             let credentials = try await credentialsProvider.getCredentials()
 
@@ -51,7 +52,7 @@ public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
                 signingConfig: signingConfig
             )
             return httpRequest
-        } catch let error {
+        } catch {
             throw AuthError.unknown("Unable to sign request", error)
         }
     }

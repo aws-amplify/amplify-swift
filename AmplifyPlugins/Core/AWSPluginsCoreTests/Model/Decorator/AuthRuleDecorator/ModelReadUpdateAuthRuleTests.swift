@@ -24,7 +24,8 @@ public struct ModelReadUpdateField: Model {
     public let id: String
     public var content: String
     public init(id: String = UUID().uuidString,
-                content: String) {
+                content: String)
+    {
         self.id = id
         self.content = content
     }

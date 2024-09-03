@@ -203,7 +203,8 @@ class QueryPredicateGenerator: XCTestCase {
     func performGeneration(type1: String, type2: String, operation: String) -> Int {
         var count = 0
         guard let values1 = typeToValuesMap[type1],
-            let values2 = typeToValuesMap[type2] else {
+            let values2 = typeToValuesMap[type2]
+        else {
                 print("failed to find values map!")
                 exit(1)
         }
@@ -241,7 +242,8 @@ class QueryPredicateGenerator: XCTestCase {
     // handleBetween generates a test to check if v3 (value3) is between v1 and v2
     func handleBetween(type1: String, val1: String, type2: String, val2: String, val3: String, operation: String) -> Bool {
         guard let oper = operationMap[operation],
-            let fieldName = fieldForType[type1] else {
+            let fieldName = fieldForType[type1]
+        else {
                 print("Failed to look up operation")
                 return false
         }
@@ -338,7 +340,8 @@ class QueryPredicateGenerator: XCTestCase {
 
     func handleOtherOperations(type1: String, val1: String, type2: String, val2: String, operation: String) -> Bool {
         guard let oper = operationMap[operation],
-            let fieldName = fieldForType[type1] else {
+            let fieldName = fieldForType[type1]
+        else {
                 print("Failed to look up operation")
                 return false
         }
@@ -395,7 +398,8 @@ class QueryPredicateGenerator: XCTestCase {
 
         if attemptToResolve(type1,
                             val1.replacingOccurrences(of: "\"", with: ""), type2,
-                            val2.replacingOccurrences(of: "\"", with: ""), oper) {
+                            val2.replacingOccurrences(of: "\"", with: ""), oper)
+        {
             print("   XCTAssert(evaluation)")
         } else {
             print("   XCTAssertFalse(evaluation)")
@@ -407,7 +411,8 @@ class QueryPredicateGenerator: XCTestCase {
 
     func attemptToResolve(_ type1: String, _ val1: String,
                           _ type2: String, _ val2: String,
-                          _ operation: String) -> Bool {
+                          _ operation: String) -> Bool
+    {
         if val2 == "" {
             return false
         }
@@ -415,12 +420,14 @@ class QueryPredicateGenerator: XCTestCase {
         if type1 == "Double" && type2 == "Int" ||
             type1 == "Int" && type2 == "Double" ||
             type1 == "Double" && type2 == "Double" ||
-            type1 == "Int" && type2 == "Int" {
+            type1 == "Int" && type2 == "Int"
+        {
             return attemptToResolveNumeric(type1, val1, type2, val2, operation)
         } else if type1.contains("Temporal") {
             return attemptToResolveTemporal(type1, val1, type2, val2, operation)
         } else if (type1 == "String" && type2 == "String") ||
-            (type1 == "Bool" && type2 == "Bool") {
+            (type1 == "Bool" && type2 == "Bool")
+        {
             return attemptToResolveStringBool(val1, val2, operation)
         }
         print("attemptToResolve: FAILED TO DETECT TYPES!")
@@ -429,7 +436,8 @@ class QueryPredicateGenerator: XCTestCase {
 
     func attemptToResolveStringBool(_ val1: String,
                                     _ val2: String,
-                                    _ operation: String) -> Bool {
+                                    _ operation: String) -> Bool
+    {
         let rhs = val1
         let lhs = val2
         switch operation {
@@ -457,9 +465,11 @@ class QueryPredicateGenerator: XCTestCase {
 
     func attemptToResolveNumeric(_ type1: String, _ sv1: String,
                                  _ type2: String, _ sv2: String,
-                                 _ operation: String) -> Bool {
+                                 _ operation: String) -> Bool
+    {
         guard let val1 = Double(sv1),
-            let val2 = Double(sv2) else {
+            let val2 = Double(sv2)
+        else {
                 print("FAILED attemptToResolveNumeric")
                 return false
         }
@@ -489,7 +499,8 @@ class QueryPredicateGenerator: XCTestCase {
 
     func attemptToResolveTemporal(_ type1: String, _ sv1: String,
                                   _ type2: String, _ sv2: String,
-                                  _ operation: String) -> Bool {
+                                  _ operation: String) -> Bool
+    {
         // Use built-in Date to determine the assert logic
         let val1 = temporalToTimeMap[sv1]!
         let val2 = temporalToTimeMap[sv2]!
@@ -517,7 +528,8 @@ class QueryPredicateGenerator: XCTestCase {
 
     func attemptToResolveBetweenTemporal(_ st1: String, _ sv1: String,
                                          _ st2: String, _ sv2: String,
-                                         _ sv3: String) -> Bool {
+                                         _ sv3: String) -> Bool
+    {
         if sv3 == "" {
             return false
         }
@@ -530,14 +542,16 @@ class QueryPredicateGenerator: XCTestCase {
 
     func attemptToResolveBetweenDouble(_ sv1: String,
                                        _ sv2: String,
-                                       _ sv3: String) -> Bool {
+                                       _ sv3: String) -> Bool
+    {
         if sv3 == "" {
             return false
         }
 
         guard let val1 = Double(sv1),
             let val2 = Double(sv2),
-            let val3 = Double(sv3) else {
+            let val3 = Double(sv3)
+        else {
                 print("FAILED DOUBLE!")
                 return false
         }
@@ -547,7 +561,8 @@ class QueryPredicateGenerator: XCTestCase {
 
     func attemptToResolveBetweenString(_ sv1: String,
                                        _ sv2: String,
-                                       _ sv3: String) -> Bool {
+                                       _ sv3: String) -> Bool
+    {
         return sv1 <= sv3 && sv2 >= sv3
     }
 }

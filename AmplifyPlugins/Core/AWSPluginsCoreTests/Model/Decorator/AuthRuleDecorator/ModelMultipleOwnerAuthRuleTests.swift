@@ -9,6 +9,7 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
+
 /*
  type ModelMultipleOwner @model
    @auth(rules: [
@@ -28,7 +29,8 @@ public struct ModelMultipleOwner: Model {
     public var editors: [String]?
     public init(id: String = UUID().uuidString,
                 content: String,
-                editors: [String]? = []) {
+                editors: [String]? = [])
+    {
         self.id = id
         self.content = content
         self.editors = editors
@@ -71,7 +73,7 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
     override func tearDown() {
         ModelRegistry.reset()
     }
-    
+
     // Ensure that the `owner` field is added to the model fields
     func testModelMultipleOwner_CreateMutation() {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelMultipleOwner.schema,
@@ -219,7 +221,7 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
         XCTAssertEqual(document.name, "syncModelMultipleOwners")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
     }
-    
+
     // Only the 'owner' inherently has `.create` operation, requiring the subscription operation to contain the input
     func testModelMultipleOwner_OnCreateSubscription() {
         let claims = ["username": "user1",

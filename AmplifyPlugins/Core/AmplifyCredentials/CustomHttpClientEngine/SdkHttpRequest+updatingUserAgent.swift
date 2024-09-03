@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import ClientRuntime
+import Foundation
 
 @_spi(PluginHTTPClientEngine)
-extension SdkHttpRequest {
-    public func updatingUserAgent(with value: String) -> SdkHttpRequest {
+public extension SdkHttpRequest {
+    func updatingUserAgent(with value: String) -> SdkHttpRequest {
         let userAgentKey = "User-Agent"
         var headers = headers
         headers.remove(name: userAgentKey)

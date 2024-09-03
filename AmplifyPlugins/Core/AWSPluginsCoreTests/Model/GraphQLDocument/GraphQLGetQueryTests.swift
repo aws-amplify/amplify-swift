@@ -129,7 +129,7 @@ class GraphQLGetQueryTests: XCTestCase {
         }
         XCTAssertEqual(variables["id"] as? String, "id")
     }
-    
+
     /// - Given: a `Model` type
     /// - When:
     ///   - the model is of type `Comment`
@@ -208,7 +208,7 @@ class GraphQLGetQueryTests: XCTestCase {
         }
         XCTAssertEqual(variables["id"] as? String, "id")
     }
-    
+
     func testGetGraphQLQueryFromModelWithAssociationAndSyncEnabled() {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query, primaryKeysOnly: false)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))

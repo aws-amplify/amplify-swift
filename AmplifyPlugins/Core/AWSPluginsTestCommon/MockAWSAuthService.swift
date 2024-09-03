@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import ClientRuntime
-import AWSClientRuntime
 import Amplify
+import AWSClientRuntime
+import ClientRuntime
 import InternalAmplifyCredentials
 
 public class MockAWSAuthService: AWSAuthCredentialsProviderBehavior {

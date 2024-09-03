@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 public typealias GraphQLFilter = [String: Any]
 
@@ -22,7 +22,8 @@ public struct GraphQLFilterConverter {
     ///   by host applications. The behavior of this may change without warning.
     public static func toJSON(_ queryPredicate: QueryPredicate,
                               modelSchema: ModelSchema,
-                              options: JSONSerialization.WritingOptions = []) throws -> String {
+                              options: JSONSerialization.WritingOptions = []) throws -> String
+    {
         let graphQLFilterData =
             try JSONSerialization.data(withJSONObject: queryPredicate.graphQLFilter(for: modelSchema),
                                        options: options)
@@ -42,7 +43,8 @@ public struct GraphQLFilterConverter {
     """)
     /// Serialize the translated GraphQL query variable object to JSON string.
     public static func toJSON(_ queryPredicate: QueryPredicate,
-                              options: JSONSerialization.WritingOptions = []) throws -> String {
+                              options: JSONSerialization.WritingOptions = []) throws -> String
+    {
         let graphQLFilterData = try JSONSerialization.data(withJSONObject: queryPredicate.graphQLFilter,
                                                            options: options)
 
@@ -68,11 +70,11 @@ public struct GraphQLFilterConverter {
 }
 
 /// Extension to translate a `QueryPredicate` into a GraphQL query variables object
-extension QueryPredicate {
+public extension QueryPredicate {
 
     /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
     ///   by host applications. The behavior of this may change without warning.
-    public func graphQLFilter(for modelSchema: ModelSchema?) -> GraphQLFilter {
+    func graphQLFilter(for modelSchema: ModelSchema?) -> GraphQLFilter {
         if let operation = self as? QueryPredicateOperation {
             return operation.graphQLFilter(for: modelSchema)
         } else if let group = self as? QueryPredicateGroup {
@@ -88,7 +90,7 @@ extension QueryPredicate {
     @available(*, deprecated, message: """
     Use `graphQLFilter(for:)` instead. See https://github.com/aws-amplify/amplify-ios/pull/965 for more details.
     """)
-    public var graphQLFilter: GraphQLFilter {
+    var graphQLFilter: GraphQLFilter {
         if let operation = self as? QueryPredicateOperation {
             return operation.graphQLFilter(for: nil)
         } else if let group = self as? QueryPredicateGroup {
@@ -113,7 +115,7 @@ extension QueryPredicateOperation: GraphQLFilterConvertible {
 
     func graphQLFilter(for modelSchema: ModelSchema?) -> GraphQLFilter {
         let filterValue = [self.operator.graphQLOperator: self.operator.value]
-        guard let modelSchema = modelSchema else {
+        guard let modelSchema else {
             return [field: filterValue]
         }
         return [columnName(modelSchema): filterValue]
@@ -150,7 +152,7 @@ extension QueryPredicateGroup: GraphQLFilterConvertible {
         switch type {
         case .and, .or:
             var graphQLPredicateOperation = [logicalOperator: [Any]()]
-            predicates.forEach { predicate in
+            for predicate in predicates {
                 graphQLPredicateOperation[logicalOperator]?.append(predicate.graphQLFilter(for: modelSchema))
             }
             return graphQLPredicateOperation
@@ -194,7 +196,7 @@ extension QueryOperator {
         switch self {
         case .notEqual(let value),
              .equals(let value):
-            if let value = value {
+            if let value {
                 return value.graphQLValue()
             }
 
@@ -217,7 +219,7 @@ extension QueryOperator {
 }
 
 extension Persistable {
-    internal func graphQLValue() -> Any {
+    func graphQLValue() -> Any {
         switch self {
         case is Bool:
             return self

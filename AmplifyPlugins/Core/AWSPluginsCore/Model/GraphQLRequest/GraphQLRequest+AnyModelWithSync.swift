@@ -60,7 +60,8 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
     public static func query(modelName: String,
                              byId id: String,
-                             authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult?> {
+                             authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult?>
+    {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName,
                                                                operationType: .query,
                                                                primaryKeysOnly: false)
@@ -82,27 +83,31 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
     public static func createMutation(of model: Model,
                                       version: Int? = nil,
-                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult>
+    {
         createMutation(of: model, modelSchema: model.schema, version: version, authType: authType)
     }
 
     public static func updateMutation(of model: Model,
                                       where filter: GraphQLFilter? = nil,
                                       version: Int? = nil,
-                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult>
+    {
         updateMutation(of: model, modelSchema: model.schema, where: filter, version: version, authType: authType)
     }
 
     public static func subscription(to modelType: Model.Type,
                                     subscriptionType: GraphQLSubscriptionType,
-                                    authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+                                    authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult>
+    {
         subscription(to: modelType.schema, subscriptionType: subscriptionType, authType: authType)
     }
 
     public static func subscription(to modelType: Model.Type,
                                     subscriptionType: GraphQLSubscriptionType,
                                     claims: IdentityClaimsDictionary,
-                                    authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+                                    authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult>
+    {
         subscription(to: modelType.schema, subscriptionType: subscriptionType, claims: claims, authType: authType)
     }
 
@@ -111,7 +116,8 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                  limit: Int? = nil,
                                  nextToken: String? = nil,
                                  lastSync: Int64? = nil,
-                                 authType: AWSAuthorizationType? = nil) -> GraphQLRequest<SyncQueryResult> {
+                                 authType: AWSAuthorizationType? = nil) -> GraphQLRequest<SyncQueryResult>
+    {
         syncQuery(modelSchema: modelType.schema,
                          where: predicate,
                          limit: limit,
@@ -123,7 +129,8 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
     public static func createMutation(of model: Model,
                                       modelSchema: ModelSchema,
                                       version: Int? = nil,
-                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult>
+    {
         createOrUpdateMutation(of: model, modelSchema: modelSchema, type: .create, version: version, authType: authType)
     }
 
@@ -131,7 +138,8 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                       modelSchema: ModelSchema,
                                       where filter: GraphQLFilter? = nil,
                                       version: Int? = nil,
-                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult>
+    {
         createOrUpdateMutation(of: model,
                                modelSchema: modelSchema,
                                where: filter,
@@ -144,14 +152,15 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                       modelSchema: ModelSchema,
                                       where filter: GraphQLFilter? = nil,
                                       version: Int? = nil,
-                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult>
+    {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelSchema.name,
                                                                operationType: .mutation,
                                                                primaryKeysOnly: false)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(model: model,
                                                         schema: modelSchema))
-        if let filter = filter {
+        if let filter {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))
         }
         documentBuilder.add(decorator: ConflictResolutionDecorator(version: version, graphQLType: .mutation, primaryKeysOnly: false))
@@ -170,7 +179,8 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
     public static func subscription(to modelSchema: ModelSchema,
                                     subscriptionType: GraphQLSubscriptionType,
-                                    authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+                                    authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult>
+    {
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .subscription,
@@ -192,7 +202,8 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
     public static func subscription(to modelSchema: ModelSchema,
                                     subscriptionType: GraphQLSubscriptionType,
                                     claims: IdentityClaimsDictionary,
-                                    authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+                                    authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult>
+    {
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .subscription,
@@ -219,7 +230,8 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                  limit: Int? = nil,
                                  nextToken: String? = nil,
                                  lastSync: Int64? = nil,
-                                 authType: AWSAuthorizationType? = nil) -> GraphQLRequest<SyncQueryResult> {
+                                 authType: AWSAuthorizationType? = nil) -> GraphQLRequest<SyncQueryResult>
+    {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .query,
                                                                primaryKeysOnly: true)
@@ -249,13 +261,14 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                where filter: GraphQLFilter? = nil,
                                                type: GraphQLMutationType,
                                                version: Int? = nil,
-                                               authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+                                               authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult>
+    {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelSchema.name,
                                                                operationType: .mutation,
                                                                primaryKeysOnly: false)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
         documentBuilder.add(decorator: ModelDecorator(model: model, mutationType: type))
-        if let filter = filter {
+        if let filter {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))
         }
         documentBuilder.add(decorator: ConflictResolutionDecorator(version: version, graphQLType: .mutation, primaryKeysOnly: false))
@@ -278,13 +291,14 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
     /// If the provided group is of type AND, the optimization will occur.
     /// If the top level group is OR or NOT, the optimization is not possible anyway.
     private static func optimizePredicate(_ predicate: QueryPredicate?) -> QueryPredicate? {
-        guard let predicate = predicate else {
+        guard let predicate else {
             return nil
         }
         if predicate as? QueryPredicateGroup != nil {
             return predicate
         } else if let predicate = predicate as? QueryPredicateConstant,
-                  predicate == .all {
+                  predicate == .all
+        {
             return predicate
         }
         return QueryPredicateGroup(type: .and, predicates: [predicate])

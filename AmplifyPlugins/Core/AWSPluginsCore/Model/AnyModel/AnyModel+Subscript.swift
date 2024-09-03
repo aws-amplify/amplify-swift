@@ -10,15 +10,15 @@
 /// ```swift
 /// let id = model["id"]
 /// ```
-extension AnyModel {
+public extension AnyModel {
 
-    public subscript(_ key: String) -> Any? {
+    subscript(_ key: String) -> Any? {
         let mirror = Mirror(reflecting: instance)
         let property = mirror.children.first { $0.label == key }
         return property?.value
     }
 
-    public subscript(_ key: CodingKey) -> Any? {
+    subscript(_ key: CodingKey) -> Any? {
         return self[key.stringValue]
     }
 

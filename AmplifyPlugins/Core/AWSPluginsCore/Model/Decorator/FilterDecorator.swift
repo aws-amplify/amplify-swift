@@ -19,12 +19,14 @@ public struct FilterDecorator: ModelBasedGraphQLDocumentDecorator {
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
+                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument
+    {
         decorate(document, modelSchema: modelType.schema)
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
+                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument
+    {
         guard !filter.isEmpty else {
             return document.copy(inputs: document.inputs)
         }

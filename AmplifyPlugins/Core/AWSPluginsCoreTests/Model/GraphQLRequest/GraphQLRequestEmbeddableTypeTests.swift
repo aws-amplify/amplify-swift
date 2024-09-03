@@ -137,7 +137,8 @@ class GraphQLRequestJSONNonModelTests: XCTestCase {
                                               todoStickies.name: todoStickies])
 
         ModelRegistry.register(modelType: DynamicModel.self,
-                               modelSchema: todoSchema) { (_, _) -> Model in
+                               modelSchema: todoSchema)
+        { _, _ -> Model in
             return DynamicModel(id: "1", map: [:])
         }
     }

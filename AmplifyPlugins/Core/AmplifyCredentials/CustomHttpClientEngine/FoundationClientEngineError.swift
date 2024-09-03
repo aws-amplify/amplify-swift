@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import ClientRuntime
+import Foundation
 
 struct FoundationClientEngineError: AmplifyError {
     let errorDescription: ErrorDescription

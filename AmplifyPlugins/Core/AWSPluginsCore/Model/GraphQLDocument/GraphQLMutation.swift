@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 /// A concrete implementation of `SingleDirectiveGraphQLDocument` that represents a mutation operation.
 public struct GraphQLMutation: SingleDirectiveGraphQLDocument {
@@ -14,7 +14,8 @@ public struct GraphQLMutation: SingleDirectiveGraphQLDocument {
     public init(operationType: GraphQLOperationType,
                 name: String,
                 inputs: [GraphQLParameterName: GraphQLDocumentInput],
-                selectionSet: SelectionSet?) {
+                selectionSet: SelectionSet?)
+    {
         self.operationType = operationType
         self.name = name
         self.inputs = inputs

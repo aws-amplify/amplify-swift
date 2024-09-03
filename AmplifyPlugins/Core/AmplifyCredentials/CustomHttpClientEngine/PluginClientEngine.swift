@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import ClientRuntime
 import AWSClientRuntime
+import ClientRuntime
+import Foundation
 
 @_spi(PluginHTTPClientEngine)
 public func baseClientEngine(

@@ -19,7 +19,8 @@ public struct ModelSyncMetadata: Model {
 
     public init(id: String,
                 lastSync: Int64? = nil,
-                syncPredicate: String? = nil) {
+                syncPredicate: String? = nil)
+    {
         self.id = id
         self.lastSync = lastSync
         self.syncPredicate = syncPredicate

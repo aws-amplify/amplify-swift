@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 /// Decorate the GraphQL document with the data from an instance of the model. This is added as a single parameter
 /// called "input" that can be referenced by other decorators to append additional document inputs. This decorator
@@ -22,20 +22,22 @@ public struct ModelDecorator: ModelBasedGraphQLDocumentDecorator {
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
+                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument
+    {
         decorate(document, modelSchema: modelType.schema)
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
+                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument
+    {
         var inputs = document.inputs
         var graphQLInput = model.graphQLInputForMutation(modelSchema, mutationType: mutationType)
 
         if !modelSchema.authRules.isEmpty {
-            modelSchema.authRules.forEach { authRule in
+            for authRule in modelSchema.authRules {
                 if authRule.allow == .owner {
                     let ownerField = authRule.getOwnerFieldOrDefault()
-                    graphQLInput = graphQLInput.filter { (field, value) -> Bool in
+                    graphQLInput = graphQLInput.filter { field, value -> Bool in
                         if field == ownerField, value == nil {
                             return false
                         }

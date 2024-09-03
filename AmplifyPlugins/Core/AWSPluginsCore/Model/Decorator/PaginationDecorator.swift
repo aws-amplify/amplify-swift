@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 /// Decorate the document input with "limit" and "nextToken". Also paginates the selection set with pagination fields.
 public struct PaginationDecorator: ModelBasedGraphQLDocumentDecorator {
@@ -20,21 +20,23 @@ public struct PaginationDecorator: ModelBasedGraphQLDocumentDecorator {
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
+                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument
+    {
         decorate(document, modelSchema: modelType.schema)
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
+                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument
+    {
         var inputs = document.inputs
 
-        if let limit = limit {
+        if let limit {
             inputs["limit"] = GraphQLDocumentInput(type: "Int", value: .scalar(limit))
         } else {
             inputs["limit"] = GraphQLDocumentInput(type: "Int", value: .scalar(1_000))
         }
 
-        if let nextToken = nextToken {
+        if let nextToken {
             inputs["nextToken"] = GraphQLDocumentInput(type: "String", value: .scalar(nextToken))
         }
 

@@ -36,7 +36,8 @@ public struct OIDCMultiGroupPost: Model {
 
     public init(id: String = UUID().uuidString,
                 title: String,
-                owner: String? = nil) {
+                owner: String? = nil)
+    {
         self.id = id
         self.title = title
         self.owner = owner

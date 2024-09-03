@@ -39,14 +39,15 @@ public protocol SingleDirectiveGraphQLDocument {
 }
 
 // Provides default implementation
-extension SingleDirectiveGraphQLDocument {
+public extension SingleDirectiveGraphQLDocument {
 
     /// Method to create a deep copy of the document, useful for `ModelBasedGraphQLDocumentDecorator` decorators
     /// when decorating a document and returning a new document.
-    public func copy(operationType: GraphQLOperationType? = nil,
+    func copy(operationType: GraphQLOperationType? = nil,
                      name: String? = nil,
                      inputs: [GraphQLParameterName: GraphQLDocumentInput]? = nil,
-                     selectionSet: SelectionSet? = nil) -> Self {
+                     selectionSet: SelectionSet? = nil) -> Self
+    {
 
         return Self.init(operationType: operationType ?? self.operationType,
                          name: name ?? self.name,
@@ -56,13 +57,13 @@ extension SingleDirectiveGraphQLDocument {
 
     /// Returns nil when there are no `inputs`. Otherwise, consolidates the `inputs`
     /// into a single object that can be used for the GraphQL request.
-    public var variables: [String: Any]? {
+    var variables: [String: Any]? {
         if inputs.isEmpty {
             return nil
         }
 
         var variables = [String: Any]()
-        inputs.forEach { input in
+        for input in inputs {
             switch input.value.value {
             case .object(let values):
                 variables.updateValue(values, forKey: input.key)
@@ -78,7 +79,7 @@ extension SingleDirectiveGraphQLDocument {
     }
 
     /// Provides default construction of the graphQL document based on the components of the document.
-    public var stringValue: String {
+    var stringValue: String {
 
         let selectionSetString = selectionSet?.stringValue(indentSize: 2) ?? ""
 
@@ -106,7 +107,7 @@ extension SingleDirectiveGraphQLDocument {
 
         return """
         \(operationType.rawValue) \(name.pascalCased())\(variableInputTypes.isEmpty ? "" : "(\(variableInputTypes))") {
-          \(name)(\(inputParameters.map({ "\($0.0): \($0.1)"}).joined(separator: ", "))) {
+          \(name)(\(inputParameters.map { "\($0.0): \($0.1)"}.joined(separator: ", "))) {
         \(selectionSetString)
           }
         }
