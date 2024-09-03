@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-@_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 import AwsCommonRuntimeKit
+import Foundation
+@_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 
 extension CommonRunTimeError: AnalyticsErrorConvertible {
     var analyticsError: AnalyticsError {

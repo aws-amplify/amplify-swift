@@ -10,8 +10,8 @@ import AWSPinpoint
 import Foundation
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 
-extension AWSPinpointAnalyticsPlugin {
-    public func identifyUser(userId: String, userProfile: AnalyticsUserProfile?) {
+public extension AWSPinpointAnalyticsPlugin {
+    func identifyUser(userId: String, userProfile: AnalyticsUserProfile?) {
         if !isEnabled {
             log.warn("Cannot identify user. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
             return
@@ -20,7 +20,7 @@ extension AWSPinpointAnalyticsPlugin {
         Task {
             var currentEndpointProfile =  await pinpoint.currentEndpointProfile()
             currentEndpointProfile.addUserId(userId)
-            if let userProfile = userProfile {
+            if let userProfile {
                 currentEndpointProfile.addUserProfile(userProfile)
             }
             do {
@@ -33,7 +33,7 @@ extension AWSPinpointAnalyticsPlugin {
         }
     }
 
-    public func record(event: AnalyticsEvent) {
+    func record(event: AnalyticsEvent) {
         if !isEnabled {
             log.warn("Cannot record events. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
             return
@@ -55,12 +55,12 @@ extension AWSPinpointAnalyticsPlugin {
         }
     }
 
-    public func record(eventWithName eventName: String) {
+    func record(eventWithName eventName: String) {
         let event = BasicAnalyticsEvent(name: eventName)
         record(event: event)
     }
 
-    public func registerGlobalProperties(_ properties: [String: AnalyticsPropertyValue]) {
+    func registerGlobalProperties(_ properties: [String: AnalyticsPropertyValue]) {
         // TODO: check if there is a limit on total number of properties
         properties.forEach { key, _ in
             guard key.count >= 1, key.count <= 50 else {
@@ -75,13 +75,13 @@ extension AWSPinpointAnalyticsPlugin {
         }
     }
 
-    public func unregisterGlobalProperties(_ keys: Set<String>?) {
+    func unregisterGlobalProperties(_ keys: Set<String>?) {
         Task {
             await unregisterGlobalProperties(keys)
         }
     }
 
-    public func flushEvents() {
+    func flushEvents() {
         if !isEnabled {
             log.warn("Cannot flushEvents. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
             return
@@ -105,18 +105,18 @@ extension AWSPinpointAnalyticsPlugin {
         }
     }
 
-    public func enable() {
+    func enable() {
         isEnabled = true
     }
 
-    public func disable() {
+    func disable() {
         isEnabled = false
     }
 
     /// Retrieve the escape hatch to perform actions directly on PinpointClient.
     ///
     /// - Returns: PinpointClientProtocol instance
-    public func getEscapeHatch() -> PinpointClientProtocol {
+    func getEscapeHatch() -> PinpointClientProtocol {
         pinpoint.pinpointClient
     }
 
@@ -128,7 +128,7 @@ extension AWSPinpointAnalyticsPlugin {
     }
 
     private func unregisterGlobalProperties(_ keys: Set<String>?) async {
-        guard let keys = keys else {
+        guard let keys else {
             for (key, value) in globalProperties {
                 await pinpoint.removeGlobalProperty(value, forKey: key)
             }

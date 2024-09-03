@@ -10,8 +10,8 @@ import Foundation
 import StoreKit
 import XCTest
 
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class MockAWSPinpoint: AWSPinpointBehavior {
     let applicationId = "applicationId"
@@ -81,7 +81,7 @@ class MockAWSPinpoint: AWSPinpointBehavior {
     var createAppleMonetizationEventResult: PinpointEvent?
     var createVirtualMonetizationEventResult: PinpointEvent?
     var submitEventsResult: Result<[PinpointEvent], Error>?
-    
+
     var addGlobalPropertyExpectation: XCTestExpectation?
     var removeGlobalPropertyExpectation: XCTestExpectation?
 
@@ -217,7 +217,8 @@ extension MockAWSPinpoint {
     }
 
     public func verifyCreateAppleMonetizationEvent(with transaction: SKPaymentTransaction,
-                                                   with product: SKProduct) {
+                                                   with product: SKProduct)
+    {
         XCTAssertEqual(createAppleMonetizationEventCalled, 1)
         XCTAssertEqual(createAppleMonetizationEventTransaction, transaction)
         XCTAssertEqual(createAppleMonetizationEventProduct, product)
@@ -226,7 +227,8 @@ extension MockAWSPinpoint {
     public func verifyCreateVirtualMonetizationEvent(withProductId theProductId: String,
                                                      withItemPrice theItemPrice: Double,
                                                      withQuantity theQuantity: Int,
-                                                     withCurrency theCurrency: String) {
+                                                     withCurrency theCurrency: String)
+    {
         XCTAssertEqual(createVirtualMonetizationEventCalled, 1)
         XCTAssertEqual(createVirtualMonetizationEventProductId, theProductId)
         XCTAssertEqual(createVirtualMonetizationEventItemPrice, theItemPrice)

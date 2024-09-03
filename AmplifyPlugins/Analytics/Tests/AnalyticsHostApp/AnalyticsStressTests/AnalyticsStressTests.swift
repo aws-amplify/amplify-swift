@@ -5,20 +5,20 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSPinpoint
+import XCTest
 
-@testable import Amplify
-@testable import AWSPinpointAnalyticsPlugin
 import AWSCognitoAuthPlugin
 import Network
+@testable import Amplify
+@testable import AWSPinpointAnalyticsPlugin
 
 final class AnalyticsStressTests: XCTestCase {
 
     static let amplifyConfiguration = "testconfiguration/AWSAmplifyStressTests-amplifyconfiguration"
     static let analyticsPluginKey = "awsPinpointAnalyticsPlugin"
     let concurrencyLimit = 50
-    
+
     override func setUp() {
         do {
             let config = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfiguration)
@@ -35,7 +35,7 @@ final class AnalyticsStressTests: XCTestCase {
     }
 
     // MARK: - Stress Tests
-    
+
     /// - Given: Analytics plugin configured with valid configuration
     /// - When: 50 different events with 5 attributes are recorded simultaneously
     /// - Then: Operations are successful
@@ -48,12 +48,12 @@ final class AnalyticsStressTests: XCTestCase {
             }
         }
         networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
-        
+
         await fulfillment(of: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
-        
+
         let recordExpectation = expectation(description: "Records are successfully recorded")
         recordExpectation.expectedFulfillmentCount = concurrencyLimit
-        for eventNumber in 0...concurrencyLimit {
+        for eventNumber in 0 ... concurrencyLimit {
             let properties = ["eventPropertyStringKey1": "eventProperyStringValue1",
                               "eventPropertyStringKey2": "eventProperyStringValue2",
                               "eventPropertyStringKey3": "eventProperyStringValue3",
@@ -66,7 +66,7 @@ final class AnalyticsStressTests: XCTestCase {
 
         await fulfillment(of: [recordExpectation], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     /// - Given: Analytics plugin configured with valid configuration
     /// - When: 50 different events with 20 attributes are recorded simultaneously
     /// - Then: Operations are successful
@@ -79,13 +79,13 @@ final class AnalyticsStressTests: XCTestCase {
             }
         }
         networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
-        
+
         await fulfillment(of: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
-        
+
         let recordExpectation = expectation(description: "Records are successfully recorded")
         recordExpectation.expectedFulfillmentCount = concurrencyLimit
 
-        for eventNumber in 0...concurrencyLimit {
+        for eventNumber in 0 ... concurrencyLimit {
             Task {
                 let properties = ["eventPropertyStringKey1": "eventProperyStringValue1",
                                   "eventPropertyStringKey2": "eventProperyStringValue2",

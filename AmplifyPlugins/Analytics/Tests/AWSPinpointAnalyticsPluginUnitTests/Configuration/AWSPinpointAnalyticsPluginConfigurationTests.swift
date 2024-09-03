@@ -7,8 +7,8 @@
 
 import Amplify
 import XCTest
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
@@ -52,7 +52,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             XCTFail("Failed to instantiate analytics plugin configuration")
         }
     }
-    
+
     func testConfigureSuccess_withoutTargetingConfiguration() throws {
         let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
@@ -190,7 +190,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
     }
 
     func testConfigureThrowsErrorForMissingPinpointAnalyticsConfiguration() {
-        
+
         let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
                 (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, region)

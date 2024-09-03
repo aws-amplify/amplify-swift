@@ -6,8 +6,8 @@
 //
 
 @_spi(InternalAmplifyConfiguration) import Amplify
-import AWSPinpoint
 import AWSClientRuntime
+import AWSPinpoint
 import Foundation
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 
@@ -54,20 +54,20 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
 
         let pluginConfiguration = try AWSPinpointPluginConfiguration(pinpointAnalyticsConfig)
 
-        let configOptions: AWSPinpointAnalyticsPlugin.Options
-        if let options {
-            configOptions = options
+        let configOptions: AWSPinpointAnalyticsPlugin.Options = if let options {
+            options
         } else {
-            configOptions = .init(
-                autoFlushEventsInterval: try Self.getAutoFlushEventsInterval(configObject),
-                trackAppSessions: try Self.getTrackAppSessions(configObject))
+            try .init(
+                autoFlushEventsInterval: Self.getAutoFlushEventsInterval(configObject),
+                trackAppSessions: Self.getTrackAppSessions(configObject))
         }
         let autoSessionTrackingInterval = try Self.getAutoSessionTrackingInterval(configObject)
 
         // Warn users in case they set different regions between pinpointTargeting and pinpointAnalytics
         if let pinpointTargetingJson = configObject[Self.pinpointTargetingConfigKey],
            let pinpointTargetingConfig = try? AWSPinpointPluginConfiguration(pinpointTargetingJson),
-           pinpointTargetingConfig.region != pluginConfiguration.region {
+           pinpointTargetingConfig.region != pluginConfiguration.region
+        {
             Self.logger.warn("Having different regions for Analytics and Targeting operations is not supported. The Analytics region will be used.")
         }
 
@@ -78,7 +78,8 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
     }
 
     init(_ configuration: AmplifyOutputsData,
-         options: AWSPinpointAnalyticsPlugin.Options) throws {
+         options: AWSPinpointAnalyticsPlugin.Options) throws
+    {
         guard let analyticsConfig = configuration.analytics else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.missingAnalyticsCategoryConfiguration.errorDescription,
@@ -102,7 +103,8 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
     init(appId: String,
          region: String,
          autoSessionTrackingInterval: TimeInterval,
-         options: AWSPinpointAnalyticsPlugin.Options) {
+         options: AWSPinpointAnalyticsPlugin.Options)
+    {
         self.appId = appId
         self.region = region
         self.autoSessionTrackingInterval = autoSessionTrackingInterval
@@ -148,7 +150,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
 
     private static func getAutoSessionTrackingInterval(_ configuration: [String: JSONValue]) throws -> TimeInterval {
         guard let autoSessionTrackingInterval = configuration[autoSessionTrackingIntervalKey] else {
-            return Self.defaultAutoSessionTrackingInterval
+            return defaultAutoSessionTrackingInterval
         }
 
         guard case let .number(autoSessionTrackingIntervalValue) = autoSessionTrackingInterval else {

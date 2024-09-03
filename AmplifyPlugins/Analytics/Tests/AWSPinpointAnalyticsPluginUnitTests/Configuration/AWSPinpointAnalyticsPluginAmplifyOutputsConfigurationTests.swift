@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable @_spi(InternalAmplifyConfiguration) import Amplify
 import XCTest
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
+@testable @_spi(InternalAmplifyConfiguration) import Amplify
 @testable import AWSPinpointAnalyticsPlugin
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginAmplifyOutputsConfigurationTests: XCTestCase {

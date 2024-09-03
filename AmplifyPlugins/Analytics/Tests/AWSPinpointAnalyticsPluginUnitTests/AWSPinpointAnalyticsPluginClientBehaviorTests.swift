@@ -7,10 +7,10 @@
 
 import Amplify
 import AWSPinpoint
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
-@testable import AWSPinpointAnalyticsPlugin
-@testable import AmplifyTestCommon
 import XCTest
+@testable import AmplifyTestCommon
+@testable import AWSPinpointAnalyticsPlugin
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginTestBase {
@@ -281,9 +281,9 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     func testRegisterGlobalProperties() async {
         mockPinpoint.addGlobalPropertyExpectation = expectation(description: "Add global property called")
         mockPinpoint.addGlobalPropertyExpectation?.expectedFulfillmentCount = testProperties.count
-        
+
         analyticsPlugin.registerGlobalProperties(testProperties)
-        
+
         await fulfillment(of: [mockPinpoint.addGlobalPropertyExpectation!], timeout: 1)
         XCTAssertEqual(analyticsPlugin.globalProperties.count, testProperties.count)
         XCTAssertTrue(mockPinpoint.addGlobalMetricCalled > 0)
@@ -310,7 +310,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     func testUnregisterGlobalProperties() async {
         mockPinpoint.removeGlobalPropertyExpectation = expectation(description: "Remove global property called")
         mockPinpoint.removeGlobalPropertyExpectation?.expectedFulfillmentCount = testProperties.count
-        
+
         analyticsPlugin.globalProperties = AtomicDictionary(initialValue: testProperties)
         analyticsPlugin.unregisterGlobalProperties(Set<String>(testProperties.keys))
 
@@ -365,7 +365,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 1)
         mockPinpoint.verifySubmitEvents()
     }
-    
+
     /// Given: The device does not have internet access
     /// When: AnalyticsPlugin.flushEvents is invoked
     /// Then: AWSPinpoint.submitEvents is invoked

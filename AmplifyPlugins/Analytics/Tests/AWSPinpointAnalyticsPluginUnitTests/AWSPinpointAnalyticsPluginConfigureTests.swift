@@ -5,19 +5,19 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import XCTest
 @testable @_spi(InternalAmplifyConfiguration) import Amplify
 @testable import AmplifyTestCommon
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
-import XCTest
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBase {
-    
+
     override func setUp() async throws {
         AWSPinpointFactory.credentialsProvider = MockCredentialsProvider()
         try await super.setUp()
     }
-    
+
     // MARK: Plugin Key test
 
     func testPluginKey() {
@@ -115,7 +115,8 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
             XCTFail("Analytics configuration should not succeed")
         } catch {
             guard let pluginError = error as? PluginError,
-                case .pluginConfigurationError = pluginError else {
+                case .pluginConfigurationError = pluginError
+            else {
                     XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
                     return
             }
