@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
-struct GeoPluginErrorConstants {
+enum GeoPluginErrorConstants {
     static let missingDefaultSearchIndex: GeoPluginErrorString = (
         "No default search index was found.",
         "Please ensure you have added search to your project before calling search functions.")

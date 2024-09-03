@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable @_spi(InternalAmplifyConfiguration) import Amplify
 import XCTest
+@testable @_spi(InternalAmplifyConfiguration) import Amplify
 
 @testable import AWSLocationGeoPlugin
 

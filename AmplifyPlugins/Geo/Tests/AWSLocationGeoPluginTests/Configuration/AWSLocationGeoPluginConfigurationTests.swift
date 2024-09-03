@@ -173,7 +173,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
                            GeoPluginConfigError.searchDefaultNotFound(indexName: searchIndex).errorDescription)
         }
     }
-    
+
     /// - Given: geo plugin configuration
     /// - When: the object initializes missing region
     /// - Then: the configuration fails to initialize with regionMissing error
@@ -194,7 +194,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
     /// - When: the object initializes with an invalid region
     /// - Then: the configuration fails to initialize with regionInvalid error
     func testConfigureFailureForInvalidRegion() async {
-        let config = JSONValue(dictionaryLiteral:(AWSLocationGeoPluginConfiguration.Node.region.key, JSONValue(integerLiteral: 1)),
+        let config = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.region.key, JSONValue(integerLiteral: 1)),
                                (AWSLocationGeoPluginConfiguration.Section.maps.key, GeoPluginTestConfig.mapsConfigJSON),
                                (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, GeoPluginTestConfig.searchConfigJSON))
         XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: config)) { error in
@@ -206,13 +206,13 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
                            GeoPluginConfigError.regionInvalid.errorDescription)
         }
     }
-    
+
     /// - Given: geo plugin configuration
     /// - When: the object initializes with a missing default maps section
     /// - Then: the configuration fails to initialize with defaultMissing error
     func testConfigureFailureForMissingDefaultMapsSection() async {
         let mapsConfigJSON = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.items.key, GeoPluginTestConfig.mapItemConfigJSON))
-        let config = JSONValue(dictionaryLiteral:(AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
+        let config = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
                                (AWSLocationGeoPluginConfiguration.Section.maps.key, mapsConfigJSON),
                                (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, GeoPluginTestConfig.searchConfigJSON))
         XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: config)) { error in
@@ -224,7 +224,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
                            GeoPluginConfigError.defaultMissing(section: .maps).errorDescription)
         }
     }
-    
+
     /// - Given: geo plugin configuration
     /// - When: the object initializes without default map
     /// - Then: the configuration fails to initialize with mapDefaultNotFound error
@@ -237,7 +237,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
         let mapsConfigJSON = JSONValue(dictionaryLiteral:
                                         (AWSLocationGeoPluginConfiguration.Node.items.key, mapItemConfigJSON),
                                        (AWSLocationGeoPluginConfiguration.Node.default.key, GeoPluginTestConfig.testMapJSON))
-        let config = JSONValue(dictionaryLiteral:(AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
+        let config = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
                                (AWSLocationGeoPluginConfiguration.Section.maps.key, mapsConfigJSON),
                                (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, GeoPluginTestConfig.searchConfigJSON))
         XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: config)) { error in
@@ -256,7 +256,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
     func testConfigureFailureForInvalidDefaultMapsSection() async {
         let mapsConfigJSON = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.items.key, GeoPluginTestConfig.mapItemConfigJSON),
                                        (AWSLocationGeoPluginConfiguration.Node.default.key, JSONValue(integerLiteral: 1)))
-        let config = JSONValue(dictionaryLiteral:(AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
+        let config = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
                                (AWSLocationGeoPluginConfiguration.Section.maps.key, mapsConfigJSON),
                                (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, GeoPluginTestConfig.searchConfigJSON))
         XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: config)) { error in
@@ -277,7 +277,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
     func testConfigureFailureForEmptyDefaultMapsSection() async {
         let mapsConfigJSON = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.items.key, GeoPluginTestConfig.mapItemConfigJSON),
                                        (AWSLocationGeoPluginConfiguration.Node.default.key, JSONValue(stringLiteral: "")))
-        let config = JSONValue(dictionaryLiteral:(AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
+        let config = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
                                (AWSLocationGeoPluginConfiguration.Section.maps.key, mapsConfigJSON),
                                (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, GeoPluginTestConfig.searchConfigJSON))
         XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: config)) { error in
@@ -289,13 +289,13 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
                            GeoPluginConfigError.defaultIsEmpty(section: .maps).errorDescription)
         }
     }
-    
+
     /// - Given: geo plugin configuration
     /// - When: the object initializes with a items default maps section
     /// - Then: the configuration fails to initialize with itemsMissing error
     func testConfigureFailureForMissingItemsMapsSection() async {
-        let mapsConfigJSON = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.default.key,GeoPluginTestConfig.testMapJSON))
-        let config = JSONValue(dictionaryLiteral:(AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
+        let mapsConfigJSON = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.default.key, GeoPluginTestConfig.testMapJSON))
+        let config = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
                                (AWSLocationGeoPluginConfiguration.Section.maps.key, mapsConfigJSON),
                                (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, GeoPluginTestConfig.searchConfigJSON))
         XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: config)) { error in
@@ -307,7 +307,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
                            GeoPluginConfigError.itemsMissing(section: .maps).errorDescription)
         }
     }
-    
+
     /// - Given: geo plugin configuration
     /// - When: the object initializes with a invalid maps section
     /// - Then: the configuration fails to initialize with mapInvalid error
@@ -316,7 +316,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
         let mapsConfigJSON = JSONValue(dictionaryLiteral:
                                         (AWSLocationGeoPluginConfiguration.Node.items.key, mapItemConfigJSON),
                                        (AWSLocationGeoPluginConfiguration.Node.default.key, GeoPluginTestConfig.testMapJSON))
-        let config = JSONValue(dictionaryLiteral:(AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
+        let config = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
                                (AWSLocationGeoPluginConfiguration.Section.maps.key, mapsConfigJSON),
                                (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, GeoPluginTestConfig.searchConfigJSON))
         XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: config)) { error in
@@ -328,7 +328,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
                            GeoPluginConfigError.mapInvalid(mapName: "testMap").errorDescription)
         }
     }
-    
+
     /// - Given: geo plugin configuration
     /// - When: the object initializes with a invalid maps section
     /// - Then: the configuration fails to initialize with mapStyleMissing error
@@ -339,7 +339,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
         let mapsConfigJSON = JSONValue(dictionaryLiteral:
                                         (AWSLocationGeoPluginConfiguration.Node.items.key, mapItemConfigJSON),
                                        (AWSLocationGeoPluginConfiguration.Node.default.key, GeoPluginTestConfig.testMapJSON))
-        let config = JSONValue(dictionaryLiteral:(AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
+        let config = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
                                (AWSLocationGeoPluginConfiguration.Section.maps.key, mapsConfigJSON),
                                (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, GeoPluginTestConfig.searchConfigJSON))
         XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: config)) { error in
@@ -351,8 +351,8 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
                            GeoPluginConfigError.mapStyleMissing(mapName: "testMap").errorDescription)
         }
     }
-    
-    
+
+
     /// - Given: geo plugin configuration
     /// - When: the object initializes with a invalid maps section
     /// - Then: the configuration fails to initialize with mapStyleMissing error
@@ -365,7 +365,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
         let mapsConfigJSON = JSONValue(dictionaryLiteral:
                                         (AWSLocationGeoPluginConfiguration.Node.items.key, mapItemConfigJSON),
                                        (AWSLocationGeoPluginConfiguration.Node.default.key, GeoPluginTestConfig.testMapJSON))
-        let config = JSONValue(dictionaryLiteral:(AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
+        let config = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
                                (AWSLocationGeoPluginConfiguration.Section.maps.key, mapsConfigJSON),
                                (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, GeoPluginTestConfig.searchConfigJSON))
         XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: config)) { error in
@@ -375,7 +375,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
             }
         }
     }
-    
+
     /// - Given: geo plugin configuration
     /// - When: the object initializes with a invalid map style url
     /// - Then: the configuration fails to initialize with mapStyleIsNotString error
@@ -388,7 +388,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
         let mapsConfigJSON = JSONValue(dictionaryLiteral:
                                         (AWSLocationGeoPluginConfiguration.Node.items.key, mapItemConfigJSON),
                                        (AWSLocationGeoPluginConfiguration.Node.default.key, GeoPluginTestConfig.testMapJSON))
-        let config = JSONValue(dictionaryLiteral:(AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
+        let config = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
                                (AWSLocationGeoPluginConfiguration.Section.maps.key, mapsConfigJSON),
                                (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, GeoPluginTestConfig.searchConfigJSON))
         XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: config)) { error in
@@ -411,7 +411,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
         let searchConfigJSON = JSONValue(dictionaryLiteral:
             (AWSLocationGeoPluginConfiguration.Node.items.key, searchItemsArrayJSON),
             (AWSLocationGeoPluginConfiguration.Node.default.key, searchIndexJSON))
-        let config = JSONValue(dictionaryLiteral:(AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
+        let config = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
                                (AWSLocationGeoPluginConfiguration.Section.maps.key, GeoPluginTestConfig.mapsConfigJSON),
                                (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, searchConfigJSON))
         XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: config)) { error in
@@ -434,7 +434,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
         let searchConfigJSON = JSONValue(dictionaryLiteral:
             (AWSLocationGeoPluginConfiguration.Node.items.key, searchItemsArrayJSON),
             (AWSLocationGeoPluginConfiguration.Node.default.key, searchIndexJSON))
-        let config = JSONValue(dictionaryLiteral:(AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
+        let config = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
                                (AWSLocationGeoPluginConfiguration.Section.maps.key, GeoPluginTestConfig.mapsConfigJSON),
                                (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, searchConfigJSON))
         XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: config)) { error in
@@ -446,7 +446,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
                            GeoPluginConfigError.itemsIsNotStringArray(section: .searchIndices).errorDescription)
         }
     }
-    
+
     /// - Given: geo plugin configuration
     /// - When: configuration initializes with a mismatch search items and default item
     /// - Then: the configuration fails to initializes with searchDefaultNotFound error
@@ -457,7 +457,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
         let searchConfigJSON = JSONValue(dictionaryLiteral:
             (AWSLocationGeoPluginConfiguration.Node.items.key, searchItemsArrayJSON),
             (AWSLocationGeoPluginConfiguration.Node.default.key, searchIndexJSON))
-        let config = JSONValue(dictionaryLiteral:(AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
+        let config = JSONValue(dictionaryLiteral: (AWSLocationGeoPluginConfiguration.Node.region.key, GeoPluginTestConfig.regionJSON),
                                (AWSLocationGeoPluginConfiguration.Section.maps.key, GeoPluginTestConfig.mapsConfigJSON),
                                (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, searchConfigJSON))
         XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: config)) { error in

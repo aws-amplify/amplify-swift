@@ -6,8 +6,8 @@
 //
 
 import Amplify
-@testable import AWSLocationGeoPlugin
 import XCTest
+@testable import AWSLocationGeoPlugin
 
 class AWSLocationGeoPluginResetTests: AWSLocationGeoPluginTestBase {
     func testReset() async {

@@ -9,7 +9,7 @@ import Foundation
 @testable @_spi(InternalAmplifyConfiguration) import Amplify
 @testable import AWSLocationGeoPlugin
 
-struct GeoPluginTestConfig {
+enum GeoPluginTestConfig {
     static let timeout = 1.0
 
     // Plugin Test Configuration

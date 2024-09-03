@@ -6,8 +6,8 @@
 //
 
 @_spi(InternalAmplifyConfiguration) import Amplify
-import Foundation
 import AWSLocation
+import Foundation
 
 public struct AWSLocationGeoPluginConfiguration {
     private static func urlString(regionName: String, mapName: String) -> String {
@@ -60,7 +60,7 @@ public struct AWSLocationGeoPluginConfiguration {
                   defaultSearchIndex: defaultSearchIndex,
                   searchIndices: searchIndices)
     }
-    
+
     init(config: AmplifyOutputsData) throws {
         guard let geo = config.geo else {
             throw GeoPluginConfigError.configurationInvalid(section: .plugin)
@@ -102,7 +102,8 @@ public struct AWSLocationGeoPluginConfiguration {
          defaultMap: String?,
          maps: [String: Geo.MapStyle],
          defaultSearchIndex: String?,
-         searchIndices: [String]) {
+         searchIndices: [String])
+    {
         self.regionName = regionName
         self.defaultMap = defaultMap
         self.maps = maps
@@ -163,7 +164,8 @@ public struct AWSLocationGeoPluginConfiguration {
     }
 
     private static func getItemsObject(section: Section,
-                                       configObject: [String: JSONValue]) throws -> [String: JSONValue] {
+                                       configObject: [String: JSONValue]) throws -> [String: JSONValue]
+    {
         let itemsJSON = try getItemsJSON(section: section, configObject: configObject)
         let itemsObject = try getConfigObject(section: section, configJSON: itemsJSON)
         return itemsObject
@@ -216,7 +218,8 @@ public struct AWSLocationGeoPluginConfiguration {
     }
 
     private static func getMaps(mapConfig: AmplifyOutputsData.Geo.Maps,
-                                regionName: String) throws -> [String: Geo.MapStyle] {
+                                regionName: String) throws -> [String: Geo.MapStyle]
+    {
         let mapTuples: [(String, Geo.MapStyle)] = try mapConfig.items.map { map in
             let url = URL(string: AWSLocationGeoPluginConfiguration.urlString(regionName: regionName,
                                                                               mapName: map.key))

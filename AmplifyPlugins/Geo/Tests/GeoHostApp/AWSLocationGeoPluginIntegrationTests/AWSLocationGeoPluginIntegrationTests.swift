@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSLocation
+import XCTest
 
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
