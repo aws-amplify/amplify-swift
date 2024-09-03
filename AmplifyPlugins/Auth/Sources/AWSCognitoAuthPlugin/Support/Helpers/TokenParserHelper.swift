@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TokenParserHelper {
+enum TokenParserHelper {
 
     static func getAuthUser(accessToken: String) throws -> AWSAuthUser {
         let tokenSplit = accessToken.split(separator: ".")

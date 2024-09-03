@@ -8,18 +8,17 @@
 extension DeleteUserState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
-        let additionalMetadataDictionary: [String: Any]
-        switch self {
+        let additionalMetadataDictionary: [String: Any] = switch self {
         case .notStarted:
-            additionalMetadataDictionary = [:]
+            [:]
         case .deletingUser:
-            additionalMetadataDictionary = [:]
+            [:]
         case .signingOut(let signedOutState):
-            additionalMetadataDictionary = signedOutState.debugDictionary
+            signedOutState.debugDictionary
         case .userDeleted:
-            additionalMetadataDictionary = [:]
+            [:]
         case .error(let error):
-            additionalMetadataDictionary = [
+            [
                 "Error": error
             ]
         }

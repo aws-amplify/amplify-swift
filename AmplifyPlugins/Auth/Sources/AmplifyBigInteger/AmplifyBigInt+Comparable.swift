@@ -11,23 +11,23 @@ import libtommathAmplify
 extension AmplifyBigInt: Equatable, Comparable {
 
     public static func == (lhs: AmplifyBigInt, rhs: AmplifyBigInt) -> Bool {
-        return (lhs.compare(rhs) == .orderedSame)
+        return lhs.compare(rhs) == .orderedSame
     }
 
     public static func <= (lhs: AmplifyBigInt, rhs: AmplifyBigInt) -> Bool {
-        return (lhs.compare(rhs) != .orderedAscending)
+        return lhs.compare(rhs) != .orderedAscending
     }
 
     public static func >= (lhs: AmplifyBigInt, rhs: AmplifyBigInt) -> Bool {
-        return (lhs.compare(rhs) != .orderedDescending)
+        return lhs.compare(rhs) != .orderedDescending
     }
 
     public static func > (lhs: AmplifyBigInt, rhs: AmplifyBigInt) -> Bool {
-        return (lhs.compare(rhs) == .orderedAscending)
+        return lhs.compare(rhs) == .orderedAscending
     }
 
     public static func < (lhs: AmplifyBigInt, rhs: AmplifyBigInt) -> Bool {
-        return (lhs.compare(rhs) == .orderedDescending)
+        return lhs.compare(rhs) == .orderedDescending
     }
 
     func compare(_ againstValue: AmplifyBigInt) -> ComparisonResult {

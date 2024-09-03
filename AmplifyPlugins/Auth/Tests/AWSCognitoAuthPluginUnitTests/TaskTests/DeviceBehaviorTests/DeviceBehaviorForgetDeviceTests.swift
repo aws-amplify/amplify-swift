@@ -7,12 +7,12 @@
 
 import Foundation
 
-import XCTest
-import AWSCognitoIdentityProvider
 import Amplify
+import AWSCognitoIdentityProvider
+import ClientRuntime
+import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
-import ClientRuntime
 
 class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
@@ -152,7 +152,8 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+                  case .invalidParameter = (underlyingError as? AWSCognitoAuthError)
+            else {
                 XCTFail("Underlying error should be invalidParameter \(error)")
                 return
             }
@@ -189,7 +190,8 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+                  case .invalidParameter = (underlyingError as? AWSCognitoAuthError)
+            else {
                 XCTFail("Underlying error should be invalidParameter \(error)")
                 return
             }

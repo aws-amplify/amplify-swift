@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct SetUpTOTP: Action {
 
@@ -31,7 +31,8 @@ struct SetUpTOTP: Action {
             }
 
             guard let session = result.session,
-                  let secretCode = result.secretCode else {
+                  let secretCode = result.secretCode
+            else {
                 throw SignInError.unknown(message: "Error unwrapping result associateSoftwareToken result")
             }
 

@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSCognitoIdentity
-@testable import Amplify
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import ClientRuntime
+import XCTest
+@testable import Amplify
+@testable import AWSCognitoAuthPlugin
 
 class AWSAuthSignInOptionsTestCase: BasePluginTest {
     override var initialState: AuthState {
@@ -174,7 +174,7 @@ class AWSAuthSignInOptionsTestCase: BasePluginTest {
     }
 }
 
-fileprivate extension AuthState {
+private extension AuthState {
     var authenticationState: AuthenticationState? {
         if case .configured(let authenticationState, _) = self {
             return authenticationState
@@ -183,7 +183,7 @@ fileprivate extension AuthState {
     }
 }
 
-fileprivate extension AuthenticationState {
+private extension AuthenticationState {
     var signInEvent: SignInEventData? {
         if case .signingIn(.signingInWithSRP(_, let eventData)) = self {
             return eventData

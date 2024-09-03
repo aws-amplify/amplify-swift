@@ -84,7 +84,7 @@ extension SignInState {
     static let testData = SignInState.signingInWithSRP(.notStarted, SignInEventData(
         username: "",
         password: "",
-        signInMethod:.apiBased(.userSRP)))
+        signInMethod: .apiBased(.userSRP)))
 }
 
 extension UserPoolConfigurationData {

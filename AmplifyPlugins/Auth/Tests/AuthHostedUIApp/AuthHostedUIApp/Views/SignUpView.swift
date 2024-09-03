@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import SwiftUI
 import Amplify
+import SwiftUI
 
 struct SignUpView: View {
 
@@ -44,11 +44,11 @@ struct SignUpView: View {
             }
             .accessibility(identifier: Identifiers.signUpButton)
             Spacer()
-            if let error = self.errorLabel {
+            if let error = errorLabel {
                 Text("Error occured: \(error)")
                     .accessibilityLabel(Identifiers.errorLabel)
             }
-            if let successLabel = self.successLabel {
+            if let successLabel {
                 Text("SignUp Succeeded \(successLabel)")
                     .accessibilityLabel(Identifiers.successLabel)
             }
@@ -57,8 +57,8 @@ struct SignUpView: View {
     }
 
     func signUp() async {
-        self.successLabel = nil
-        self.errorLabel = nil
+        successLabel = nil
+        errorLabel = nil
         print("Password \(password)")
         do {
             let options = AuthSignUpRequest.Options(userAttributes: [.init(.email, value: username)])
@@ -68,13 +68,13 @@ struct SignUpView: View {
                 options: options
             )
             if signUpResult.isSignUpComplete {
-                self.successLabel = "Complete"
+                successLabel = "Complete"
             } else {
-                self.errorLabel = "SignUp is not complete: \(signUpResult.nextStep)"
+                errorLabel = "SignUp is not complete: \(signUpResult.nextStep)"
             }
         } catch {
             print("Unexpected error: \(error)")
-            self.errorLabel = error.info()
+            errorLabel = error.info()
         }
     }
 }

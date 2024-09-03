@@ -10,9 +10,9 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
 
+import Foundation
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import Foundation
 
 struct AuthTestHarnessInput {
     let initialAuthState: AuthState
@@ -25,7 +25,8 @@ extension AuthTestHarnessInput {
 
     static func createInput(
             from specification: FeatureSpecification
-        ) async -> AuthTestHarnessInput {
+        ) async -> AuthTestHarnessInput
+    {
             return await AuthTestHarnessInput(
             initialAuthState: specification.preConditions.initialAuthState,
             expectedAuthState: getExpectedAuthState(from: specification),

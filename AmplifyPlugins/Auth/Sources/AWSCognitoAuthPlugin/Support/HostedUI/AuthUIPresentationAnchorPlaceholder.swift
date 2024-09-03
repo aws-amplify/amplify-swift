@@ -19,7 +19,8 @@ class AuthUIPresentationAnchorPlaceholder: Equatable {
     private init() {}
 
     public static func == (lhs: AuthUIPresentationAnchorPlaceholder,
-                           rhs: AuthUIPresentationAnchorPlaceholder) -> Bool {
+                           rhs: AuthUIPresentationAnchorPlaceholder) -> Bool
+    {
         true
     }
 }

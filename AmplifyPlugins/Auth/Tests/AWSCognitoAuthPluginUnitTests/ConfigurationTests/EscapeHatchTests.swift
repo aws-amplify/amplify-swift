@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import enum Amplify.JSONValue
 import XCTest
 @testable import func AmplifyTestCommon.XCTAssertThrowFatalError
-import enum Amplify.JSONValue
 @testable import AWSCognitoAuthPlugin
 
 
@@ -103,7 +103,7 @@ class EscapeHatchTests: XCTestCase {
             return
         }
     }
-    
+
     /// Test escape hatch without a valid configuration
     ///
     /// - Given: A AWSCognitoAuthPlugin plugin without being configured

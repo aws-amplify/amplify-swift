@@ -57,7 +57,8 @@ struct CompleteTOTPSetup: Action {
                 username: username,
                 asfDeviceId: asfDeviceId,
                 asfClient: userpoolEnv.cognitoUserPoolASFFactory(),
-                userPoolConfiguration: userpoolEnv.userPoolConfiguration) {
+                userPoolConfiguration: userpoolEnv.userPoolConfiguration)
+            {
                 userContextData = .init(encodedData: encodedData)
             }
 

@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-@testable import AWSCognitoAuthPlugin
 import Amplify
+import Foundation
 import XCTest
+@testable import AWSCognitoAuthPlugin
 
 class CustomEndpoint_AuthConfigurationJSONTestCase: XCTestCase {
     /// Given: The `awsCognitoAuthPlugin` portion of an `amplifyconfiguration.json`

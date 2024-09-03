@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
-import AWSCognitoIdentityProvider
+import Foundation
 
 class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask, DefaultLogger {
     private let request: AuthResendSignUpCodeRequest

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct RespondToAuthChallenge: Equatable {
 
@@ -24,8 +24,9 @@ struct RespondToAuthChallenge: Equatable {
 extension RespondToAuthChallenge {
 
     var codeDeliveryDetails: AuthCodeDeliveryDetails {
-        guard let parameters = parameters,
-              let medium = parameters["CODE_DELIVERY_DELIVERY_MEDIUM"] else {
+        guard let parameters,
+              let medium = parameters["CODE_DELIVERY_DELIVERY_MEDIUM"]
+        else {
             return AuthCodeDeliveryDetails(destination: .unknown(nil),
                                            attributeKey: nil)
         }

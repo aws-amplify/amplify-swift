@@ -7,9 +7,9 @@
 
 import XCTest
 
-@testable import AWSCognitoAuthPlugin
-import AWSPluginsCore
 import Amplify
+import AWSPluginsCore
+@testable import AWSCognitoAuthPlugin
 
 class LoadCredentialsTests: XCTestCase {
 

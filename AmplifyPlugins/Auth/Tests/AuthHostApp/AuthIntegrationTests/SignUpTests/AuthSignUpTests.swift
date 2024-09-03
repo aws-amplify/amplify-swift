@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
-import AWSCognitoAuthPlugin
 
 class AuthSignUpTests: AWSAuthBaseTest {
 
@@ -37,7 +37,7 @@ class AuthSignUpTests: AWSAuthBaseTest {
         let signUpExpectation = expectation(description: "Sign up completed")
         signUpExpectation.expectedFulfillmentCount = 2
 
-        for _ in 0..<signUpExpectation.expectedFulfillmentCount {
+        for _ in 0 ..< signUpExpectation.expectedFulfillmentCount {
 
             Task {
                 let username = "integTest\(UUID().uuidString)"

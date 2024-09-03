@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import AWSPluginsCore
 import AWSCognitoIdentityProvider
+import AWSPluginsCore
+import Foundation
 
 class AWSAuthTaskHelper: DefaultLogger {
 
@@ -44,7 +44,8 @@ class AWSAuthTaskHelper: DefaultLogger {
             case .signedOut(let data):
                 if data.revokeTokenError != nil ||
                     data.globalSignOutError != nil ||
-                    data.hostedUIError != nil {
+                    data.hostedUIError != nil
+                {
                     return AWSCognitoSignOutResult.partial(
                         revokeTokenError: data.revokeTokenError,
                         globalSignOutError: data.globalSignOutError,

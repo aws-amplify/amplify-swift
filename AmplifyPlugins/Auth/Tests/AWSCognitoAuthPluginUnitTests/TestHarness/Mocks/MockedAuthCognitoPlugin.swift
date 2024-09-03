@@ -57,7 +57,7 @@ struct MockedAuthCognitoPluginHelper {
     private func makeUserPool() throws -> CognitoUserPoolBehavior {
         switch authConfiguration {
         case .userPools, .userPoolsAndIdentityPools:
-            return self.mockIdentityProvider
+            return mockIdentityProvider
         default:
             fatalError()
         }

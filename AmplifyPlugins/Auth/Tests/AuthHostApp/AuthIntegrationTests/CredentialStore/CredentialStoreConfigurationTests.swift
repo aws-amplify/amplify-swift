@@ -52,7 +52,8 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
 
         // Then
         guard let credentials = try? newCredentialStore.retrieveCredential(),
-              case .identityPoolOnly(let retrievedIdentityID, let retrievedCredentials) = credentials else {
+              case .identityPoolOnly(let retrievedIdentityID, let retrievedCredentials) = credentials
+        else {
             XCTFail("Unable to retrieve Credentials")
             return
         }
@@ -96,7 +97,8 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         guard let credentials = try? newCredentialStore.retrieveCredential(),
               case .userPoolAndIdentityPool(let retrievedTokens,
                                             let retrievedIdentityID,
-                                            let retrievedCredentials) = credentials else {
+                                            let retrievedCredentials) = credentials
+        else {
             XCTFail("Unable to retrieve Credentials")
             return
         }

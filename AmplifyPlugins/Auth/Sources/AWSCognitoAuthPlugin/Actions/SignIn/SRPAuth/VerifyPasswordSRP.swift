@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct VerifyPasswordSRP: Action {
     let identifier = "VerifyPasswordSRP"
@@ -18,14 +18,16 @@ struct VerifyPasswordSRP: Action {
 
     init(stateData: SRPStateData,
          authResponse: InitiateAuthOutput,
-         clientMetadata: ClientMetadata) {
+         clientMetadata: ClientMetadata)
+    {
         self.stateData = stateData
         self.authResponse = authResponse
         self.clientMetadata = clientMetadata
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+                 environment: Environment) async
+    {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let inputUsername = stateData.username

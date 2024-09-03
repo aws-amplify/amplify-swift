@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct InitiateCustomAuth: Action {
     let identifier = "InitiateCustomAuth"
@@ -18,14 +18,16 @@ struct InitiateCustomAuth: Action {
 
     init(username: String,
          clientMetadata: [String: String],
-         deviceMetadata: DeviceMetadata) {
+         deviceMetadata: DeviceMetadata)
+    {
         self.username = username
         self.clientMetadata = clientMetadata
         self.deviceMetadata = deviceMetadata
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+                 environment: Environment) async
+    {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
             let userPoolEnv = try environment.userPoolEnvironment()
@@ -61,7 +63,8 @@ struct InitiateCustomAuth: Action {
     }
 
     private func sendRequest(request: InitiateAuthInput,
-                             environment: UserPoolEnvironment) async throws -> StateMachineEvent {
+                             environment: UserPoolEnvironment) async throws -> StateMachineEvent
+    {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
         logVerbose("\(#fileID) Starting execution", environment: environment)

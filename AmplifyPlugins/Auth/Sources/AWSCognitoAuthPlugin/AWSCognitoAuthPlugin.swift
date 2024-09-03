@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
 
@@ -36,7 +36,7 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
     let networkPreferences: AWSCognitoNetworkPreferences?
 
     @_spi(InternalAmplifyConfiguration)
-    internal(set) public var jsonConfiguration: JSONValue?
+    public internal(set) var jsonConfiguration: JSONValue?
 
     /// The unique key of the plugin within the auth category.
     public var key: PluginKey {

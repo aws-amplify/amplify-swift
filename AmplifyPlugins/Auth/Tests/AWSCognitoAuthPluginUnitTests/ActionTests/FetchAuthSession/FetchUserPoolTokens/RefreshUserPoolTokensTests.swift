@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
-import AWSPluginsCore
 import AWSCognitoIdentityProvider
+import AWSPluginsCore
+import XCTest
 
 @testable import AWSCognitoAuthPlugin
 
@@ -93,7 +93,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
         await action.execute(withDispatcher: MockDispatcher { event in
 
             if let userPoolEvent = event as? RefreshSessionEvent,
-               case .refreshIdentityInfo = userPoolEvent.eventType {
+               case .refreshIdentityInfo = userPoolEvent.eventType
+            {
                 expectation.fulfill()
             }
         }, environment: Defaults.makeDefaultAuthEnvironment(
@@ -131,7 +132,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
         await action.execute(withDispatcher: MockDispatcher { event in
 
             if let userPoolEvent = event as? RefreshSessionEvent,
-               case let .throwError(error) = userPoolEvent.eventType {
+               case let .throwError(error) = userPoolEvent.eventType
+            {
                 XCTAssertNotNil(error)
                 XCTAssertEqual(error, .service(testError))
                 expectation.fulfill()

@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSCognitoIdentityProvider
-@testable import AWSPluginsTestCommon
+import XCTest
 @testable import AWSCognitoAuthPlugin
+@testable import AWSPluginsTestCommon
 
 class RevokeTokenTests: XCTestCase {
 

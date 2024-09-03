@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 extension InitiateAuthInput {
 
@@ -16,7 +16,8 @@ extension InitiateAuthInput {
                          clientMetadata: [String: String],
                          asfDeviceId: String,
                          deviceMetadata: DeviceMetadata,
-                         environment: UserPoolEnvironment) async -> InitiateAuthInput {
+                         environment: UserPoolEnvironment) async -> InitiateAuthInput
+    {
         var authParameters = [
             "USERNAME": username,
             "SRP_A": publicSRPAHexValue
@@ -41,7 +42,8 @@ extension InitiateAuthInput {
                            clientMetadata: [String: String],
                            asfDeviceId: String,
                            deviceMetadata: DeviceMetadata,
-                           environment: UserPoolEnvironment) async -> InitiateAuthInput {
+                           environment: UserPoolEnvironment) async -> InitiateAuthInput
+    {
         let authParameters = [
             "USERNAME": username
         ]
@@ -60,7 +62,8 @@ extension InitiateAuthInput {
                             clientMetadata: [String: String],
                             asfDeviceId: String,
                             deviceMetadata: DeviceMetadata,
-                            environment: UserPoolEnvironment) async -> InitiateAuthInput {
+                            environment: UserPoolEnvironment) async -> InitiateAuthInput
+    {
         let authParameters = [
             "USERNAME": username,
             "PASSWORD": password
@@ -80,7 +83,8 @@ extension InitiateAuthInput {
                                  clientMetadata: [String: String],
                                  asfDeviceId: String,
                                  deviceMetadata: DeviceMetadata,
-                                 environment: UserPoolEnvironment) async -> InitiateAuthInput {
+                                 environment: UserPoolEnvironment) async -> InitiateAuthInput
+    {
 
         let authParameters = [
             "REFRESH_TOKEN": refreshToken
@@ -102,7 +106,8 @@ extension InitiateAuthInput {
                            clientMetadata: [String: String],
                            asfDeviceId: String?,
                            deviceMetadata: DeviceMetadata,
-                           environment: UserPoolEnvironment) async -> InitiateAuthInput {
+                           environment: UserPoolEnvironment) async -> InitiateAuthInput
+    {
 
         var authParameters = authParameters
         let configuration = environment.userPoolConfiguration
@@ -122,12 +127,13 @@ extension InitiateAuthInput {
         }
 
         var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
-        if let asfDeviceId = asfDeviceId,
+        if let asfDeviceId,
            let encodedData = await CognitoUserPoolASF.encodedContext(
             username: username,
             asfDeviceId: asfDeviceId,
             asfClient: environment.cognitoUserPoolASFFactory(),
-            userPoolConfiguration: environment.userPoolConfiguration) {
+            userPoolConfiguration: environment.userPoolConfiguration)
+        {
             userContextData = .init(encodedData: encodedData)
         }
         let analyticsMetadata = environment

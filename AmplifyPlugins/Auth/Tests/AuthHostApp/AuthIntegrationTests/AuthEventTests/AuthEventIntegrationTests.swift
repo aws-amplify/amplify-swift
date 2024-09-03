@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
-import AWSCognitoAuthPlugin
 
 class AuthEventIntegrationTests: AWSAuthBaseTest {
 
@@ -118,7 +118,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
                 email: defaultTestEmail)
         } catch {
             _ = try await Amplify.Auth.fetchAuthSession()
-            AuthSessionHelper.invalidateSession(with: self.amplifyConfiguration)
+            AuthSessionHelper.invalidateSession(with: amplifyConfiguration)
             _ = try await Amplify.Auth.fetchAuthSession()
         }
         await fulfillment(of: [signInExpectation, sessionExpiredExpectation], timeout: networkTimeout)

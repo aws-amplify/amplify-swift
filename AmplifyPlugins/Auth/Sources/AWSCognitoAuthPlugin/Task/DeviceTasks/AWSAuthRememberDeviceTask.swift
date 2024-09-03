@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
-import AWSCognitoIdentityProvider
+import Foundation
 
 class AWSAuthRememberDeviceTask: AuthRememberDeviceTask, DefaultLogger {
 
@@ -24,7 +24,8 @@ class AWSAuthRememberDeviceTask: AuthRememberDeviceTask, DefaultLogger {
 
     init(_ request: AuthRememberDeviceRequest,
          authStateMachine: AuthStateMachine,
-         environment: AuthEnvironment) {
+         environment: AuthEnvironment)
+    {
         self.request = request
         self.authStateMachine = authStateMachine
         self.environment = environment
@@ -41,7 +42,7 @@ class AWSAuthRememberDeviceTask: AuthRememberDeviceTask, DefaultLogger {
             throw error.authError
         } catch let error as AuthError {
             throw error
-        } catch let error {
+        } catch {
             throw AuthError.unknown("Unable to execute auth task", error)
         }
     }
@@ -49,7 +50,8 @@ class AWSAuthRememberDeviceTask: AuthRememberDeviceTask, DefaultLogger {
     func getCurrentUsername() async throws -> String {
         let authState = await authStateMachine.currentState
         if case .configured(let authenticationState, _) = authState,
-           case .signedIn(let signInData) = authenticationState {
+           case .signedIn(let signInData) = authenticationState
+        {
            return signInData.username
         }
         throw AuthError.unknown("Unable to get username for the signedIn user")

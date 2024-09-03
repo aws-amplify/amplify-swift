@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import AWSPluginsCore
 import AWSCognitoIdentityProvider
+import AWSPluginsCore
+import Foundation
 
 class AWSAuthSendUserAttributeVerificationCodeTask: AuthSendUserAttributeVerificationCodeTask, DefaultLogger {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
@@ -24,7 +24,8 @@ class AWSAuthSendUserAttributeVerificationCodeTask: AuthSendUserAttributeVerific
 
     init(_ request: AuthSendUserAttributeVerificationCodeRequest,
          authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory) {
+         userPoolFactory: @escaping CognitoUserPoolFactory)
+    {
         self.request = request
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory

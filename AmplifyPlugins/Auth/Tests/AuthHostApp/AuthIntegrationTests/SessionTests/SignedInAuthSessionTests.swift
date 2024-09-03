@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-@testable import Amplify
 import AWSCognitoAuthPlugin
 import AWSPluginsCore
+import XCTest
+@testable import Amplify
 
 class SignedInAuthSessionTests: AWSAuthBaseTest {
 
@@ -108,7 +108,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         }
 
         // Manually invalidate the tokens and then try to fetch the session.
-        AuthSessionHelper.invalidateSession(with: self.amplifyConfiguration)
+        AuthSessionHelper.invalidateSession(with: amplifyConfiguration)
         let anotherSession = try await Amplify.Auth.fetchAuthSession()
         do {
             let authSession = anotherSession as? AuthCognitoTokensProvider
@@ -116,7 +116,8 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
             XCTFail("Should not receive a valid token")
         } catch {
             guard let authError = error as? AuthError,
-                  case .sessionExpired = authError else {
+                  case .sessionExpired = authError
+            else {
                 XCTFail("Should receive a session expired error but received \(error)")
                 return
             }
@@ -155,7 +156,8 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
             XCTFail("Should not receive a valid token")
         } catch {
             guard let authError = error as? AuthError,
-                  case .signedOut = authError else {
+                  case .signedOut = authError
+            else {
                 XCTFail("Should receive a session expired error but received \(error)")
                 return
             }
@@ -205,16 +207,17 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
 
         let identityIDExpectation = expectation(description: "Identity id should be fetched")
         identityIDExpectation.expectedFulfillmentCount = 100
-        for index in 1...100 {
+        for index in 1 ... 100 {
             Task {
 
                 // Randomly yield the task so that below execution of signOut happen
-                if index%6 == 0 {
+                if index % 6 == 0 {
                     await Task.yield()
                 }
                 let firstSession = try await Amplify.Auth.fetchAuthSession()
                 guard let cognitoSession = firstSession as? AWSAuthCognitoSession,
-                     let _ = try? cognitoSession.identityIdResult.get() else {
+                     let _ = try? cognitoSession.identityIdResult.get()
+                else {
                     XCTFail("Could not fetch Identity ID")
                     return
                 }
@@ -226,7 +229,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         _ = await Amplify.Auth.signOut()
         let fetchSessionExptectation = expectation(description: "Session should be fetched")
         fetchSessionExptectation.expectedFulfillmentCount = 50
-        for _ in 1...50 {
+        for _ in 1 ... 50 {
             Task {
                 let firstSession = try await Amplify.Auth.fetchAuthSession()
                 XCTAssertFalse(firstSession.isSignedIn, "Session state should be signed out")

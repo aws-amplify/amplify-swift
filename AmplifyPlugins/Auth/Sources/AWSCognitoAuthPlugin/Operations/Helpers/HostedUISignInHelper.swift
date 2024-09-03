@@ -6,8 +6,8 @@
 //
 
 #if os(iOS) || os(macOS)
-import Foundation
 import Amplify
+import Foundation
 
 struct HostedUISignInHelper: DefaultLogger {
 
@@ -19,7 +19,8 @@ struct HostedUISignInHelper: DefaultLogger {
 
     init(request: AuthWebUISignInRequest,
          authstateMachine: AuthStateMachine,
-         configuration: AuthConfiguration) {
+         configuration: AuthConfiguration)
+    {
         self.request = request
         self.authStateMachine = authstateMachine
         self.configuration = configuration

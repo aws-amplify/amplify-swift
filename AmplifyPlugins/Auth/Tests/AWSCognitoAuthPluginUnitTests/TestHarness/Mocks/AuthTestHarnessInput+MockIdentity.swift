@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import Foundation
 import AWSCognitoIdentity
+import Foundation
+import XCTest
 
 extension AuthTestHarnessInput {
 

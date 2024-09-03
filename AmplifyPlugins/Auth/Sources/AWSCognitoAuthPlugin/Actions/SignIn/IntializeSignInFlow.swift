@@ -25,7 +25,8 @@ struct InitializeSignInFlow: Action {
     func createSignInEvent(from environment: Environment) async -> SignInEvent {
 
         guard let authEnvironment = environment as? AuthEnvironment,
-              authEnvironment.configuration.getUserPoolConfiguration() != nil else {
+              authEnvironment.configuration.getUserPoolConfiguration() != nil
+        else {
             let message = AuthPluginErrorConstants.configurationError
             let event = SignInEvent(eventType: .throwAuthError(.configuration(message: message)))
             return event
@@ -38,20 +39,20 @@ struct InitializeSignInFlow: Action {
                 with: environment)
         }
 
-        let event: SignInEvent
-        switch signInEventData.signInMethod {
+        let event: SignInEvent = switch signInEventData.signInMethod {
 
         case .apiBased(let authflowType):
-            event = signInEvent(for: authflowType, with: deviceMetadata)
+            signInEvent(for: authflowType, with: deviceMetadata)
         case .hostedUI(let hostedUIOptions):
-            event = .init(eventType: .initiateHostedUISignIn(hostedUIOptions))
+            .init(eventType: .initiateHostedUISignIn(hostedUIOptions))
         }
 
         return event
     }
 
     func signInEvent(for authflow: AuthFlowType,
-                     with deviceMetadata: DeviceMetadata) -> SignInEvent {
+                     with deviceMetadata: DeviceMetadata) -> SignInEvent
+    {
         switch authflow {
         case .userSRP:
             return .init(eventType: .initiateSignInWithSRP(signInEventData, deviceMetadata))

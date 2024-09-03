@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct UserPoolSignInHelper: DefaultLogger {
 
@@ -17,39 +17,48 @@ struct UserPoolSignInHelper: DefaultLogger {
         log.verbose("Checking next step for: \(signInState)")
 
         if case .signingInWithSRP(let srpState, _) = signInState,
-           case .error(let signInError) = srpState {
+           case .error(let signInError) = srpState
+        {
             return try validateError(signInError: signInError)
 
         } else if case .signingInWithSRPCustom(let srpState, _) = signInState,
-                  case .error(let signInError) = srpState {
+                  case .error(let signInError) = srpState
+        {
             return try validateError(signInError: signInError)
 
         } else if case .signingInViaMigrateAuth(let migratedAuthState, _) = signInState,
-                  case .error(let signInError) = migratedAuthState {
+                  case .error(let signInError) = migratedAuthState
+        {
             return try validateError(signInError: signInError)
 
         } else if case .signingInWithCustom(let customAuthState, _) = signInState,
-                  case .error(let signInError) = customAuthState {
+                  case .error(let signInError) = customAuthState
+        {
             return try validateError(signInError: signInError)
 
         } else if case .signingInWithHostedUI(let hostedUIState) = signInState,
-                  case .error(let hostedUIError) = hostedUIState {
+                  case .error(let hostedUIError) = hostedUIState
+        {
             return try validateError(signInError: hostedUIError)
 
         } else if case .resolvingChallenge(let challengeState, _, _) = signInState,
-                  case .error(_, _, let signInError) = challengeState {
+                  case .error(_, _, let signInError) = challengeState
+        {
             return try validateError(signInError: signInError)
 
         } else if case .resolvingChallenge(let challengeState, let challengeType, _) = signInState,
-                  case .waitingForAnswer(let challenge, _) = challengeState {
+                  case .waitingForAnswer(let challenge, _) = challengeState
+        {
             return try validateResult(for: challengeType, with: challenge)
 
         } else if case .resolvingTOTPSetup(let totpSetupState, _) = signInState,
-                  case .error(_, let signInError) = totpSetupState {
+                  case .error(_, let signInError) = totpSetupState
+        {
             return try validateError(signInError: signInError)
 
         } else if case .resolvingTOTPSetup(let totpSetupState, _) = signInState,
-                  case .waitingForAnswer(let totpSetupData) = totpSetupState {
+                  case .waitingForAnswer(let totpSetupData) = totpSetupState
+        {
             return .init(nextStep: .continueSignInWithTOTPSetup(
                 .init(sharedSecret: totpSetupData.secretCode, username: totpSetupData.username)))
         }
@@ -96,7 +105,7 @@ struct UserPoolSignInHelper: DefaultLogger {
 
             let client = try environment.cognitoUserPoolFactory()
             let response = try await client.respondToAuthChallenge(input: request)
-            let event = self.parseResponse(response, for: username, signInMethod: signInMethod)
+            let event = parseResponse(response, for: username, signInMethod: signInMethod)
             return event
         }
 
@@ -108,7 +117,8 @@ struct UserPoolSignInHelper: DefaultLogger {
             if let authenticationResult = response.authenticationResult,
                let idToken = authenticationResult.idToken,
                let accessToken = authenticationResult.accessToken,
-               let refreshToken = authenticationResult.refreshToken {
+               let refreshToken = authenticationResult.refreshToken
+            {
 
                 let userPoolTokens = AWSCognitoUserPoolTokens(idToken: idToken,
                                                               accessToken: accessToken,

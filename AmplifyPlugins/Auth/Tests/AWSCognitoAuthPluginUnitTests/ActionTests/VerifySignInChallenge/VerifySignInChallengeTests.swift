@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import AWSCognitoIdentityProvider
 import AWSClientRuntime
-@testable import AWSPluginsTestCommon
+import AWSCognitoIdentityProvider
+import XCTest
 @testable import AWSCognitoAuthPlugin
+@testable import AWSPluginsTestCommon
 
 class VerifySignInChallengeTests: XCTestCase {
 

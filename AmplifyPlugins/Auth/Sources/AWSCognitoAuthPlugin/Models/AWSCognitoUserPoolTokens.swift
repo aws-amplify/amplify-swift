@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSPluginsCore
+import Foundation
 
 public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
 
@@ -24,7 +24,8 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
     public init(idToken: String,
                 accessToken: String,
                 refreshToken: String,
-                expiresIn: Int) {
+                expiresIn: Int)
+    {
         self.idToken = idToken
         self.accessToken = accessToken
         self.refreshToken = refreshToken
@@ -36,7 +37,8 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
     public init(idToken: String,
                 accessToken: String,
                 refreshToken: String,
-                expiration: Date) {
+                expiration: Date)
+    {
         self.idToken = idToken
         self.accessToken = accessToken
         self.refreshToken = refreshToken
@@ -46,13 +48,14 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
     init(idToken: String,
          accessToken: String,
          refreshToken: String,
-         expiresIn: Int? = nil) {
+         expiresIn: Int? = nil)
+    {
 
         self.idToken = idToken
         self.accessToken = accessToken
         self.refreshToken = refreshToken
 
-        if let expiresIn =  expiresIn {
+        if let expiresIn {
             self.expiration = Date().addingTimeInterval(TimeInterval(expiresIn))
         } else {
             let expirationDoubleValue: Double

@@ -7,12 +7,12 @@
 
 import Foundation
 
-import XCTest
 import AWSCognitoIdentity
-@testable import Amplify
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import ClientRuntime
+import XCTest
+@testable import Amplify
+@testable import AWSCognitoAuthPlugin
 
 class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
 

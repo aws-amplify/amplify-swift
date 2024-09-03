@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
-import AWSCognitoIdentityProvider
+import Foundation
 
 class VerifyTOTPSetupTask: AuthVerifyTOTPSetupTask, DefaultLogger {
 
@@ -26,7 +26,8 @@ class VerifyTOTPSetupTask: AuthVerifyTOTPSetupTask, DefaultLogger {
 
     init(_ request: VerifyTOTPSetupRequest,
          authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory) {
+         userPoolFactory: @escaping CognitoUserPoolFactory)
+    {
         self.request = request
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory

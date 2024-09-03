@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 #if canImport(WatchKit)
 import WatchKit
 #elseif canImport(UIKit)
@@ -29,12 +29,13 @@ extension SignUpInput {
         let validationData = await Self.getValidationData(with: validationData)
         let convertedAttributes = Self.convertAttributes(attributes)
         var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
-        if let asfDeviceId = asfDeviceId,
+        if let asfDeviceId,
            let encodedData = await CognitoUserPoolASF.encodedContext(
             username: username,
             asfDeviceId: asfDeviceId,
             asfClient: environment.cognitoUserPoolASFFactory(),
-            userPoolConfiguration: environment.userPoolConfiguration) {
+            userPoolConfiguration: environment.userPoolConfiguration)
+        {
             userContextData = .init(encodedData: encodedData)
         }
         let analyticsMetadata = environment
@@ -54,10 +55,10 @@ extension SignUpInput {
     private static func getValidationData(with devProvidedData: [String: String]?)
     async -> [CognitoIdentityProviderClientTypes.AttributeType]? {
 
-        if let devProvidedData = devProvidedData {
-            return devProvidedData.compactMap { (key, value) in
+        if let devProvidedData {
+            return devProvidedData.compactMap { key, value in
                 return CognitoIdentityProviderClientTypes.AttributeType(name: key, value: value)
-            } + (await cognitoValidationData ?? [])
+            } await + (cognitoValidationData ?? [])
         }
         return await cognitoValidationData
     }

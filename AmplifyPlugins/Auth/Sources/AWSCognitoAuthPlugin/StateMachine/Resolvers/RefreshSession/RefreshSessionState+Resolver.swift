@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension RefreshSessionState {
 
@@ -16,7 +16,8 @@ extension RefreshSessionState {
 
         // swiftlint:disable:next cyclomatic_complexity
         func resolve(oldState: RefreshSessionState,
-                     byApplying event: StateMachineEvent) -> StateResolution<RefreshSessionState> {
+                     byApplying event: StateMachineEvent) -> StateResolution<RefreshSessionState>
+        {
 
             switch oldState {
 
@@ -30,7 +31,8 @@ extension RefreshSessionState {
 
                 if case .refreshCognitoUserPoolWithIdentityId(
                     let signedInData,
-                    let identityID) = event.isRefreshSessionEvent {
+                    let identityID) = event.isRefreshSessionEvent
+                {
 
                     let action = RefreshUserPoolTokens(existingSignedIndata: signedInData)
                     return .init(newState:
@@ -49,7 +51,8 @@ extension RefreshSessionState {
                 if case .refreshAWSCredentialsWithUserPool(
                     let identityID,
                     let signedInData,
-                    let provider) = event.isRefreshSessionEvent {
+                    let provider) = event.isRefreshSessionEvent
+                {
                     let action = FetchAuthAWSCredentials(loginsMap: provider.loginsMap,
                                                          identityID: identityID)
                     return .init(newState: .refreshingAWSCredentialsWithUserPoolTokens(
@@ -110,7 +113,8 @@ extension RefreshSessionState {
                     return .init(newState: .error(error), actions: [action])
                 }
                 if case .fetched(let identityID,
-                                 let credentials) = event.isAuthorizationEvent {
+                                 let credentials) = event.isAuthorizationEvent
+                {
                     let credentials = AmplifyCredentials.userPoolAndIdentityPool(
                         signedInData: signedInData,
                         identityID: identityID,
@@ -133,7 +137,8 @@ extension RefreshSessionState {
                 }
                 if case .fetchedAWSCredentials(
                     let identityID,
-                    let credentials) = event.isFetchSessionEvent {
+                    let credentials) = event.isFetchSessionEvent
+                {
                     let amplifyCredentials = AmplifyCredentials.identityPoolOnly(
                         identityID: identityID,
                         credentials: credentials)
@@ -150,7 +155,8 @@ extension RefreshSessionState {
                 }
                 if case .fetchedAWSCredentials(
                     let identityID,
-                    let credentials) = event.isFetchSessionEvent {
+                    let credentials) = event.isFetchSessionEvent
+                {
                     let amplifyCredentials = AmplifyCredentials.userPoolAndIdentityPool(
                         signedInData: signedInData,
                         identityID: identityID,

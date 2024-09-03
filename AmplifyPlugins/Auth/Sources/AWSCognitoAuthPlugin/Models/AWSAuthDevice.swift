@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 public struct AWSAuthDevice: AuthDevice {
 
@@ -33,7 +33,8 @@ public struct AWSAuthDevice: AuthDevice {
                 attributes: [String: String]?,
                 createdDate: Date?,
                 lastAuthenticatedDate: Date?,
-                lastModifiedDate: Date?) {
+                lastModifiedDate: Date?)
+    {
         self.id = id
         self.name = name
         self.attributes = attributes

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension AmplifyCredentials {
     static let expiryBufferInSeconds = TimeInterval.seconds(2 * 60)

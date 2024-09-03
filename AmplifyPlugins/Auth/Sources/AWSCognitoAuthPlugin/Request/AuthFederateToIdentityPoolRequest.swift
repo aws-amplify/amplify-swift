@@ -20,7 +20,8 @@ public struct AuthFederateToIdentityPoolRequest: AmplifyOperationRequest {
 
     public init(token: String,
                 provider: AuthProvider,
-                options: Options) {
+                options: Options)
+    {
         self.token = token
         self.provider = provider
         self.options = options

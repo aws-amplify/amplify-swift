@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import CryptoKit
 import AmplifyBigInteger
+import CryptoKit
+import Foundation
 
 public typealias BigInt = AmplifyBigInt
 
@@ -29,13 +29,14 @@ public struct SRPClientState {
         var randomInt: BigInt
         repeat {
             randomInt = generateRandomUnsigned(of: byteSize)
-        } while (randomInt >= N)
+        } while randomInt >= N
         return randomInt
     }
 
     private static func calculatePublicA(privateA: BigInt,
                                  generator: BigInt,
-                                 prime: BigInt) -> BigInt {
+                                 prime: BigInt) -> BigInt
+    {
         return generator.pow(privateA, modulus: prime)
     }
 
@@ -62,7 +63,8 @@ public struct SRPClientState {
                                            privateClientKey: BigInt,
                                            publicServerKey: BigInt,
                                            salt: BigInt,
-                                           commonState: SRPCommonState) -> BigInt {
+                                           commonState: SRPCommonState) -> BigInt
+    {
 
         // Calculations are detailed in RFC - https://datatracker.ietf.org/doc/html/rfc2945
         // Calculate x = SHA(<salt> | SHA(<username> | ":" | <raw password>))

@@ -7,19 +7,19 @@
 
 import Foundation
 
-import XCTest
 import AWSCognitoIdentity
+import AWSCognitoIdentityProvider
+import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
-import AWSCognitoIdentityProvider
 
 class ClientSecretConfigurationTests: XCTestCase {
 
     let networkTimeout = TimeInterval(2)
     var mockIdentityProvider: CognitoUserPoolBehavior!
     var plugin: AWSCognitoAuthPlugin!
-    
+
     var initialState: AuthState {
         AuthState.configured(
             AuthenticationState.signedIn(
@@ -156,7 +156,7 @@ class ClientSecretConfigurationTests: XCTestCase {
     ///
     func testClientSecretWithSignUp() async throws {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { request in
                 XCTAssertNotNil(request.secretHash)
                 return .init(
@@ -169,7 +169,7 @@ class ClientSecretConfigurationTests: XCTestCase {
             }
         )
 
-        let result = try await self.plugin.signUp(
+        let result = try await plugin.signUp(
             username: "jeffb",
             password: "Valid&99",
             options: nil)
@@ -190,14 +190,14 @@ class ClientSecretConfigurationTests: XCTestCase {
     ///
     func testClientSecretWithConfirmSignUp() async throws {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { request in
                 XCTAssertNotNil(request.secretHash)
                 return .init()
             }
         )
 
-        _ = try await self.plugin.confirmSignUp(
+        _ = try await plugin.confirmSignUp(
             for: "someuser",
             confirmationCode: "code",
             options: nil
@@ -213,7 +213,7 @@ class ClientSecretConfigurationTests: XCTestCase {
     ///    - Plugin should pass the secret hash created with client secret
     ///
     func testClientSecretWithRevokeToken() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { request in
                 XCTAssertNotNil(request.clientSecret)
                 return .testData
@@ -221,7 +221,8 @@ class ClientSecretConfigurationTests: XCTestCase {
                 return .testData
             })
         guard let result = await plugin.signOut() as? AWSCognitoSignOutResult,
-              case .complete = result else {
+              case .complete = result
+        else {
             XCTFail("Did not return complete signOut")
             return
         }
@@ -237,7 +238,7 @@ class ClientSecretConfigurationTests: XCTestCase {
     ///
     func testClientSecretWithInitiateAuth() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { request in
                 XCTAssertNotNil(request.clientSecret)
                 return .testData
@@ -268,7 +269,7 @@ class ClientSecretConfigurationTests: XCTestCase {
             })
 
         _ = await plugin.signOut()
-        
+
         let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
                                                  metadata: ["somekey": "somevalue"])
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)

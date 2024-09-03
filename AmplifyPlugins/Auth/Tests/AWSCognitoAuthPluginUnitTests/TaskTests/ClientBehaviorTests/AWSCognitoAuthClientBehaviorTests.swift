@@ -7,11 +7,11 @@
 
 import Foundation
 
-import XCTest
 import AWSCognitoIdentity
+import AWSCognitoIdentityProvider
+import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
 
 class AWSCognitoAuthClientBehaviorTests: XCTestCase {
     let networkTimeout = TimeInterval(10)

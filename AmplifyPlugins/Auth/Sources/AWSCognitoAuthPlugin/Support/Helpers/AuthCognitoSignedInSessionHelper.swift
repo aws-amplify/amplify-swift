@@ -7,7 +7,7 @@
 
 import Amplify
 
-struct AuthCognitoSignedInSessionHelper {
+enum AuthCognitoSignedInSessionHelper {
 
     static func makeOfflineSignedInSession() -> AWSAuthCognitoSession {
         let identityIdError = AuthError.service(

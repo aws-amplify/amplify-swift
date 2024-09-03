@@ -7,9 +7,9 @@
 
 import Foundation
 
-@testable import AWSCognitoAuthPlugin
 import Amplify
 import XCTest
+@testable import AWSCognitoAuthPlugin
 
 class HostedUIRequestHelperTests: XCTestCase {
     private var configuration: HostedUIConfigurationData!

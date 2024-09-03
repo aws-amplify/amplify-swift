@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import ClientRuntime
+@testable import AWSCognitoAuthPlugin
 
 struct MockIdentityProvider: CognitoUserPoolBehavior {
 

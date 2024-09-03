@@ -6,9 +6,9 @@
 //
 
 import Amplify
-import Foundation
-import CryptoKit
 import AWSCognitoIdentityProvider
+import CryptoKit
+import Foundation
 
 struct InitiateAuthDeviceSRP: Action {
     let identifier = "InitiateAuthDeviceSRP"
@@ -17,7 +17,8 @@ struct InitiateAuthDeviceSRP: Action {
     let authResponse: SignInResponseBehavior
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+                 environment: Environment) async
+    {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         do {

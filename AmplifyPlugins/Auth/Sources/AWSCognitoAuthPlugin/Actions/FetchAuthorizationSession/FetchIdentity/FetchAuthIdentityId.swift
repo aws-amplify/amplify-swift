@@ -6,8 +6,8 @@
 //
 
 import AWSCognitoIdentity
-import Foundation
 import ClientRuntime
+import Foundation
 
 struct FetchAuthIdentityId: Action {
 
@@ -20,7 +20,8 @@ struct FetchAuthIdentityId: Action {
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+                 environment: Environment) async
+    {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
@@ -52,11 +53,10 @@ struct FetchAuthIdentityId: Action {
             await dispatcher.send(event)
         } catch {
 
-            let event: FetchAuthSessionEvent
-            if isNotAuthorizedError(error) {
-                event = FetchAuthSessionEvent(eventType: .throwError(.notAuthorized))
+            let event = if isNotAuthorizedError(error) {
+                FetchAuthSessionEvent(eventType: .throwError(.notAuthorized))
             } else {
-                event = FetchAuthSessionEvent(eventType: .throwError(.service(error)))
+                FetchAuthSessionEvent(eventType: .throwError(.service(error)))
             }
             logVerbose("\(#fileID) Sending event \(event.type)",
                        environment: environment)

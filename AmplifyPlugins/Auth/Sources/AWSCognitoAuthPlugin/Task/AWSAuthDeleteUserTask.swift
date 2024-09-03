@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger {
     private let authStateMachine: AuthStateMachine
@@ -19,7 +19,8 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger {
     }
 
     init(authStateMachine: AuthStateMachine,
-         authConfiguraiton: AuthConfiguration) {
+         authConfiguraiton: AuthConfiguration)
+    {
         self.authStateMachine = authStateMachine
         self.configuration = authConfiguraiton
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
@@ -72,7 +73,8 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger {
 
     private func signOutIfUserWasNotFound(with error: Error) async {
         guard case AuthError.service(_, _, let underlyingError) = error,
-              case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+              case .userNotFound = (underlyingError as? AWSCognitoAuthError)
+        else {
             return
         }
         log.verbose("User not found, signing out")

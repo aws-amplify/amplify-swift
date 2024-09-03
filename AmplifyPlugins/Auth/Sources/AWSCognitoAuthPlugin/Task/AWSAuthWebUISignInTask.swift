@@ -6,9 +6,9 @@
 //
 
 #if os(iOS) || os(macOS)
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 class AWSAuthWebUISignInTask: AuthWebUISignInTask, DefaultLogger {
 

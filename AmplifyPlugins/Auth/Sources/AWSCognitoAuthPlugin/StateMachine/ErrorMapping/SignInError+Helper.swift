@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import ClientRuntime
 import AWSCognitoIdentityProvider
+import ClientRuntime
+import Foundation
 
 extension SignInError {
 

@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoIdentityProvider
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
 
 class AmplifyAuthCognitoPluginTests: XCTestCase {
 
@@ -102,7 +102,7 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
 
         }
 
-    
+
     // Helper to validate API Result
     func validateAPI<T: Equatable>(
         expectedOutput: Result<T, AuthError>?,

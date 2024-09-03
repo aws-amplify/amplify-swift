@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 import XCTest
-import Amplify
 @testable import AWSCognitoAuthPlugin
 
 class CredentialStoreOperationClientTests: XCTestCase {
@@ -50,7 +50,7 @@ class CredentialStoreOperationClientTests: XCTestCase {
 
     func testMultipleSuccess() async throws {
         await withThrowingTaskGroup(of: Void.self, body: { group in
-            for _ in 1...100 {
+            for _ in 1 ... 100 {
                 group.addTask {
                     let deviceId = "someDeviceID-\(UUID().uuidString)"
                     let username = "someUsername-\(UUID().uuidString)"
@@ -84,7 +84,7 @@ class CredentialStoreOperationClientTests: XCTestCase {
 
     func testMultipleFailuresDuringFetch() async throws {
         await withThrowingTaskGroup(of: Void.self, body: { group in
-            for _ in 1...100 {
+            for _ in 1 ... 100 {
                 group.addTask {
                     let deviceId = "someDeviceID-\(UUID().uuidString)"
                     let username = "someUsername-\(UUID().uuidString)"

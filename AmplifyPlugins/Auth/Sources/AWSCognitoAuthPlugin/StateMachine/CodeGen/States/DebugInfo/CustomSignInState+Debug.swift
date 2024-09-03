@@ -11,16 +11,15 @@ extension CustomSignInState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
 
-        let additionalMetadataDictionary: [String: Any]
-        switch self {
+        let additionalMetadataDictionary: [String: Any] = switch self {
         case .notStarted:
-            additionalMetadataDictionary = [:]
+            [:]
         case .initiating(let signInEventData):
-            additionalMetadataDictionary = signInEventData.debugDictionary
+            signInEventData.debugDictionary
         case .signedIn(let signedInData):
-            additionalMetadataDictionary = signedInData.debugDictionary
+            signedInData.debugDictionary
         case .error(let error):
-            additionalMetadataDictionary = [
+            [
                 "Error": error
             ]
         }

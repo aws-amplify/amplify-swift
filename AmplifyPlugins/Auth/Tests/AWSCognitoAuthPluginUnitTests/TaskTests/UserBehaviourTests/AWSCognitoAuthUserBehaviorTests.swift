@@ -7,10 +7,10 @@
 
 import Foundation
 
+import AWSCognitoIdentityProvider
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
 
 class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
 

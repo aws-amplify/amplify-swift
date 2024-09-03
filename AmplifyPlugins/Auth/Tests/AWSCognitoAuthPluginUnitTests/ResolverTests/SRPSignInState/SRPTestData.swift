@@ -7,8 +7,8 @@
 
 import Foundation
 
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+@testable import AWSCognitoAuthPlugin
 
 // MARK: - Test Data
 

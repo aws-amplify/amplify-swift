@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
 import AWSCognitoAuthPlugin
+import XCTest
 
 class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
 
@@ -157,7 +157,7 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
             let confirmSignInResult = try await Amplify.Auth.confirmSignIn(
                 challengeResponse: totpCode)
             XCTAssertTrue(confirmSignInResult.isSignedIn)
-            
+
         } catch {
             XCTFail("SignIn should successfully complete. \(error)")
         }
@@ -209,7 +209,8 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
         } catch {
 
             guard let authError = error as? AuthError,
-                  case .service(_, _, let underlyingError) = authError else {
+                  case .service(_, _, let underlyingError) = authError
+            else {
                 XCTFail("Should throw service error")
                 return
             }
@@ -277,7 +278,8 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
         } catch {
 
             guard let authError = error as? AuthError,
-                  case .service(_, _, let underlyingError) = authError else {
+                  case .service(_, _, let underlyingError) = authError
+            else {
                 XCTFail("Should throw service error")
                 return
             }

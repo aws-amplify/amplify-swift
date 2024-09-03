@@ -7,7 +7,7 @@
 
 import AWSPluginsCore
 
-struct DeviceMetadataHelper {
+enum DeviceMetadataHelper {
 
     static func getDeviceMetadata(
         for username: String,

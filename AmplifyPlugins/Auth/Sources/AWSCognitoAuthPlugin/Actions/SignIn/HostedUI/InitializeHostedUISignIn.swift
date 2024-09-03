@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import CryptoKit
+import Foundation
 
 struct InitializeHostedUISignIn: Action {
 
@@ -19,7 +19,8 @@ struct InitializeHostedUISignIn: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         guard let environment = environment as? AuthEnvironment,
-              let hostedUIEnvironment = environment.hostedUIEnvironment else {
+              let hostedUIEnvironment = environment.hostedUIEnvironment
+        else {
             let message = AuthPluginErrorConstants.configurationError
             let error = AuthenticationError.configuration(message: message)
             let event = AuthenticationEvent(eventType: .error(error))
@@ -38,7 +39,8 @@ struct InitializeHostedUISignIn: Action {
     func initializeHostedUI(presentationAnchor: AuthUIPresentationAnchor?,
                             environment: AuthEnvironment,
                             hostedUIEnvironment: HostedUIEnvironment,
-                            dispatcher: EventDispatcher) async {
+                            dispatcher: EventDispatcher) async
+    {
         let username = "unknown"
         let hostedUIConfig = hostedUIEnvironment.configuration
         let randomGenerator = hostedUIEnvironment.randomStringFactory()

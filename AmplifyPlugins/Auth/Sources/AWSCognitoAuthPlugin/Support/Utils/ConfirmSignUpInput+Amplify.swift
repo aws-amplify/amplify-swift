@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 extension ConfirmSignUpInput {
     init(username: String,
@@ -22,12 +22,13 @@ extension ConfirmSignUpInput {
             username: username,
             userPoolConfiguration: configuration)
         var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
-        if let asfDeviceId = asfDeviceId,
+        if let asfDeviceId,
            let encodedData = await CognitoUserPoolASF.encodedContext(
             username: username,
             asfDeviceId: asfDeviceId,
             asfClient: environment.cognitoUserPoolASFFactory(),
-            userPoolConfiguration: environment.userPoolConfiguration) {
+            userPoolConfiguration: environment.userPoolConfiguration)
+        {
             userContextData = .init(encodedData: encodedData)
         }
         let analyticsMetadata = environment

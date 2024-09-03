@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import CryptoKit
+import Foundation
 
 extension VerifyPasswordSRP {
 
@@ -16,7 +16,8 @@ extension VerifyPasswordSRP {
                    secretBlock: Data,
                    serverPublicBHexString: String,
                    srpClient: SRPClientBehavior,
-                   poolId: String) throws -> String {
+                   poolId: String) throws -> String
+    {
 
         let sharedSecret = try sharedSecret(
             userIdForSRP: userIdForSRP,
@@ -61,7 +62,8 @@ extension VerifyPasswordSRP {
                       saltHex: String,
                       serverPublicBHexString: String,
                       srpClient: SRPClientBehavior,
-                      poolId: String) throws -> String {
+                      poolId: String) throws -> String
+    {
         let strippedPoolId =  strippedPoolId(poolId)
         let usernameForS = "\(strippedPoolId)\(userIdForSRP)"
         do {
@@ -92,7 +94,8 @@ extension VerifyPasswordSRP {
                            authenticationKey: Data,
                            srpUserName: String,
                            poolName: String,
-                           serviceSecretBlock: Data) -> Data {
+                           serviceSecretBlock: Data) -> Data
+    {
         let key = SymmetricKey(data: authenticationKey)
         var hmac = HMAC<SHA256>.init(key: key)
         hmac.update(data: Data(poolName.utf8))

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
 import AWSCognitoAuthPlugin
+import XCTest
 
 class MFASignInTests: AWSAuthBaseTest {
 

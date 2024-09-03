@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
-import ClientRuntime
 import AWSCognitoIdentityProvider
+import ClientRuntime
 
 typealias ConfigureOperation = AmplifyOperation<
     AuthConfigureRequest,
@@ -24,7 +24,8 @@ class AuthConfigureOperation: ConfigureOperation {
 
     init(request: AuthConfigureRequest,
          authStateMachine: AuthStateMachine,
-         credentialStoreStateMachine: CredentialStoreStateMachine) {
+         credentialStoreStateMachine: CredentialStoreStateMachine)
+    {
 
         self.authConfiguration = request.authConfiguration
         self.authStateMachine = authStateMachine

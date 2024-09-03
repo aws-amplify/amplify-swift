@@ -18,7 +18,8 @@ struct SignInEventData {
     init(username: String?,
          password: String?,
          clientMetadata: [String: String] = [:],
-         signInMethod: SignInMethod) {
+         signInMethod: SignInMethod)
+    {
         self.username = username
         self.password = password
         self.clientMetadata = clientMetadata

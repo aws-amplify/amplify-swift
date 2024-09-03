@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
-import AWSCognitoIdentityProvider
+import Foundation
 
 class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
 
@@ -24,7 +24,8 @@ class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
     }
 
     init(authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory) {
+         userPoolFactory: @escaping CognitoUserPoolFactory)
+    {
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
@@ -56,7 +57,8 @@ class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
 
         let currentState = await authStateMachine.currentState
         if case .configured(let authNState, _) = currentState,
-           case .signedIn(let signInData) = authNState {
+           case .signedIn(let signInData) = authNState
+        {
             authUser = AWSAuthUser(username: signInData.username, userId: signInData.userId)
         } else {
             throw AuthError.invalidState(

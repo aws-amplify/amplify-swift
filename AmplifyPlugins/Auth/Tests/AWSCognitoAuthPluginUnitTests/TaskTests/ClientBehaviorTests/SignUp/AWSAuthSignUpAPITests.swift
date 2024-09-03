@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSCognitoIdentity
-@testable import Amplify
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import ClientRuntime
+import XCTest
+@testable import Amplify
+@testable import AWSCognitoAuthPlugin
 
 class AWSAuthSignUpAPITests: BasePluginTest {
 
@@ -24,7 +24,7 @@ class AWSAuthSignUpAPITests: BasePluginTest {
 
     func testSuccessfulSignUp() async throws {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
                 return .init(codeDeliveryDetails: nil,
                              userConfirmed: true,
@@ -32,7 +32,7 @@ class AWSAuthSignUpAPITests: BasePluginTest {
             }
         )
 
-        let result = try await self.plugin.signUp(
+        let result = try await plugin.signUp(
             username: "jeffb",
             password: "Valid&99",
             options: options)
@@ -46,14 +46,14 @@ class AWSAuthSignUpAPITests: BasePluginTest {
 
     func testSignUpWithEmptyUsername() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
                 XCTFail("Sign up API should not be called")
                 return .init(codeDeliveryDetails: nil, userConfirmed: true, userSub: nil)
             }
         )
 
-        do { _ = try await self.plugin.signUp(
+        do { _ = try await plugin.signUp(
             username: "",
             password: "Valid&99",
             options: options)
@@ -69,7 +69,7 @@ class AWSAuthSignUpAPITests: BasePluginTest {
 
     func testSignUpWithUserConfirmationRequired() async throws {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
                 return .init(
                     codeDeliveryDetails: .init(
@@ -81,7 +81,7 @@ class AWSAuthSignUpAPITests: BasePluginTest {
             }
         )
 
-        let result = try await self.plugin.signUp(
+        let result = try await plugin.signUp(
             username: "jeffb",
             password: "Valid&99",
             options: options)
@@ -100,7 +100,7 @@ class AWSAuthSignUpAPITests: BasePluginTest {
 
     func testSignUpNilCognitoResponse() async throws {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
                 return .init(
                     codeDeliveryDetails: nil,
@@ -109,7 +109,7 @@ class AWSAuthSignUpAPITests: BasePluginTest {
             }
         )
 
-        let result = try await self.plugin.signUp(
+        let result = try await plugin.signUp(
             username: "jeffb",
             password: "Valid&99",
             options: options)
@@ -211,14 +211,14 @@ class AWSAuthSignUpAPITests: BasePluginTest {
 
     func testSignUpWithNotAuthorizedException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
                 throw AWSCognitoIdentityProvider.NotAuthorizedException()
             }
         )
 
         do {
-            _ = try await self.plugin.signUp(
+            _ = try await plugin.signUp(
                 username: "username",
                 password: "Valid&99",
                 options: options)
@@ -230,7 +230,8 @@ class AWSAuthSignUpAPITests: BasePluginTest {
 
             guard case .notAuthorized(let errorDescription,
                                       let recoverySuggestion,
-                                      let notAuthorizedError) = authError else {
+                                      let notAuthorizedError) = authError
+            else {
                 XCTFail("Auth error should be of type notAuthorized")
                 return
             }
@@ -243,7 +244,7 @@ class AWSAuthSignUpAPITests: BasePluginTest {
 
     func testSignUpWithInternalErrorException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
                 throw try await AWSCognitoIdentityProvider.InternalErrorException(
                     httpResponse: .init(body: .empty, statusCode: .accepted)
@@ -252,7 +253,7 @@ class AWSAuthSignUpAPITests: BasePluginTest {
         )
 
         do {
-            _ = try await self.plugin.signUp(
+            _ = try await plugin.signUp(
                 username: "username",
                 password: "Valid&99",
                 options: options)
@@ -274,14 +275,14 @@ class AWSAuthSignUpAPITests: BasePluginTest {
     func validateSignUpServiceErrors(
         signUpOutputError: Error,
         expectedCognitoError: AWSCognitoAuthError) async {
-            self.mockIdentityProvider = MockIdentityProvider(
+            mockIdentityProvider = MockIdentityProvider(
                 mockSignUpResponse: { _ in
                     throw signUpOutputError
                 }
             )
 
             do {
-                _ = try await self.plugin.signUp(
+                _ = try await plugin.signUp(
                     username: "username",
                     password: "Valid&99",
                     options: options)
@@ -293,7 +294,8 @@ class AWSAuthSignUpAPITests: BasePluginTest {
 
                 guard case .service(let errorMessage,
                                     let recovery,
-                                    let serviceError) = authError else {
+                                    let serviceError) = authError
+                else {
                     XCTFail("Auth error should be of type service error")
                     return
                 }

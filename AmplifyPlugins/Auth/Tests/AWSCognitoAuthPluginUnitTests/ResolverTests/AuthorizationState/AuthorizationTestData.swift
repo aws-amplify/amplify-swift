@@ -31,7 +31,7 @@ extension AuthAWSCognitoCredentials {
         AuthAWSCognitoCredentials(accessKeyId: "accessKey",
                                   secretAccessKey: "secretAccessKey",
                                   sessionToken: "sessionToken",
-                                  expiration: Date() - 10000)
+                                  expiration: Date() - 10_000)
     }
 }
 

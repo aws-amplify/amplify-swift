@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 protocol AuthClearFederationToIdentityPoolTask: AmplifyAuthTask where Request == AuthClearFederationToIdentityPoolRequest,
                                                                       Success == Void,
@@ -19,7 +19,8 @@ public extension HubPayload.EventName.Auth {
 }
 
 public class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIdentityPoolTask,
-                                                       DefaultLogger {
+                                                       DefaultLogger
+{
     private let authStateMachine: AuthStateMachine
     private let clearFederationHelper: ClearFederationOperationHelper
     private let taskHelper: AWSAuthTaskHelper

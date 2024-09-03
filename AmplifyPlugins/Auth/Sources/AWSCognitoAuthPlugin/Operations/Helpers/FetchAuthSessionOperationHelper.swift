@@ -5,15 +5,16 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 class FetchAuthSessionOperationHelper: DefaultLogger {
 
     typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> Void
 
     func fetch(_ authStateMachine: AuthStateMachine,
-               forceRefresh: Bool = false) async throws -> AuthSession {
+               forceRefresh: Bool = false) async throws -> AuthSession
+    {
         let state = await authStateMachine.currentState
         guard case .configured(_, let authorizationState) = state  else {
             let message = "Auth state machine not in configured state: \(state)"
@@ -67,14 +68,13 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
         forceRefresh: Bool) async throws -> AuthSession {
 
             if forceRefresh || !credentials.areValid() {
-                var event: AuthorizationEvent
-                switch credentials {
+                var event = switch credentials {
                 case .identityPoolWithFederation(let federatedToken, let identityId, _):
-                    event = AuthorizationEvent(eventType: .startFederationToIdentityPool(federatedToken, identityId))
+                    AuthorizationEvent(eventType: .startFederationToIdentityPool(federatedToken, identityId))
                 case .noCredentials:
-                    event = AuthorizationEvent(eventType: .fetchUnAuthSession)
+                    AuthorizationEvent(eventType: .fetchUnAuthSession)
                 case .userPoolOnly, .identityPoolOnly, .userPoolAndIdentityPool:
-                    event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
+                    AuthorizationEvent(eventType: .refreshSession(forceRefresh))
                 }
                 await authStateMachine.send(event)
                 return try await listenForSession(authStateMachine: authStateMachine)
@@ -155,11 +155,10 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
             }
 
         case .service(let error):
-            var authError: AuthError
-            if let convertedAuthError = (error as? AuthErrorConvertible)?.authError {
-                authError = convertedAuthError
+            var authError: AuthError = if let convertedAuthError = (error as? AuthErrorConvertible)?.authError {
+                convertedAuthError
             } else {
-                authError = AuthError.service(
+                AuthError.service(
                     "Unknown service error occurred",
                     "See the attached error for more details",
                     error)

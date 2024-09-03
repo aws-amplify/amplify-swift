@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct InitiateMigrateAuth: Action {
     let identifier = "InitiateMigrateAuth"
@@ -20,7 +20,8 @@ struct InitiateMigrateAuth: Action {
     init(username: String,
          password: String,
          clientMetadata: [String: String],
-         deviceMetadata: DeviceMetadata) {
+         deviceMetadata: DeviceMetadata)
+    {
         self.username = username
         self.password = password
         self.clientMetadata = clientMetadata
@@ -28,7 +29,8 @@ struct InitiateMigrateAuth: Action {
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+                 environment: Environment) async
+    {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
             let userPoolEnv = try environment.userPoolEnvironment()
@@ -65,7 +67,8 @@ struct InitiateMigrateAuth: Action {
     }
 
     private func sendRequest(request: InitiateAuthInput,
-                             environment: UserPoolEnvironment) async throws -> StateMachineEvent {
+                             environment: UserPoolEnvironment) async throws -> StateMachineEvent
+    {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
         logVerbose("\(#fileID) Starting execution", environment: environment)

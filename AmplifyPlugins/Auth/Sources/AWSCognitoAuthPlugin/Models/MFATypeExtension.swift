@@ -10,7 +10,7 @@ import Foundation
 
 extension MFAType: DefaultLogger {
 
-    internal init?(rawValue: String) {
+    init?(rawValue: String) {
         if rawValue.caseInsensitiveCompare("SMS_MFA") == .orderedSame {
             self = .sms
         } else if rawValue.caseInsensitiveCompare("SOFTWARE_TOKEN_MFA") == .orderedSame {

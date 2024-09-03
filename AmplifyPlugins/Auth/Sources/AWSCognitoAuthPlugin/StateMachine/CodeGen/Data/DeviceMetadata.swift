@@ -21,7 +21,8 @@ enum DeviceMetadata {
 
         init(deviceKey: String,
              deviceGroupKey: String,
-             deviceSecret: String = UUID().uuidString) {
+             deviceSecret: String = UUID().uuidString)
+        {
             self.deviceKey = deviceKey
             self.deviceGroupKey = deviceGroupKey
             self.deviceSecret = deviceSecret
@@ -59,9 +60,10 @@ extension DeviceMetadata: CustomDebugStringConvertible {
 extension CognitoIdentityProviderClientTypes.AuthenticationResultType {
 
     var deviceMetadata: DeviceMetadata {
-        if let newDeviceMetadata = newDeviceMetadata,
+        if let newDeviceMetadata,
            let deviceKey = newDeviceMetadata.deviceKey,
-           let deviceGroupKey = newDeviceMetadata.deviceGroupKey {
+           let deviceGroupKey = newDeviceMetadata.deviceGroupKey
+        {
 
             let data = DeviceMetadata.Data(
                 deviceKey: deviceKey,

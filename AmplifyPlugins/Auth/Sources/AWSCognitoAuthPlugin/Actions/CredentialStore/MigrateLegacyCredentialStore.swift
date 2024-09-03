@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 @_spi(KeychainStore) import AWSPluginsCore
 
 // swiftlint:disable identifier_name
@@ -66,7 +66,8 @@ struct MigrateLegacyCredentialStore: Action {
         if let (storedIdentityId,
                 storedAWSCredentials) = try? getIdentityIdAndAWSCredentials(
                     from: credentialStoreEnvironment,
-                    with: authConfiguration) {
+                    with: authConfiguration)
+        {
             identityId = storedIdentityId
             awsCredentials = storedAWSCredentials
         }
@@ -74,13 +75,15 @@ struct MigrateLegacyCredentialStore: Action {
         let signInMethod = (try? getSignInMethod(from: credentialStoreEnvironment,
                                                  with: authConfiguration)) ?? .apiBased(.userSRP)
         do {
-            if let identityId = identityId,
-               let awsCredentials = awsCredentials,
-               userPoolTokens == nil {
+            if let identityId,
+               let awsCredentials,
+               userPoolTokens == nil
+            {
 
                 if !loginsMap.isEmpty,
                    let providerName = loginsMap.first?.key,
-                   let providerToken = loginsMap.first?.value {
+                   let providerToken = loginsMap.first?.value
+                {
                     logVerbose("\(#fileID) Federated signIn", environment: environment)
                     let provider = AuthProvider(identityPoolProviderName: providerName)
                     let credentials = AmplifyCredentials.identityPoolWithFederation(
@@ -97,9 +100,10 @@ struct MigrateLegacyCredentialStore: Action {
                     try amplifyCredentialStore.saveCredential(credentials)
                 }
 
-            } else if let identityId = identityId,
-                      let awsCredentials = awsCredentials,
-                      let userPoolTokens = userPoolTokens {
+            } else if let identityId,
+                      let awsCredentials,
+                      let userPoolTokens
+            {
                 logVerbose("\(#fileID) User pool with identity pool", environment: environment)
                 let signedInData = SignedInData(
                     signedInDate: Date.distantPast,
@@ -111,7 +115,7 @@ struct MigrateLegacyCredentialStore: Action {
                     credentials: awsCredentials)
                 try amplifyCredentialStore.saveCredential(credentials)
 
-            } else if let userPoolTokens = userPoolTokens {
+            } else if let userPoolTokens {
                 logVerbose("\(#fileID) Only user pool", environment: environment)
                 let signedInData = SignedInData(
                     signedInDate: Date.distantPast,
@@ -187,16 +191,17 @@ struct MigrateLegacyCredentialStore: Action {
             )
 
             let amplifyCredentialStore = credentialStoreEnvironment.amplifyCredentialStoreFactory()
-            if let deviceId = deviceId,
-               let deviceSecret = deviceSecret,
-               let deviceGroup = deviceGroup {
+            if let deviceId,
+               let deviceSecret,
+               let deviceGroup
+            {
                 let deviceMetaData = DeviceMetadata.metadata(.init(deviceKey: deviceId,
                                                                    deviceGroupKey: deviceGroup,
                                                                    deviceSecret: deviceSecret))
                 try? amplifyCredentialStore.saveDevice(deviceMetaData, for: currentUsername)
             }
 
-            if let asfDeviceId = asfDeviceId {
+            if let asfDeviceId {
                 try? amplifyCredentialStore.saveASFDevice(asfDeviceId, for: currentUsername)
             }
         }
@@ -300,13 +305,15 @@ struct MigrateLegacyCredentialStore: Action {
         }
 
     private func userPoolNamespace(userPoolConfig: UserPoolConfigurationData,
-                                   for key: String) -> String {
+                                   for key: String) -> String
+    {
         return "\(userPoolConfig.clientId).\(key)"
     }
 
     private func userPoolNamespace(withUser userName: String,
                                    userPoolConfig: UserPoolConfigurationData,
-                                   for key: String) -> String {
+                                   for key: String) -> String
+    {
         return "\(userPoolConfig.poolId).\(userName).\(key)"
     }
 

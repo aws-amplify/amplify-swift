@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import AWSCognitoIdentity
 import AWSClientRuntime
+import AWSCognitoIdentity
+import Foundation
 
 // AWSCognitoIdentity
 extension AWSCognitoIdentity.ExternalServiceException: AuthErrorConvertible {

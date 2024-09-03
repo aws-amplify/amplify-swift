@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 typealias AuthPluginErrorString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
 
@@ -71,7 +71,7 @@ enum AuthPluginErrorConstants {
     static let userInvalidError: AuthPluginErrorString = (
         "Could not validate the user",
         "Get the current user Auth.getCurrentUser() and make the request")
-    
+
     static let identityIdSignOutError: AuthPluginErrorString = (
         "There is no user signed in to retreive identity id",
         "Call Auth.signIn to sign in a user or enable unauthenticated access in AWS Cognito Identity Pool")

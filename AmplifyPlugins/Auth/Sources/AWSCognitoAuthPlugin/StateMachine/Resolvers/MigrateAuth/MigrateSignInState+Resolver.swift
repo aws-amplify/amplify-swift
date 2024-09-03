@@ -49,7 +49,8 @@ extension MigrateSignInState {
                     return errorStateWithCancelSignIn(error)
                 }
                 guard let password = signInEventData.password,
-                        !password.isEmpty else {
+                        !password.isEmpty
+                else {
                     let error = SignInError.inputValidation(
                         field: AuthPluginErrorConstants.signInPasswordError.field
                     )

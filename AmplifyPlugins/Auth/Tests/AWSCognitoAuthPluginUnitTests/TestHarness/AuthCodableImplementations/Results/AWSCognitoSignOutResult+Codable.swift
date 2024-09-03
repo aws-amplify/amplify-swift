@@ -6,8 +6,8 @@
 //
 
 import Foundation
-@testable import AWSCognitoAuthPlugin
 @testable import Amplify
+@testable import AWSCognitoAuthPlugin
 
 extension AWSCognitoSignOutResult: Equatable {
     public static func == (lhs: AWSCognitoSignOutResult, rhs: AWSCognitoSignOutResult) -> Bool {
@@ -60,15 +60,17 @@ extension AWSCognitoSignOutResult: Codable {
             let accessToken = try globalSignOutError?.decodeIfPresent(String.self, forKey: .accessToken)
 
             var revokeTokenErrorObject: AWSCognitoRevokeTokenError? = nil
-            if let revokeAuthError = revokeAuthError,
-               let refreshToken = refreshToken {
+            if let revokeAuthError,
+               let refreshToken
+            {
                 revokeTokenErrorObject = AWSCognitoRevokeTokenError(
                     refreshToken: refreshToken, error: revokeAuthError)
             }
 
             var globalSignOutErrorObject: AWSCognitoGlobalSignOutError? = nil
-            if let globalAuthError = globalAuthError,
-               let accessToken = accessToken {
+            if let globalAuthError,
+               let accessToken
+            {
                 globalSignOutErrorObject = AWSCognitoGlobalSignOutError(
                     accessToken: accessToken, error: globalAuthError)
             }

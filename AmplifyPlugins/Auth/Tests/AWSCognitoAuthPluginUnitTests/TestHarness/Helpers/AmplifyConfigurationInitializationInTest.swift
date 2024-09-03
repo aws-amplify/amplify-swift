@@ -10,7 +10,8 @@ import Foundation
 
 extension AmplifyConfiguration {
     init(fileName: String,
-         fileExtension: String = "") {
+         fileExtension: String = "")
+    {
 
         let bundle = Bundle.authCognitoTestBundle()
         let url = bundle.url(

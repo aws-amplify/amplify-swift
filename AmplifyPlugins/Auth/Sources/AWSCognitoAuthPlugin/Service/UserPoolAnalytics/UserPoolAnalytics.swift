@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 @_spi(KeychainStore) import AWSPluginsCore
 
 struct UserPoolAnalytics: UserPoolAnalyticsBehavior {
@@ -16,13 +16,14 @@ struct UserPoolAnalytics: UserPoolAnalyticsBehavior {
     let pinpointEndpoint: String?
 
     init(_ configuration: UserPoolConfigurationData?,
-         credentialStoreEnvironment: CredentialStoreEnvironment) throws {
+         credentialStoreEnvironment: CredentialStoreEnvironment) throws
+    {
 
         if let pinpointId = configuration?.pinpointAppId, !pinpointId.isEmpty {
-            pinpointEndpoint = try UserPoolAnalytics.getInternalPinpointEndpoint(
+            self.pinpointEndpoint = try UserPoolAnalytics.getInternalPinpointEndpoint(
                 credentialStoreEnvironment)
         } else {
-            pinpointEndpoint = nil
+            self.pinpointEndpoint = nil
         }
     }
 
@@ -45,7 +46,7 @@ struct UserPoolAnalytics: UserPoolAnalyticsBehavior {
         }
 
     func analyticsMetadata() -> CognitoIdentityProviderClientTypes.AnalyticsMetadataType? {
-        if let pinpointEndpoint = pinpointEndpoint {
+        if let pinpointEndpoint {
             return .init(analyticsEndpointId: pinpointEndpoint)
         }
         return nil

@@ -89,7 +89,7 @@ extension AuthCodeDeliveryDetails: Codable {
         let attributeName = try values.decodeIfPresent(String.self, forKey: .attributeName)
         if attributeName == "EMAIL" {
             attributeKey = .email
-        } else if let attributeName = attributeName  {
+        } else if let attributeName  {
             attributeKey = .unknown(attributeName)
         }
 

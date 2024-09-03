@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSPluginsCore
+import XCTest
 @testable import AWSCognitoAuthPlugin
 
 typealias CredentialStoreStateSequence = StateSequence<CredentialStoreState, CredentialStoreEvent>

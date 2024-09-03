@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import Foundation
 
 extension SignInState {
@@ -71,7 +72,8 @@ extension SignInState {
             case .signingInWithSRP(let srpSignInState, let signInEventData):
                 let signInMethod = SignInMethod.apiBased(.userSRP)
                 if let signInEvent = event as? SignInEvent,
-                   case .receivedChallenge(let challenge) = signInEvent.eventType {
+                   case .receivedChallenge(let challenge) = signInEvent.eventType
+                {
                     let action = InitializeResolveChallenge(challenge: challenge,
                                                             signInMethod: signInMethod)
                     let subState = SignInChallengeState.notStarted
@@ -84,7 +86,8 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                   case .confirmDevice(let signedInData) = signInEvent.eventType
+                {
                     let action = ConfirmDevice(signedInData: signedInData)
                     return .init(newState: .confirmingDevice,
                                  actions: [action])
@@ -92,7 +95,8 @@ extension SignInState {
 
                 if let signInEvent = event as? SignInEvent,
                    case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType,
-                   case .respondingPasswordVerifier = srpSignInState {
+                   case .respondingPasswordVerifier = srpSignInState
+                {
                     let action = StartDeviceSRPFlow(
                         username: username,
                         authResponse: challengeResponse)
@@ -101,7 +105,8 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .initiateTOTPSetup(_, let challengeResponse) = signInEvent.eventType {
+                   case .initiateTOTPSetup(_, let challengeResponse) = signInEvent.eventType
+                {
                     let action = InitializeTOTPSetup(
                         authResponse: challengeResponse)
                     return .init(newState: .resolvingTOTPSetup(.notStarted, signInEventData),
@@ -117,7 +122,8 @@ extension SignInState {
             case .signingInWithCustom(let customSignInState, let signInEventData):
                 let signInMethod = SignInMethod.apiBased(.customWithoutSRP)
                 if let signInEvent = event as? SignInEvent,
-                   case .receivedChallenge(let challenge) = signInEvent.eventType {
+                   case .receivedChallenge(let challenge) = signInEvent.eventType
+                {
                     let action = InitializeResolveChallenge(challenge: challenge,
                                                             signInMethod: signInMethod)
                     let subState = SignInChallengeState.notStarted
@@ -129,14 +135,16 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                   case .confirmDevice(let signedInData) = signInEvent.eventType
+                {
                     let action = ConfirmDevice(signedInData: signedInData)
                     return .init(newState: .confirmingDevice,
                                  actions: [action])
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType {
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType
+                {
                     let action = StartDeviceSRPFlow(
                         username: username,
                         authResponse: challengeResponse)
@@ -145,7 +153,8 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .initiateTOTPSetup(_, let challengeResponse) = signInEvent.eventType {
+                   case .initiateTOTPSetup(_, let challengeResponse) = signInEvent.eventType
+                {
                     let action = InitializeTOTPSetup(
                         authResponse: challengeResponse)
                     return .init(newState: .resolvingTOTPSetup(.notStarted, signInEventData),
@@ -161,7 +170,8 @@ extension SignInState {
             case .signingInViaMigrateAuth(let migrateSignInState, let signInEventData):
                 let signInMethod = SignInMethod.apiBased(.userPassword)
                 if let signInEvent = event as? SignInEvent,
-                   case .receivedChallenge(let challenge) = signInEvent.eventType {
+                   case .receivedChallenge(let challenge) = signInEvent.eventType
+                {
                     let action = InitializeResolveChallenge(challenge: challenge,
                                                             signInMethod: signInMethod)
                     let subState = SignInChallengeState.notStarted
@@ -172,7 +182,8 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                   case .confirmDevice(let signedInData) = signInEvent.eventType
+                {
                     let action = ConfirmDevice(signedInData: signedInData)
                     return .init(newState: .confirmingDevice,
                                  actions: [action])
@@ -180,7 +191,8 @@ extension SignInState {
 
                 if let signInEvent = event as? SignInEvent,
                    case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType,
-                   case .signingIn = migrateSignInState {
+                   case .signingIn = migrateSignInState
+                {
                     let action = StartDeviceSRPFlow(
                         username: username,
                         authResponse: challengeResponse)
@@ -189,7 +201,8 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .initiateTOTPSetup(_, let challengeResponse) = signInEvent.eventType {
+                   case .initiateTOTPSetup(_, let challengeResponse) = signInEvent.eventType
+                {
                     let action = InitializeTOTPSetup(
                         authResponse: challengeResponse)
                     return .init(newState: .resolvingTOTPSetup(.notStarted, signInEventData),
@@ -205,14 +218,16 @@ extension SignInState {
             case .resolvingChallenge(let challengeState, let challengeType, let signInMethod):
 
                 if let signInEvent = event as? SignInEvent,
-                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                   case .confirmDevice(let signedInData) = signInEvent.eventType
+                {
                     let action = ConfirmDevice(signedInData: signedInData)
                     return .init(newState: .confirmingDevice,
                                  actions: [action])
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType {
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType
+                {
                     let action = StartDeviceSRPFlow(
                         username: username,
                         authResponse: challengeResponse)
@@ -223,7 +238,8 @@ extension SignInState {
                 // This could when we have nested challenges
                 // Example newPasswordRequired -> sms_mfa
                 if let signInEvent = event as? SignInEvent,
-                   case .receivedChallenge(let challenge) = signInEvent.eventType {
+                   case .receivedChallenge(let challenge) = signInEvent.eventType
+                {
                     let action = InitializeResolveChallenge(challenge: challenge,
                                                             signInMethod: signInMethod)
                     let subState = SignInChallengeState.notStarted
@@ -234,7 +250,8 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .initiateTOTPSetup(let username, let challengeResponse) = signInEvent.eventType {
+                   case .initiateTOTPSetup(let username, let challengeResponse) = signInEvent.eventType
+                {
                     let action = InitializeTOTPSetup(
                         authResponse: challengeResponse)
                     return .init(
@@ -257,7 +274,8 @@ extension SignInState {
             case .signingInWithSRPCustom(let srpSignInState, let signInEventData):
                 let signInMethod = SignInMethod.apiBased(.customWithSRP)
                 if let signInEvent = event as? SignInEvent,
-                   case .receivedChallenge(let challenge) = signInEvent.eventType {
+                   case .receivedChallenge(let challenge) = signInEvent.eventType
+                {
                     let action = InitializeResolveChallenge(challenge: challenge,
                                                             signInMethod: signInMethod)
                     let subState = SignInChallengeState.notStarted
@@ -269,7 +287,8 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType {
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType
+                {
                     let action = StartDeviceSRPFlow(
                         username: username,
                         authResponse: challengeResponse)
@@ -278,7 +297,8 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .initiateTOTPSetup(_, let challengeResponse) = signInEvent.eventType {
+                   case .initiateTOTPSetup(_, let challengeResponse) = signInEvent.eventType
+                {
                     let action = InitializeTOTPSetup(
                         authResponse: challengeResponse)
                     return .init(newState: .resolvingTOTPSetup(.notStarted, signInEventData),
@@ -286,7 +306,8 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                   case .confirmDevice(let signedInData) = signInEvent.eventType
+                {
                     let action = ConfirmDevice(signedInData: signedInData)
                     return .init(newState: .confirmingDevice,
                                  actions: [action])
@@ -306,7 +327,8 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .receivedChallenge(let challenge) = signInEvent.eventType {
+                   case .receivedChallenge(let challenge) = signInEvent.eventType
+                {
                     let action = InitializeResolveChallenge(challenge: challenge,
                                                             signInMethod: signInEventData.signInMethod)
                     let subState = SignInChallengeState.notStarted
@@ -318,14 +340,16 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                   case .confirmDevice(let signedInData) = signInEvent.eventType
+                {
                     let action = ConfirmDevice(signedInData: signedInData)
                     return .init(newState: .confirmingDevice,
                                  actions: [action])
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType {
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType
+                {
                     let action = StartDeviceSRPFlow(
                         username: username,
                         authResponse: challengeResponse)
@@ -345,7 +369,8 @@ extension SignInState {
             case .resolvingDeviceSrpa(let deviceSrpState):
                 let signInMethod = SignInMethod.apiBased(.userSRP)
                 if let signInEvent = event as? SignInEvent,
-                   case .receivedChallenge(let challenge) = signInEvent.eventType {
+                   case .receivedChallenge(let challenge) = signInEvent.eventType
+                {
                     let action = InitializeResolveChallenge(challenge: challenge,
                                                             signInMethod: signInMethod)
                     let subState = SignInChallengeState.notStarted
@@ -356,7 +381,8 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .initiateTOTPSetup(let username, let challengeResponse) = signInEvent.eventType {
+                   case .initiateTOTPSetup(let username, let challengeResponse) = signInEvent.eventType
+                {
                     let action = InitializeTOTPSetup(
                         authResponse: challengeResponse)
                     return .init(newState:

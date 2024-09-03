@@ -7,11 +7,11 @@
 
 import Foundation
 @_spi(InternalAmplifyConfiguration) import Amplify
+import AWSClientRuntime
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
-import AWSClientRuntime
 @_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 @_spi(InternalHttpEngineProxy) import AWSPluginsCore
 
@@ -70,7 +70,8 @@ extension AWSCognitoAuthPlugin {
                    credentialStoreStateMachine: CredentialStoreStateMachine,
                    hubEventHandler: AuthHubEventBehavior,
                    analyticsHandler: UserPoolAnalyticsBehavior,
-                   queue: OperationQueue = OperationQueue()) {
+                   queue: OperationQueue = OperationQueue())
+    {
 
         self.authConfiguration = authConfiguration
         self.queue = queue
@@ -78,11 +79,11 @@ extension AWSCognitoAuthPlugin {
         self.authEnvironment = authEnvironment
         self.authStateMachine = authStateMachine
         self.credentialStoreStateMachine = credentialStoreStateMachine
-        self.internalConfigure()
-        self.listenToStateMachineChanges()
+        internalConfigure()
+        listenToStateMachineChanges()
         self.hubEventHandler = hubEventHandler
         self.analyticsHandler = analyticsHandler
-        self.taskQueue = TaskQueue()
+        taskQueue = TaskQueue()
     }
 
     // MARK: - Configure Helpers
@@ -94,7 +95,7 @@ extension AWSCognitoAuthPlugin {
                 serviceSpecific: .init(endpointResolver: userPoolConfig.endpoint?.resolver)
             )
 
-            if var httpClientEngineProxy = httpClientEngineProxy {
+            if var httpClientEngineProxy {
                 httpClientEngineProxy.target = baseClientEngine(for: configuration)
                 configuration.httpClientEngine = UserAgentSettingClientEngine(
                     target: httpClientEngineProxy
@@ -279,7 +280,7 @@ extension AWSCognitoAuthPlugin {
             request: request,
             authStateMachine: authStateMachine,
             credentialStoreStateMachine: credentialStoreStateMachine)
-        self.queue.addOperation(operation)
+        queue.addOperation(operation)
     }
 }
 

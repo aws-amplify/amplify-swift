@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import Foundation
 
 
-struct TestHarnessAPIDecoder {
+enum TestHarnessAPIDecoder {
 
     static func decode(
         specification: FeatureSpecification) -> AmplifyAPI {
@@ -175,7 +175,7 @@ struct TestHarnessAPIDecoder {
         data: Data?
     ) -> AmplifyAPI {
 
-        guard let responseType = responseType, let data = data else {
+        guard let responseType, let data else {
             return .deleteUser(
                 input: (),
                 expectedOutput: nil)
@@ -201,7 +201,7 @@ struct TestHarnessAPIDecoder {
     private static func generateResult<Output: Decodable>(
         responseType: String?, data: Data?) -> Result<Output, AuthError>? {
 
-            guard let responseType = responseType, let data = data else {
+            guard let responseType, let data else {
                 return nil
             }
 

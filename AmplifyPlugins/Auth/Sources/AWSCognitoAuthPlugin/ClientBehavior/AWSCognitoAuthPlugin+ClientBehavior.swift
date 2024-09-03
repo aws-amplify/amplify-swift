@@ -5,16 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AuthenticationServices
+import Foundation
 
 // swiftlint:disable force_cast
 extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 
     public func signUp(username: String,
                        password: String?,
-                       options: AuthSignUpRequest.Options?) async throws -> AuthSignUpResult {
+                       options: AuthSignUpRequest.Options?) async throws -> AuthSignUpResult
+    {
         let options = options ?? AuthSignUpRequest.Options()
         let request = AuthSignUpRequest(username: username,
                                         password: password,
@@ -50,7 +51,8 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 
 #if os(iOS) || os(macOS)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
-                                options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
+                                options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
+    {
         let options = options ?? AuthWebUISignInRequest.Options()
         let request = AuthWebUISignInRequest(presentationAnchor: presentationAnchor,
                                              options: options)
@@ -67,7 +69,8 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 
     public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor? = nil,
-                                options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
+                                options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
+    {
         let options = options ?? AuthWebUISignInRequest.Options()
         let request = AuthWebUISignInRequest(presentationAnchor: presentationAnchor,
                                              authProvider: authProvider,
@@ -85,7 +88,8 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 #endif
 
     public func confirmSignIn(challengeResponse: String,
-                              options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult {
+                              options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult
+    {
 
         let options = options ?? AuthConfirmSignInRequest.Options()
         let request = AuthConfirmSignInRequest(challengeResponse: challengeResponse,
@@ -132,7 +136,8 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     public func confirmResetPassword(for username: String,
                                      with newPassword: String,
                                      confirmationCode: String,
-                                     options: AuthConfirmResetPasswordRequest.Options?) async throws {
+                                     options: AuthConfirmResetPasswordRequest.Options?) async throws
+    {
         let options = options ?? AuthConfirmResetPasswordRequest.Options()
         let request = AuthConfirmResetPasswordRequest(username: username,
                                                       newPassword: newPassword,
@@ -146,13 +151,14 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 
     public func signIn(username: String?,
                        password: String?,
-                       options: AuthSignInRequest.Options?) async throws -> AuthSignInResult {
+                       options: AuthSignInRequest.Options?) async throws -> AuthSignInResult
+    {
         let options = options ?? AuthSignInRequest.Options()
         let request = AuthSignInRequest(username: username,
                                         password: password,
                                         options: options)
         let task = AWSAuthSignInTask(request,
-                                     authStateMachine: self.authStateMachine,
+                                     authStateMachine: authStateMachine,
                                      configuration: authConfiguration)
         return try await taskQueue.sync {
             return try await task.value
@@ -161,7 +167,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 
     public func deleteUser() async throws {
         let task = AWSAuthDeleteUserTask(
-            authStateMachine: self.authStateMachine,
+            authStateMachine: authStateMachine,
             authConfiguraiton: authConfiguration)
         _ = try await taskQueue.sync {
             return try await task.value

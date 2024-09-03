@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 extension RespondToAuthChallengeInput {
 
@@ -19,7 +19,8 @@ extension RespondToAuthChallengeInput {
                                  clientMetadata: ClientMetadata,
                                  deviceMetadata: DeviceMetadata,
                                  asfDeviceId: String?,
-                                 environment: UserPoolEnvironment) async -> RespondToAuthChallengeInput {
+                                 environment: UserPoolEnvironment) async -> RespondToAuthChallengeInput
+    {
         let dateStr = stateData.clientTimestamp.utcString
         let challengeResponses = [
             "USERNAME": username,
@@ -43,7 +44,8 @@ extension RespondToAuthChallengeInput {
                           deviceMetadata: DeviceMetadata,
                           asfDeviceId: String?,
                           session: String?,
-                          publicHexValue: String) async -> RespondToAuthChallengeInput {
+                          publicHexValue: String) async -> RespondToAuthChallengeInput
+    {
         let challengeResponses = [
             "USERNAME": username,
             "SRP_A": publicHexValue
@@ -104,8 +106,8 @@ extension RespondToAuthChallengeInput {
             ]
 
             // Add the attributes to the challenge response
-            attributes.forEach {
-                challengeResponses[$0.key] = $0.value
+            for attribute in attributes {
+                challengeResponses[attribute.key] = attribute.value
             }
             return await buildInput(
                 username: username,
@@ -144,12 +146,13 @@ extension RespondToAuthChallengeInput {
             }
 
             var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
-            if let asfDeviceId = asfDeviceId,
+            if let asfDeviceId,
                let encodedData = await CognitoUserPoolASF.encodedContext(
                 username: username,
                 asfDeviceId: asfDeviceId,
                 asfClient: environment.cognitoUserPoolASFFactory(),
-                userPoolConfiguration: environment.userPoolConfiguration) {
+                userPoolConfiguration: environment.userPoolConfiguration)
+            {
                 userContextData = .init(encodedData: encodedData)
             }
 

@@ -7,11 +7,11 @@
 
 import Foundation
 
+import AWSCognitoIdentity
+import AWSPluginsCore
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentity
-import AWSPluginsCore
 
 // swiftlint:disable file_length
 // swiftlint:disable type_body_length
@@ -489,8 +489,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
             do {
                 _ = try (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
-            }
-            catch let error as AuthError {
+            } catch let error as AuthError {
                 guard case .invalidState = error else {
                     XCTFail("Should throw Auth Error with invalid state \(error)")
                     return
@@ -568,8 +567,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
             do {
                 _ = try (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
-            }
-            catch let error as AuthError {
+            } catch let error as AuthError {
                 guard case .invalidState = error else {
                     XCTFail("Should throw Auth Error with invalid state \(error)")
                     return
@@ -660,8 +658,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
             do {
                 _ = try (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
-            }
-            catch let error as AuthError {
+            } catch let error as AuthError {
                 guard case .invalidState = error else {
                     XCTFail("Should throw Auth Error with invalid state \(error)")
                     return
@@ -770,7 +767,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
     ///
     func testFederateToIdentityPoolWhenGetIdErrorsOut() async throws {
 
-        var shouldThrowError: Bool = false
+        var shouldThrowError = false
 
         let provider = AuthProvider.facebook
         let authenticationToken = "authenticationToken"
@@ -849,7 +846,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
         let mockIdentityId = "mockIdentityId"
 
-        var shouldThrowError: Bool = false
+        var shouldThrowError = false
 
         let federatedToken: FederatedToken = .testData
         let credentials = CognitoIdentityClientTypes.Credentials(
@@ -925,6 +922,6 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             XCTFail("Received failure with error \(error)")
         }
     }
-    
+
 
 }

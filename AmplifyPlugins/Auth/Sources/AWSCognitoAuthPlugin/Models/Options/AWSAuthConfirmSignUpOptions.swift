@@ -14,7 +14,8 @@ public struct AWSAuthConfirmSignUpOptions {
     public let forceAliasCreation: Bool?
 
     public init(metadata: [String: String]? = nil,
-                forceAliasCreation: Bool? = nil) {
+                forceAliasCreation: Bool? = nil)
+    {
         self.metadata = metadata
         self.forceAliasCreation = forceAliasCreation
     }

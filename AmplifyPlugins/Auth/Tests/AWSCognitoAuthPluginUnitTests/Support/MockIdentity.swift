@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentity
 import ClientRuntime
+@testable import AWSCognitoAuthPlugin
 
 struct MockIdentity: CognitoIdentityBehavior {
 
@@ -20,7 +20,8 @@ struct MockIdentity: CognitoIdentityBehavior {
     let mockGetCredentialsResponse: MockGetCredentialsResponse?
 
     init(mockGetIdResponse: MockGetIdResponse? = nil,
-         mockGetCredentialsResponse: MockGetCredentialsResponse? = nil) {
+         mockGetCredentialsResponse: MockGetCredentialsResponse? = nil)
+    {
         self.mockGetIdResponse = mockGetIdResponse
         self.mockGetCredentialsResponse = mockGetCredentialsResponse
     }

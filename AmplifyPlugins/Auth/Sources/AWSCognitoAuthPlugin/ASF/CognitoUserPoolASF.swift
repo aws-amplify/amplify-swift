@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import CryptoKit
+import Foundation
 
 struct CognitoUserPoolASF: AdvancedSecurityBehavior {
 
@@ -30,7 +30,8 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
     func userContextData(for username: String = "unknown",
                          deviceInfo: ASFDeviceBehavior,
                          appInfo: ASFAppInfoBehavior,
-                         configuration: UserPoolConfigurationData) throws -> String {
+                         configuration: UserPoolConfigurationData) throws -> String
+    {
 
         let contextData = prepareUserContextData(deviceInfo: deviceInfo, appInfo: appInfo)
         let payload = try prepareJsonPayload(username: username,
@@ -43,7 +44,8 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
     }
 
     func prepareUserContextData(deviceInfo: ASFDeviceBehavior,
-                                appInfo: ASFAppInfoBehavior) -> [String: String] {
+                                appInfo: ASFAppInfoBehavior) -> [String: String]
+    {
         var build = "release"
 #if DEBUG
         build = "debug"
@@ -75,8 +77,9 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
 
     func prepareJsonPayload(username: String,
                             contextData: [String: String],
-                            userPoolId: String) throws -> String {
-        let timestamp = String(format: "%lli", floor(Date().timeIntervalSince1970 * 1000))
+                            userPoolId: String) throws -> String
+    {
+        let timestamp = String(format: "%lli", floor(Date().timeIntervalSince1970 * 1_000))
         let payload = [
             "contextData": contextData,
             "username": username,
@@ -92,8 +95,8 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
 
     func timeZoneOffet(seconds: Int = TimeZone.current.secondsFromGMT()) -> String {
 
-        let hours = seconds/3600
-        let minutes = abs(seconds/60) % 60
+        let hours = seconds / 3_600
+        let minutes = abs(seconds / 60) % 60
         return String(format: "%+.2d:%.2d", hours, minutes)
     }
 

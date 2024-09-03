@@ -20,7 +20,8 @@ struct HostedUIConfigurationData: Equatable {
 
     init(clientId: String,
                 oauth: OAuthConfigurationData,
-                clientSecret: String? = nil) {
+                clientSecret: String? = nil)
+    {
         self.clientId = clientId
         self.oauth = oauth
         self.clientSecret = clientSecret

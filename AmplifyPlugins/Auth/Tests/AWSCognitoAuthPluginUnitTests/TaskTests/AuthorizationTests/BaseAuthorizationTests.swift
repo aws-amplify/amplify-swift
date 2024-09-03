@@ -17,7 +17,8 @@ class BaseAuthorizationTests: XCTestCase {
     func configurePluginWith(authConfiguration: AuthConfiguration = Defaults.makeDefaultAuthConfigData(),
                              userPool: @escaping () throws -> CognitoUserPoolBehavior = Defaults.makeDefaultUserPool,
                              identityPool: @escaping () throws -> CognitoIdentityBehavior = Defaults.makeIdentity,
-                             initialState: AuthState) -> AWSCognitoAuthPlugin {
+                             initialState: AuthState) -> AWSCognitoAuthPlugin
+    {
         let plugin = AWSCognitoAuthPlugin()
         let environment = Defaults.makeDefaultAuthEnvironment(
             identityPoolFactory: identityPool,

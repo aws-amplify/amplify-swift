@@ -7,10 +7,10 @@
 
 import Foundation
 
-import XCTest
 import Amplify
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import XCTest
+@testable import AWSCognitoAuthPlugin
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -39,7 +39,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testSuccessfulConfirmSignInWithSMSAsMFASelection() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { request in
 
                 XCTAssertEqual(request.challengeName, .selectMfaType)
@@ -71,7 +71,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testSuccessfulConfirmSignInWithTOTPAsMFASelection() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { request in
 
                 XCTAssertEqual(request.challengeName, .selectMfaType)
@@ -103,7 +103,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithInvalidMFASelection() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 XCTFail("Cognito service should not be called")
                 return .testData()
@@ -119,7 +119,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
             }
         }
     }
-    
+
 
     /// Test a confirmSignIn call with an empty confirmation code
     ///
@@ -131,7 +131,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithEmptyResponse() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 XCTFail("Cognito service should not be called")
                 return .testData()
@@ -158,7 +158,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testSuccessfullyConfirmSignInAfterAFailedConfirmSignIn() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 return .testData(challenge: .softwareTokenMfa)
             })
@@ -198,7 +198,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithAliasExistsException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.AliasExistsException(
                     message: "Exception"
@@ -230,7 +230,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///    - I should get a .service error with .codeMismatch as underlyingError
     ///
     func testConfirmSignInWithCodeMismatchException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.CodeMismatchException(
                     message: "Exception"
@@ -264,7 +264,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///    - I invoke confirmSignIn with a valid MFA selection, I should get a successful result
     ///
     func testConfirmSignInRetryWithCodeMismatchException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.CodeMismatchException(
                     message: "Exception"
@@ -284,7 +284,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
                 return
             }
 
-            self.mockIdentityProvider = MockIdentityProvider(
+            mockIdentityProvider = MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
                     return .testData(challenge: .softwareTokenMfa)
                 })
@@ -313,7 +313,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithExpiredCodeException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.ExpiredCodeException(
                     message: "Exception"
@@ -345,7 +345,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithInternalErrorException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InternalErrorException(
                     message: "Exception"
@@ -373,7 +373,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///    - I should get a .service error with .lambda as underlyingError
     ///
     func testConfirmSignInWithInvalidLambdaResponseException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InvalidLambdaResponseException(
                     message: "Exception"
@@ -407,7 +407,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithInvalidParameterException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InvalidParameterException(
                     message: "Exception"
@@ -441,7 +441,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithInvalidPasswordException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InvalidPasswordException(
                     message: "Exception"
@@ -473,7 +473,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testConfirmSignInWithinvalidSmsRoleAccessPolicyException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InvalidSmsRoleAccessPolicyException(
                     message: "Exception"
@@ -505,7 +505,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testConfirmSignInWithInvalidSmsRoleTrustRelationshipException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InvalidSmsRoleTrustRelationshipException(
                     message: "Exception"
@@ -585,7 +585,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testCofirmSignInWithMFAMethodNotFoundException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.MFAMethodNotFoundException(
                     message: "Exception"
@@ -619,7 +619,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithNotAuthorizedException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.NotAuthorizedException(
                     message: "Exception"
@@ -649,7 +649,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithPasswordResetRequiredException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
                     message: "Exception"
@@ -680,7 +680,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithSoftwareTokenMFANotFoundException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException(
                     message: "Exception"
@@ -714,7 +714,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithTooManyRequestsException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.TooManyRequestsException(
                     message: "Exception"
@@ -748,7 +748,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithUnexpectedLambdaException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.UnexpectedLambdaException(
                     message: "Exception"
@@ -782,7 +782,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithUserLambdaValidationException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.UserLambdaValidationException(
                     message: "Exception"
@@ -816,7 +816,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithUserNotConfirmedException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.UserNotConfirmedException(
                     message: "Exception"
@@ -846,7 +846,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithUserNotFoundException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.UserNotFoundException(
                     message: "Exception"

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import CryptoKit
+import Foundation
 
 extension VerifyDevicePasswordSRP {
 
@@ -17,7 +17,8 @@ extension VerifyDevicePasswordSRP {
                    saltHex: String,
                    secretBlock: Data,
                    serverPublicBHexString: String,
-                   srpClient: SRPClientBehavior) throws -> String {
+                   srpClient: SRPClientBehavior) throws -> String
+    {
 
         let sharedSecret = try sharedSecret(
             username: "\(deviceGroupKey)\(deviceKey)",
@@ -61,7 +62,8 @@ extension VerifyDevicePasswordSRP {
                       password: String,
                       saltHex: String,
                       serverPublicBHexString: String,
-                      srpClient: SRPClientBehavior) throws -> String {
+                      srpClient: SRPClientBehavior) throws -> String
+    {
         do {
             let srpKeyPair = stateData.srpKeyPair
             return try srpClient.calculateSharedSecret(
@@ -85,7 +87,8 @@ extension VerifyDevicePasswordSRP {
                            authenticationKey: Data,
                            deviceKey: String,
                            deviceGroupKey: String,
-                           serviceSecretBlock: Data) -> Data {
+                           serviceSecretBlock: Data) -> Data
+    {
         let key = SymmetricKey(data: authenticationKey)
         var hmac = HMAC<SHA256>.init(key: key)
         hmac.update(data: Data(deviceGroupKey.utf8))

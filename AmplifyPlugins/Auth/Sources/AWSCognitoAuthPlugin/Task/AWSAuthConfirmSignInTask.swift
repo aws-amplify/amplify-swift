@@ -4,9 +4,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-import Foundation
+
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
 
@@ -21,7 +22,8 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
 
     init(_ request: AuthConfirmSignInRequest,
          stateMachine: AuthStateMachine,
-         configuration: AuthConfiguration) {
+         configuration: AuthConfiguration)
+    {
         self.request = request
         self.authStateMachine = stateMachine
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
@@ -49,7 +51,8 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             AuthPluginErrorConstants.invalidStateError, nil)
 
         guard case .configured(let authNState, _) = await authStateMachine.currentState,
-              case .signingIn(let signInState) = authNState else {
+              case .signingIn(let signInState) = authNState
+        else {
             throw invalidStateError
         }
 
@@ -138,11 +141,12 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         // Convert the attributes to [String: String]
         let attributePrefix = AuthPluginConstants.cognitoIdentityUserUserAttributePrefix
         let attributes = pluginOptions?.userAttributes?.reduce(
-            into: [String: String]()) {
+            into: [String: String]())
+            {
                 $0[attributePrefix + $1.key.rawValue] = $1.value
             } ?? [:]
         return ConfirmSignInEventData(
-            answer: self.request.challengeResponse,
+            answer: request.challengeResponse,
             attributes: attributes,
             metadata: pluginOptions?.metadata,
             friendlyDeviceName: pluginOptions?.friendlyDeviceName)

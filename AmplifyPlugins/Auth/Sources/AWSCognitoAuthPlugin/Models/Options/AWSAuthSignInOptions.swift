@@ -4,8 +4,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-import Foundation
+
 import AWSCognitoIdentityProvider
+import Foundation
 
 public struct AWSAuthSignInOptions {
 
@@ -28,7 +29,8 @@ public struct AWSAuthSignInOptions {
     @available(*, deprecated, renamed: "init(metadata:authFlowType:)")
     public init(validationData: [String: String]? = nil,
                 metadata: [String: String]? = nil,
-                authFlowType: AuthFlowType? = nil) {
+                authFlowType: AuthFlowType? = nil)
+    {
         self.validationData = validationData
         self.metadata = metadata
         self.authFlowType = authFlowType

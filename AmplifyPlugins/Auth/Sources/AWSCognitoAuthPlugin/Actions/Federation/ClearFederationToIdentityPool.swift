@@ -21,7 +21,8 @@ struct ClearFederationToIdentityPool: Action {
             // Check if we have credentials are of type federation, otherwise throw an error
             if case .amplifyCredentials(let credentials) = try await credentialStoreClient?.fetchData(
                 type: .amplifyCredentials),
-               case .identityPoolWithFederation = credentials {
+               case .identityPoolWithFederation = credentials
+            {
 
                 try await credentialStoreClient?.deleteData(type: .amplifyCredentials)
                 event = AuthenticationEvent.init(eventType: .clearedFederationToIdentityPool)

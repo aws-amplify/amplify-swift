@@ -25,7 +25,7 @@ extension AWSCognitoUserPoolTokens {
     }
 
     static let expiredTestData = AWSCognitoUserPoolTokens(
-        idToken: "XX", accessToken: "XX", refreshToken: "XX", expiresIn: -10000)
+        idToken: "XX", accessToken: "XX", refreshToken: "XX", expiresIn: -10_000)
 
     static func testData(username: String, sub: String) -> AWSCognitoUserPoolTokens {
         let tokenData = [

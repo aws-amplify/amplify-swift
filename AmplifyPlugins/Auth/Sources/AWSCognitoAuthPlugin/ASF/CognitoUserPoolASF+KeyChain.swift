@@ -15,7 +15,8 @@ extension CognitoUserPoolASF {
             let deviceMetaDataType = CredentialStoreDataType.deviceMetadata(username: username)
             let data = try? await credentialStoreClient.fetchData(type: deviceMetaDataType)
             if case .deviceMetadata(let metadata, _) = data,
-               case .metadata(let deviceData) = metadata {
+               case .metadata(let deviceData) = metadata
+            {
                 return deviceData.deviceKey
             }
 
@@ -32,7 +33,8 @@ extension CognitoUserPoolASF {
     static func encodedContext(username: String,
                                asfDeviceId: String,
                                asfClient: AdvancedSecurityBehavior,
-                               userPoolConfiguration: UserPoolConfigurationData) async -> String? {
+                               userPoolConfiguration: UserPoolConfigurationData) async -> String?
+    {
         let deviceInfo: ASFDeviceBehavior = await ASFDeviceInfo(id: asfDeviceId)
         let appInfo: ASFAppInfoBehavior = ASFAppInfo()
 

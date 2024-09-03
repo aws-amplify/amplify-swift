@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoIdentityProvider
 import Foundation
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
 
 extension AuthEvent {
 

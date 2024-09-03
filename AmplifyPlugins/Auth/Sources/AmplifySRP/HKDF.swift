@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import CommonCrypto
 import CryptoKit
+import Foundation
 
 // swiftlint:disable identifier_name
 // https://tools.ietf.org/html/rfc5869
@@ -16,7 +16,8 @@ public enum HMACKeyDerivationFunction {
     public static func generateDerivedKey(keyingMaterial: Data,
                                           salt: Data,
                                           info: String?,
-                                          outputLength: Int) -> Data {
+                                          outputLength: Int) -> Data
+    {
         if #available(macOS 11.0, iOS 14.0, tvOS 14.0, watchOS 7.0, *) {
             return generateHKDF(keyingMaterial: keyingMaterial,
                                 salt: salt,
@@ -36,13 +37,12 @@ public enum HMACKeyDerivationFunction {
         outputLength: Int
     ) -> Data {
         let key = SymmetricKey(data: keyingMaterial)
-        var hkdf: SymmetricKey
-        if let info {
-            hkdf = HKDF<SHA256>.deriveKey(inputKeyMaterial: key,
+        var hkdf: SymmetricKey = if let info {
+            HKDF<SHA256>.deriveKey(inputKeyMaterial: key,
                                           salt: salt, info: Data(info.utf8),
                                           outputByteCount: outputLength)
         } else {
-            hkdf = HKDF<SHA256>.deriveKey(inputKeyMaterial: key,
+            HKDF<SHA256>.deriveKey(inputKeyMaterial: key,
                                           salt: salt,
                                           outputByteCount: outputLength)
         }

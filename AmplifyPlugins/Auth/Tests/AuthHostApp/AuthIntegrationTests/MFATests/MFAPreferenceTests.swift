@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
 import AWSCognitoAuthPlugin
+import XCTest
 
 class MFAPreferenceTests: AWSAuthBaseTest {
 
@@ -201,8 +201,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
     ///    - I should get valid fetchMFAPreference results corresponding to the updateMFAPreference
     ///
     func testFetchAndUpdateMFAPreferenceForSMSAndTOTP() async throws {
-        let randomPhoneNumber = "+1" + (1...10)
-            .map { _ in String(Int.random(in: 0...9)) }
+        let randomPhoneNumber = "+1" + (1 ... 10)
+            .map { _ in String(Int.random(in: 0 ... 9)) }
             .joined()
 
         try await signUpAndSignIn(
@@ -302,7 +302,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
             XCTFail("Should not proceed, because MFA types cannot be marked as preferred")
         } catch {
             guard let authError = error as? AuthError,
-                  case .service(_, _, let underlyingError) = authError else {
+                  case .service(_, _, let underlyingError) = authError
+            else {
                 XCTFail("Should throw service error")
                 return
             }

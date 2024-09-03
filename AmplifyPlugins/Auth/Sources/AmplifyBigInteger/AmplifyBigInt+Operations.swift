@@ -119,7 +119,8 @@ public extension AmplifyBigInt {
     // MARK: - Exponentional
 
     func pow(_ power: AmplifyBigInt,
-                    modulus: AmplifyBigInt) -> AmplifyBigInt {
+                    modulus: AmplifyBigInt) -> AmplifyBigInt
+    {
         let exponentialModulus = AmplifyBigInt()
         let result = amplify_mp_exptmod(&value, &power.value, &modulus.value, &exponentialModulus.value)
         guard result == AMPLIFY_MP_OKAY else {

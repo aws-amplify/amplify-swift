@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCognitoAuthPlugin
 import Foundation
+@testable import AWSCognitoAuthPlugin
 
 extension AuthorizationState: Codable {
 

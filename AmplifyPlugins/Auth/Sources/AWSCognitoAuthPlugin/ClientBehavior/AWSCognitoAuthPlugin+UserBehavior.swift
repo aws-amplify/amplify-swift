@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 // swiftlint:disable force_cast
 public extension AWSCognitoAuthPlugin {

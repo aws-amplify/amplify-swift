@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import CryptoKit
+import Foundation
 
 struct FetchHostedUISignInToken: Action {
 
@@ -19,7 +19,8 @@ struct FetchHostedUISignInToken: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         guard let environment = environment as? AuthEnvironment,
-              let hostedUIEnvironment = environment.hostedUIEnvironment else {
+              let hostedUIEnvironment = environment.hostedUIEnvironment
+        else {
             let message = AuthPluginErrorConstants.configurationError
             let error = AuthenticationError.configuration(message: message)
             let event = AuthenticationEvent(eventType: .error(error))
@@ -39,9 +40,9 @@ struct FetchHostedUISignInToken: Action {
                 let task = hostedUIEnvironment.urlSessionFactory().dataTask(with: request) {
                     data, _, error in
 
-                    if let error = error {
+                    if let error {
                         continuation.resume(with: .failure(SignInError.service(error: error)))
-                    } else if let data = data {
+                    } else if let data {
                         continuation.resume(with: .success(data))
                     } else {
                         continuation.resume(with: .failure(SignInError.hostedUI(.tokenParsing)))
@@ -71,7 +72,8 @@ struct FetchHostedUISignInToken: Action {
     func handleData(_ data: Data) async throws -> SignedInData {
         guard let json = try JSONSerialization.jsonObject(
             with: data,
-            options: []) as? [String: Any] else {
+            options: []) as? [String: Any]
+        else {
             throw HostedUIError.tokenParsing
         }
 
@@ -81,7 +83,8 @@ struct FetchHostedUISignInToken: Action {
 
         } else if let idToken = json["id_token"] as? String,
                   let accessToken = json["access_token"] as? String,
-                  let refreshToken = json["refresh_token"] as? String {
+                  let refreshToken = json["refresh_token"] as? String
+        {
             let userPoolTokens = AWSCognitoUserPoolTokens(
                 idToken: idToken,
                 accessToken: accessToken,

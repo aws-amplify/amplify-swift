@@ -9,11 +9,11 @@
 
 import Foundation
 
+import AuthenticationServices
+import AWSCognitoIdentityProvider
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AuthenticationServices
-import AWSCognitoIdentityProvider
 
 class AWSAuthHostedUISignInTests: XCTestCase {
 
@@ -151,7 +151,8 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
+                  case .userCancelled = (underlyingError as? AWSCognitoAuthError)
+            else {
                 XCTFail("Should not fail with error = \(error)")
                 return
             }
@@ -169,7 +170,8 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
+                  case .userCancelled = (underlyingError as? AWSCognitoAuthError)
+            else {
                 XCTFail("Should not fail with error = \(error)")
                 return
             }
@@ -324,7 +326,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
     @MainActor
     func testRestartSignInWithWebUI() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,

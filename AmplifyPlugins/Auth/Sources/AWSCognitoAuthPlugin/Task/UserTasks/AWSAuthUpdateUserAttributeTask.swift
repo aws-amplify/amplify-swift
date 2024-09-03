@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import AWSPluginsCore
 import AWSCognitoIdentityProvider
+import AWSPluginsCore
+import Foundation
 
 class AWSAuthUpdateUserAttributeTask: AuthUpdateUserAttributeTask, DefaultLogger {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior

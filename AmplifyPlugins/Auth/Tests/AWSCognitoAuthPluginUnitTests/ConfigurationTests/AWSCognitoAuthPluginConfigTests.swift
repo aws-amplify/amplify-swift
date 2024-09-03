@@ -222,7 +222,7 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
         do {
             try Amplify.configure(amplifyConfig)
-            
+
             let escapeHatch = plugin.getEscapeHatch()
             guard case .userPoolAndIdentityPool(let userPoolClient, let identityPoolClient) = escapeHatch else {
                 XCTFail("Expected .userPool, got \(escapeHatch)")

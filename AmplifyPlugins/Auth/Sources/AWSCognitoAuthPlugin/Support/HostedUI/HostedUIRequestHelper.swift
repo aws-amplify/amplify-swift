@@ -5,16 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import CryptoKit
+import Foundation
 
-struct HostedUIRequestHelper {
+enum HostedUIRequestHelper {
 
     static func createSignInURL(state: String,
                                 proofKey: String,
                                 userContextData: String?,
                                 configuration: HostedUIConfigurationData,
-                                options: HostedUIOptions) throws -> URL {
+                                options: HostedUIOptions) throws -> URL
+    {
 
         guard let proofData = proofKey.data(using: .ascii) else {
             throw HostedUIError.proofCalculation
@@ -45,7 +46,7 @@ struct HostedUIRequestHelper {
             .init(name: "code_challenge", value: codeChallenge)
         ]
 
-        if let userContextData = userContextData {
+        if let userContextData {
             components.queryItems?.append(
                 .init(name: "userContextData", value: userContextData))
         }
@@ -84,11 +85,13 @@ struct HostedUIRequestHelper {
     }
 
     static func createTokenRequest(configuration: HostedUIConfigurationData,
-                                   result: HostedUIResult) throws -> URLRequest {
+                                   result: HostedUIResult) throws -> URLRequest
+    {
 
         guard let signInRedirectURI = configuration.oauth
             .signInRedirectURI
-            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        else {
             throw HostedUIError.tokenURI
         }
 

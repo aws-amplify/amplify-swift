@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSClientRuntime
+import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
-import ClientRuntime
-import AWSClientRuntime
 
 import AWSCognitoIdentityProvider
 

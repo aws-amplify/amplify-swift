@@ -7,8 +7,8 @@
 
 import Foundation
 
-@testable import AWSCognitoAuthPlugin
 import AWSPluginsCore
+@testable import AWSCognitoAuthPlugin
 
 class MockKeychainStoreBehavior: KeychainStoreBehavior {
 
@@ -18,7 +18,8 @@ class MockKeychainStoreBehavior: KeychainStoreBehavior {
     let removeAllHandler: VoidHandler?
 
     init(data: String,
-         removeAllHandler: VoidHandler? = nil) {
+         removeAllHandler: VoidHandler? = nil)
+    {
         self.data = data
         self.removeAllHandler = removeAllHandler
     }

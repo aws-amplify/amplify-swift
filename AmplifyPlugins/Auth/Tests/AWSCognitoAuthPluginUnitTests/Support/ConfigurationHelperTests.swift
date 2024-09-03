@@ -53,11 +53,12 @@ final class ConfigurationHelperTests: XCTestCase {
                                                  responseType: "responseType"))
 
         guard let config = ConfigurationHelper.parseUserPoolData(config),
-              let hostedUIConfig = config.hostedUIConfig else {
+              let hostedUIConfig = config.hostedUIConfig
+        else {
             XCTFail("Expected to parse UserPoolData into object")
             return
         }
-        
+
         XCTAssertEqual(hostedUIConfig.clientId, "clientId")
         XCTAssertNil(hostedUIConfig.clientSecret, "Client secret should be nil as its not supported in Gen2")
         XCTAssertEqual(hostedUIConfig.oauth.scopes, ["scope1", "scope2"])
@@ -79,7 +80,8 @@ final class ConfigurationHelperTests: XCTestCase {
                                   requireSymbols: true))
 
         guard let config = ConfigurationHelper.parseUserPoolData(config),
-              let result = config.passwordProtectionSettings else {
+              let result = config.passwordProtectionSettings
+        else {
             XCTFail("Expected to parse UserPoolData into object")
             return
         }
@@ -195,14 +197,14 @@ final class ConfigurationHelperTests: XCTestCase {
         let config = AuthConfiguration
             .userPools(.init(
                 poolId: "",
-                clientId: "", 
+                clientId: "",
                 region: "",
                 passwordProtectionSettings: .init(from: .init(
                     minLength: 8,
                     requireNumbers: true,
                     requireLowercase: true,
                     requireUppercase: true,
-                    requireSymbols: true)), 
+                    requireSymbols: true)),
                 usernameAttributes: [
                     .init(from: .email),
                     .init(from: .phoneNumber)

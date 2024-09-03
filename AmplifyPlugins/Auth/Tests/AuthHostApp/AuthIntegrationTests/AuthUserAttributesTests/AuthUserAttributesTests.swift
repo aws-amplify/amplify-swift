@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
-import AWSCognitoAuthPlugin
 
 class AuthUserAttributesTests: AWSAuthBaseTest {
 
@@ -40,7 +40,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
 
         let attributes = try await Amplify.Auth.fetchUserAttributes()
         if let emailAttribute = attributes.filter({ $0.key == .email }).first {
-            XCTAssertEqual(emailAttribute.value, self.defaultTestEmail)
+            XCTAssertEqual(emailAttribute.value, defaultTestEmail)
         } else {
             XCTFail("Email attribute not found")
         }
@@ -124,7 +124,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
             XCTFail("name attribute not found")
         }
     }
-    
+
     /// - Given: A confirmed user
     /// - When:
     ///    - I invoke Amplify.Auth.update with email attribute and then confirm the email attribute with an invalid code
@@ -151,7 +151,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         case .done:
             print("Update completed")
         }
-        
+
         do {
             try await Amplify.Auth.confirm(userAttribute: .email, confirmationCode: "123")
             XCTFail("User attribute confirmation unexpectedly succeeded")
@@ -239,7 +239,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
 
         let attributes = try await Amplify.Auth.fetchUserAttributes()
         if let emailAttribute = attributes.filter({ $0.key == .email }).first {
-            XCTAssertEqual(emailAttribute.value, self.defaultTestEmail)
+            XCTAssertEqual(emailAttribute.value, defaultTestEmail)
         } else {
             XCTFail("Email attribute not found")
         }

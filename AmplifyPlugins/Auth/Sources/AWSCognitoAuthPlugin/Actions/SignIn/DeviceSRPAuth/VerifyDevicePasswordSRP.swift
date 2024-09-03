@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct VerifyDevicePasswordSRP: Action {
     let identifier = "VerifyDevicePasswordSRP"
@@ -16,7 +16,8 @@ struct VerifyDevicePasswordSRP: Action {
     let authResponse: SignInResponseBehavior
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+                 environment: Environment) async
+    {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {

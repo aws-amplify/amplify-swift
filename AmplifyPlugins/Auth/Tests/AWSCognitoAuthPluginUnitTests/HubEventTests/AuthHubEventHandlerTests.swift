@@ -4,13 +4,14 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import  Foundation
 
+import AWSCognitoIdentity
+import AWSCognitoIdentityProvider
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentity
-import AWSCognitoIdentityProvider
 
 class AuthHubEventHandlerTests: XCTestCase {
 

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import AWSCognitoIdentityProvider
 import Amplify
+import AWSCognitoIdentityProvider
+import Foundation
 
 struct RevokeToken: Action {
 
@@ -60,7 +60,7 @@ struct RevokeToken: Action {
             revokeTokenError = AWSCognitoRevokeTokenError(
                 refreshToken: signedInData.cognitoUserPoolTokens.refreshToken,
                 error: internalError)
-        } else if let error = error {
+        } else if let error {
             let internalError = AuthError.service("", "", error)
             revokeTokenError = AWSCognitoRevokeTokenError(
                 refreshToken: signedInData.cognitoUserPoolTokens.refreshToken,

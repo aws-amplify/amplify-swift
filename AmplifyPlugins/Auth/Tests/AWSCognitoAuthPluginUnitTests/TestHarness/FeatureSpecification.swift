@@ -24,7 +24,8 @@ struct FeatureSpecification: Codable {
 
     init(fileName: String,
          fileExtension: String = "",
-         subdirectory: String) {
+         subdirectory: String)
+    {
         let bundle = Bundle.authCognitoTestBundle()
         let url = bundle.url(
             forResource: fileName,
@@ -50,7 +51,8 @@ struct Preconditions: Codable {
 
     init(amplifyConfiguration: AmplifyConfiguration,
          initialAuthState: AuthState,
-         expectedResponses: [JSONValue]) {
+         expectedResponses: [JSONValue])
+    {
         self.initialAuthState = initialAuthState
         self.amplifyConfiguration = amplifyConfiguration
         self.mockedResponses = expectedResponses
@@ -94,7 +96,7 @@ struct API: Codable {
         case confirmSignIn
         case fetchAuthSession
         case signOut
-        
+
         case getId
         case getCredentialsForIdentity
         case confirmDevice
@@ -106,9 +108,9 @@ struct API: Codable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
 
-        name = try values.decode(APIName.self, forKey: .name)
-        params = try values.decode(JSONValue.self, forKey: .params)
-        options = try values.decode(JSONValue.self, forKey: .options)
+        self.name = try values.decode(APIName.self, forKey: .name)
+        self.params = try values.decode(JSONValue.self, forKey: .params)
+        self.options = try values.decode(JSONValue.self, forKey: .options)
     }
 
     public func encode(to encoder: Encoder) throws {

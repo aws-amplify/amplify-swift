@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSCognitoIdentity
+import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
@@ -14,11 +14,9 @@ class BasePluginTest: XCTestCase {
 
     let apiTimeout = 2.0
     var mockIdentityProvider: CognitoUserPoolBehavior!
-    lazy var mockIdentity: CognitoIdentityBehavior = {
-        MockIdentity(
+    lazy var mockIdentity: CognitoIdentityBehavior = MockIdentity(
             mockGetIdResponse: getId,
             mockGetCredentialsResponse: getCredentials)
-    }()
     var plugin: AWSCognitoAuthPlugin!
 
     let getId: MockIdentity.MockGetIdResponse = { _ in
@@ -67,7 +65,8 @@ class BasePluginTest: XCTestCase {
         authConfiguration: AuthConfiguration = Defaults.makeDefaultAuthConfigData(),
         userPool: @escaping () throws -> CognitoUserPoolBehavior = Defaults.makeDefaultUserPool,
         identityPool: @escaping () throws -> CognitoIdentityBehavior = Defaults.makeIdentity,
-        initialState: AuthState) -> AWSCognitoAuthPlugin {
+        initialState: AuthState) -> AWSCognitoAuthPlugin
+    {
             let plugin = AWSCognitoAuthPlugin()
             let environment = Defaults.makeDefaultAuthEnvironment(
                 identityPoolFactory: identityPool,

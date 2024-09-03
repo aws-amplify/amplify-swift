@@ -6,8 +6,8 @@
 //
 
 import Foundation
-@testable import AWSCognitoAuthPlugin
 @testable import Amplify
+@testable import AWSCognitoAuthPlugin
 
 extension AWSAuthCognitoSession: Codable {
     enum CodingKeys: String, CodingKey {

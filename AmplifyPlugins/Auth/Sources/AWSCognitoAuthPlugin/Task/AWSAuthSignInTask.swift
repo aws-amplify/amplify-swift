@@ -4,9 +4,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-import Foundation
+
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
 
@@ -21,7 +22,8 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
 
     init(_ request: AuthSignInRequest,
          authStateMachine: AuthStateMachine,
-         configuration: AuthConfiguration) {
+         configuration: AuthConfiguration)
+    {
         self.request = request
         self.authStateMachine = authStateMachine
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)

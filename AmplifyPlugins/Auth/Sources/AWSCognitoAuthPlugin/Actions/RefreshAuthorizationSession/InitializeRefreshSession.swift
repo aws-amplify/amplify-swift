@@ -44,7 +44,8 @@ struct InitializeRefreshSession: Action {
                                                     region: config.region,
                                                     poolId: config.poolId)
             if isForceRefresh ||
-                tokens.doesExpire(in: AmplifyCredentials.expiryBufferInSeconds) {
+                tokens.doesExpire(in: AmplifyCredentials.expiryBufferInSeconds)
+            {
                 event = .init(eventType: .refreshCognitoUserPoolWithIdentityId(signedInData, identityID))
             } else {
                 event = .init(eventType: .refreshAWSCredentialsWithUserPool(identityID,
@@ -74,7 +75,7 @@ extension InitializeRefreshSession: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
-            "isForceRefresh": isForceRefresh ? "true": "false",
+            "isForceRefresh": isForceRefresh ? "true" : "false",
             "existingCredentials": existingCredentials.debugDescription
         ]
     }

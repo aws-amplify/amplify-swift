@@ -7,8 +7,8 @@
 
 import Foundation
 
-@testable import AWSCognitoAuthPlugin
 import AWSPluginsCore
+@testable import AWSCognitoAuthPlugin
 
 class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior {
 
@@ -25,7 +25,8 @@ class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior {
     init(migrationCompleteHandler: Migrationhandler? = nil,
          saveCredentialHandler: SaveCredentialHandler? = nil,
          getCredentialHandler: GetCredentialHandler? = nil,
-         clearCredentialHandler: ClearCredentialHandler? = nil) {
+         clearCredentialHandler: ClearCredentialHandler? = nil)
+    {
         self.migrationCompleteHandler = migrationCompleteHandler
         self.saveCredentialHandler = saveCredentialHandler
         self.getCredentialHandler = getCredentialHandler

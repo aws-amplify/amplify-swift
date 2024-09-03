@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
-import AWSCognitoIdentityProvider
+import Foundation
 
 protocol AuthUpdateMFAPreferenceTask: AmplifyAuthTask where Request == Never,
                                                             Success == Void,
@@ -37,7 +37,8 @@ class UpdateMFAPreferenceTask: AuthUpdateMFAPreferenceTask, DefaultLogger {
     init(smsPreference: MFAPreference?,
          totpPreference: MFAPreference?,
          authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory) {
+         userPoolFactory: @escaping CognitoUserPoolFactory)
+    {
         self.smsPreference = smsPreference
         self.totpPreference = totpPreference
         self.authStateMachine = authStateMachine

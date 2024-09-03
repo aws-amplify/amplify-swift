@@ -11,7 +11,7 @@ import ClientRuntime
 extension ChangePasswordOutput: Codable {
 
     enum CodingKeys: String, CodingKey {
-        case httpResponse = "httpResponse"
+        case httpResponse
     }
 
     public init(from decoder: Decoder) throws {

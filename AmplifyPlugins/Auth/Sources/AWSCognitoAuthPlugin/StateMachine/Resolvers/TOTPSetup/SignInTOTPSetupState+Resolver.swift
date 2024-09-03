@@ -123,7 +123,7 @@ extension SignInTOTPSetupState {
 
                 switch signInEvent.eventType {
                 case .verifyChallengeAnswer(let confirmSignInEventData):
-                    guard let signInTOTPSetupData = signInTOTPSetupData else {
+                    guard let signInTOTPSetupData else {
                         return .from(.notStarted)
                     }
                     let action = VerifyTOTPSetup(

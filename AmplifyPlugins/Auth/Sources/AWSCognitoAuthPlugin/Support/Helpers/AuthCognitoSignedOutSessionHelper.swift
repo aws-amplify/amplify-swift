@@ -8,7 +8,7 @@
 import Amplify
 import AWSPluginsCore
 
-struct AuthCognitoSignedOutSessionHelper {
+enum AuthCognitoSignedOutSessionHelper {
 
     /// Creates a signedOut session information with valid identityId and aws credentials.
     /// - Parameters:
@@ -16,7 +16,8 @@ struct AuthCognitoSignedOutSessionHelper {
     ///   - awsCredentials: Valid AWS Credentials for the current signedOut session
     /// - Returns: Returns a valid signedOut session
     static func makeSignedOutSession(identityId: String,
-                                     awsCredentials: AWSCredentials) -> AWSAuthCognitoSession {
+                                     awsCredentials: AWSCredentials) -> AWSAuthCognitoSession
+    {
         let tokensError = makeCognitoTokensSignedOutError()
         let authSession = AWSAuthCognitoSession(isSignedIn: false,
                                                 identityIdResult: .success(identityId),

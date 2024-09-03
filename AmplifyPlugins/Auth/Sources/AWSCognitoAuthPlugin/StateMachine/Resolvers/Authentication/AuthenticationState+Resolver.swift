@@ -24,7 +24,8 @@ extension AuthenticationState {
                 if let authEvent = event as? AuthenticationEvent {
                     return resolveNotConfigured(byApplying: authEvent)
                 } else if let authZEvent = event.isAuthorizationEvent,
-                        case .startFederationToIdentityPool = authZEvent {
+                        case .startFederationToIdentityPool = authZEvent
+                {
                     return .init(newState: .federatingToIdentityPool)
                 } else {
                     return .from(oldState)
@@ -42,7 +43,8 @@ extension AuthenticationState {
                 if let authEvent = event as? AuthenticationEvent {
                     return resolveSignedOut( byApplying: authEvent, to: signedOutData)
                 } else if let authZEvent = event.isAuthorizationEvent,
-                          case .startFederationToIdentityPool = authZEvent {
+                          case .startFederationToIdentityPool = authZEvent
+                {
                     return .init(newState: .federatingToIdentityPool)
                 } else {
                     return .from(oldState)
@@ -63,14 +65,16 @@ extension AuthenticationState {
 
             case .federatedToIdentityPool:
                 if let authEvent = event as? AuthenticationEvent,
-                   case .clearFederationToIdentityPool = authEvent.eventType {
+                   case .clearFederationToIdentityPool = authEvent.eventType
+                {
                     return .init(
                         newState: .clearingFederation,
                         actions: [
                             ClearFederationToIdentityPool()
                         ])
                 } else if let authZEvent = event.isAuthorizationEvent,
-                          case .startFederationToIdentityPool = authZEvent {
+                          case .startFederationToIdentityPool = authZEvent
+                {
                     return .init(newState: .federatingToIdentityPool)
                 } else {
                     return .from(oldState)
@@ -98,10 +102,12 @@ extension AuthenticationState {
 
             case .clearingFederation:
                 if let authEvent = event as? AuthenticationEvent,
-                   case .clearedFederationToIdentityPool = authEvent.eventType {
+                   case .clearedFederationToIdentityPool = authEvent.eventType
+                {
                     return .init(newState: .signedOut(SignedOutData(lastKnownUserName: nil)))
                 } else if let authEvent = event as? AuthenticationEvent,
-                    case .error(let authenticationError) = authEvent.eventType {
+                    case .error(let authenticationError) = authEvent.eventType
+                {
                     return .init(newState: .error(authenticationError))
                 } else {
                     return .from(oldState)
@@ -119,13 +125,16 @@ extension AuthenticationState {
 
             case .error:
                 if let authEvent = event as? AuthenticationEvent,
-                   case .cancelSignIn = authEvent.eventType {
+                   case .cancelSignIn = authEvent.eventType
+                {
                     return .init(newState: .signedOut(SignedOutData()))
                 } else if let authZEvent = event.isAuthorizationEvent,
-                         case .startFederationToIdentityPool = authZEvent {
+                         case .startFederationToIdentityPool = authZEvent
+                {
                     return .init(newState: .federatingToIdentityPool)
                 } else if let authEvent = event as? AuthenticationEvent,
-                   case .clearFederationToIdentityPool = authEvent.eventType {
+                   case .clearFederationToIdentityPool = authEvent.eventType
+                {
                     return .init(
                         newState: .clearingFederation,
                         actions: [
@@ -230,14 +239,17 @@ extension AuthenticationState {
             }
 
         private func resolveSigningInState(oldState: AuthenticationState,
-                                           event: StateMachineEvent) -> StateResolution<StateType> {
+                                           event: StateMachineEvent) -> StateResolution<StateType>
+        {
             if let authEvent = event as? AuthenticationEvent,
-               case .error(let error) = authEvent.eventType {
+               case .error(let error) = authEvent.eventType
+            {
                 return .init(newState: .error(error))
             }
             /// Move to signedOut state if cancelSignIn
             if let authEvent = event as? AuthenticationEvent,
-               case .cancelSignIn = authEvent.eventType {
+               case .cancelSignIn = authEvent.eventType
+            {
                 let signedOutData = SignedOutData(lastKnownUserName: nil)
                 return .from(.signedOut(signedOutData))
             }
@@ -248,7 +260,8 @@ extension AuthenticationState {
 
             // Move to signedIn state if signin flow completed
             if let authEvent = event as? AuthenticationEvent,
-               case .signInCompleted(let signedInData) = authEvent.eventType {
+               case .signInCompleted(let signedInData) = authEvent.eventType
+            {
                 return .init(newState: .signedIn(signedInData))
             }
 
@@ -263,7 +276,8 @@ extension AuthenticationState {
             to signOutState: SignOutState
         ) -> StateResolution<StateType> {
             if let authenEvent = event.isAuthenticationEvent,
-               case .cancelSignOut(let data) = authenEvent {
+               case .cancelSignOut(let data) = authenEvent
+            {
 
                 if let signedInData = data {
                     return .from(.signedIn(signedInData))

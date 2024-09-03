@@ -9,7 +9,7 @@ import Amplify
 import XCTest
 
 enum AuthSignInHelper {
-    
+
     static func signOut() async {
         let session = try? await Amplify.Auth.fetchAuthSession()
         if session?.isSignedIn ?? false {
@@ -27,7 +27,7 @@ enum AuthSignInHelper {
                 AuthUserAttribute(.email, value: email)
             ]
 
-            if let phoneNumber = phoneNumber {
+            if let phoneNumber {
                 userAttributes.append(AuthUserAttribute(.phoneNumber, value: phoneNumber))
             }
 

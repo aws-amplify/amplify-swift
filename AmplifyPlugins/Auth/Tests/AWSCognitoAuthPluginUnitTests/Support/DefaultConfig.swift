@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-@testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
 import AWSCognitoIdentity
-import ClientRuntime
-@testable import Amplify
+import AWSCognitoIdentityProvider
 import AWSPluginsCore
+import ClientRuntime
+import Foundation
+@testable import Amplify
+@testable import AWSCognitoAuthPlugin
 
 enum Defaults {
 
@@ -72,7 +72,7 @@ enum Defaults {
     static func makeUserPoolAnalytics() -> UserPoolAnalyticsBehavior {
         MockAnalyticsHandler()
     }
-    
+
     static func makeIdentity() throws -> CognitoIdentityBehavior {
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
@@ -199,7 +199,8 @@ enum Defaults {
 
     static func makeAuthState(tokens: AWSCognitoUserPoolTokens,
                               signedInDate: Date = Date(),
-                              signInMethod: SignInMethod = .apiBased(.userSRP)) -> AuthState {
+                              signInMethod: SignInMethod = .apiBased(.userSRP)) -> AuthState
+    {
 
         let signedInData = SignedInData(signedInDate: signedInDate,
                                         signInMethod: signInMethod,
@@ -222,7 +223,8 @@ enum Defaults {
     static func makeCognitoUserPoolTokens(idToken: String = "XX",
                                           accessToken: String = "",
                                           refreshToken: String = "XX",
-                                          expiresIn: Int = 300) -> AWSCognitoUserPoolTokens {
+                                          expiresIn: Int = 300) -> AWSCognitoUserPoolTokens
+    {
         AWSCognitoUserPoolTokens(idToken: idToken, accessToken: accessToken, refreshToken: refreshToken, expiresIn: expiresIn)
     }
 
@@ -246,8 +248,7 @@ struct MockCredentialStoreOperationClient: CredentialStoreStateBehavior {
                 let device = try mockAmplifyStore.retrieveASFDevice(for: username)
                 return .asfDeviceId(device, username)
             }
-        }
-        catch KeychainStoreError.itemNotFound {
+        } catch KeychainStoreError.itemNotFound {
             switch type {
             case .amplifyCredentials:
                 return .amplifyCredentials(.testData)
@@ -259,8 +260,7 @@ struct MockCredentialStoreOperationClient: CredentialStoreStateBehavior {
             case .asfDeviceId(username: let username):
                 return .asfDeviceId("id", username)
             }
-        }
-        catch {
+        } catch {
             fatalError()
         }
     }
@@ -292,7 +292,8 @@ class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
 
     func retrieveCredential() throws -> AmplifyCredentials {
         guard let data = Self.dict.getValue(forKey: credentialsKey),
-              let cred = (try? JSONDecoder().decode(AmplifyCredentials.self, from: data)) else {
+              let cred = (try? JSONDecoder().decode(AmplifyCredentials.self, from: data))
+        else {
             throw KeychainStoreError.itemNotFound
         }
         return cred
@@ -313,7 +314,8 @@ class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
 
     func retrieveDevice(for username: String) throws -> DeviceMetadata {
         guard let data = Self.dict.getValue(forKey: username),
-              let device = (try? JSONDecoder().decode(DeviceMetadata.self, from: data)) else {
+              let device = (try? JSONDecoder().decode(DeviceMetadata.self, from: data))
+        else {
             throw KeychainStoreError.itemNotFound
         }
         return device
@@ -331,7 +333,8 @@ class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
 
     func retrieveASFDevice(for username: String) throws -> String {
         guard let data = Self.dict.getValue(forKey: username),
-              let device = (try? JSONDecoder().decode(String.self, from: data)) else {
+              let device = (try? JSONDecoder().decode(String.self, from: data))
+        else {
             throw KeychainStoreError.itemNotFound
         }
         return device
@@ -373,7 +376,8 @@ struct MockASF: AdvancedSecurityBehavior {
     func userContextData(for username: String,
                          deviceInfo: ASFDeviceBehavior,
                          appInfo: ASFAppInfoBehavior,
-                         configuration: UserPoolConfigurationData) throws -> String {
+                         configuration: UserPoolConfigurationData) throws -> String
+    {
         return ""
     }
 

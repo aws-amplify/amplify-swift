@@ -6,9 +6,9 @@
 //
 
 import Amplify
-import Foundation
-import CryptoKit
 import AWSCognitoIdentityProvider
+import CryptoKit
+import Foundation
 
 struct InitiateAuthSRP: Action {
     let identifier = "InitiateAuthSRP"
@@ -23,7 +23,8 @@ struct InitiateAuthSRP: Action {
          password: String,
          authFlowType: AuthFlowType = .userSRP,
          deviceMetadata: DeviceMetadata = .noData,
-         clientMetadata: [String: String] = [:]) {
+         clientMetadata: [String: String] = [:])
+    {
         self.username = username
         self.password = password
         self.authFlowType = authFlowType
@@ -32,7 +33,8 @@ struct InitiateAuthSRP: Action {
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+                 environment: Environment) async
+    {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
             let authEnv = try environment.authEnvironment()
@@ -88,7 +90,8 @@ struct InitiateAuthSRP: Action {
 
     private func sendRequest(request: InitiateAuthInput,
                              environment: UserPoolEnvironment,
-                             srpStateData: SRPStateData) async throws -> SignInEvent {
+                             srpStateData: SRPStateData) async throws -> SignInEvent
+    {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
         logVerbose("\(#fileID) Starting execution", environment: environment)

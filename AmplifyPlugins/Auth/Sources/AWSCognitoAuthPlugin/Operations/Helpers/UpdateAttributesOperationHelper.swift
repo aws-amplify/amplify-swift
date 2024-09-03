@@ -6,10 +6,10 @@
 //
 
 import Amplify
-import AWSPluginsCore
 import AWSCognitoIdentityProvider
+import AWSPluginsCore
 
-struct UpdateAttributesOperationHelper {
+enum UpdateAttributesOperationHelper {
 
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
 
@@ -23,7 +23,7 @@ struct UpdateAttributesOperationHelper {
 
             let input = UpdateUserAttributesInput(accessToken: accessToken,
                                                   clientMetadata: clientMetaData,
-                                                  userAttributes: attributes.map({ $0.sdkClientAttributeType() }))
+                                                  userAttributes: attributes.map { $0.sdkClientAttributeType() })
 
             let result = try await userPoolService.updateUserAttributes(input: input)
 

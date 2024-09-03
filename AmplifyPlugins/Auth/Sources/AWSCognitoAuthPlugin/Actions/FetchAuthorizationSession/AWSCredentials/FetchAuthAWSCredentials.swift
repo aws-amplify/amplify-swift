@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCognitoIdentity
-import Foundation
 import Amplify
+import AWSCognitoIdentity
 import ClientRuntime
+import Foundation
 
 struct FetchAuthAWSCredentials: Action {
 

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import AWSPluginsCore
 import Amplify
+import AWSPluginsCore
+import XCTest
 @testable import AWSCognitoAuthPlugin
 
 class ClearCredentialsTests: XCTestCase {

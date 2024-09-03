@@ -46,16 +46,17 @@ struct ConfigurationHelper {
         }()
 
         // parse `authFlowType`
-        var authFlowType: AuthFlowType
-        if case .boolean(let isMigrationEnabled) = cognitoUserPoolJSON.value(at: "MigrationEnabled"),
-           isMigrationEnabled == true {
-            authFlowType = .userPassword
+        var authFlowType: AuthFlowType = if case .boolean(let isMigrationEnabled) = cognitoUserPoolJSON.value(at: "MigrationEnabled"),
+           isMigrationEnabled == true
+        {
+            .userPassword
         } else if let authJson = config.value(at: "Auth.Default"),
                   case .string(let authFlowTypeJSON) = authJson.value(at: "authenticationFlowType"),
-                  authFlowTypeJSON == "CUSTOM_AUTH" {
-            authFlowType = .customWithSRP
+                  authFlowTypeJSON == "CUSTOM_AUTH"
+        {
+            .customWithSRP
         } else {
-            authFlowType = .userSRP
+            .userSRP
         }
 
         // parse `clientSecret`
@@ -86,7 +87,7 @@ struct ConfigurationHelper {
         let hostedUIConfig = parseHostedConfiguration(configuration: config)
 
         // parse `passwordProtectionSettings`
-        var passwordProtectionSettings: UserPoolConfigurationData.PasswordProtectionSettings? = nil
+        var passwordProtectionSettings: UserPoolConfigurationData.PasswordProtectionSettings?
         if let passwordPolicy = config.passwordPolicy {
             passwordProtectionSettings = .init(from: passwordPolicy)
         }
@@ -153,7 +154,8 @@ struct ConfigurationHelper {
     static func parseHostedConfiguration(configuration: AmplifyOutputsData.Auth) -> HostedUIConfigurationData? {
         guard let oauth = configuration.oauth,
               let signInRedirectURI = oauth.redirectSignInUri.first,
-              let signOutRedirectURI = oauth.redirectSignOutUri.first else {
+              let signOutRedirectURI = oauth.redirectSignOutUri.first
+        else {
             return nil
         }
 
@@ -170,7 +172,8 @@ struct ConfigurationHelper {
                                           domain: String,
                                           scopes: [String],
                                           signInRedirectURI: String,
-                                          signOutRedirectURI: String) -> HostedUIConfigurationData {
+                                          signOutRedirectURI: String) -> HostedUIConfigurationData
+    {
 
         let oauth = OAuthConfigurationData(domain: domain,
                                            scopes: scopes,
@@ -229,7 +232,8 @@ struct ConfigurationHelper {
     }
 
     static func createAuthConfiguration(userPoolConfig: UserPoolConfigurationData?,
-                                        identityPoolConfig: IdentityPoolConfigurationData?) throws -> AuthConfiguration {
+                                        identityPoolConfig: IdentityPoolConfigurationData?) throws -> AuthConfiguration
+    {
         if let userPoolConfigNonNil = userPoolConfig, let identityPoolConfigNonNil = identityPoolConfig {
             return .userPoolsAndIdentityPools(userPoolConfigNonNil, identityPoolConfigNonNil)
         }

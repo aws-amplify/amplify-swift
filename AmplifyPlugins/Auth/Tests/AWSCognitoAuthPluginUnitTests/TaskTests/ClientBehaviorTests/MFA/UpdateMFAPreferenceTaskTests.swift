@@ -7,11 +7,11 @@
 
 import Foundation
 
-import XCTest
 import Amplify
-@testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
 import AWSClientRuntime
+import AWSCognitoIdentityProvider
+import XCTest
+@testable import AWSCognitoAuthPlugin
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -33,7 +33,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
         // Test all the combinations for preference types
         for smsPreference in allSMSPreferences {
             for totpPreference in allTOTPPreference {
-                self.mockIdentityProvider = MockIdentityProvider(
+                mockIdentityProvider = MockIdentityProvider(
                     mockGetUserAttributeResponse: { request in
                         return .init(
                             userMFASettingList: ["SOFTWARE_TOKEN_MFA", "SMS_MFA"]

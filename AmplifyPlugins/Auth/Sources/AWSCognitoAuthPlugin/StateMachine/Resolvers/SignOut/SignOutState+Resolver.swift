@@ -171,7 +171,7 @@ extension SignOutState {
                 }
             }
 
-        private func resolveBuildingRevokeTokenError (
+        private func resolveBuildingRevokeTokenError(
             byApplying signOutEvent: SignOutEvent,
             from oldState: SignOutState) -> StateResolution<SignOutState> {
                 switch signOutEvent.eventType {
