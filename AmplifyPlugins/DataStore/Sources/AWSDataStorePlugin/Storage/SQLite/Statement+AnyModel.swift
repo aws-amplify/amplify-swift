@@ -6,13 +6,14 @@
 //
 
 import Amplify
-import SQLite
 import Foundation
+import SQLite
 
 extension Statement {
     func convertToUntypedModel(using modelSchema: ModelSchema,
                                statement: SelectStatement,
-                               eagerLoad: Bool) throws -> [Model] {
+                               eagerLoad: Bool) throws -> [Model]
+    {
         var models = [Model]()
 
         for row in self {
@@ -25,7 +26,7 @@ extension Statement {
                 try convertToAnyModel(using: modelSchema, modelDictionary: $0)
             }
 
-            if let untypedModel = untypedModel {
+            if let untypedModel {
                 models.append(untypedModel)
             }
         }
@@ -34,7 +35,8 @@ extension Statement {
     }
 
     private func convertToAnyModel(using modelSchema: ModelSchema,
-                                   modelDictionary: ModelValues) throws -> Model {
+                                   modelDictionary: ModelValues) throws -> Model
+    {
         let data = try JSONSerialization.data(withJSONObject: modelDictionary)
         guard let jsonString = String(data: data, encoding: .utf8) else {
             let error = DataStoreError.decodingError(

@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -9,11 +16,12 @@ public struct Person: Model {
   public var calleeOf: List<PhoneCall>?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
+
   public init(id: String = UUID().uuidString,
       name: String,
       callerOf: List<PhoneCall> = [],
-      calleeOf: List<PhoneCall> = []) {
+      calleeOf: List<PhoneCall> = [])
+  {
     self.init(id: id,
       name: name,
       callerOf: callerOf,
@@ -21,12 +29,13 @@ public struct Person: Model {
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       name: String,
       callerOf: List<PhoneCall> = [],
       calleeOf: List<PhoneCall> = [],
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.name = name
       self.callerOf = callerOf

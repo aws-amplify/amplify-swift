@@ -8,8 +8,8 @@
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 final class IncomingAsyncSubscriptionEventPublisherTests: XCTestCase {
     var apiPlugin: MockAPICategoryPlugin!
@@ -92,7 +92,7 @@ final class IncomingAsyncSubscriptionEventPublisherTests: XCTestCase {
                 }
             )
 
-        for index in 0..<numberOfEvents {
+        for index in 0 ..< numberOfEvents {
             let post = Post(id: "\(prefix)-\(index)", title: "title", content: "content", createdAt: .now())
             expectedOrder.append(post.id)
             asyncEvents.send(.data(.success(.init(model: AnyModel(post),

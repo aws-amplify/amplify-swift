@@ -6,9 +6,9 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Foundation
 import SQLite
-import AWSPluginsCore
 
 /// Extended types that conform to `Persistable` in order to provide conversion to SQLite's `Binding`
 /// types. This is necessary so `Model` properties' map values to a SQLite compatible types.
@@ -22,7 +22,7 @@ extension Persistable {
     /// - Note: a `preconditionFailure` might happen in case the value cannot be converted.
     ///
     /// - Returns: the value as `Binding`
-    internal func asBinding() -> Binding {
+    func asBinding() -> Binding {
         let value = self
         let valueType = type(of: value)
         do {
@@ -58,7 +58,7 @@ extension Model {
     ///
     /// - Parameter fields: an optional subset of fields
     /// - Returns: an array of SQLite's `Binding` compatible type
-    internal func sqlValues(for fields: [ModelField]? = nil, modelSchema: ModelSchema) -> [Binding?] {
+    func sqlValues(for fields: [ModelField]? = nil, modelSchema: ModelSchema) -> [Binding?] {
         let modelFields = fields ?? modelSchema.sortedFields
         let values: [Binding?] = modelFields.map { field in
 
@@ -107,7 +107,8 @@ extension Model {
             // if value is an associated model, get its id
             if field.isForeignKey,
                case let .model(associatedModelName) = field.type,
-               let associatedModelSchema = ModelRegistry.modelSchema(from: associatedModelName) {
+               let associatedModelSchema = ModelRegistry.modelSchema(from: associatedModelName)
+            {
 
                 // Check if it is a Model or json object.
                 if let associatedModelValue = value as? Model {
@@ -117,7 +118,7 @@ extension Model {
                     // from the not loaded identifier's stringValue (the value, or the formatted value for CPK)
                     switch associatedLazyModel._state {
                     case .notLoaded(let identifiers):
-                        guard let identifiers = identifiers else {
+                        guard let identifiers else {
                             return nil
                         }
                         return identifiers.stringValue
@@ -154,7 +155,8 @@ extension Model {
     ///   - associatedModelSchema: model's schema
     /// - Returns: serialized value of the primary key
     private func associatedPrimaryKeyValue(fromJSON associatedModelJSON: [String: JSONValue],
-                                           associatedModelSchema: ModelSchema) -> String {
+                                           associatedModelSchema: ModelSchema) -> String
+    {
         let associatedModelPKFields: ModelIdentifierProtocol.Fields
 
         // get the associated model primary key fields
@@ -172,7 +174,7 @@ extension Model {
 
 }
 
-extension Array where Element == ModelSchema {
+extension [ModelSchema] {
 
     /// Sort the [ModelSchema] array based on the associations between them.
     ///
@@ -199,8 +201,8 @@ extension Array where Element == ModelSchema {
         func walkAssociatedModels(of schema: ModelSchema) {
             if !sortedKeys.contains(schema.name) {
                 let associatedModelSchemas = schema.sortedFields
-                    .filter { $0.isForeignKey }
-                    .map { (schema) -> ModelSchema in
+                    .filter(\.isForeignKey)
+                    .map { schema -> ModelSchema in
                         guard let associatedSchema = ModelRegistry.modelSchema(from: schema.requiredAssociatedModelName)
                         else {
                             return Fatal.preconditionFailure("""
@@ -230,7 +232,7 @@ extension Array where Element == ModelSchema {
     }
 }
 
-extension ModelIdentifierFormat.Custom {
+public extension ModelIdentifierFormat.Custom {
     /// Name for composite identifier (multiple fields)
-    public static let sqlColumnName = "@@primaryKey"
+    static let sqlColumnName = "@@primaryKey"
 }

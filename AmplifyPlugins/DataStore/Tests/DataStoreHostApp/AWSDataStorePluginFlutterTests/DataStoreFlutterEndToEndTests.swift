@@ -4,8 +4,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-import XCTest
+
 import AWSPluginsCore
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -35,7 +36,8 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -116,7 +118,8 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -263,7 +266,8 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
         let createReceived = expectation(description: "Create notification received")
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")

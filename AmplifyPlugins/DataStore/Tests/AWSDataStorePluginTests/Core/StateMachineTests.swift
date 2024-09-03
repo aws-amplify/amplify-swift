@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Combine
+import XCTest
 
 // Testable import b/c StateMachine is an internal type
 @testable import AWSDataStorePlugin

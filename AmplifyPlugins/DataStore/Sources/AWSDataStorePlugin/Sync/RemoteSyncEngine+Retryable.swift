@@ -32,7 +32,8 @@ extension RemoteSyncEngine {
     private func getRetryAdvice(error: Error) -> RequestRetryAdvice {
         var urlErrorOptional: URLError?
         if let dataStoreError = error as? DataStoreError,
-            let underlyingError = dataStoreError.underlyingError as? URLError {
+            let underlyingError = dataStoreError.underlyingError as? URLError
+        {
             urlErrorOptional = underlyingError
         } else if let urlError = error as? URLError {
             urlErrorOptional = urlError
@@ -40,7 +41,8 @@ extension RemoteSyncEngine {
                   case .api(let amplifyError, _) = dataStoreError,
                   let apiError = amplifyError as? APIError,
                   case .networkError(_, _, let error) = apiError,
-                  let urlError = error as? URLError {
+                  let urlError = error as? URLError
+        {
             urlErrorOptional = urlError
         }
 

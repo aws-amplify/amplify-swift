@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 
+@_implementationOnly import AmplifyAsyncTesting
 import Combine
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
-@_implementationOnly import AmplifyAsyncTesting
 
 /// Tests that DataStore invokes proper API methods to fulfill remote sync
 class RemoteSyncAPIInvocationTests: XCTestCase {

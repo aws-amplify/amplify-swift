@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -103,7 +103,8 @@ class SQLiteMutationSyncMetadataMigrationDelegateTests: MutationSyncMetadataMigr
 
         guard let restaurantMetadata = try storageAdapter.queryMutationSyncMetadata(
             for: restaurant.id,
-               modelName: Restaurant.modelName) else {
+               modelName: Restaurant.modelName)
+        else {
                    XCTFail("Could not get metadata")
                    return
         }

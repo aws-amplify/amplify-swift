@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSPluginsCore
+import Foundation
 
 protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErrorBehavior, StorageEngineMigrationAdapter {
 
@@ -73,14 +73,16 @@ extension StorageEngineAdapter {
 
     func delete<M: Model>(_ modelType: M.Type,
                           filter predicate: QueryPredicate,
-                          completion: @escaping DataStoreCallback<[M]>) {
+                          completion: @escaping DataStoreCallback<[M]>)
+    {
         delete(modelType, modelSchema: modelType.schema, filter: predicate, completion: completion)
     }
 
     func delete(untypedModelType modelType: Model.Type,
                 withIdentifier identifier: ModelIdentifierProtocol,
                 condition: QueryPredicate? = nil,
-                completion: DataStoreCallback<Void>) {
+                completion: DataStoreCallback<Void>)
+    {
         delete(untypedModelType: modelType,
                modelSchema: modelType.schema,
                withIdentifier: identifier,

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import Combine
 import AWSPluginsCore
+import Combine
+import XCTest
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
@@ -77,7 +77,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         XCTAssertEqual(createdPost?.content, originalContent)
         XCTAssertEqual(createSyncData?.syncMetadata.version, 1)
         XCTAssertEqual(createSyncData?.syncMetadata.deleted, false)
-        
+
         // Act: send update mutation
         try await sendUpdateRequest(forId: id, content: updatedContent, version: 1)
         await fulfillment(of: [updateReceived], timeout: 10)
@@ -89,7 +89,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         XCTAssertEqual(updatedPost?.content, updatedContent)
         XCTAssertEqual(updateSyncData?.syncMetadata.version, 2)
         XCTAssertEqual(updateSyncData?.syncMetadata.deleted, false)
-        
+
         // Act: send delete mutation
         try await sendDeleteRequest(forId: id, version: 2)
         await fulfillment(of: [deleteReceived], timeout: 10)

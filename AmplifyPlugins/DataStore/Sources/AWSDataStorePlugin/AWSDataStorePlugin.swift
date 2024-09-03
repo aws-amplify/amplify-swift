@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Combine
 import AWSPluginsCore
+import Combine
 import Foundation
 
 enum DataStoreState {
@@ -16,7 +16,7 @@ enum DataStoreState {
     case clear
 }
 
-final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
+public final class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     public var key: PluginKey = "awsDataStorePlugin"
 
@@ -61,7 +61,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     ///   - modelRegistration: Register DataStore models.
     ///   - dataStoreConfiguration: Configuration object for DataStore
     public init(modelRegistration: AmplifyModelRegistration,
-                configuration dataStoreConfiguration: DataStoreConfiguration) {
+                configuration dataStoreConfiguration: DataStoreConfiguration)
+    {
         self.modelRegistration = modelRegistration
         self.configuration = InternalDatastoreConfiguration(
             isSyncEnabled: false,
@@ -87,7 +88,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     ///   - modelRegistration: Register DataStore models.
     ///   - dataStoreConfiguration: Configuration object for DataStore
     public init(modelRegistration: AmplifyModelRegistration,
-                configuration dataStoreConfiguration: DataStoreConfiguration = .default) {
+                configuration dataStoreConfiguration: DataStoreConfiguration = .default)
+    {
         self.modelRegistration = modelRegistration
         self.configuration = InternalDatastoreConfiguration(
             isSyncEnabled: false,
@@ -116,7 +118,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
          dataStorePublisher: ModelSubcriptionBehavior,
          operationQueue: OperationQueue = OperationQueue(),
          validAPIPluginKey: String,
-         validAuthPluginKey: String) {
+         validAuthPluginKey: String)
+    {
         self.modelRegistration = modelRegistration
         self.configuration = InternalDatastoreConfiguration(
             isSyncEnabled: false,
@@ -161,8 +164,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
 
         do {
-            if self.dataStorePublisher == nil {
-                self.dataStorePublisher = DataStorePublisher()
+            if dataStorePublisher == nil {
+                dataStorePublisher = DataStorePublisher()
             }
             try resolveStorageEngine(dataStoreConfiguration: configuration.pluginConfiguration)
             try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
@@ -251,7 +254,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     func onReceiveValue(receiveValue: StorageEngineEvent) {
-        guard let dataStorePublisher = self.dataStorePublisher else {
+        guard let dataStorePublisher else {
             log.error("Data store publisher not initalized")
             return
         }
@@ -284,7 +287,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         if let resettable = storageEngine as? Resettable {
             log.verbose("Resetting storageEngine")
             await resettable.reset()
-            self.log.verbose("Resetting storageEngine: finished")
+            log.verbose("Resetting storageEngine: finished")
         }
     }
 

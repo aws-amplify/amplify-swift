@@ -6,9 +6,9 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Combine
 import Foundation
-import AWSPluginsCore
 
 typealias StorageEngineBehaviorFactory =
     (Bool,
@@ -96,7 +96,8 @@ final class StorageEngine: StorageEngineBehavior {
                      validAPIPluginKey: String = "awsAPIPlugin",
                      validAuthPluginKey: String = "awsCognitoAuthPlugin",
                      modelRegistryVersion: String,
-                     userDefault: UserDefaults = UserDefaults.standard) throws {
+                     userDefault: UserDefaults = UserDefaults.standard) throws
+    {
 
         let key = kCFBundleNameKey as String
         let databaseName = Bundle.main.object(forInfoDictionaryKey: key) as? String ?? "app"
@@ -183,7 +184,8 @@ final class StorageEngine: StorageEngineBehavior {
                                modelSchema: ModelSchema,
                                condition: QueryPredicate? = nil,
                                eagerLoad: Bool = true,
-                               completion: @escaping DataStoreCallback<M>) {
+                               completion: @escaping DataStoreCallback<M>)
+    {
 
         // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
         // mutation type
@@ -201,7 +203,7 @@ final class StorageEngine: StorageEngineBehavior {
         let mutationType = modelExists ? MutationEvent.MutationType.update : .create
 
         // If it is `create`, and there is a condition, and that condition is not `.all`, fail the request
-        if mutationType == .create, let condition = condition, !condition.isAll {
+        if mutationType == .create, let condition, !condition.isAll {
             let dataStoreError = DataStoreError.invalidCondition(
                 "Cannot apply a condition on model which does not exist.",
                 "Save the model instance without a condition first.")
@@ -211,7 +213,7 @@ final class StorageEngine: StorageEngineBehavior {
 
         do {
             try storageAdapter.transaction {
-                let result = self.storageAdapter.save(model, 
+                let result = self.storageAdapter.save(model,
                                                       modelSchema: modelSchema,
                                                       condition: condition,
                                                       eagerLoad: eagerLoad)
@@ -249,7 +251,8 @@ final class StorageEngine: StorageEngineBehavior {
     func save<M: Model>(_ model: M,
                         condition: QueryPredicate? = nil,
                         eagerLoad: Bool = true,
-                        completion: @escaping DataStoreCallback<M>) {
+                        completion: @escaping DataStoreCallback<M>)
+    {
         save(model,
              modelSchema: model.schema,
              condition: condition,
@@ -262,7 +265,8 @@ final class StorageEngine: StorageEngineBehavior {
                           modelSchema: ModelSchema,
                           withId id: Model.Identifier,
                           condition: QueryPredicate? = nil,
-                          completion: @escaping (DataStoreResult<M?>) -> Void) {
+                          completion: @escaping (DataStoreResult<M?>) -> Void)
+    {
         let cascadeDeleteOperation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                             syncEngine: syncEngine,
                                                             modelType: modelType, modelSchema: modelSchema,
@@ -275,7 +279,8 @@ final class StorageEngine: StorageEngineBehavior {
                           modelSchema: ModelSchema,
                           withIdentifier identifier: ModelIdentifierProtocol,
                           condition: QueryPredicate?,
-                          completion: @escaping DataStoreCallback<M?>) {
+                          completion: @escaping DataStoreCallback<M?>)
+    {
         let cascadeDeleteOperation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                             syncEngine: syncEngine,
                                                             modelType: modelType, modelSchema: modelSchema,
@@ -288,7 +293,8 @@ final class StorageEngine: StorageEngineBehavior {
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
                           filter: QueryPredicate,
-                          completion: @escaping DataStoreCallback<[M]>) {
+                          completion: @escaping DataStoreCallback<[M]>)
+    {
         let cascadeDeleteOperation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                             syncEngine: syncEngine,
                                                             modelType: modelType,
@@ -303,7 +309,8 @@ final class StorageEngine: StorageEngineBehavior {
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
                          eagerLoad: Bool = true,
-                         completion: (DataStoreResult<[M]>) -> Void) {
+                         completion: (DataStoreResult<[M]>) -> Void)
+    {
         return storageAdapter.query(modelType,
                                     modelSchema: modelSchema,
                                     predicate: predicate,
@@ -318,7 +325,8 @@ final class StorageEngine: StorageEngineBehavior {
                          sort: [QuerySortDescriptor]? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          eagerLoad: Bool = true,
-                         completion: DataStoreCallback<[M]>) {
+                         completion: DataStoreCallback<[M]>)
+    {
         query(modelType,
               modelSchema: modelType.schema,
               predicate: predicate,
@@ -329,7 +337,7 @@ final class StorageEngine: StorageEngineBehavior {
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {
-        if let syncEngine = syncEngine {
+        if let syncEngine {
             syncEngine.stop(completion: { _ in
                 self.syncEngine = nil
                 self.storageAdapter.clear(completion: completion)
@@ -340,7 +348,7 @@ final class StorageEngine: StorageEngineBehavior {
     }
 
     func stopSync(completion: @escaping DataStoreCallback<Void>) {
-        if let syncEngine = syncEngine {
+        if let syncEngine {
             syncEngine.stop { _ in
                 self.syncEngine = nil
                 completion(.successfulVoid)
@@ -356,11 +364,12 @@ final class StorageEngine: StorageEngineBehavior {
                                         mutationType: MutationEvent.MutationType,
                                         predicate: QueryPredicate? = nil,
                                         syncEngine: RemoteSyncEngineBehavior,
-                                        completion: @escaping DataStoreCallback<M>) {
+                                        completion: @escaping DataStoreCallback<M>)
+    {
         let mutationEvent: MutationEvent
         do {
             var graphQLFilterJSON: String?
-            if let predicate = predicate {
+            if let predicate {
                 graphQLFilterJSON = try GraphQLFilterConverter.toJSON(predicate,
                                                                       modelSchema: modelSchema)
             }
@@ -393,7 +402,8 @@ final class StorageEngine: StorageEngineBehavior {
 
     private func submitToSyncEngine(mutationEvent: MutationEvent,
                                     syncEngine: RemoteSyncEngineBehavior,
-                                    completion: @escaping DataStoreCallback<MutationEvent>) {
+                                    completion: @escaping DataStoreCallback<MutationEvent>)
+    {
         Task {
             syncEngine.submit(mutationEvent, completion: completion)
         }
@@ -407,7 +417,7 @@ extension StorageEngine: Resettable {
         if let resettable = syncEngine as? Resettable {
             log.verbose("Resetting syncEngine")
             await resettable.reset()
-            self.log.verbose("Resetting syncEngine: finished")
+            log.verbose("Resetting syncEngine: finished")
         }
     }
 }

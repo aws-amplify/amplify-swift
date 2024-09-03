@@ -31,7 +31,8 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
 
         // Query
         await assertQuerySuccess(modelType: TodoIAMPrivate.self,
-                           expectations) { error in
+                           expectations)
+        { error in
             XCTFail("Error query \(error)")
         }
 
@@ -63,7 +64,8 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
 
         // Query
         await assertQuerySuccess(modelType: TodoIAMPublic.self,
-                           expectations) { error in
+                           expectations)
+        { error in
             XCTFail("Error query \(error)")
         }
 

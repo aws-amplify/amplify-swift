@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 // swiftlint:disable cyclomatic_complexity
 extension ModelSchema {
@@ -76,7 +76,8 @@ extension ModelSchema {
                 }
             case .date:
                 guard let value1Optional = value1 as? Temporal.Date?,
-                      let value2Optional = value2 as? Temporal.Date? else {
+                      let value2Optional = value2 as? Temporal.Date?
+                else {
                     return false
                 }
                 if !compare(value1Optional, value2Optional) {
@@ -84,7 +85,8 @@ extension ModelSchema {
                 }
             case .dateTime:
                 guard let value1Optional = value1 as? Temporal.DateTime?,
-                      let value2Optional = value2 as? Temporal.DateTime? else {
+                      let value2Optional = value2 as? Temporal.DateTime?
+                else {
                     return false
                 }
                 if !compare(value1Optional, value2Optional) {
@@ -92,7 +94,8 @@ extension ModelSchema {
                 }
             case .time:
                 guard let value1Optional = value1 as? Temporal.Time?,
-                      let value2Optional = value2 as? Temporal.Time? else {
+                      let value2Optional = value2 as? Temporal.Time?
+                else {
                     return false
                 }
                 if !compare(value1Optional, value2Optional) {
@@ -114,8 +117,9 @@ extension ModelSchema {
                 }
             case .enum:
                 // swiftlint:disable syntactic_sugar
-                guard case .some(Optional<Any>.some(let value1Optional)) = value1,
-                      case .some(Optional<Any>.some(let value2Optional)) = value2 else {
+                guard case .some(Any?.some(let value1Optional)) = value1,
+                      case .some(Any?.some(let value2Optional)) = value2
+                else {
                     if value1 == nil && value2 == nil {
                         continue
                     }
@@ -130,7 +134,8 @@ extension ModelSchema {
             case .embedded, .embeddedCollection:
                 do {
                     if let encodable1 = value1 as? Encodable,
-                       let encodable2 = value2 as? Encodable {
+                       let encodable2 = value2 as? Encodable
+                    {
                         let json1 = try SQLiteModelValueConverter.toJSON(encodable1)
                         let json2 = try SQLiteModelValueConverter.toJSON(encodable2)
                         if !compare(json1, json2) {

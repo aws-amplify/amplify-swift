@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 class OutgoingMutationQueueMockStateTest: XCTestCase {
     var mutationQueue: OutgoingMutationQueue!

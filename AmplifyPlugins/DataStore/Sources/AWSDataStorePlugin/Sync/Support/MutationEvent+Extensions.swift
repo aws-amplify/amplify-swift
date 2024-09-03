@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Dispatch
 import AWSPluginsCore
+import Dispatch
 
 extension MutationEvent {
     // Consecutive operations that modify a model results in a sequence of pending mutation events that
@@ -38,7 +38,8 @@ extension MutationEvent {
     static func reconcilePendingMutationEventsVersion(sent mutationEvent: MutationEvent,
                                                       received mutationSync: MutationSync<AnyModel>,
                                                       storageAdapter: StorageEngineAdapter,
-                                                      completion: @escaping DataStoreCallback<Void>) {
+                                                      completion: @escaping DataStoreCallback<Void>)
+    {
         MutationEvent.pendingMutationEvents(
             forMutationEvent: mutationEvent,
             storageAdapter: storageAdapter
@@ -54,7 +55,8 @@ extension MutationEvent {
 
                 guard let reconciledEvent = reconcile(pendingMutationEvent: existingEvent,
                                                       with: mutationEvent,
-                                                      responseMutationSync: mutationSync) else {
+                                                      responseMutationSync: mutationSync)
+                else {
                     completion(.success(()))
                     return
                 }
@@ -73,11 +75,13 @@ extension MutationEvent {
 
     static func reconcile(pendingMutationEvent: MutationEvent,
                           with requestMutationEvent: MutationEvent,
-                          responseMutationSync: MutationSync<AnyModel>) -> MutationEvent? {
+                          responseMutationSync: MutationSync<AnyModel>) -> MutationEvent?
+    {
         // return if version of the pending mutation event is not nil and
         // is >= version contained in the response
         if pendingMutationEvent.version != nil &&
-            pendingMutationEvent.version! >= responseMutationSync.syncMetadata.version {
+            pendingMutationEvent.version! >= responseMutationSync.syncMetadata.version
+        {
             return nil
         }
 
@@ -88,7 +92,8 @@ extension MutationEvent {
             // check if the data sent in the request is the same as the response
             // if it is, update the pending mutation event version to the response version
             guard let modelSchema = ModelRegistry.modelSchema(from: requestMutationEvent.modelName),
-                  modelSchema.compare(responseModel, requestModel) else {
+                  modelSchema.compare(responseModel, requestModel)
+            else {
                 return nil
             }
 

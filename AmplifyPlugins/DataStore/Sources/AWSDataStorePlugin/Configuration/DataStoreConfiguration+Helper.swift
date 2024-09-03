@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
-extension DataStoreConfiguration {
+public extension DataStoreConfiguration {
 
-    public static let defaultSyncInterval: TimeInterval = .hours(24)
-    public static let defaultSyncMaxRecords: UInt = 10_000
-    public static let defaultSyncPageSize: UInt = 1_000
+    static let defaultSyncInterval: TimeInterval = .hours(24)
+    static let defaultSyncMaxRecords: UInt = 10_000
+    static let defaultSyncPageSize: UInt = 1_000
 
     #if os(watchOS)
     /// Creates a custom configuration. The only required property is `conflictHandler`.
@@ -27,7 +27,7 @@ extension DataStoreConfiguration {
     ///   - authModeStrategy: authorization strategy (.default | multiauth)
     ///   - disableSubscriptions: called before establishing subscriptions. Return true to disable subscriptions.
     /// - Returns: an instance of `DataStoreConfiguration` with the passed parameters.
-    public static func custom(
+    static func custom(
         errorHandler: @escaping DataStoreErrorHandler = { error in
             Amplify.Logging.error(error: error)
         },
@@ -61,7 +61,7 @@ extension DataStoreConfiguration {
     ///   - syncPageSize: the page size of each sync execution
     ///   - authModeStrategy: authorization strategy (.default | multiauth)
     /// - Returns: an instance of `DataStoreConfiguration` with the passed parameters.
-    public static func custom(
+    static func custom(
         errorHandler: @escaping DataStoreErrorHandler = { error in
             Amplify.Logging.error(error: error)
         },
@@ -89,12 +89,12 @@ extension DataStoreConfiguration {
     /// which work on the watchOS simulator but not on the device. Running DataStore on watchOS with subscriptions
     /// enabled is only possible during special circumstances such as actively streaming audio.
     /// See https://github.com/aws-amplify/amplify-swift/pull/3368 for more details.
-    public static var subscriptionsDisabled: DataStoreConfiguration {
+    static var subscriptionsDisabled: DataStoreConfiguration {
         .custom(disableSubscriptions: { true })
     }
     #else
     /// The default configuration.
-    public static var `default`: DataStoreConfiguration {
+    static var `default`: DataStoreConfiguration {
         .custom()
     }
     #endif

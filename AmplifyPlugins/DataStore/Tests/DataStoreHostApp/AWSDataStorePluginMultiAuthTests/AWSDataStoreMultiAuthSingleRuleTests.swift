@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import Foundation
 import Combine
+import Foundation
+import XCTest
 
 @testable import Amplify
 
@@ -30,7 +30,8 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
 
         // Query
         await assertQuerySuccess(modelType: OwnerUPPost.self,
-                           expectations) { error in
+                           expectations)
+        { error in
             XCTFail("Error query \(error)")
         }
 
@@ -69,13 +70,15 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
 
         // Query
         await assertQuerySuccess(modelType: GroupUPPost.self,
-                           expectations) { error in
+                           expectations)
+        { error in
             XCTFail("Error query \(error)")
         }
 
         // Mutation
         await assertMutations(model: GroupUPPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -140,13 +143,15 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
         let authTypeExpecation = assertUsedAuthTypes(testId: testId, authTypes: [.amazonCognitoUserPools])
 
         await assertQuerySuccess(modelType: PrivateUPPost.self,
-                           expectations) { error in
+                           expectations)
+        { error in
             XCTFail("Error query \(error)")
         }
 
         // Mutations
         await assertMutations(model: PrivateUPPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -176,7 +181,8 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
 
         // Mutation
         await assertMutations(model: PrivateIAMPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -205,7 +211,8 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
 
         // Mutation
         await assertMutations(model: PublicIAMPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -234,7 +241,8 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
 
         // Mutation
         await assertMutations(model: PublicAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 

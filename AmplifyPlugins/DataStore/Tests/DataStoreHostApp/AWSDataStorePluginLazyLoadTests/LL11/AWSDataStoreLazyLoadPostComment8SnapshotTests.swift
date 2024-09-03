@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 extension AWSDataStoreLazyLoadPostComment8Tests {
 
@@ -35,7 +35,7 @@ extension AWSDataStoreLazyLoadPostComment8Tests {
         }
         """
         XCTAssertEqual(createRequest.document, createDocument)
-        
+
         // Update
         let updateRequest = GraphQLRequest<MutationSyncResult>.updateMutation(of: post, modelSchema: Post.schema)
         let updateDocument = """
@@ -53,7 +53,7 @@ extension AWSDataStoreLazyLoadPostComment8Tests {
         }
         """
         XCTAssertEqual(updateRequest.document, updateDocument)
-        
+
         // Delete
         let deleteRequest = GraphQLRequest<MutationSyncResult>.deleteMutation(of: post, modelSchema: Post.schema)
         let deleteDocument = """
@@ -71,7 +71,7 @@ extension AWSDataStoreLazyLoadPostComment8Tests {
         }
         """
         XCTAssertEqual(deleteRequest.document, deleteDocument)
-        
+
         // onCreate
         let onCreateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Post.self, subscriptionType: .onCreate)
         let onCreateDocument = """
@@ -89,7 +89,7 @@ extension AWSDataStoreLazyLoadPostComment8Tests {
         }
         """
         XCTAssertEqual(onCreateRequest.document, onCreateDocument)
-        
+
         // onUpdate
         let onUpdateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Post.self, subscriptionType: .onUpdate)
         let onUpdateDocument = """
@@ -107,7 +107,7 @@ extension AWSDataStoreLazyLoadPostComment8Tests {
         }
         """
         XCTAssertEqual(onUpdateRequest.document, onUpdateDocument)
-        
+
         // onDelete
         let onDeleteRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Post.self, subscriptionType: .onDelete)
         let onDeleteDocument = """
@@ -125,7 +125,7 @@ extension AWSDataStoreLazyLoadPostComment8Tests {
         }
         """
         XCTAssertEqual(onDeleteRequest.document, onDeleteDocument)
-        
+
         // SyncQuery
         let syncRequest = GraphQLRequest<MutationSyncResult>.syncQuery(modelType: Post.self)
         let syncDocument = """
@@ -148,7 +148,7 @@ extension AWSDataStoreLazyLoadPostComment8Tests {
         """
         XCTAssertEqual(syncRequest.document, syncDocument)
     }
-    
+
     func testCommentSelectionSets() {
         setUpModelRegistrationOnly(withModels: PostComment8Models())
         continueAfterFailure = true
@@ -176,7 +176,7 @@ extension AWSDataStoreLazyLoadPostComment8Tests {
         }
         """
         XCTAssertEqual(createRequest.document, createDocument)
-        
+
         // Update
         let updateRequest = GraphQLRequest<MutationSyncResult>.updateMutation(of: comment, modelSchema: Comment.schema)
         let updateDocument = """
@@ -196,7 +196,7 @@ extension AWSDataStoreLazyLoadPostComment8Tests {
         }
         """
         XCTAssertEqual(updateRequest.document, updateDocument)
-        
+
         // Delete
         let deleteRequest = GraphQLRequest<MutationSyncResult>.deleteMutation(of: comment, modelSchema: Comment.schema)
         let deleteDocument = """
@@ -216,7 +216,7 @@ extension AWSDataStoreLazyLoadPostComment8Tests {
         }
         """
         XCTAssertEqual(deleteRequest.document, deleteDocument)
-        
+
         // onCreate
         let onCreateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Comment.schema, subscriptionType: .onCreate)
         let onCreateDocument = """
@@ -236,7 +236,7 @@ extension AWSDataStoreLazyLoadPostComment8Tests {
         }
         """
         XCTAssertEqual(onCreateRequest.document, onCreateDocument)
-        
+
         // onUpdate
         let onUpdateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Comment.self, subscriptionType: .onUpdate)
         let onUpdateDocument = """
@@ -256,7 +256,7 @@ extension AWSDataStoreLazyLoadPostComment8Tests {
         }
         """
         XCTAssertEqual(onUpdateRequest.document, onUpdateDocument)
-        
+
         // onDelete
         let onDeleteRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Comment.self, subscriptionType: .onDelete)
         let onDeleteDocument = """
@@ -276,7 +276,7 @@ extension AWSDataStoreLazyLoadPostComment8Tests {
         }
         """
         XCTAssertEqual(onDeleteRequest.document, onDeleteDocument)
-        
+
         // SyncQuery
         let syncRequest = GraphQLRequest<MutationSyncResult>.syncQuery(modelType: Comment.self)
         let syncDocument = """

@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
 import Foundation
 import XCTest
-import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -332,7 +332,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         XCTAssertEqual(remoteModelToApply.remoteModel.model.id, anyPostMutationSync.model.id)
     }
 
-    func testSeparateDispositions_notifyDropped () async {
+    func testSeparateDispositions_notifyDropped() async {
         let expect = expectation(description: "notify dropped twice")
         expect.expectedFulfillmentCount = 2
         let model1 = AnyModel(Post(title: "post1", content: "content", createdAt: .now()))

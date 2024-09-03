@@ -59,7 +59,8 @@ extension MutationEvent {
 
     private static func pendingMutationEvents(for modelIds: [(String, String)],
                                       storageAdapter: StorageEngineAdapter,
-                                      completion: @escaping DataStoreCallback<[MutationEvent]>) {
+                                      completion: @escaping DataStoreCallback<[MutationEvent]>)
+    {
         Task {
             let fields = MutationEvent.keys
             let predicate = (fields.inProcess == false || fields.inProcess == nil)
@@ -81,7 +82,8 @@ extension MutationEvent {
                                              predicate: final,
                                              sort: [sort],
                                              paginationInput: nil,
-                                             eagerLoad: true) { result in
+                                             eagerLoad: true)
+                        { result in
                             continuation.resume(with: result)
                         }
                     }

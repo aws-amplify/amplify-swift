@@ -24,7 +24,8 @@ public struct ListStringContainer: Model {
       stringList: [String] = [],
       stringNullableList: [String]? = nil,
       nullableStringList: [String?] = [],
-      nullableStringNullableList: [String?]? = nil) {
+      nullableStringNullableList: [String?]? = nil)
+  {
       self.id = id
       self.test = test
       self.nullableString = nullableString

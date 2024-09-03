@@ -41,7 +41,7 @@ extension RemoteSyncEngine {
             stateMachine.notify(action: .initializedSubscriptions)
         case .started:
             log.verbose("[InitializeSubscription.6] RemoteSyncEngine IncomingEventReconciliationQueueEvent.started")
-            guard let api = self.api else {
+            guard let api else {
                 let error = DataStoreError.internalOperation("api is unexpectedly `nil`", "", nil)
                 stateMachine.notify(action: .errored(error))
                 return

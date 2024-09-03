@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -179,10 +179,10 @@ class RemoteSyncReconcilerTests: XCTestCase {
         }
         await fulfillment(of: [create, update, delete], timeout: 1)
     }
-    
+
     func testGetDispositions_emptyLocal_singleModelAddedAndDeleted() {
         let sameId = UUID().uuidString
-        
+
         let remoteModels = [
             makeRemoteModel(modelId: sameId, deleted: false, version: 1),
             makeRemoteModel(modelId: sameId, deleted: true, version: 2)
@@ -192,10 +192,10 @@ class RemoteSyncReconcilerTests: XCTestCase {
 
         XCTAssertTrue(dispositions.isEmpty)
     }
-    
+
     func testGetDispositions_emptyLocal_oneModelAdded_SecondModelAddedAndDeleted() {
         let sameId = UUID().uuidString
-        
+
         let remoteModels = [
             makeRemoteModel(deleted: false, version: 1),
             makeRemoteModel(modelId: sameId, deleted: false, version: 1),
@@ -212,7 +212,8 @@ class RemoteSyncReconcilerTests: XCTestCase {
     private func makeMutationSyncMetadata(modelId: String,
                                           modelName: String,
                                           deleted: Bool = false,
-                                          version: Int = 1) -> MutationSyncMetadata {
+                                          version: Int = 1) -> MutationSyncMetadata
+    {
 
         let remoteSyncMetadata = MutationSyncMetadata(modelId: modelId,
                                                       modelName: modelName,
@@ -224,7 +225,8 @@ class RemoteSyncReconcilerTests: XCTestCase {
 
     private func makeRemoteModel(modelId: String = UUID().uuidString,
                                  deleted: Bool = false,
-                                 version: Int = 1) -> ReconcileAndLocalSaveOperation.RemoteModel {
+                                 version: Int = 1) -> ReconcileAndLocalSaveOperation.RemoteModel
+    {
         do {
             let remoteMockSynced = try MockSynced(id: modelId).eraseToAnyModel()
             let remoteSyncMetadata = makeMutationSyncMetadata(modelId: remoteMockSynced.id,

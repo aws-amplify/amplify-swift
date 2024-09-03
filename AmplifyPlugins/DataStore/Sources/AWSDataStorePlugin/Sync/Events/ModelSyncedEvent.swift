@@ -27,7 +27,8 @@ public struct ModelSyncedEvent {
                 isDeltaSync: Bool,
                 added: Int,
                 updated: Int,
-                deleted: Int) {
+                deleted: Int)
+    {
         self.modelName = modelName
         self.isFullSync = isFullSync
         self.isDeltaSync = isDeltaSync

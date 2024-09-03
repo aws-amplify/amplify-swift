@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import Combine
+import Foundation
 
 public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
     var loadedState: ModelProviderState<ModelType>
@@ -27,20 +27,20 @@ public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
     public func load() async throws -> ModelType? {
         switch loadedState {
         case .notLoaded(let identifiers):
-            guard let identifiers = identifiers, !identifiers.isEmpty else {
+            guard let identifiers, !identifiers.isEmpty else {
                 return nil
             }
 
             let identifierValue = identifiers.count == 1
                 ? identifiers.first?.value
-                : identifiers.map({ "\"\($0.value)\""}).joined(separator: ModelIdentifierFormat.Custom.separator)
+                : identifiers.map { "\"\($0.value)\""}.joined(separator: ModelIdentifierFormat.Custom.separator)
 
             let queryPredicate: QueryPredicate = field(ModelType.schema.primaryKey.sqlName).eq(identifierValue)
             let models = try await Amplify.DataStore.query(ModelType.self, where: queryPredicate)
             guard let model = models.first else {
                 return nil
             }
-            self.loadedState = .loaded(model: model)
+            loadedState = .loaded(model: model)
             return model
         case .loaded(let model):
             return model

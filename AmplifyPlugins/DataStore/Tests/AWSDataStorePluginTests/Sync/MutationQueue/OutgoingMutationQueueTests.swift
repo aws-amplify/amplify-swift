@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 class OutgoingMutationQueueTests: SyncEngineTestBase {
 
@@ -146,7 +146,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         let mutationEventSaved = expectation(description: "Preloaded mutation event saved")
         mutationEventSaved.expectedFulfillmentCount = 2
 
-        let posts = (1...2).map { Post(
+        let posts = (1 ... 2).map { Post(
             id: "pendingPost-\($0)",
             title: "pendingPost-\($0) title",
             content: "pendingPost-\($0) content",
@@ -184,7 +184,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         }
 
 
-        postMutationEvents.forEach { event in
+        for event in postMutationEvents {
             storageAdapter.save(event) { result in
                 switch result {
                 case .failure(let dataStoreError):

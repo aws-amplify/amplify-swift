@@ -52,7 +52,8 @@ final class ModelSyncedEventEmitter {
 
     init(modelSchema: ModelSchema,
          initialSyncOrchestrator: InitialSyncOrchestrator?,
-         reconciliationQueue: IncomingEventReconciliationQueue?) {
+         reconciliationQueue: IncomingEventReconciliationQueue?)
+    {
         self.modelSchema = modelSchema
         self.recordsReceived = 0
         self.reconciledReceived = 0

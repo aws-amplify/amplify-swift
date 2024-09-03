@@ -20,7 +20,8 @@ public struct Menu: Model {
       name: String,
       menuType: MenuType? = nil,
       restaurant: Restaurant? = nil,
-      dishes: List<Dish>? = []) {
+      dishes: List<Dish>? = [])
+  {
       self.id = id
       self.name = name
       self.menuType = menuType

@@ -16,16 +16,18 @@ public struct Attendee8V2: Model {
   public var updatedAt: Temporal.DateTime?
 
   public init(id: String = UUID().uuidString,
-      meetings: List<Registration8V2>? = []) {
+      meetings: List<Registration8V2>? = [])
+  {
     self.init(id: id,
       meetings: meetings,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       meetings: List<Registration8V2>? = [],
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.meetings = meetings
       self.createdAt = createdAt

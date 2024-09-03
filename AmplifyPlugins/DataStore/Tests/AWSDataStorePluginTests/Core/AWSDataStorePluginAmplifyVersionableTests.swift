@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSDataStorePlugin
+import XCTest
 @testable import AmplifyTestCommon
 
 // swiftlint:disable:next type_name

@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -12,14 +19,15 @@ public struct NestedTypeTestModel: Model {
   public var nullableNestedNullableList: [Nested?]?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
+
   public init(id: String = UUID().uuidString,
       nestedVal: Nested,
       nullableNestedVal: Nested? = nil,
       nestedList: [Nested] = [],
       nestedNullableList: [Nested]? = nil,
       nullableNestedList: [Nested?] = [],
-      nullableNestedNullableList: [Nested?]? = nil) {
+      nullableNestedNullableList: [Nested?]? = nil)
+  {
     self.init(id: id,
       nestedVal: nestedVal,
       nullableNestedVal: nullableNestedVal,
@@ -30,7 +38,7 @@ public struct NestedTypeTestModel: Model {
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       nestedVal: Nested,
       nullableNestedVal: Nested? = nil,
       nestedList: [Nested] = [],
@@ -38,7 +46,8 @@ public struct NestedTypeTestModel: Model {
       nullableNestedList: [Nested?] = [],
       nullableNestedNullableList: [Nested?]? = nil,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.nestedVal = nestedVal
       self.nullableNestedVal = nullableNestedVal

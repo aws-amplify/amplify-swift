@@ -14,7 +14,8 @@ struct DynamicModel: Model, JSONValueHolder {
     public var values: [String: JSONValue]
 
     public init(id: String = UUID().uuidString,
-                values: [String: JSONValue]) {
+                values: [String: JSONValue])
+    {
         self.id = id
         var valueWIthId = values
         valueWIthId["id"] = .string(id)
@@ -23,8 +24,8 @@ struct DynamicModel: Model, JSONValueHolder {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(String.self, forKey: .id)
-        values = try decoder.singleValueContainer().decode([String: JSONValue].self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.values = try decoder.singleValueContainer().decode([String: JSONValue].self)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -57,20 +58,24 @@ struct DynamicModel: Model, JSONValueHolder {
     public func jsonValue(for key: String, modelSchema: ModelSchema) -> Any?? {
         let field = modelSchema.field(withName: key)
         if case .int = field?.type,
-           case .some(.number(let deserializedValue)) = values[key] {
+           case .some(.number(let deserializedValue)) = values[key]
+        {
             return Int(deserializedValue)
 
         } else if case .dateTime = field?.type,
-                  case .some(.string(let deserializedValue)) = values[key] {
+                  case .some(.string(let deserializedValue)) = values[key]
+        {
 
             return try? Temporal.DateTime(iso8601String: deserializedValue)
 
         } else if case .date = field?.type,
-                  case .some(.string(let deserializedValue)) = values[key] {
+                  case .some(.string(let deserializedValue)) = values[key]
+        {
             return try? Temporal.Date(iso8601String: deserializedValue)
 
         } else if case .time = field?.type,
-                  case .some(.string(let deserializedValue)) = values[key] {
+                  case .some(.string(let deserializedValue)) = values[key]
+        {
             return try? Temporal.Time(iso8601String: deserializedValue)
 
         }

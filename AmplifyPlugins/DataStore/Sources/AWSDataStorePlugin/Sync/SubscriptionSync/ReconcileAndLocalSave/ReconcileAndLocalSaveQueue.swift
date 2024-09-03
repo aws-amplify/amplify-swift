@@ -6,9 +6,9 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Combine
 import Foundation
-import AWSPluginsCore
 
 protocol ReconcileAndSaveOperationQueue {
     func addOperation(_ operation: ReconcileAndLocalSaveOperation, modelName: String)
@@ -90,7 +90,7 @@ class ReconcileAndSaveQueue: ReconcileAndSaveOperationQueue {
     func cancelOperations(modelName: String) {
         serialQueue.async {
             if let operations = self.modelReconcileAndSaveOperations[modelName] {
-                operations.values.forEach { operation in
+                for operation in operations.values {
                     operation.cancel()
                 }
             }

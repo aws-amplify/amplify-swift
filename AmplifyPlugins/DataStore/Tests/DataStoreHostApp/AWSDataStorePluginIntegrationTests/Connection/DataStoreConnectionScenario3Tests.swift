@@ -51,17 +51,20 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
         let syncedPostReceived = expectation(description: "received post from sync event")
         let syncCommentReceived = expectation(description: "received comment from sync event")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let syncedPost = try? mutationEvent.decodeModel() as? Post3,
-               syncedPost == post {
+               syncedPost == post
+            {
                 syncedPostReceived.fulfill()
             } else if let syncComment = try? mutationEvent.decodeModel() as? Comment3,
-                      syncComment == comment {
+                      syncComment == comment
+            {
                 syncCommentReceived.fulfill()
             }
         }
@@ -73,7 +76,7 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
         await fulfillment(of: [syncedPostReceived], timeout: networkTimeout)
         _ = try await Amplify.DataStore.save(comment)
         await fulfillment(of: [syncCommentReceived], timeout: networkTimeout)
-        
+
         let queriedComment = try await Amplify.DataStore.query(Comment3.self, byId: comment.id)
         XCTAssertEqual(queriedComment, comment)
     }

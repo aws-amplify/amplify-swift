@@ -16,16 +16,18 @@ public struct OwnerPublicUPAPIPost: Model {
   public var updatedAt: Temporal.DateTime?
 
   public init(id: String = UUID().uuidString,
-      name: String) {
+      name: String)
+  {
     self.init(id: id,
       name: name,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       name: String,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.name = name
       self.createdAt = createdAt

@@ -18,18 +18,20 @@ public struct Registration8V2: Model {
 
   public init(id: String = UUID().uuidString,
       meeting: Meeting8V2,
-      attendee: Attendee8V2) {
+      attendee: Attendee8V2)
+  {
     self.init(id: id,
       meeting: meeting,
       attendee: attendee,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       meeting: Meeting8V2,
       attendee: Attendee8V2,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.meeting = meeting
       self.attendee = attendee

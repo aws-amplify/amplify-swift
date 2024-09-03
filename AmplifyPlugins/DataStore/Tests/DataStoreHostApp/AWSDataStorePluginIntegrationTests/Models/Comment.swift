@@ -18,7 +18,8 @@ public struct Comment: Model {
   public init(id: String = UUID().uuidString,
       content: String,
       createdAt: Temporal.DateTime,
-      post: Post) {
+      post: Post)
+  {
       self.id = id
       self.content = content
       self.createdAt = createdAt

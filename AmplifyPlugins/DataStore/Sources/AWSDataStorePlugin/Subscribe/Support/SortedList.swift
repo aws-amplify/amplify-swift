@@ -61,7 +61,7 @@ class SortedList<ModelType: Model> {
     func add(model: ModelType, sortInputs: [QuerySortDescriptor]) {
         let index = sortedModels.binarySearch { existingModel in
             var sortOrder: Bool?
-            var sortIndex: Int = 0
+            var sortIndex = 0
             while sortOrder == nil && sortIndex < sortInputs.endIndex {
                 let sortInput = sortInputs[sortIndex]
                 // `existingModel` is passed as left argument so the binarySearch's `predicate` criteria is met, ie.
@@ -82,7 +82,8 @@ class SortedList<ModelType: Model> {
         if modelIds.contains(identifier.stringValue),
            let index = sortedModels.firstIndex(where: {
                $0.identifier(schema: $0.schema).stringValue == identifier.stringValue
-           }) {
+           })
+        {
             sortedModels.remove(at: index)
             modelIds.remove(identifier.stringValue)
             return true
@@ -95,7 +96,8 @@ class SortedList<ModelType: Model> {
     func appendOrReplace(_ model: ModelType) {
         let identifier = model.identifier(schema: modelSchema)
         if modelIds.contains(identifier.stringValue),
-           let index = sortedModels.firstIndex(where: { $0.identifier(schema: $0.schema).stringValue == identifier.stringValue }) {
+           let index = sortedModels.firstIndex(where: { $0.identifier(schema: $0.schema).stringValue == identifier.stringValue })
+        {
             sortedModels[index] = model
         } else {
             sortedModels.append(model)

@@ -5,13 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
+
 class MockModelReconciliationQueue: ModelReconciliationQueue {
 
     public static var mockModelReconciliationQueues: [String: MockModelReconciliationQueue] = [:]
@@ -29,7 +30,8 @@ class MockModelReconciliationQueue: ModelReconciliationQueue {
          modelPredicate: QueryPredicate?,
          auth: AuthCategoryBehavior?,
          authModeStrategy: AuthModeStrategy,
-         incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
+         incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil)
+    {
         self.modelReconciliationQueueSubject = PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>()
         self.modelSchema = modelSchema
         MockModelReconciliationQueue.mockModelReconciliationQueues[modelSchema.name] = self

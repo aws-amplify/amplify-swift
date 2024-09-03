@@ -39,7 +39,7 @@ class SortByDependencyOrderTests: XCTestCase {
 
         let sorted = modelSchemas.sortByDependencyOrder()
 
-        let sortedModelNames = sorted.map { $0.name }
+        let sortedModelNames = sorted.map(\.name)
         XCTAssertEqual(sortedModelNames, ["Post", "Comment"])
     }
 
@@ -53,7 +53,7 @@ class SortByDependencyOrderTests: XCTestCase {
 
         let sorted = modelSchemas.sortByDependencyOrder()
 
-        let sortedModelNames = sorted.map { $0.name }
+        let sortedModelNames = sorted.map(\.name)
         XCTAssertEqual(sortedModelNames, ["Post", "Comment", "MockSynced"])
     }
 
@@ -67,7 +67,7 @@ class SortByDependencyOrderTests: XCTestCase {
 
         let sorted = modelSchemas.sortByDependencyOrder()
 
-        let sortedModelNames = sorted.map { $0.name }
+        let sortedModelNames = sorted.map(\.name)
         XCTAssertEqual(sortedModelNames, ["Post", "Comment", "UserAccount", "UserProfile"])
     }
 
@@ -81,7 +81,7 @@ class SortByDependencyOrderTests: XCTestCase {
 
         let sorted = modelSchemas.sortByDependencyOrder()
 
-        let sortedModelNames = sorted.map { $0.name }
+        let sortedModelNames = sorted.map(\.name)
         XCTAssertEqual(sortedModelNames, ["Author", "Book", "BookAuthor"])
     }
 
@@ -95,11 +95,11 @@ class SortByDependencyOrderTests: XCTestCase {
                                   "UserAccount", "UserProfile"]
 
         for _ in 0 ..< 10 {
-            let modelSchemas = modelList.shuffled().map { (modelType) -> ModelSchema in
+            let modelSchemas = modelList.shuffled().map { modelType -> ModelSchema in
                 modelType.schema
             }
             let sorted = modelSchemas.sortByDependencyOrder()
-            let sortedModelNames = sorted.map { $0.name }
+            let sortedModelNames = sorted.map(\.name)
             XCTAssertEqual(sortedModelNames, expectedModelNames)
         }
     }

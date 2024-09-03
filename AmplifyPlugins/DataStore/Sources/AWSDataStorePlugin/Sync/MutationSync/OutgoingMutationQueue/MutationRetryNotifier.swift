@@ -6,9 +6,9 @@
 //
 
 import Amplify
-import Foundation
 import AWSPluginsCore
 import Combine
+import Foundation
 
 final class MutationRetryNotifier {
     private var lock: NSLock
@@ -19,7 +19,8 @@ final class MutationRetryNotifier {
 
     init(advice: RequestRetryAdvice,
          networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?,
-         retryMutationCallback: @escaping BasicClosure) {
+         retryMutationCallback: @escaping BasicClosure)
+    {
         self.lock = NSLock()
 
         self.retryMutationCallback = retryMutationCallback

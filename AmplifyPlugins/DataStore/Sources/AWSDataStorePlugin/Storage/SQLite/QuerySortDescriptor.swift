@@ -31,7 +31,7 @@ public enum QuerySortOrder: String {
     case descending = "desc"
 }
 
-extension Array where Element == QuerySortDescriptor {
+extension [QuerySortDescriptor] {
 
     /// Generates the sorting part of the sql statement.
     ///
@@ -46,7 +46,8 @@ extension Array where Element == QuerySortDescriptor {
 
     static func columnFor(field: String,
                           order: String,
-                          namespace: String) -> String {
+                          namespace: String) -> String
+    {
         return namespace.quoted() + "." + field.quoted() + " " + order
 
     }

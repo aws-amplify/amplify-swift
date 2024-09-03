@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
 @testable import Amplify
@@ -31,7 +31,7 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
             do {
                 try await Amplify.DataStore.start()
                 startExpectation.fulfill()
-            } catch(let error) {
+            } catch (let error) {
                 XCTFail("DataStore start failure \(error)")
             }
         }
@@ -77,7 +77,8 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
 
         // Mutation
         await assertMutations(model: PrivatePublicComboUPPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -111,7 +112,8 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
 
         // Mutation
         await assertMutations(model: PrivatePublicComboAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -146,7 +148,8 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
 
         // Mutation
         await assertMutations(model: PrivatePublicComboAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 

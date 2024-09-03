@@ -49,16 +49,18 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         let team = Team2V2(name: "name1")
         let project = Project2V2(teamID: team.id, team: team)
         let syncedTeamReceived = expectation(description: "received team from sync event")
-        
+
         var hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let syncedTeam = try? mutationEvent.decodeModel() as? Team2V2,
-               syncedTeam == team {
+               syncedTeam == team
+            {
                 syncedTeamReceived.fulfill()
             }
         }
@@ -66,25 +68,27 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        
+
         _ = try await Amplify.DataStore.save(team)
         await fulfillment(of: [syncedTeamReceived], timeout: TestCommonConstants.networkTimeout)
-        
+
         let syncProjectReceived = expectation(description: "received project from sync event")
         hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let syncedProject = try? mutationEvent.decodeModel() as? Project2V2,
-                      syncedProject == project {
+                      syncedProject == project
+            {
                 XCTAssertEqual(mutationEvent.version, 1)
                 syncProjectReceived.fulfill()
             }
         }
-        
+
         _ = try await Amplify.DataStore.save(project)
         await fulfillment(of: [syncProjectReceived], timeout: TestCommonConstants.networkTimeout)
 
@@ -103,25 +107,27 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         let anotherTeam = Team2V2(name: "name1")
         var project = Project2V2(teamID: team.id, team: team)
         let expectedUpdatedProject = Project2V2(id: project.id, name: project.name, teamID: anotherTeam.id)
-        
+
         _ = try await Amplify.DataStore.save(team)
         _ = try await Amplify.DataStore.save(anotherTeam)
         _ = try await Amplify.DataStore.save(project)
-        
+
         let syncUpdatedProjectReceived = expectation(description: "received updated project from sync path")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let syncedUpdatedProject = try? mutationEvent.decodeModel() as? Project2V2,
-               expectedUpdatedProject == syncedUpdatedProject {
+               expectedUpdatedProject == syncedUpdatedProject
+            {
                 syncUpdatedProjectReceived.fulfill()
             }
         }
-        
+
         guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
@@ -143,21 +149,23 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
     func testCreateUpdateDeleteAndGetProjectReturnsNil() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        
+
         let team = Team2V2(name: "name")
         var project = Project2V2(teamID: team.id, team: team)
-        
+
         let createReceived = expectation(description: "received created items from cloud")
         createReceived.expectedFulfillmentCount = 2 // 1 project and 1 team
         var hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let projectEvent = try? mutationEvent.decodeModel() as? Project2V2,
-               projectEvent.id == project.id {
+               projectEvent.id == project.id
+            {
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
                     XCTAssertEqual(mutationEvent.version, 1)
                     createReceived.fulfill()
@@ -169,7 +177,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
                 }
             }
         }
-        
+
         guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
@@ -178,17 +186,19 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         _ = try await Amplify.DataStore.save(team)
         _ = try await Amplify.DataStore.save(project)
         await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
-        
+
         let updateReceived = expectation(description: "received update project from sync path")
         hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let projectEvent = try? mutationEvent.decodeModel() as? Project2V2,
-               projectEvent.id == project.id {
+               projectEvent.id == project.id
+            {
                 if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
                     XCTAssertEqual(mutationEvent.version, 2)
                     updateReceived.fulfill()
@@ -199,22 +209,24 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        
+
         project.name = "updatedName"
         _ = try await Amplify.DataStore.save(project)
         await fulfillment(of: [updateReceived], timeout: TestCommonConstants.networkTimeout)
-        
+
         let deleteReceived = expectation(description: "received deleted project from sync path")
         deleteReceived.expectedFulfillmentCount = 2 // 1 project and 1 team
         hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let projectEvent = try? mutationEvent.decodeModel() as? Project2V2,
-               projectEvent.id == project.id {
+               projectEvent.id == project.id
+            {
                 if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
                     deleteReceived.fulfill()
                 }
@@ -234,7 +246,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         // Once cascade works for hasOne, the following code can be removed.
         _ = try await Amplify.DataStore.delete(team)
         await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
-        
+
         let queriedProject = try await Amplify.DataStore.query(Project2V2.self, byId: project.id)
         XCTAssertNil(queriedProject)
 
@@ -248,19 +260,21 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
 
         let team = Team2V2(name: "name")
         let project = Project2V2(teamID: team.id, team: team)
-        
+
         let createReceived = expectation(description: "received created items from cloud")
         createReceived.expectedFulfillmentCount = 2 // 1 project and 1 team
-        
+
         var hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let projectEvent = try? mutationEvent.decodeModel() as? Project2V2,
-               projectEvent.id == project.id {
+               projectEvent.id == project.id
+            {
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
                     XCTAssertEqual(mutationEvent.version, 1)
                     createReceived.fulfill()
@@ -276,23 +290,25 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        
+
         _ = try await Amplify.DataStore.save(team)
         _ = try await Amplify.DataStore.save(project)
         await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
-        
+
         let deleteReceived = expectation(description: "Delete notification received")
         deleteReceived.expectedFulfillmentCount = 2 // 1 project and 1 team
-        
+
         hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let projectEvent = try? mutationEvent.decodeModel() as? Project2V2,
-               projectEvent.id == project.id {
+               projectEvent.id == project.id
+            {
                 if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
                     deleteReceived.fulfill()
                 }
@@ -326,12 +342,12 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
 
         let team = Team2V2(name: "name")
         let project = Project2V2(teamID: team.id, team: team)
-        
+
         _ = try await Amplify.DataStore.save(team)
         _ = try await Amplify.DataStore.save(project)
-        
+
         _ = try await Amplify.DataStore.delete(project, where: Project2V2.keys.team.eq(team.id))
-                                               
+
         let queriedProject = try await Amplify.DataStore.query(Project2V2.self, byId: project.id)
         XCTAssertNil(queriedProject)
     }
@@ -339,12 +355,12 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
     func testDeleteWithInvalidCondition() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        
+
         let team = Team2V2(name: "name")
         let project = Project2V2(teamID: team.id, team: team)
         _ = try await Amplify.DataStore.save(team)
         _ = try await Amplify.DataStore.save(project)
-        
+
         do {
             _ = try await Amplify.DataStore.delete(project, where: Project2V2.keys.teamID.eq("invalidTeamId"))
             XCTFail("Should have failed")
@@ -356,7 +372,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         } catch {
             throw error
         }
-        
+
         let queriedProject = try await Amplify.DataStore.query(Project2V2.self, byId: project.id)
         XCTAssertNotNil(queriedProject)
     }
@@ -364,15 +380,15 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
     func testDeleteAlreadyDeletedItemWithCondition() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        
+
         let team = Team2V2(name: "name")
         let project = Project2V2(teamID: team.id, team: team)
-        
+
         _ = try await Amplify.DataStore.delete(project)
-        
+
         let queriedProjectOptional = try await Amplify.DataStore.query(Project2V2.self, byId: project.id)
         XCTAssertNil(queriedProjectOptional)
-        
+
         _ = try await Amplify.DataStore.delete(project, where: Project2V2.keys.teamID == team.id)
     }
 
@@ -384,7 +400,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         let project = Project2V2(teamID: team.id, team: team)
         _ = try await Amplify.DataStore.save(team)
         _ = try await Amplify.DataStore.save(project)
-        
+
         let predicate = Project2V2.keys.teamID.eq(team.id)
         let projects = try await Amplify.DataStore.query(Project2V2.self, where: predicate)
         XCTAssertEqual(projects.count, 1)
@@ -395,7 +411,8 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
 
 extension Team2V2: Equatable {
     public static func == (lhs: Team2V2,
-                           rhs: Team2V2) -> Bool {
+                           rhs: Team2V2) -> Bool
+    {
         return lhs.id == rhs.id
             && lhs.name == rhs.name
     }

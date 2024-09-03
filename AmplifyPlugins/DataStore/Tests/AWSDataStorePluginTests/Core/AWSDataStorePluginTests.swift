@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import AmplifyTestCommon
 @_implementationOnly import AmplifyAsyncTesting
+import AmplifyTestCommon
+import XCTest
 
 @_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AWSDataStorePlugin

@@ -54,7 +54,8 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
          authModeStrategy: AuthModeStrategy,
          api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
-         storageAdapter: StorageEngineAdapter?) {
+         storageAdapter: StorageEngineAdapter?)
+    {
         self.initialSyncOperationSinks = [:]
         self.dataStoreConfiguration = dataStoreConfiguration
         self.authModeStrategy = authModeStrategy
@@ -81,10 +82,10 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
             self.log.info("Beginning initial sync")
 
-            let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
+            let syncableModelSchemas = ModelRegistry.modelSchemas.filter(\.isSyncable)
             self.enqueueSyncableModels(syncableModelSchemas)
 
-            let modelNames = syncableModelSchemas.map { $0.name }
+            let modelNames = syncableModelSchemas.map(\.name)
             self.dispatchSyncQueriesStarted(for: modelNames)
             if !syncableModelSchemas.hasAssociations() {
                 self.syncOperationQueue.maxConcurrentOperationCount = syncableModelSchemas.count
@@ -129,7 +130,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
                 "An error occurred syncing \(modelSchema.name)",
                 "",
                 dataStoreError)
-            self.syncErrors.append(syncError)
+            syncErrors.append(syncError)
         }
 
         initialSyncOperationSinks.removeValue(forKey: modelSchema.name)
@@ -233,7 +234,8 @@ extension AWSInitialSyncOrchestrator {
         if case let .api(amplifyError, _) = datastoreError,
            let apiError = amplifyError as? APIError,
            case .operationError(_, _, let underlyingError) = apiError,
-           (underlyingError as? AuthError) != nil {
+           (underlyingError as? AuthError) != nil
+        {
             return true
         }
 
@@ -243,21 +245,25 @@ extension AWSInitialSyncOrchestrator {
            let responseError = apiError as? GraphQLResponseError<ResponseType>,
            let graphQLError = graphqlErrors(from: responseError)?.first,
            let errorTypeValue = errorTypeValueFrom(graphQLError: graphQLError),
-           case .unauthorized = AppSyncErrorType(errorTypeValue) {
+           case .unauthorized = AppSyncErrorType(errorTypeValue)
+        {
             return true
         }
 
         // Check is API error is of unauthorized type
         if case let .api(amplifyError, _) = datastoreError,
-            let apiError = amplifyError as? APIError {
+            let apiError = amplifyError as? APIError
+        {
             if case .operationError(let errorDescription, _, _) = apiError,
                errorDescription.range(of: "Unauthorized",
-                                      options: .caseInsensitive) != nil {
+                                      options: .caseInsensitive) != nil
+            {
                 return true
             }
 
             if case .httpStatusError(let statusCode, _) = apiError,
-               statusCode == 401 || statusCode == 403 {
+               statusCode == 401 || statusCode == 403
+            {
                 return true
             }
         }
@@ -274,7 +280,8 @@ extension AWSInitialSyncOrchestrator {
 
         if case let .api(amplifyError, _) = datastoreError,
            let apiError = amplifyError as? APIError,
-           case .networkError = apiError {
+           case .networkError = apiError
+        {
             return true
         }
 
@@ -290,7 +297,8 @@ extension AWSInitialSyncOrchestrator {
 
         if case let .api(amplifyError, _) = datastoreError,
            let apiError = amplifyError as? APIError,
-           case let .networkError(_, _, underlyingError) = apiError {
+           case let .networkError(_, _, underlyingError) = apiError
+        {
             return underlyingError
         }
 

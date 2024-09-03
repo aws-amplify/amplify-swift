@@ -22,7 +22,8 @@ public struct CustomerMultipleSecondaryIndexV2: Model {
       name: String,
       phoneNumber: String? = nil,
       age: Int,
-      accountRepresentativeID: String) {
+      accountRepresentativeID: String)
+  {
     self.init(id: id,
       name: name,
       phoneNumber: phoneNumber,
@@ -31,13 +32,14 @@ public struct CustomerMultipleSecondaryIndexV2: Model {
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       name: String,
       phoneNumber: String? = nil,
       age: Int,
       accountRepresentativeID: String,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.name = name
       self.phoneNumber = phoneNumber

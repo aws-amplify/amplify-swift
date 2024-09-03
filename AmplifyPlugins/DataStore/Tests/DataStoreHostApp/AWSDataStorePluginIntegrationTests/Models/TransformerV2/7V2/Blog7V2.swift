@@ -18,18 +18,20 @@ public struct Blog7V2: Model {
 
   public init(id: String = UUID().uuidString,
       name: String,
-      posts: List<Post7V2>? = []) {
+      posts: List<Post7V2>? = [])
+  {
     self.init(id: id,
       name: name,
       posts: posts,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       name: String,
       posts: List<Post7V2>? = [],
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.name = name
       self.posts = posts

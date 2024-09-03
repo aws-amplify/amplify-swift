@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import Combine
-import XCTest
 import AWSAPIPlugin
+import Combine
+import Foundation
+import XCTest
 
 @testable import Amplify
 
@@ -38,7 +38,8 @@ class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreAuthBaseTest {
 
         // Mutation
         await assertMutations(model: model,
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -71,7 +72,8 @@ class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreAuthBaseTest {
 
         // Mutation
         await assertMutations(model: OwnerPublicUPAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -100,7 +102,8 @@ class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreAuthBaseTest {
 
         // Mutation
         await assertMutations(model: OwnerPublicUPAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -133,7 +136,8 @@ class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreAuthBaseTest {
 
         // Mutation
         await assertMutations(model: OwnerPublicUPIAMPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
         await fulfillment(of: [authTypeExpecation], timeout: 5)
@@ -161,7 +165,8 @@ class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreAuthBaseTest {
 
         // Mutation
         await assertMutations(model: OwnerPublicUPIAMPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -213,7 +218,8 @@ class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreAuthBaseTest {
 
         // Mutation
         await assertMutations(model: OwnerPublicOIDAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -246,7 +252,8 @@ class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreAuthBaseTest {
 
         // Mutation
         await assertMutations(model: GroupPrivateUPIAMPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -280,7 +287,8 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
 
         // Mutation
         await assertMutations(model: GroupPublicUPAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -309,7 +317,8 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
 
         // Mutation
         await assertMutations(model: GroupPublicUPAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -343,7 +352,8 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
 
         // Mutation
         await assertMutations(model: GroupPublicUPIAMPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -372,7 +382,8 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
 
         // Mutation
         await assertMutations(model: GroupPublicUPIAMPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -405,7 +416,8 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
 
         // Mutation
         await assertMutations(model: PrivatePrivateUPIAMPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -439,7 +451,8 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
 
         // Mutation
         await assertMutations(model: PrivatePublicUPAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -468,7 +481,8 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
 
         // Mutation
         await assertMutations(model: PrivatePublicUPAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -503,7 +517,8 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
 
         // Mutation
         await assertMutations(model: PrivatePublicUPIAMPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -532,7 +547,8 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
 
         // Mutation
         await assertMutations(model: PrivatePublicUPIAMPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -567,7 +583,8 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
 
         // Mutation
         await assertMutations(model: PrivatePublicIAMAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -597,7 +614,8 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
 
         // Mutation
         await assertMutations(model: PrivatePublicIAMAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -629,7 +647,8 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
 
         // Mutation
         await assertMutations(model: PublicPublicIAMAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -642,11 +661,11 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
 class TestAuthProviderFactory: APIAuthProviderFactory {
 
     class TestOIDCAuthProvider: AmplifyOIDCAuthProvider {
-        
+
         func getLatestAuthToken() async throws -> String {
             throw DataStoreError.unknown("Not implemented", "Expected, we're testing unauthorized users.")
         }
-        
+
         func getUserPoolAccessToken() async throws -> String {
             throw DataStoreError.unknown("Not implemented", "Expected, we're testing unauthorized users.")
         }

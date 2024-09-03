@@ -49,7 +49,8 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
         // update the version of head of mutation event table for given model id to the version of `mutationSync`
         MutationEvent.reconcilePendingMutationEventsVersion(sent: requestMutationEvent,
                                                              received: responseMutationSync,
-                                                             storageAdapter: storageAdapter) { result in
+                                                             storageAdapter: storageAdapter)
+        { result in
             switch result {
             case .failure(let error):
                 XCTFail("Error : \(error)")
@@ -61,7 +62,8 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
 
         // query for head of mutation event table for given model id and check if it has the updated version
         MutationEvent.pendingMutationEvents(forModel: post,
-                                            storageAdapter: storageAdapter) { result in
+                                            storageAdapter: storageAdapter)
+        { result in
             switch result {
             case .failure(let error):
                 XCTFail("Error : \(error)")
@@ -119,7 +121,8 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
         // update the version of head of mutation event table for given model id to the version of `mutationSync`
         MutationEvent.reconcilePendingMutationEventsVersion(sent: requestMutationEvent,
                                                              received: responseMutationSync,
-                                                             storageAdapter: storageAdapter) { result in
+                                                             storageAdapter: storageAdapter)
+        { result in
             switch result {
             case .failure(let error):
                 XCTFail("Error : \(error)")
@@ -131,7 +134,8 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
 
         // query for head of mutation event table for given model id and check if it has the updated version
         MutationEvent.pendingMutationEvents(forModel: post,
-                                            storageAdapter: storageAdapter) { result in
+                                            storageAdapter: storageAdapter)
+        { result in
             switch result {
             case .failure(let error):
                 XCTFail("Error : \(error)")
@@ -182,7 +186,8 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
 
         MutationEvent.reconcilePendingMutationEventsVersion(sent: requestMutationEvent,
                                                              received: responseMutationSync,
-                                                             storageAdapter: storageAdapter) { result in
+                                                             storageAdapter: storageAdapter)
+        { result in
             switch result {
             case .failure(let error):
                 XCTFail("Error : \(error)")
@@ -194,7 +199,8 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
 
         // query for head of mutation event table for given model id and check if it has the correct version
         MutationEvent.pendingMutationEvents(forModel: post1,
-                                            storageAdapter: storageAdapter) { result in
+                                            storageAdapter: storageAdapter)
+        { result in
             switch result {
             case .failure(let error):
                 XCTFail("Error : \(error)")
@@ -245,7 +251,8 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
 
         MutationEvent.reconcilePendingMutationEventsVersion(sent: requestMutationEvent,
                                                              received: responseMutationSync,
-                                                             storageAdapter: storageAdapter) { result in
+                                                             storageAdapter: storageAdapter)
+        { result in
             switch result {
             case .failure(let error):
                 XCTFail("Error : \(error)")
@@ -257,7 +264,8 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
 
         // query for head of mutation event table for given model id and check if it has the correct version
         MutationEvent.pendingMutationEvents(forModel: post1,
-                                            storageAdapter: storageAdapter) { result in
+                                            storageAdapter: storageAdapter)
+        { result in
             switch result {
             case .failure(let error):
                 XCTFail("Error : \(error)")
@@ -307,7 +315,8 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
 
         MutationEvent.reconcilePendingMutationEventsVersion(sent: requestMutationEvent,
                                                              received: responseMutationSync,
-                                                             storageAdapter: storageAdapter) { result in
+                                                             storageAdapter: storageAdapter)
+        { result in
             switch result {
             case .failure(let error):
                 XCTFail("Error : \(error)")
@@ -319,7 +328,8 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
 
         // query for head of mutation event table for given model id and check if it has the correct version
         MutationEvent.pendingMutationEvents(forModel: post1,
-                                            storageAdapter: storageAdapter) { result in
+                                            storageAdapter: storageAdapter)
+        { result in
             switch result {
             case .failure(let error):
                 XCTFail("Error : \(error)")
@@ -340,11 +350,12 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                                      mutationType: MutationEvent.MutationType,
                                      createdAt: Temporal.DateTime,
                                      version: Int? = nil,
-                                     inProcess: Bool = false) throws -> MutationEvent {
-        return MutationEvent(id: UUID().uuidString,
+                                     inProcess: Bool = false) throws -> MutationEvent
+    {
+        return try MutationEvent(id: UUID().uuidString,
                              modelId: model.identifier(schema: MutationEvent.schema).stringValue,
                              modelName: model.modelName,
-                             json: try model.toJSON(),
+                             json: model.toJSON(),
                              mutationType: mutationType,
                              createdAt: createdAt,
                              version: version,
@@ -362,7 +373,8 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
 
     private func setUpPendingMutationQueue(_ model: Model,
                                            _ mutationEvents: [MutationEvent],
-                                           _ expectedHeadOfQueue: MutationEvent) {
+                                           _ expectedHeadOfQueue: MutationEvent)
+    {
         for mutationEvent in mutationEvents {
             let mutationEventSaveExpectation = expectation(description: "save mutation event success")
             storageAdapter.save(mutationEvent) { result in

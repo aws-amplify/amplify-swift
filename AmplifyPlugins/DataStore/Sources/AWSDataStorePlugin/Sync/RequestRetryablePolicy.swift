@@ -16,14 +16,15 @@ class RequestRetryablePolicy: RequestRetryable {
 
     public func retryRequestAdvice(urlError: URLError?,
                                    httpURLResponse: HTTPURLResponse?,
-                                   attemptNumber: Int) -> RequestRetryAdvice {
+                                   attemptNumber: Int) -> RequestRetryAdvice
+    {
         var attemptNumber = attemptNumber
         if attemptNumber <= 0 {
             assertionFailure("attemptNumber should be > 0")
             attemptNumber = 1
         }
 
-        if let urlError = urlError {
+        if let urlError {
             return determineRetryRequestAdvice(basedOn: urlError, attemptNumber: attemptNumber)
         } else {
             return determineRetryRequestAdvice(basedOn: httpURLResponse, attemptNumber: attemptNumber)
@@ -31,7 +32,8 @@ class RequestRetryablePolicy: RequestRetryable {
     }
 
     private func determineRetryRequestAdvice(basedOn urlError: URLError,
-                                             attemptNumber: Int) -> RequestRetryAdvice {
+                                             attemptNumber: Int) -> RequestRetryAdvice
+    {
         switch urlError.code {
         case .notConnectedToInternet,
              .dnsLookupFailed,
@@ -52,9 +54,10 @@ class RequestRetryablePolicy: RequestRetryable {
     }
 
     private func determineRetryRequestAdvice(basedOn httpURLResponse: HTTPURLResponse?,
-                                             attemptNumber: Int) -> RequestRetryAdvice {
+                                             attemptNumber: Int) -> RequestRetryAdvice
+    {
         /// If there was no error and no response, then we should not retry.
-        guard let httpURLResponse = httpURLResponse else {
+        guard let httpURLResponse else {
             return RequestRetryAdvice(shouldRetry: false)
         }
 
@@ -97,14 +100,13 @@ class RequestRetryablePolicy: RequestRetryable {
     /// - Parameter response: The response to get the header from
     /// - Returns: The value of the "Retry-After" header, or nil if not present or not convertable to Int
     private func getRetryAfterHeaderValue(from response: HTTPURLResponse) -> Int? {
-        let waitTime: Int?
-        switch response.allHeaderFields["Retry-After"] {
+        let waitTime: Int? = switch response.allHeaderFields["Retry-After"] {
         case let retryTime as String:
-            waitTime = Int(retryTime)
+            Int(retryTime)
         case let retryTime as Int:
-            waitTime = retryTime
+            retryTime
         default:
-            waitTime = nil
+            nil
         }
 
         return waitTime

@@ -17,12 +17,13 @@ public struct TodoCognitoMultiOwner: Model {
   public var editors: [String?]?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
+
   public init(id: String = UUID().uuidString,
       title: String,
       content: String? = nil,
       owner: String? = nil,
-      editors: [String?]? = nil) {
+      editors: [String?]? = nil)
+  {
     self.init(id: id,
       title: title,
       content: content,
@@ -31,13 +32,14 @@ public struct TodoCognitoMultiOwner: Model {
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       title: String,
       content: String? = nil,
       owner: String? = nil,
       editors: [String?]? = nil,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.title = title
       self.content = content

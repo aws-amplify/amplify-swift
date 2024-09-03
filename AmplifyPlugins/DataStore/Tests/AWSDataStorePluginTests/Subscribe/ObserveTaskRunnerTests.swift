@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 @testable import AWSDataStorePlugin
 
 final class ObserveTaskRunnerTests: XCTestCase {
@@ -15,7 +15,7 @@ final class ObserveTaskRunnerTests: XCTestCase {
         let dataStorePublisher = DataStorePublisher()
         let runner = ObserveTaskRunner(publisher: dataStorePublisher.publisher)
         let sequence = runner.sequence
-        
+
         let started = expectation(description: "started")
         let mutationEventReceived = expectation(description: "mutationEvent received")
         mutationEventReceived.expectedFulfillmentCount = 5
@@ -48,7 +48,7 @@ final class ObserveTaskRunnerTests: XCTestCase {
         dataStorePublisher.send(input: mutationEvent)
         dataStorePublisher.send(input: mutationEvent)
         await fulfillment(of: [mutationEventReceived], timeout: 1.0)
-        
+
         task.cancel()
         mutationEvent = MutationEvent(id: "id2",
                                       modelId: "id",

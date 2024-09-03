@@ -6,9 +6,9 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Foundation
 import SQLite
-import AWSPluginsCore
 
 extension SQLiteMutationSyncMetadataMigrationDelegate {
 
@@ -30,7 +30,8 @@ extension SQLiteMutationSyncMetadataMigrationDelegate {
         guard MutationSyncMetadata.schema.fields[idField] != nil,
               MutationSyncMetadata.schema.fields[deletedField] != nil,
               MutationSyncMetadata.schema.fields[lastChangedAtField] != nil,
-              MutationSyncMetadata.schema.fields[versionField] != nil else {
+              MutationSyncMetadata.schema.fields[versionField] != nil
+        else {
             throw DataStoreError.internalOperation("MutationSyncMetadata schema missing expected fields", "", nil)
         }
 
@@ -41,7 +42,8 @@ extension SQLiteMutationSyncMetadataMigrationDelegate {
         guard MutationSyncMetadataMigration.MutationSyncMetadataCopy.schema.fields[idField] != nil,
               MutationSyncMetadataMigration.MutationSyncMetadataCopy.schema.fields[deletedField] != nil,
               MutationSyncMetadataMigration.MutationSyncMetadataCopy.schema.fields[lastChangedAtField] != nil,
-              MutationSyncMetadataMigration.MutationSyncMetadataCopy.schema.fields[versionField] != nil else {
+              MutationSyncMetadataMigration.MutationSyncMetadataCopy.schema.fields[versionField] != nil
+        else {
             throw DataStoreError.internalOperation("MutationSyncMetadataCopy schema missing expected fields", "", nil)
         }
     }
@@ -64,7 +66,7 @@ extension SQLiteMutationSyncMetadataMigrationDelegate {
     ///     1. the total number of records
     ///     2. the total number of records that have the `id` match `<modelName>|<modelId>`
     func selectMutationSyncMetadataRecords() throws -> (metadataCount: Int64, metadataIdMatchNewKeyCount: Int64) {
-        guard let storageAdapter = storageAdapter else {
+        guard let storageAdapter else {
             log.debug("Missing SQLiteStorageEngineAdapter for model migration")
             throw DataStoreError.nilStorageAdapter()
         }
@@ -93,7 +95,7 @@ extension SQLiteMutationSyncMetadataMigrationDelegate {
     // MARK: - Cannot Migrate
 
     func containsDuplicateIdsAcrossModels() throws -> Bool {
-        guard let storageAdapter = storageAdapter else {
+        guard let storageAdapter else {
             log.debug("Missing SQLiteStorageEngineAdapter for model migration")
             throw DataStoreError.nilStorageAdapter()
         }

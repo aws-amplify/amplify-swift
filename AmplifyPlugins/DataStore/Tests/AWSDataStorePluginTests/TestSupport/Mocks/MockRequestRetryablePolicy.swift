@@ -9,8 +9,8 @@ import Foundation
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 class MockRequestRetryablePolicy: RequestRetryablePolicy {
 
@@ -27,7 +27,8 @@ class MockRequestRetryablePolicy: RequestRetryablePolicy {
 
     override func retryRequestAdvice(urlError: URLError?,
                                      httpURLResponse: HTTPURLResponse?,
-                                     attemptNumber: Int) -> RequestRetryAdvice {
+                                     attemptNumber: Int) -> RequestRetryAdvice
+    {
         onRetryRequestAdvice?(urlError, httpURLResponse, attemptNumber)
         // If this breaks, you didn't push anything onto the queue
         return !responseQueue.isEmpty ? responseQueue.removeFirst() : .init(shouldRetry: false)

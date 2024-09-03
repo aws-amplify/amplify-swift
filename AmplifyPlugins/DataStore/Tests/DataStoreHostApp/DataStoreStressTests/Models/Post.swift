@@ -16,11 +16,12 @@ public struct Post: Model {
   public var content: String
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
+
   public init(id: String = UUID().uuidString,
       title: String,
       status: PostStatus,
-      content: String) {
+      content: String)
+  {
     self.init(id: id,
       title: title,
       status: status,
@@ -28,12 +29,13 @@ public struct Post: Model {
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       title: String,
       status: PostStatus,
       content: String,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.title = title
       self.status = status

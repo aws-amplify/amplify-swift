@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
 @testable import Amplify
@@ -44,7 +44,8 @@ class AWSDataStoreMultiAuthThreeRulesTests: AWSDataStoreAuthBaseTest {
 
         // Mutation
         await assertMutations(model: OwnerPrivatePublicUPIAMAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -76,7 +77,8 @@ class AWSDataStoreMultiAuthThreeRulesTests: AWSDataStoreAuthBaseTest {
 
         // Mutation
         await assertMutations(model: OwnerPrivatePublicUPIAMAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -114,7 +116,8 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
 
         // Mutation
         await assertMutations(model: GroupPrivatePublicUPIAMAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -139,13 +142,15 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
 
         // Query
         await assertQuerySuccess(modelType: GroupPrivatePublicUPIAMAPIPost.self,
-                           expectations) { error in
+                           expectations)
+        { error in
             XCTFail("Error query \(error)")
         }
 
         // Mutation
         await assertMutations(model: GroupPrivatePublicUPIAMAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -175,13 +180,15 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
 
         // Query
         await assertQuerySuccess(modelType: PrivatePrivatePublicUPIAMIAMPost.self,
-                           expectations) { error in
+                           expectations)
+        { error in
             XCTFail("Error query \(error)")
         }
 
         // Mutation
         await assertMutations(model: PrivatePrivatePublicUPIAMIAMPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -213,7 +220,8 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
 
         // Mutation
         await assertMutations(model: PrivatePrivatePublicUPIAMIAMPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -250,7 +258,8 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
 
         // Mutation
         await assertMutations(model: PrivatePrivatePublicUPIAMAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -284,7 +293,8 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
 
         // Mutation
         await assertMutations(model: PrivatePrivatePublicUPIAMAPIPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -321,7 +331,8 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
 
         // Mutation
         await assertMutations(model: PrivatePublicPublicUPAPIIAMPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -355,7 +366,8 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
 
         // Mutations
         await assertMutations(model: PrivatePublicPublicUPAPIIAMPost(name: "name"),
-                        expectations) { error in
+                        expectations)
+        { error in
             XCTFail("Error mutation \(error)")
         }
 

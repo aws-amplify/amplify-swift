@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -37,16 +38,19 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
         let syncedPostReceived = expectation(description: "received post from sync event")
         let syncCommentReceived = expectation(description: "received comment from sync event")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
             if let syncedPost = mutationEvent.modelId as String?,
-               syncedPost == post.idString() {
+               syncedPost == post.idString()
+            {
                 syncedPostReceived.fulfill()
             } else if let syncComment = mutationEvent.modelId as String?,
-                      syncComment == comment.idString() {
+                      syncComment == comment.idString()
+            {
                 syncCommentReceived.fulfill()
             }
 

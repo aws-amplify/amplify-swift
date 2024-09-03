@@ -30,7 +30,8 @@ class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue 
          api: APICategoryGraphQLBehavior?,
          storageAdapter: StorageEngineAdapter?,
          syncExpressions: [DataStoreSyncExpression],
-         auth: AuthCategoryBehavior?) {
+         auth: AuthCategoryBehavior?)
+    {
         self.incomingEventSubject = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
         updateLastInstance(instance: self)
     }

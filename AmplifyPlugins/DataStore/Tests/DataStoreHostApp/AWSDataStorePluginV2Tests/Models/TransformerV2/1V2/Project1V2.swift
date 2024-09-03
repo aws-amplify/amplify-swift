@@ -20,7 +20,8 @@ public struct Project1V2: Model {
   public init(id: String = UUID().uuidString,
       name: String? = nil,
       team: Team1V2? = nil,
-      project1V2TeamId: String? = nil) {
+      project1V2TeamId: String? = nil)
+  {
     self.init(id: id,
       name: name,
       team: team,
@@ -28,12 +29,13 @@ public struct Project1V2: Model {
       updatedAt: nil,
       project1V2TeamId: project1V2TeamId)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       name: String? = nil,
       team: Team1V2? = nil,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil,
-      project1V2TeamId: String? = nil) {
+      project1V2TeamId: String? = nil)
+  {
       self.id = id
       self.name = name
       self.team = team

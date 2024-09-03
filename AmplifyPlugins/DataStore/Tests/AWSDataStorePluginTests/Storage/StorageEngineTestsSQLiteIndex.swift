@@ -74,7 +74,7 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
     //  5000                -   0.0032134409993886948   -   0.00478174310119357
     //  10000               -   0.0033998960039345548   -   0.006051322101324331
     func testQueryPerformanceForModelWithSingleIndex() {
-        var averageTimeForQuery: Double = 0.0
+        var averageTimeForQuery = 0.0
         var iterations = 0
         measureMetrics([XCTPerformanceMetric.wallClockTime], automaticallyStartMeasuring: false) {
             iterations += 1
@@ -115,7 +115,8 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
             startMeasuring()
             guard case .success = queryModelSynchronous(modelType: CustomerSecondaryIndexV2.self,
                                                         predicate: predicate,
-                                                        storageEngine: storageEngine) else {
+                                                        storageEngine: storageEngine)
+            else {
                 XCTFail("Failed to query customer")
                 return
             }
@@ -149,7 +150,7 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
     //  5000                -   0.03966123380087083     -   0.04700456840073457
     //  10000               -   0.08497165249864339     -   0.09597435819596285
     func testQueryPerformanceForModelWithMultipleIndexes1() {
-        var averageTimeForQuery: Double = 0.0
+        var averageTimeForQuery = 0.0
         var iterations = 0
         measureMetrics([XCTPerformanceMetric.wallClockTime], automaticallyStartMeasuring: false) {
             iterations += 1
@@ -193,7 +194,8 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
             startMeasuring()
             guard case .success = queryModelSynchronous(modelType: CustomerMultipleSecondaryIndexV2.self,
                                                         predicate: predicate,
-                                                        storageEngine: storageEngine) else {
+                                                        storageEngine: storageEngine)
+            else {
                 XCTFail("Failed to query customer")
                 return
             }
@@ -227,7 +229,7 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
     //  5000                -   0.011302956998406444    -   0.013200746997934766
     //  10000               -   0.02146193390071858     -   0.025970560003770515
     func testQueryPerformanceForModelWithMultipleIndexes2() {
-        var averageTimeForQuery: Double = 0.0
+        var averageTimeForQuery = 0.0
         var iterations = 0
         measureMetrics([XCTPerformanceMetric.wallClockTime], automaticallyStartMeasuring: false) {
             iterations += 1
@@ -274,7 +276,8 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
             guard case .success =
                     queryModelSynchronous(modelType: CustomerMultipleSecondaryIndexV2.self,
                                           predicate: predicate,
-                                          storageEngine: storageEngine) else {
+                                          storageEngine: storageEngine)
+            else {
                     XCTFail("Failed to query customer")
                     return
             }
@@ -331,7 +334,8 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
 
     func queryModelSynchronous<M: Model>(modelType: M.Type,
                                          predicate: QueryPredicate,
-                                         storageEngine: StorageEngine) -> DataStoreResult<[M]> {
+                                         storageEngine: StorageEngine) -> DataStoreResult<[M]>
+    {
         let queryFinished = expectation(description: "Query Finished")
         var result: DataStoreResult<[M]>?
 

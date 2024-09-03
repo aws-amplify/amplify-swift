@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSPluginsCore
 import Combine
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -36,7 +36,8 @@ class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     init(dataStoreConfiguration: DataStoreConfiguration,
          api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
-         storageAdapter: StorageEngineAdapter?) {
+         storageAdapter: StorageEngineAdapter?)
+    {
         self.initialSyncOrchestratorTopic = PassthroughSubject<InitialSyncOperationEvent, DataStoreError>()
     }
 

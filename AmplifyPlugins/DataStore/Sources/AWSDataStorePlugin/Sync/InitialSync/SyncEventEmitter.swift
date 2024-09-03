@@ -40,12 +40,13 @@ final class SyncEventEmitter {
     }
 
     init(initialSyncOrchestrator: InitialSyncOrchestrator?,
-         reconciliationQueue: IncomingEventReconciliationQueue?) {
+         reconciliationQueue: IncomingEventReconciliationQueue?)
+    {
         self.modelSyncedEventEmitters = [String: ModelSyncedEventEmitter]()
         self.syncEventEmitterTopic = PassthroughSubject<IncomingSyncEventEmitterEvent, Never>()
         self.modelSyncedReceived = 0
 
-        let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
+        let syncableModelSchemas = ModelRegistry.modelSchemas.filter(\.isSyncable)
         self.syncableModels = syncableModelSchemas.count
 
         var publishers = [AnyPublisher<IncomingModelSyncedEmitterEvent, Never>]()

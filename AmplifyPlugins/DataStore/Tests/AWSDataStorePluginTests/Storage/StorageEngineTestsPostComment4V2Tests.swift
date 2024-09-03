@@ -32,10 +32,10 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
                                           syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
-            
+
             ModelListDecoderRegistry.registerDecoder(DataStoreListDecoder.self)
             ModelProviderRegistry.registerDecoder(DataStoreModelDecoder.self)
-            
+
             ModelRegistry.register(modelType: ParentPost4V2.self)
             ModelRegistry.register(modelType: ChildComment4V2.self)
             do {
@@ -56,7 +56,7 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         let post = ParentPost4V2(
             id: "postId1",
             title: "title1")
-        
+
         syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
             receivedMutationEvent.fulfill()
             if submittedMutationEvent.modelId == post.id {
@@ -69,9 +69,9 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         }
         try await saveAsync(post)
         await fulfillment(of: [receivedMutationEvent, expectedSuccess], timeout: 1)
-            
+
     }
-    
+
     /// A save should fail if the corresponding MutationEvent could not be submitted to the syncEngine.
     func testSavePostFailDueToSyncEngineMissing() async throws {
         storageEngine.syncEngine = nil
@@ -91,57 +91,59 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
                 "No SyncEngine available to sync mutation event, rollback save.")
         }
     }
-    
+
     func testSaveCommentThenQueryComment() async throws {
         let comment = ChildComment4V2(content: "content")
         let savedComment = try await saveAsync(comment)
         XCTAssertEqual(savedComment.id, comment.id)
-        
+
         guard let queriedComment = try await queryAsync(ChildComment4V2.self,
                                                         byIdentifier: comment.id,
-                                                        eagerLoad: true) else {
+                                                        eagerLoad: true)
+        else {
             XCTFail("Failed to query saved comment")
             return
         }
         XCTAssertEqual(queriedComment.id, comment.id)
     }
-    
+
     func testSavePostThenQueryPost() async throws {
         let post = ParentPost4V2(title: "title")
         let savedPost = try await saveAsync(post)
         XCTAssertEqual(savedPost.id, post.id)
-        
+
         guard let queriedPost = try await queryAsync(ParentPost4V2.self,
                                                      byIdentifier: post.id,
-                                                     eagerLoad: true) else {
+                                                     eagerLoad: true)
+        else {
             XCTFail("Failed to query saved post")
             return
         }
         XCTAssertEqual(queriedPost.id, post.id)
     }
-    
+
     func testSaveMultipleThenQueryComments() async throws {
         try await saveAsync(ChildComment4V2(content: "content"))
         try await saveAsync(ChildComment4V2(content: "content"))
-        
+
         let comments = try await queryAsync(ChildComment4V2.self, eagerLoad: true)
         XCTAssertEqual(comments.count, 2)
     }
-    
+
     func testSaveMultipleThenQueryPosts() async throws {
         try await saveAsync(ParentPost4V2(title: "title"))
         try await saveAsync(ParentPost4V2(title: "title"))
-        
+
         let comments = try await queryAsync(ParentPost4V2.self, eagerLoad: true)
         XCTAssertEqual(comments.count, 2)
     }
-    
+
     // TODO: clean up this test
     func testCommentWithPost_TranslateToStorageValues() async throws {
         let post = ParentPost4V2(id: "postId", title: "title")
         _ = try await saveAsync(post)
         var comment = ChildComment4V2(content: "content", post: post)
-        
+
         // Model.sqlValues testing
         let sqlValues = comment.sqlValues(for: ChildComment4V2.schema.columns,
                                           modelSchema: ChildComment4V2.schema)
@@ -150,7 +152,7 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         XCTAssertNil(sqlValues[2]) // createdAt
         XCTAssertNil(sqlValues[3]) // updatedAt
         XCTAssertEqual(sqlValues[4] as? String, post.id)
-        
+
         // InsertStatement testing
         let insertStatement = InsertStatement(model: comment,
                                               modelSchema: ChildComment4V2.schema)
@@ -160,15 +162,15 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         XCTAssertNil(insertStatement.variables[3]) // updatedAt
         XCTAssertEqual(insertStatement.variables[4] as? String, post.id)
         _ = try connection.prepare(insertStatement.stringValue).run(insertStatement.variables)
-        
+
         // UpdateStatement testing
         comment.content = "updatedContent"
         let updateStatement = UpdateStatement(model: comment,
                                               modelSchema: ChildComment4V2.schema,
                                               condition: nil)
         _ = try connection.prepare(updateStatement.stringValue).run(updateStatement.variables)
-        
-        
+
+
         // Select
         let selectStatement = SelectStatement(from: ChildComment4V2.schema,
                                               predicate: field("id").eq(comment.id),
@@ -184,16 +186,17 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         XCTAssertEqual(result.count, 1)
         // asert content is "updatedContent"
     }
-    
+
     func testSaveCommentWithPostThenQueryCommentAndAccessPost() async throws {
         let post = ParentPost4V2(title: "title")
         _ = try await saveAsync(post)
         let comment = ChildComment4V2(content: "content", post: post)
         _ = try await saveAsync(comment)
-        
+
         guard let queriedComment = try await queryAsync(ChildComment4V2.self,
                                                         byIdentifier: comment.id,
-                                                        eagerLoad: true) else {
+                                                        eagerLoad: true)
+        else {
             XCTFail("Failed to query saved comment")
             return
         }
@@ -204,16 +207,17 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         }
         XCTAssertEqual(eagerLoadedPost.id, post.id)
     }
-    
+
     func testSaveCommentWithPostThenQueryPostAndAccessComments() async throws {
         let post = ParentPost4V2(title: "title")
         _ = try await saveAsync(post)
         let comment = ChildComment4V2(content: "content", post: post)
         _ = try await saveAsync(comment)
-        
+
         guard let queriedPost = try await queryAsync(ParentPost4V2.self,
                                                      byIdentifier: post.id,
-                                                     eagerLoad: true) else {
+                                                     eagerLoad: true)
+        else {
             XCTFail("Failed to query saved post")
             return
         }
@@ -232,7 +236,7 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
             XCTFail("Should not be loaded")
         }
     }
-    
+
     func testSaveMultipleCommentWithPostThenQueryCommentsAndAccessPost() async throws {
         let post1 = try await saveAsync(ParentPost4V2(id: "postId1", title: "title1"))
         _ = try await saveAsync(ChildComment4V2(id: "id1", content: "content", post: post1))
@@ -261,7 +265,7 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         XCTAssertEqual(post2.id, "postId2")
         XCTAssertEqual(post2.title, "title2")
     }
-    
+
     func testSaveMultipleCommentWithPostThenQueryPostAndAccessComments() async throws {
         let post1 = try await saveAsync(ParentPost4V2(id: "postId1", title: "title1"))
         _ = try await saveAsync(ChildComment4V2(id: "id1", content: "content", post: post1))

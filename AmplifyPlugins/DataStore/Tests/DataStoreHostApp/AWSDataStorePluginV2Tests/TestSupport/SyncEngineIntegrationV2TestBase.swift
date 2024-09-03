@@ -100,7 +100,8 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
 
         var token: UnsubscribeToken!
         token = Amplify.Hub.listen(to: .dataStore,
-                                   eventName: eventName) { _ in
+                                   eventName: eventName)
+        { _ in
             eventReceived.fulfill()
             Amplify.Hub.removeListener(token)
         }

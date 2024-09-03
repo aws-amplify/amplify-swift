@@ -10,8 +10,8 @@ import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 class AWSIncomingEventReconciliationQueueTests: XCTestCase {
     var storageAdapter: MockSQLiteStorageEngineAdapter!
@@ -216,7 +216,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
                 XCTFail("Should not expect any other state, received: \(event)")
             }
         })
-        
+
         let reconciliationQueues = MockModelReconciliationQueue.mockModelReconciliationQueues
         for (queueName, queue) in reconciliationQueues {
             let cancellableOperation = CancelAwareBlockOperation {

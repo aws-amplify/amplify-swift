@@ -6,9 +6,9 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Combine
 import Foundation
-import AWSPluginsCore
 
 // swiftlint:disable type_body_length file_length
 /// Checks the GraphQL error response for specific error scenarios related to data synchronziation to the local store.
@@ -37,7 +37,8 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
          graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>? = nil,
          apiError: APIError? = nil,
          reconciliationQueue: IncomingEventReconciliationQueue? = nil,
-         completion: @escaping (Result<MutationEvent?, Error>) -> Void) {
+         completion: @escaping (Result<MutationEvent?, Error>) -> Void)
+    {
         self.dataStoreConfiguration = dataStoreConfiguration
         self.mutationEvent = mutationEvent
         self.api = api
@@ -58,7 +59,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             return
         }
 
-        if let apiError = apiError {
+        if let apiError {
             if isAuthSignedOutError(apiError: apiError) {
                 log.verbose("User is signed out, passing error back to the error handler, and removing mutation event.")
             } else if let underlyingError = apiError.underlyingError {
@@ -71,7 +72,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             return
         }
 
-        guard let graphQLResponseError = graphQLResponseError else {
+        guard let graphQLResponseError else {
             dataStoreConfiguration.errorHandler(
                 DataStoreError.api(APIError.unknown("This is unexpected. Missing APIError and GraphQLError.", ""),
                                    mutationEvent))
@@ -132,7 +133,8 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
     private func isAuthSignedOutError(apiError: APIError) -> Bool {
         if case let .operationError(_, _, underlyingError) = apiError,
             let authError = underlyingError as? AuthError,
-            case .signedOut = authError {
+            case .signedOut = authError
+        {
             return true
         }
 
@@ -196,7 +198,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             let serializedJSON = try JSONEncoder().encode(data)
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
-            return .success(try decoder.decode(MutationSync<AnyModel>.self, from: serializedJSON))
+            return try .success(decoder.decode(MutationSync<AnyModel>.self, from: serializedJSON))
         } catch {
             return .failure(error)
         }
@@ -288,7 +290,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             return
         }
 
-        guard let api = self.api else {
+        guard let api else {
             log.error("\(#function): API unexpectedly nil")
             let apiError = APIError.unknown("API unexpectedly nil", "")
             finish(result: .failure(apiError))
@@ -299,13 +301,13 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         Task { [weak self] in
             do {
                 let result = try await api.mutate(request: apiRequest)
-                guard let self = self, !self.isCancelled else {
+                guard let self, !self.isCancelled else {
                     self?.finish(result: .failure(APIError.operationError("Mutation operation cancelled", "")))
                     return
                 }
 
-                self.log.verbose("sendMutationToCloud received asyncEvent: \(result)")
-                self.validate(cloudResult: result, request: apiRequest)
+                log.verbose("sendMutationToCloud received asyncEvent: \(result)")
+                validate(cloudResult: result, request: apiRequest)
             } catch {
                 self?.finish(result: .failure(APIError.operationError("Failed to do mutation", "", error)))
             }
@@ -319,7 +321,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
 
         switch cloudResult {
         case .success(let mutationSyncResult):
-            guard let reconciliationQueue = reconciliationQueue else {
+            guard let reconciliationQueue else {
                 let dataStoreError = DataStoreError.configuration(
                     "reconciliationQueue is unexpectedly nil",
                     """
@@ -362,7 +364,8 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         storageAdapter.delete(untypedModelType: modelType,
                               modelSchema: modelSchema,
                               withIdentifier: identifier,
-                              condition: nil) { response in
+                              condition: nil)
+        { response in
             switch response {
             case .failure(let dataStoreError):
                 let error = DataStoreError.unknown("Delete failed \(dataStoreError)", "")
@@ -398,7 +401,8 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
     }
 
     private func saveMetadata(storageAdapter: StorageEngineAdapter,
-                              inProcessModel: MutationSync<AnyModel>) {
+                              inProcessModel: MutationSync<AnyModel>)
+    {
         log.verbose(#function)
         storageAdapter.save(inProcessModel.syncMetadata, condition: nil, eagerLoad: true) { result in
             switch result {

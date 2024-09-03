@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import Combine
+import Foundation
 
 /// `DataStoreList<ModelType>` is a DataStore-aware custom `Collection` that is capable of loading
 /// records from the `DataStore` on-demand. This is especially useful when dealing with
@@ -46,8 +46,9 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
             let predicate: QueryPredicate
             if associatedIdentifiers.count == 1,
                let associatedId = associatedIdentifiers.first,
-               let associatedField = associatedFields.first {
-                self.log.verbose("Loading List of \(Element.schema.name) by \(associatedField) == \(associatedId) ")
+               let associatedField = associatedFields.first
+            {
+                log.verbose("Loading List of \(Element.schema.name) by \(associatedField) == \(associatedId) ")
                 predicate = field(associatedField) == associatedId
             } else {
                 let predicateValues = zip(associatedFields, associatedIdentifiers)
@@ -56,13 +57,13 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
                     queryPredicates.append(QueryPredicateOperation(field: identifierName,
                                                                    operator: .equals(identifierValue)))
                 }
-                self.log.verbose("Loading List of \(Element.schema.name) by \(associatedFields) == \(associatedIdentifiers) ")
+                log.verbose("Loading List of \(Element.schema.name) by \(associatedFields) == \(associatedIdentifiers) ")
                 predicate = QueryPredicateGroup(type: .and, predicates: queryPredicates)
             }
 
             do {
                 let elements = try await Amplify.DataStore.query(Element.self, where: predicate)
-                self.loadedState = .loaded(elements)
+                loadedState = .loaded(elements)
                 return elements
             } catch let error as DataStoreError {
                 self.log.error(error: error)

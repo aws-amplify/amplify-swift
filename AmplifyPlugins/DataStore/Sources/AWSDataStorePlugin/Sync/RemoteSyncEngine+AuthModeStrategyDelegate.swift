@@ -6,15 +6,16 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Combine
 import Foundation
-import AWSPluginsCore
 
 extension RemoteSyncEngine: AuthModeStrategyDelegate {
 
     func isUserLoggedIn() async -> Bool {
         if let authProviderFactory = api as? APICategoryAuthProviderFactoryBehavior,
-           let oidcAuthProvider = authProviderFactory.apiAuthProviderFactory().oidcAuthProvider() {
+           let oidcAuthProvider = authProviderFactory.apiAuthProviderFactory().oidcAuthProvider()
+        {
 
             // if OIDC is used as authentication provider
             // use `getLatestAuthToken`
@@ -29,10 +30,10 @@ extension RemoteSyncEngine: AuthModeStrategyDelegate {
             return isLoggedInWithOIDC
         }
 
-        guard let auth = auth else {
+        guard let auth else {
             return false
         }
 
-        return (try? await auth.getCurrentUser()) != nil
+        return await (try? auth.getCurrentUser()) != nil
     }
 }

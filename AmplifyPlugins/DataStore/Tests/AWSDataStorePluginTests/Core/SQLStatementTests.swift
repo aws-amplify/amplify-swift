@@ -1025,13 +1025,14 @@ class SQLStatementTests: XCTestCase {
 
         func assertPredicate(_ predicate: QueryPredicate,
                              matches sql: String,
-                             bindings: [Binding?]? = nil) {
+                             bindings: [Binding?]? = nil)
+        {
             let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate, namespace: "root")
             XCTAssertEqual(statement.stringValue, "  and \(sql)")
-            if let bindings = bindings {
+            if let bindings {
                 XCTAssertEqual(bindings.count, statement.variables.count)
-                bindings.enumerated().forEach {
-                    if let one = $0.element, let other = statement.variables[$0.offset] {
+                for binding in bindings.enumerated() {
+                    if let one = binding.element, let other = statement.variables[binding.offset] {
                         // TODO find better way to test `Binding` equality
                         XCTAssertEqual(String(describing: one), String(describing: other))
                     }

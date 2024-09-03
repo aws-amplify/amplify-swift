@@ -18,18 +18,20 @@ public class Team4aV2: Model {
 
     public convenience init(id: String = UUID().uuidString,
       name: String,
-      project: Project4aV2? = nil) {
+      project: Project4aV2? = nil)
+  {
     self.init(id: id,
       name: name,
       project: project,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       name: String,
       project: Project4aV2? = nil,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.name = name
       self.project = project

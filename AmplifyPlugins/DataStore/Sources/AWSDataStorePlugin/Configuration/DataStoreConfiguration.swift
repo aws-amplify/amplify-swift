@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSPluginsCore
+import Foundation
 
 /// Error Handler function typealias
 public typealias DataStoreErrorHandler = (AmplifyError) -> Void
@@ -80,7 +80,8 @@ public struct DataStoreConfiguration {
          syncPageSize: UInt,
          syncExpressions: [DataStoreSyncExpression],
          authModeStrategy: AuthModeStrategyType = .default,
-         disableSubscriptions: @escaping () -> Bool) {
+         disableSubscriptions: @escaping () -> Bool)
+    {
         self.errorHandler = errorHandler
         self.conflictHandler = conflictHandler
         self.syncInterval = syncInterval
@@ -97,7 +98,8 @@ public struct DataStoreConfiguration {
          syncMaxRecords: UInt,
          syncPageSize: UInt,
          syncExpressions: [DataStoreSyncExpression],
-         authModeStrategy: AuthModeStrategyType = .default) {
+         authModeStrategy: AuthModeStrategyType = .default)
+    {
         self.errorHandler = errorHandler
         self.conflictHandler = conflictHandler
         self.syncInterval = syncInterval

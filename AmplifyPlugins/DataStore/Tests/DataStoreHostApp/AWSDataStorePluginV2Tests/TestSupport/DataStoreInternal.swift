@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
 @testable import Amplify
 @testable import AWSDataStorePlugin
-import Foundation
 
-struct DataStoreInternal {
+enum DataStoreInternal {
 
     static var dbFilePath: URL? { getAdapter()?.dbFilePath }
 
@@ -17,7 +17,8 @@ struct DataStoreInternal {
         if #available(iOS 13.0, *) {
             if let dataStorePlugin = tryGetPlugin(),
                let storageEngine = dataStorePlugin.storageEngine as? StorageEngine,
-               let syncEngine = storageEngine.syncEngine {
+               let syncEngine = storageEngine.syncEngine
+            {
                 return syncEngine
             }
         }
@@ -28,7 +29,8 @@ struct DataStoreInternal {
     static func getAdapter() -> SQLiteStorageEngineAdapter? {
         if let dataStorePlugin = tryGetPlugin(),
            let storageEngine = dataStorePlugin.storageEngine as? StorageEngine,
-           let adapter = storageEngine.storageAdapter as? SQLiteStorageEngineAdapter {
+           let adapter = storageEngine.storageAdapter as? SQLiteStorageEngineAdapter
+        {
             return adapter
         }
         return nil

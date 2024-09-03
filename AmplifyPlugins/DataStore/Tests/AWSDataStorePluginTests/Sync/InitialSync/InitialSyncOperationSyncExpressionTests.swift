@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import SQLite
 import Combine
+import SQLite
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -35,7 +35,8 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
     }
 
     func initialSyncOperation(withSyncExpression syncExpression: DataStoreSyncExpression,
-                              responder: APIPluginQueryResponder) -> InitialSyncOperation {
+                              responder: APIPluginQueryResponder) -> InitialSyncOperation
+    {
         apiPlugin.responders[.queryRequestResponse] = responder
         #if os(watchOS)
         let configuration  = DataStoreConfiguration.custom(syncPageSize: 10,

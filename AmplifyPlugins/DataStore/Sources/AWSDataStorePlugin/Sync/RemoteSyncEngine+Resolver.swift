@@ -9,7 +9,7 @@ import Amplify
 import Combine
 
 extension RemoteSyncEngine {
-    struct Resolver {
+    enum Resolver {
         // swiftlint:disable cyclomatic_complexity
         static func resolve(currentState: State, action: Action) -> State {
             switch (currentState, action) {

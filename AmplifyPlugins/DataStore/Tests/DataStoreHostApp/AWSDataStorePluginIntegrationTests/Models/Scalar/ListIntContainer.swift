@@ -24,7 +24,8 @@ public struct ListIntContainer: Model {
       intList: [Int] = [],
       intNullableList: [Int]? = nil,
       nullableIntList: [Int?] = [],
-      nullableIntNullableList: [Int?]? = nil) {
+      nullableIntNullableList: [Int?]? = nil)
+  {
       self.id = id
       self.test = test
       self.nullableInt = nullableInt

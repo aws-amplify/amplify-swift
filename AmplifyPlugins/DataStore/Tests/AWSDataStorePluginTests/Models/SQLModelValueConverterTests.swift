@@ -8,10 +8,10 @@
 import Foundation
 import XCTest
 
+import AmplifyTestCommon
 @testable import Amplify
 @testable import AWSDataStorePlugin
 @testable import SQLite
-import AmplifyTestCommon
 
 class SQLModelValueConverterTests: BaseDataStoreTests {
 

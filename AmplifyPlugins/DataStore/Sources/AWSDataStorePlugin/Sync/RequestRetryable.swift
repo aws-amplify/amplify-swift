@@ -11,7 +11,8 @@ struct RequestRetryAdvice {
     let shouldRetry: Bool
     let retryInterval: DispatchTimeInterval
     init(shouldRetry: Bool,
-         retryInterval: DispatchTimeInterval = .seconds(60)) {
+         retryInterval: DispatchTimeInterval = .seconds(60))
+    {
         self.shouldRetry = shouldRetry
         self.retryInterval = retryInterval
     }

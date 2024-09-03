@@ -6,9 +6,9 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Combine
 import Foundation
-import AWSPluginsCore
 
 // swiftlint:disable type_body_length file_length
 class RemoteSyncEngine: RemoteSyncEngineBehavior {
@@ -73,7 +73,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                      reconciliationQueueFactory: IncomingEventReconciliationQueueFactory? = nil,
                      stateMachine: StateMachine<State, Action>? = nil,
                      networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
-                     requestRetryablePolicy: RequestRetryablePolicy? = nil) throws {
+                     requestRetryablePolicy: RequestRetryablePolicy? = nil) throws
+    {
 
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
@@ -121,7 +122,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
          reconciliationQueueFactory: @escaping IncomingEventReconciliationQueueFactory,
          stateMachine: StateMachine<State, Action>,
          networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?,
-         requestRetryablePolicy: RequestRetryablePolicy) {
+         requestRetryablePolicy: RequestRetryablePolicy)
+    {
         self.storageAdapter = storageAdapter
         self.dataStoreConfiguration = dataStoreConfiguration
         self.authModeStrategy = authModeStrategy
@@ -140,11 +142,11 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         self.stateMachineSink = self.stateMachine
             .$state
             .sink { [weak self] newState in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
-                self.log.verbose("New state: \(newState)")
-                self.taskQueue.async {
+                log.verbose("New state: \(newState)")
+                taskQueue.async {
                     await self.respond(to: newState)
                 }
         }
@@ -207,7 +209,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         self.auth = auth
 
         if networkReachabilityPublisher == nil,
-            let reachability = api as? APICategoryReachabilityBehavior {
+            let reachability = api as? APICategoryReachabilityBehavior
+        {
             do {
                 networkReachabilityPublisher = try reachability.reachabilityPublisher()
             } catch {
@@ -281,9 +284,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     private func initializeSubscriptions(api: APICategoryGraphQLBehavior,
-                                         storageAdapter: StorageEngineAdapter) async {
+                                         storageAdapter: StorageEngineAdapter) async
+    {
         log.debug("[InitializeSubscription] \(#function)")
-        let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
+        let syncableModelSchemas = ModelRegistry.modelSchemas.filter(\.isSyncable)
         reconciliationQueue = await reconciliationQueueFactory(syncableModelSchemas,
                                                                api,
                                                                storageAdapter,
@@ -330,23 +334,23 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             )
 
         initialSyncOrchestrator.sync { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
             if case .failure(let dataStoreError) = result {
-                self.log.error(dataStoreError.errorDescription)
-                self.log.error(dataStoreError.recoverySuggestion)
+                log.error(dataStoreError.errorDescription)
+                log.error(dataStoreError.recoverySuggestion)
                 if let underlyingError = dataStoreError.underlyingError {
-                    self.log.error("\(underlyingError)")
+                    log.error("\(underlyingError)")
                 }
 
-                self.stateMachine.notify(action: .errored(dataStoreError))
+                stateMachine.notify(action: .errored(dataStoreError))
             } else {
-                self.log.info("Successfully finished sync")
+                log.info("Successfully finished sync")
 
-                self.remoteSyncTopicPublisher.send(.performedInitialSync)
-                self.stateMachine.notify(action: .performedInitialSync)
+                remoteSyncTopicPublisher.send(.performedInitialSync)
+                stateMachine.notify(action: .performedInitialSync)
             }
             self.initialSyncOrchestrator = nil
         }
@@ -354,7 +358,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     private func activateCloudSubscriptions() {
         log.debug(#function)
-        guard let reconciliationQueue = reconciliationQueue else {
+        guard let reconciliationQueue else {
             let error = DataStoreError.internalOperation("reconciliationQueue is unexpectedly `nil`", "", nil)
             stateMachine.notify(action: .errored(error))
             return
@@ -365,7 +369,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     private func startMutationQueue(api: APICategoryGraphQLBehavior,
                                     mutationEventPublisher: MutationEventPublisher,
-                                    reconciliationQueue: IncomingEventReconciliationQueue?) {
+                                    reconciliationQueue: IncomingEventReconciliationQueue?)
+    {
         log.debug(#function)
         outgoingMutationQueue.startSyncingToCloud(api: api,
                                                   mutationEventPublisher: mutationEventPublisher,
@@ -436,7 +441,8 @@ extension RemoteSyncEngine: Resettable {
         for child in mirror.children {
             let label = child.label ?? "some RemoteSyncEngine child"
             guard label != "api",
-                  label != "auth" else {
+                  label != "auth"
+            else {
                 log.verbose("Not resetting \(label) from RemoteSyncEngine")
                 continue
             }
@@ -444,7 +450,7 @@ extension RemoteSyncEngine: Resettable {
             if let resettable = child.value as? Resettable {
                 log.verbose("Resetting \(label)")
                 await resettable.reset()
-                self.log.verbose("Resetting \(label): finished")
+                log.verbose("Resetting \(label): finished")
             }
         }
     }

@@ -38,8 +38,9 @@ final class InitialSyncOperation: AsynchronousOperation {
     }
 
     private var syncPredicateString: String? {
-        guard let syncPredicate = syncPredicate,
-              let data = try? syncPredicateEncoder.encode(syncPredicate) else {
+        guard let syncPredicate,
+              let data = try? syncPredicateEncoder.encode(syncPredicate)
+        else {
             return nil
         }
         return String(data: data, encoding: .utf8)
@@ -66,7 +67,8 @@ final class InitialSyncOperation: AsynchronousOperation {
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?,
          dataStoreConfiguration: DataStoreConfiguration,
-         authModeStrategy: AuthModeStrategy) {
+         authModeStrategy: AuthModeStrategy)
+    {
         self.modelSchema = modelSchema
         self.api = api
         self.reconciliationQueue = reconciliationQueue
@@ -87,7 +89,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         log.info("Beginning sync for \(modelSchema.name)")
         let lastSyncMetadata = getLastSyncMetadata()
         let lastSyncTime = getLastSyncTime(lastSyncMetadata)
-        self.queryTask = Task {
+        queryTask = Task {
             await query(lastSyncTime: lastSyncTime)
         }
     }
@@ -98,7 +100,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             return nil
         }
 
-        guard let storageAdapter = storageAdapter else {
+        guard let storageAdapter else {
             log.error(error: DataStoreError.nilStorageAdapter())
             return nil
         }
@@ -119,7 +121,7 @@ final class InitialSyncOperation: AsynchronousOperation {
     func getLastSyncTime(_ lastSyncMetadata: ModelSyncMetadata?) -> Int64? {
         let syncType: SyncType
         let lastSyncTime: Int64?
-        if syncPredicateChanged(self.syncPredicateString, lastSyncMetadata?.syncPredicate) {
+        if syncPredicateChanged(syncPredicateString, lastSyncMetadata?.syncPredicate) {
             log.info("SyncPredicate for \(modelSchema.name) changed, performing full sync.")
             lastSyncTime = nil
             syncType = .fullSync
@@ -143,7 +145,7 @@ final class InitialSyncOperation: AsynchronousOperation {
     }
 
     private func getLastSyncTime(lastSync: Int64?) -> Int64? {
-        guard let lastSync = lastSync else {
+        guard let lastSync else {
             return nil
         }
         let lastSyncDate = Date(timeIntervalSince1970: TimeInterval.milliseconds(Double(lastSync)))
@@ -163,7 +165,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             return
         }
 
-        guard let api = api else {
+        guard let api else {
             finish(result: .failure(DataStoreError.nilAPIHandle()))
             return
         }
@@ -172,7 +174,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         let authTypes = await authModeStrategy.authTypesFor(schema: modelSchema, operation: .read)
         let queryRequestsStream = AsyncStream { continuation in
             for authType in authTypes {
-                continuation.yield({ [weak self] in
+                continuation.yield { [weak self] in
                     guard let self, let api = self.api else {
                         throw APIError.operationError(
                             "The initial synchronization process can no longer be accessed or referred to",
@@ -181,14 +183,14 @@ final class InitialSyncOperation: AsynchronousOperation {
                     }
 
                     return try await api.query(request: GraphQLRequest<SyncQueryResult>.syncQuery(
-                        modelSchema: self.modelSchema,
-                        where: self.syncPredicate,
+                        modelSchema: modelSchema,
+                        where: syncPredicate,
                         limit: limit,
                         nextToken: nextToken,
                         lastSync: lastSyncTime,
                         authType: authType.awsAuthType
                     ))
-                })
+                }
             }
             continuation.finish()
         }
@@ -196,11 +198,11 @@ final class InitialSyncOperation: AsynchronousOperation {
         case .success(let graphQLResult):
             await handleQueryResults(lastSyncTime: lastSyncTime, graphQLResult: graphQLResult)
         case .failure(let apiError):
-            if self.isAuthSignedOutError(apiError: apiError) {
-                self.log.error("Sync for \(self.modelSchema.name) failed due to signed out error \(apiError.errorDescription)")
+            if isAuthSignedOutError(apiError: apiError) {
+                log.error("Sync for \(modelSchema.name) failed due to signed out error \(apiError.errorDescription)")
             }
-            self.dataStoreConfiguration.errorHandler(DataStoreError.api(apiError))
-            self.finish(result: .failure(.api(apiError)))
+            dataStoreConfiguration.errorHandler(DataStoreError.api(apiError))
+            finish(result: .failure(.api(apiError)))
         }
     }
 
@@ -215,7 +217,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             return
         }
 
-        guard let reconciliationQueue = reconciliationQueue else {
+        guard let reconciliationQueue else {
             finish(result: .failure(DataStoreError.nilReconciliationQueue()))
             return
         }
@@ -244,7 +246,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
 
         if let nextToken = syncQueryResult.nextToken, recordsReceived < syncMaxRecords {
-            await self.query(lastSyncTime: lastSyncTime, nextToken: nextToken)
+            await query(lastSyncTime: lastSyncTime, nextToken: nextToken)
         } else {
             updateModelSyncMetadata(lastSyncTime: syncQueryResult.startedAt)
         }
@@ -256,7 +258,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             return
         }
 
-        guard let storageAdapter = storageAdapter else {
+        guard let storageAdapter else {
             finish(result: .failure(DataStoreError.nilStorageAdapter()))
             return
         }
@@ -277,7 +279,8 @@ final class InitialSyncOperation: AsynchronousOperation {
     private func isAuthSignedOutError(apiError: APIError) -> Bool {
         if case let .operationError(_, _, underlyingError) = apiError,
             let authError = underlyingError as? AuthError,
-            case .signedOut = authError {
+            case .signedOut = authError
+        {
             return true
         }
 
@@ -297,7 +300,7 @@ final class InitialSyncOperation: AsynchronousOperation {
     }
 
     override func cancel() {
-        self.queryTask?.cancel()
+        queryTask?.cancel()
     }
 }
 

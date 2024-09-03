@@ -5,28 +5,28 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
-    
+
     func testStart() async throws {
         await setup(withModels: ProjectTeam6Models())
         try await startAndWaitForReady()
         printDBPath()
     }
-    
+
     func testSaveTeam() async throws {
         await setup(withModels: ProjectTeam6Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await createAndWaitForSync(team)
         try await assertModelExists(savedTeam)
     }
-    
+
     func testSaveProject() async throws {
         await setup(withModels: ProjectTeam6Models())
         let project = Project(projectId: UUID().uuidString,
@@ -35,12 +35,12 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
         try await assertModelExists(savedProject)
         assertProjectDoesNotContainTeam(savedProject)
     }
-    
+
     func testSaveProjectWithTeam() async throws {
         await setup(withModels: ProjectTeam6Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await createAndWaitForSync(team)
-        
+
         // Project initializer variation #1 (pass both team reference and fields in)
         let project = Project(projectId: UUID().uuidString,
                               name: "name",
@@ -50,7 +50,7 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
         let savedProject = try await createAndWaitForSync(project)
         let queriedProject = try await query(for: savedProject)
         assertProject(queriedProject, hasTeam: savedTeam)
-        
+
         // Project initializer variation #2 (pass only team reference)
         let project2 = Project(projectId: UUID().uuidString,
                                name: "name",
@@ -58,7 +58,7 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
         let savedProject2 = try await createAndWaitForSync(project2)
         let queriedProject2 = try await query(for: savedProject2)
         assertProjectDoesNotContainTeam(queriedProject2)
-        
+
         // Project initializer variation #3 (pass fields in)
         let project3 = Project(projectId: UUID().uuidString,
                                name: "name",
@@ -68,7 +68,7 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
         let queriedProject3 = try await query(for: savedProject3)
         assertProject(queriedProject3, hasTeam: savedTeam)
     }
-    
+
     // One-to-One relationships do not create a foreign key for the Team or Project table
     // So the LazyModel does not have the FK value to be instantiated as metadata for lazy loading.
     // We only assert the FK fields on the Project exist and are equal to the Team's PK.
@@ -76,17 +76,17 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
         XCTAssertEqual(project.teamId, team.teamId)
         XCTAssertEqual(project.teamName, team.name)
     }
-    
+
     func assertProjectDoesNotContainTeam(_ project: Project) {
         XCTAssertNil(project.teamId)
         XCTAssertNil(project.teamName)
     }
-    
+
     func testSaveProjectWithTeamThenUpdate() async throws {
         await setup(withModels: ProjectTeam6Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await createAndWaitForSync(team)
-    
+
         let project = initializeProjectWithTeam(team)
         let savedProject = try await createAndWaitForSync(project)
         assertProject(savedProject, hasTeam: savedTeam)
@@ -95,13 +95,13 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
         let updatedProject = try await updateAndWaitForSync(project)
         assertProject(updatedProject, hasTeam: savedTeam)
     }
-    
+
     func testSaveProjectWithoutTeamUpdateProjectWithTeam() async throws {
         await setup(withModels: ProjectTeam6Models())
         let project = Project(projectId: UUID().uuidString, name: "name")
         let savedProject = try await createAndWaitForSync(project)
         assertProjectDoesNotContainTeam(savedProject)
-        
+
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await createAndWaitForSync(team)
         var queriedProject = try await query(for: savedProject)
@@ -110,7 +110,7 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
         let savedProjectWithNewTeam = try await updateAndWaitForSync(queriedProject)
         assertProject(savedProjectWithNewTeam, hasTeam: savedTeam)
     }
-    
+
     func testSaveTeamSaveProjectWithTeamUpdateProjectToNoTeam() async throws {
         await setup(withModels: ProjectTeam6Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
@@ -124,7 +124,7 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
         let savedProjectWithNoTeam = try await updateAndWaitForSync(queriedProject)
         assertProjectDoesNotContainTeam(savedProjectWithNoTeam)
     }
-    
+
     func testSaveProjectWithTeamUpdateProjectToNewTeam() async throws {
         await setup(withModels: ProjectTeam6Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
@@ -140,7 +140,7 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
         let savedProjectWithNewTeam = try await updateAndWaitForSync(queriedProject)
         assertProject(queriedProject, hasTeam: savedNewTeam)
     }
-    
+
     func testDeleteTeam() async throws {
         await setup(withModels: ProjectTeam6Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
@@ -149,7 +149,7 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
         try await deleteAndWaitForSync(savedTeam)
         try await assertModelDoesNotExist(savedTeam)
     }
-    
+
     func testDeleteProject() async throws {
         await setup(withModels: ProjectTeam6Models())
         let project = Project(projectId: UUID().uuidString, name: "name")
@@ -158,33 +158,33 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
         try await deleteAndWaitForSync(savedProject)
         try await assertModelDoesNotExist(savedProject)
     }
-    
+
     func testDeleteProjectWithTeam() async throws {
         await setup(withModels: ProjectTeam6Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await createAndWaitForSync(team)
         let project = initializeProjectWithTeam(team)
         let savedProject = try await createAndWaitForSync(project)
-        
+
         try await assertModelExists(savedProject)
         try await assertModelExists(savedTeam)
-        
+
         try await deleteAndWaitForSync(savedProject)
-        
+
         try await assertModelDoesNotExist(savedProject)
         try await assertModelExists(savedTeam)
-        
+
         try await deleteAndWaitForSync(savedTeam)
         try await assertModelDoesNotExist(savedTeam)
     }
-    
+
     func testObserveProject() async throws {
         await setup(withModels: ProjectTeam6Models())
         try await startAndWaitForReady()
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await createAndWaitForSync(team)
         let project = initializeProjectWithTeam(team)
-        
+
         let mutationEventReceived = expectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(Project.self)
         Task {
@@ -192,24 +192,25 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedProject = try? mutationEvent.decodeModel(as: Project.self),
-                   receivedProject.projectId == project.projectId {
+                   receivedProject.projectId == project.projectId
+                {
                     assertProject(receivedProject, hasTeam: savedTeam)
                     mutationEventReceived.fulfill()
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: project, modelSchema: Project.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
-    
+
     func testObserveTeam() async throws {
         await setup(withModels: ProjectTeam6Models())
         try await startAndWaitForReady()
@@ -221,30 +222,31 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedTeam = try? mutationEvent.decodeModel(as: Team.self),
-                   receivedTeam.teamId == team.teamId {
+                   receivedTeam.teamId == team.teamId
+                {
                     mutationEventReceived.fulfill()
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: team, modelSchema: Team.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
-    
+
     func testObserveQueryProject() async throws {
         await setup(withModels: ProjectTeam6Models())
         try await startAndWaitForReady()
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await createAndWaitForSync(team)
         let project = initializeProjectWithTeam(team)
-        
+
         let snapshotReceived = expectation(description: "Received query snapshot")
         let querySnapshots = Amplify.DataStore.observeQuery(for: Project.self, where: Project.keys.projectId == project.projectId)
         Task {
@@ -255,18 +257,18 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: project, modelSchema: Project.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
-    
+
     func testObserveQueryTeam() async throws {
         await setup(withModels: ProjectTeam6Models())
         try await startAndWaitForReady()
@@ -281,24 +283,24 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: team, modelSchema: Team.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
 }
 
 extension AWSDataStoreLazyLoadProjectTeam6Tests {
-    
+
     typealias Project = Project6
     typealias Team = Team6
-    
+
     struct ProjectTeam6Models: AmplifyModelRegistration {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
@@ -306,7 +308,7 @@ extension AWSDataStoreLazyLoadProjectTeam6Tests {
             ModelRegistry.register(modelType: Team6.self)
         }
     }
-    
+
     func initializeProjectWithTeam(_ team: Team) -> Project {
         return Project(projectId: UUID().uuidString,
                        name: "name",

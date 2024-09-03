@@ -85,7 +85,7 @@ class DataStoreListProviderTests: XCTestCase {
             XCTFail("Should be loaded")
             return
         }
-        
+
         let results = try await listProvider.load()
         XCTAssertEqual(results.count, 2)
     }
@@ -95,7 +95,7 @@ class DataStoreListProviderTests: XCTestCase {
             QueryModelsResponder<Comment4> { _, _, _, _ in
                 return .failure(DataStoreError.internalOperation("", "", nil))
             }
-        
+
         let provider = DataStoreListProvider<Comment4>(metadata: .init(dataStoreAssociatedIdentifiers: ["postId"],
                                                                     dataStoreAssociatedFields: ["post"]))
         guard case .notLoaded = provider.loadedState else {

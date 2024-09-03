@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -19,7 +26,7 @@ public struct ScalarContainer: Model {
   public var myIPAddress: String?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
+
   public init(id: String = UUID().uuidString,
       myString: String? = nil,
       myInt: Int? = nil,
@@ -33,7 +40,8 @@ public struct ScalarContainer: Model {
       myJSON: String? = nil,
       myPhone: String? = nil,
       myURL: String? = nil,
-      myIPAddress: String? = nil) {
+      myIPAddress: String? = nil)
+  {
     self.init(id: id,
       myString: myString,
       myInt: myInt,
@@ -51,7 +59,7 @@ public struct ScalarContainer: Model {
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       myString: String? = nil,
       myInt: Int? = nil,
       myDouble: Double? = nil,
@@ -66,7 +74,8 @@ public struct ScalarContainer: Model {
       myURL: String? = nil,
       myIPAddress: String? = nil,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.myString = myString
       self.myInt = myInt

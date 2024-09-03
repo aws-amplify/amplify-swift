@@ -32,16 +32,16 @@ import XCTest
  */
 
 class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
-    
+
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
             registry.register(modelType: Team1.self)
             registry.register(modelType: Project1.self)
         }
-        
+
         let version: String = "1"
     }
-    
+
     func testSaveTeamAndProjectSyncToCloud() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
@@ -49,14 +49,16 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
         let project = Project1(team: team)
         let syncedTeamReceived = expectation(description: "received team from sync path")
         var hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let syncedTeam = try? mutationEvent.decodeModel() as? Team1,
-               syncedTeam == team {
+               syncedTeam == team
+            {
                 syncedTeamReceived.fulfill()
             }
         }
@@ -67,17 +69,19 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
         _ = try await Amplify.DataStore.save(team)
         await fulfillment(of: [syncedTeamReceived], timeout: networkTimeout)
-        
+
         let syncProjectReceived = expectation(description: "received project from sync path")
         hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let syncedProject = try? mutationEvent.decodeModel() as? Project1,
-                      syncedProject == project {
+                      syncedProject == project
+            {
                 syncProjectReceived.fulfill()
             }
         }
@@ -111,14 +115,16 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
         let syncUpdatedProjectReceived = expectation(description: "received updated project from sync path")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let syncedUpdatedProject = try? mutationEvent.decodeModel() as? Project1,
-               expectedUpdatedProject == syncedUpdatedProject {
+               expectedUpdatedProject == syncedUpdatedProject
+            {
                 syncUpdatedProjectReceived.fulfill()
             }
         }
@@ -129,7 +135,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
         project.team = anotherTeam
         _ = try await Amplify.DataStore.save(project)
         await fulfillment(of: [syncUpdatedProjectReceived], timeout: networkTimeout)
-        
+
         let queriedProjectOptional = try await Amplify.DataStore.query(Project1.self, byId: project.id)
         XCTAssertNotNil(queriedProjectOptional)
         if let queriedProject = queriedProjectOptional {
@@ -141,21 +147,23 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
     func testDeleteAndGetProjectReturnsNilWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        
+
         let team = Team1(name: "name")
         let project = Project1(team: team)
-        
+
         let createReceived = expectation(description: "received created items from cloud")
         createReceived.expectedFulfillmentCount = 2 // 1 project and 1 team
         var hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let projectEvent = try? mutationEvent.decodeModel() as? Project1,
-               projectEvent.id == project.id {
+               projectEvent.id == project.id
+            {
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
                     XCTAssertEqual(mutationEvent.version, 1)
                     createReceived.fulfill()
@@ -172,7 +180,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        
+
         _ = try await Amplify.DataStore.save(team)
         _ = try await Amplify.DataStore.save(project)
         await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
@@ -180,14 +188,16 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
         let deleteReceived = expectation(description: "Delete notification received")
         deleteReceived.expectedFulfillmentCount = 2 // 1 project and 1 team
         hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let projectEvent = try? mutationEvent.decodeModel() as? Project1,
-               projectEvent.id == project.id {
+               projectEvent.id == project.id
+            {
                 if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
                     deleteReceived.fulfill()
                 }
@@ -220,9 +230,9 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
         let project = Project1(team: team)
         _ = try await Amplify.DataStore.save(team)
         _ = try await Amplify.DataStore.save(project)
-        
+
         _ = try await Amplify.DataStore.delete(project, where: Project1.keys.team.eq(team.id))
-                                               
+
         let queriedProject = try await Amplify.DataStore.query(Project1.self, byId: project.id)
         XCTAssertNil(queriedProject)
     }
@@ -258,7 +268,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
         let project = Project1(team: team)
         _ = try await Amplify.DataStore.save(team)
         _ = try await Amplify.DataStore.save(project)
-        
+
         let predicate = Project1.keys.team.eq(team.id)
         let projects = try await Amplify.DataStore.query(Project1.self, where: predicate)
         XCTAssertEqual(projects.count, 1)
@@ -269,7 +279,8 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
 extension Team1: Equatable {
     public static func == (lhs: Team1,
-                           rhs: Team1) -> Bool {
+                           rhs: Team1) -> Bool
+    {
         return lhs.id == rhs.id
             && lhs.name == rhs.name
     }

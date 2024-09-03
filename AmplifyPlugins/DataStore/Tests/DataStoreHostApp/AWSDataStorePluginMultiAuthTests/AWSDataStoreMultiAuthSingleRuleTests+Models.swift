@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import Foundation
 import Combine
+import Foundation
+import XCTest
 
 @testable import Amplify
 

@@ -6,9 +6,9 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Foundation
 import SQLite
-import AWSPluginsCore
 
 typealias ModelValues = [String: Any?]
 
@@ -56,8 +56,9 @@ extension Statement: StatementModelConvertible {
     func convert<M: Model>(to modelType: M.Type,
                            withSchema modelSchema: ModelSchema,
                            using statement: SelectStatement,
-                           eagerLoad: Bool = true) throws -> [M] {
-        let elements: [ModelValues] = try self.convertToModelValues(to: modelType,
+                           eagerLoad: Bool = true) throws -> [M]
+    {
+        let elements: [ModelValues] = try convertToModelValues(to: modelType,
                                                                     withSchema: modelSchema,
                                                                     using: statement,
                                                                     eagerLoad: eagerLoad)
@@ -66,10 +67,11 @@ extension Statement: StatementModelConvertible {
         return result.elements
     }
 
-    func convertToModelValues<M: Model>(to modelType: M.Type,
+    func convertToModelValues(to modelType: (some Model).Type,
                                         withSchema modelSchema: ModelSchema,
                                         using statement: SelectStatement,
-                                        eagerLoad: Bool = true) throws -> [ModelValues] {
+                                        eagerLoad: Bool = true) throws -> [ModelValues]
+    {
         var elements: [ModelValues] = []
 
         // parse each row of the result
@@ -159,25 +161,26 @@ extension Statement: StatementModelConvertible {
     }
 
     private func getModelSchema(for modelName: ModelName, with statement: SelectStatement) -> ModelSchema? {
-        return statement.metadata.columnMapping.values.first { $0.0.name == modelName }.map { $0.0 }
+        return statement.metadata.columnMapping.values.first { $0.0.name == modelName }.map(\.0)
     }
 
     private func associatedValues(from foreignKeyPath: [String], element: Element) -> [String] {
         return [getValue(from: element, by: foreignKeyPath)]
-            .compactMap({ $0 })
-            .map({ String(describing: $0) })
-            .flatMap({ $0.split(separator: ModelIdentifierFormat.Custom.separator.first!) })
-            .map({ String($0).trimmingCharacters(in: .init(charactersIn: "\"")) })
+            .compactMap { $0 }
+            .map { String(describing: $0) }
+            .flatMap { $0.split(separator: ModelIdentifierFormat.Custom.separator.first!) }
+            .map { String($0).trimmingCharacters(in: .init(charactersIn: "\"")) }
     }
 
     private func convertCollection(field: ModelField, schema: ModelSchema, from element: Element, path: [String]) -> Any? {
         if field.isArray && field.hasAssociation,
-           case let .some(.hasMany(associatedFieldName: associatedFieldName, associatedFieldNames: associatedFieldNames)) = field.association {
+           case let .some(.hasMany(associatedFieldName: associatedFieldName, associatedFieldNames: associatedFieldNames)) = field.association
+        {
             // Construct the lazy list based on the field reference name and `@@primarykey` or primary key field of the parent
-            if associatedFieldNames.count <= 1, let associatedFieldName = associatedFieldName {
+            if associatedFieldNames.count <= 1, let associatedFieldName {
                 let primaryKeyName = schema.primaryKey.isCompositeKey
                     ? ModelIdentifierFormat.Custom.sqlColumnName
-                    : schema.primaryKey.fields.first.flatMap { $0.name }
+                    : schema.primaryKey.fields.first.flatMap(\.name)
                 let primaryKeyValue = primaryKeyName.flatMap { getValue(from: element, by: path + [$0]) }
 
                 return primaryKeyValue.map {
@@ -187,7 +190,7 @@ extension Statement: StatementModelConvertible {
             } else {
                 // If `targetNames` is > 1, then this is a uni-directional has-many, thus no reference field on the child
                 // Construct the lazy list based on the primary key values and the corresponding target names
-                let primaryKeyNames = schema.primaryKey.fields.map { $0.name }
+                let primaryKeyNames = schema.primaryKey.fields.map(\.name)
                 let primaryKeyValues = primaryKeyNames
                     .map { getValue(from: element, by: path + [$0]) }
                     .compactMap { $0 }
@@ -223,7 +226,8 @@ extension Statement: StatementModelConvertible {
         ]
 
         if schema.primaryKey.isCompositeKey,
-           let compositeKey = getValue(from: element, by: path + [ModelIdentifierFormat.Custom.sqlColumnName]) {
+           let compositeKey = getValue(from: element, by: path + [ModelIdentifierFormat.Custom.sqlColumnName])
+        {
             metadata.updateValue(String(describing: compositeKey), forKey: ModelIdentifierFormat.Custom.sqlColumnName)
         }
 
@@ -231,7 +235,7 @@ extension Statement: StatementModelConvertible {
     }
 }
 
-private extension Dictionary where Key == String, Value == Any? {
+private extension [String: Any?] {
 
     /// Utility to create a `NSMutableDictionary` from a Swift `Dictionary<String, Any?>`.
     func mutableCopy() -> NSMutableDictionary {
@@ -325,8 +329,8 @@ extension String {
     }
 }
 
-extension Array where Element == String {
+extension [String] {
     var fieldPath: String {
-        self.filter { !$0.isEmpty }.joined(separator: ".")
+        filter { !$0.isEmpty }.joined(separator: ".")
     }
 }

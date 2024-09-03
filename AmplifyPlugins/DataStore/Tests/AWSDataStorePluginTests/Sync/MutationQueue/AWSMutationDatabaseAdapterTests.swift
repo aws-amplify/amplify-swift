@@ -9,10 +9,10 @@ import Foundation
 import SQLite
 import XCTest
 
+import AWSPluginsCore
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
-import AWSPluginsCore
 
 class AWSMutationDatabaseAdapterTests: XCTestCase {
     var databaseAdapter: AWSMutationDatabaseAdapter!
@@ -149,7 +149,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
 
         XCTAssertEqual(disposition, .dropCandidateWithError(DataStoreError.unknown("", "", nil)))
     }
-    
+
     /// Retrieve the first MutationEvent
     func test_getNextMutationEvent_AlreadyInProcess() async {
         let queryExpectation = expectation(description: "query called")
@@ -177,10 +177,10 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
             }
             getMutationEventCompleted.fulfill()
         }
-        
+
         await fulfillment(of: [getMutationEventCompleted, queryExpectation], timeout: 1)
     }
-    
+
     /// Retrieve the first MutationEvent
     func test_getNextMutationEvent_MarkInProcess() async {
         let queryExpectation = expectation(description: "query called")
@@ -206,10 +206,10 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
             case .failure(let error):
                 XCTFail("Should have been successful result, error: \(error)")
             }
-            
+
             getMutationEventCompleted.fulfill()
         }
-        
+
         await fulfillment(of: [getMutationEventCompleted, queryExpectation], timeout: 1)
     }
 
@@ -282,9 +282,10 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
         await fulfillment(of: [secondQueryCompleted], timeout: 1)
 
         // (3)
-        storageAdapter.delete(MutationEvent.self, 
+        storageAdapter.delete(MutationEvent.self,
                               modelSchema: MutationEvent.schema,
-                              withId: m2.id) { result in
+                              withId: m2.id)
+        { result in
             switch result {
             case .success:
                 break
@@ -313,7 +314,8 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
 
 extension AWSMutationDatabaseAdapter.MutationDisposition: Equatable {
     public static func == (lhs: AWSMutationDatabaseAdapter.MutationDisposition,
-                           rhs: AWSMutationDatabaseAdapter.MutationDisposition) -> Bool {
+                           rhs: AWSMutationDatabaseAdapter.MutationDisposition) -> Bool
+    {
         switch (lhs, rhs) {
         case (.dropCandidateWithError, .dropCandidateWithError):
             return true

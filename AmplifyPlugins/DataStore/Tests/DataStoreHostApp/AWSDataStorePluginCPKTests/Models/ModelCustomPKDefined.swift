@@ -18,18 +18,20 @@ public struct ModelCustomPkDefined: Model {
 
   public init(id: String = UUID().uuidString,
       dob: Temporal.DateTime,
-      name: String? = nil) {
+      name: String? = nil)
+  {
     self.init(id: id,
       dob: dob,
       name: name,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       dob: Temporal.DateTime,
       name: String? = nil,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.dob = dob
       self.name = name

@@ -99,11 +99,10 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         incomingSubscriptionEventQueue.underlyingQueue = DispatchQueue.global()
         incomingSubscriptionEventQueue.isSuspended = true
 
-        let resolvedIncomingSubscriptionEvents: IncomingSubscriptionEventPublisher
-        if let incomingSubscriptionEvents = incomingSubscriptionEvents {
-            resolvedIncomingSubscriptionEvents = incomingSubscriptionEvents
+        let resolvedIncomingSubscriptionEvents: IncomingSubscriptionEventPublisher = if let incomingSubscriptionEvents {
+            incomingSubscriptionEvents
         } else {
-            resolvedIncomingSubscriptionEvents = await AWSIncomingSubscriptionEventPublisher(
+            await AWSIncomingSubscriptionEventPublisher(
                 modelSchema: modelSchema,
                 api: api,
                 modelPredicate: modelPredicate,
@@ -157,22 +156,22 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         reconcileAndLocalSaveOperationSink = reconcileOp
             .publisher
             .sink(receiveCompletion: { [weak self] completion in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
-                self.reconcileAndLocalSaveOperationSinks.with { $0.remove(reconcileAndLocalSaveOperationSink) }
+                reconcileAndLocalSaveOperationSinks.with { $0.remove(reconcileAndLocalSaveOperationSink) }
                 if case .failure = completion {
-                    self.modelReconciliationQueueSubject.send(completion: completion)
+                    modelReconciliationQueueSubject.send(completion: completion)
                 }
             }, receiveValue: { [weak self] value in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
                 switch value {
                 case .mutationEventDropped(let modelName, let error):
-                    self.modelReconciliationQueueSubject.send(.mutationEventDropped(modelName: modelName, error: error))
+                    modelReconciliationQueueSubject.send(.mutationEventDropped(modelName: modelName, error: error))
                 case .mutationEvent(let event):
-                    self.modelReconciliationQueueSubject.send(.mutationEvent(event))
+                    modelReconciliationQueueSubject.send(.mutationEvent(event))
                 }
             })
         reconcileAndLocalSaveOperationSinks.with { $0.insert(reconcileAndLocalSaveOperationSink) }
@@ -203,14 +202,16 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         case .failure(let dataStoreError):
             if case let .api(error, _) = dataStoreError,
                case let APIError.operationError(errorDescription, _, underlyingError) = error,
-               isUnauthorizedError(errorDescription: errorDescription, underlyingError) {
+               isUnauthorizedError(errorDescription: errorDescription, underlyingError)
+            {
                 log.verbose("[InitializeSubscription.3] AWSModelReconciliationQueue determined unauthorized \(modelSchema.name)")
                 modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name, reason: .unauthorized))
                 return
             }
             if case let .api(error, _) = dataStoreError,
                case let APIError.operationError(errorMessage, _, underlyingError) = error,
-               isOperationDisabledError(errorMessage, underlyingError) {
+               isOperationDisabledError(errorMessage, underlyingError)
+            {
                 log.verbose("[InitializeSubscription.3] AWSModelReconciliationQueue determined isOperationDisabledError \(modelSchema.name)")
                 modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name, reason: .operationDisabled))
                 return
@@ -241,7 +242,7 @@ extension AWSModelReconciliationQueue: Resettable {
         if let resettable = incomingSubscriptionEvents as? Resettable {
             log.verbose("Resetting incomingSubscriptionEvents")
             await resettable.reset()
-            self.log.verbose("Resetting incomingSubscriptionEvents: finished")
+            log.verbose("Resetting incomingSubscriptionEvents: finished")
         }
 
         log.verbose("Resetting incomingSubscriptionEventQueue")
@@ -278,22 +279,25 @@ extension AWSModelReconciliationQueue {
         if let responseError = error as? GraphQLResponseError<ResponseType>,
            let graphQLError = graphqlErrors(from: responseError)?.first,
            let errorTypeValue = errorTypeValueFrom(graphQLError: graphQLError),
-           case .unauthorized = AppSyncErrorType(errorTypeValue) {
+           case .unauthorized = AppSyncErrorType(errorTypeValue)
+        {
             return true
         }
         return false
     }
 
     private func isOperationDisabledError(_ errorMessage: String?, _ error: Error?) -> Bool {
-        if let errorMessage = errorMessage,
-            case .operationDisabled = AppSyncErrorType(errorMessage) {
+        if let errorMessage,
+            case .operationDisabled = AppSyncErrorType(errorMessage)
+        {
             return true
         }
 
         if let responseError = error as? GraphQLResponseError<ResponseType>,
            let graphQLError = graphqlErrors(from: responseError)?.first,
            let errorTypeValue = errorTypeValueFrom(graphQLError: graphQLError),
-           case .operationDisabled = AppSyncErrorType(errorTypeValue) {
+           case .operationDisabled = AppSyncErrorType(errorTypeValue)
+        {
             return true
         }
         return false

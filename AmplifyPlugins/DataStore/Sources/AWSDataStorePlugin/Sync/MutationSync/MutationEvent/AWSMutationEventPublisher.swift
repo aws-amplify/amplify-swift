@@ -53,7 +53,7 @@ final class AWSMutationEventPublisher: Publisher {
     func requestNextEvent() {
         log.verbose(#function)
         let promise: DataStoreCallback<MutationEvent> = { [weak self] result in
-            guard let self = self, let subscriber = self.subscription?.subscriber else {
+            guard let self, let subscriber = subscription?.subscriber else {
                 return
             }
 

@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -9,11 +16,12 @@ public struct ModelCompositeMultiplePk: Model {
   public var lastName: String?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
+
   public init(id: String = UUID().uuidString,
       location: String,
       name: String,
-      lastName: String? = nil) {
+      lastName: String? = nil)
+  {
     self.init(id: id,
       location: location,
       name: name,
@@ -21,12 +29,13 @@ public struct ModelCompositeMultiplePk: Model {
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       location: String,
       name: String,
       lastName: String? = nil,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.location = location
       self.name = name

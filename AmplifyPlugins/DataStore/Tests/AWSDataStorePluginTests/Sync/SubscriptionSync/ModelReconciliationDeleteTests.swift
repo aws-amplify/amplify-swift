@@ -10,8 +10,8 @@ import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 typealias MutationSyncInProcessListener = GraphQLSubscriptionOperation<MutationSync<AnyModel>>.InProcessListener
 
@@ -155,7 +155,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
             mockRemoteSyncEngineFor_testDeleteWithNoLocalModel()
             try await startAmplifyAndWaitForSync()
         }
-        
+
         await fulfillment(of: [expectationListener], timeout: 1)
         guard let asyncSequence else {
             XCTFail("Incoming responder didn't set up listener")
@@ -164,7 +164,8 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
 
         let syncReceivedNotification = expectation(description: "Received 'syncReceived' update from Hub")
         let syncReceivedToken = Amplify.Hub.listen(to: .dataStore,
-                                                   eventName: HubPayload.EventName.DataStore.syncReceived) { _ in
+                                                   eventName: HubPayload.EventName.DataStore.syncReceived)
+        { _ in
             syncReceivedNotification.fulfill()
         }
         guard try await HubListenerTestUtilities.waitForListener(with: syncReceivedToken, timeout: 5.0) else {

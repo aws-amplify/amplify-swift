@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 
+import SQLite3
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
-import SQLite3
 
 class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMigrationTestBase {
 

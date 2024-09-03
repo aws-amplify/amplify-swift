@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
 import Foundation
 import XCTest
-import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 // swiftlint:disable type_body_length
 class ModelSortTests: XCTestCase {
@@ -310,7 +310,8 @@ class ModelSortTests: XCTestCase {
                     draft: Bool = false,
                     rating: Double = 1.0,
                     createdAt: Temporal.DateTime = .now(),
-                    status: PostStatus? = .draft) -> Post {
+                    status: PostStatus? = .draft) -> Post
+    {
         Post(id: id,
              title: "A",
              content: "content",
@@ -324,7 +325,8 @@ class ModelSortTests: XCTestCase {
 
     func createModel(date: Temporal.Date = .now(),
                      bool: Bool = false,
-                     enum: ExampleEnum = .bar) -> ExampleWithEveryType {
+                     enum: ExampleEnum = .bar) -> ExampleWithEveryType
+    {
         ExampleWithEveryType(id: UUID().uuidString,
                              stringField: "string",
                              intField: 1,

@@ -6,9 +6,9 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Foundation
 import SQLite
-import AWSPluginsCore
 
 // swiftlint:disable type_body_length file_length
 /// [SQLite](https://sqlite.org) `StorageEngineAdapter` implementation. This class provides
@@ -29,7 +29,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     convenience init(version: String,
                      databaseName: String = "database",
-                     userDefaults: UserDefaults = UserDefaults.standard) throws {
+                     userDefaults: UserDefaults = UserDefaults.standard) throws
+    {
         var dbFilePath = SQLiteStorageEngineAdapter.getDbFilePath(databaseName: databaseName)
         _ = try SQLiteStorageEngineAdapter.clearIfNewVersion(version: version, dbFilePath: dbFilePath)
 
@@ -53,10 +54,11 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     }
 
-    internal init(connection: Connection,
+    init(connection: Connection,
                   dbFilePath: URL? = nil,
                   userDefaults: UserDefaults = UserDefaults.standard,
-                  version: String = "version") throws {
+                  version: String = "version") throws
+    {
         self.connection = connection
         self.dbFilePath = dbFilePath
         try SQLiteStorageEngineAdapter.initializeDatabase(connection: connection)
@@ -89,7 +91,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func setUp(modelSchemas: [ModelSchema]) throws {
-        guard let connection = connection else {
+        guard let connection else {
             throw DataStoreError.invalidOperation(causedBy: nil)
         }
 
@@ -135,7 +137,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     func save<M: Model>(_ model: M,
                         condition: QueryPredicate? = nil,
                         eagerLoad: Bool = true,
-                        completion: @escaping DataStoreCallback<M>) {
+                        completion: @escaping DataStoreCallback<M>)
+     {
          save(model,
               modelSchema: model.schema,
               condition: condition,
@@ -147,8 +150,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                         modelSchema: ModelSchema,
                         condition: QueryPredicate? = nil,
                         eagerLoad: Bool = true,
-                        completion: DataStoreCallback<M>) {
-        completion(save(model, 
+                        completion: DataStoreCallback<M>)
+    {
+        completion(save(model,
                         modelSchema: modelSchema,
                         condition: condition,
                         eagerLoad: eagerLoad))
@@ -157,8 +161,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     func save<M: Model>(_ model: M,
                         modelSchema: ModelSchema,
                         condition: QueryPredicate? = nil,
-                        eagerLoad: Bool = true) -> DataStoreResult<M> {
-        guard let connection = connection else {
+                        eagerLoad: Bool = true) -> DataStoreResult<M>
+    {
+        guard let connection else {
             return .failure(DataStoreError.nilSQLiteConnection())
         }
         do {
@@ -167,7 +172,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             let modelExists = try exists(modelSchema, withIdentifier: modelIdentifier)
 
             if !modelExists {
-                if let condition = condition, !condition.isAll {
+                if let condition, !condition.isAll {
                     let dataStoreError = DataStoreError.invalidCondition(
                         "Cannot apply a condition on model which does not exist.",
                         "Save the model instance without a condition first.")
@@ -179,7 +184,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             }
 
             if modelExists {
-                if let condition = condition, !condition.isAll {
+                if let condition, !condition.isAll {
                     let modelExistsWithCondition = try exists(modelSchema,
                                                               withIdentifier: modelIdentifier,
                                                               predicate: condition)
@@ -221,8 +226,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
                           filter: QueryPredicate,
-                          completion: (DataStoreResult<[M]>) -> Void) {
-        guard let connection = connection else {
+                          completion: (DataStoreResult<[M]>) -> Void)
+    {
+        guard let connection else {
             completion(.failure(DataStoreError.nilSQLiteConnection()))
             return
         }
@@ -239,11 +245,13 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                           modelSchema: ModelSchema,
                           withId id: Model.Identifier,
                           condition: QueryPredicate? = nil,
-                          completion: (DataStoreResult<M?>) -> Void) {
+                          completion: (DataStoreResult<M?>) -> Void)
+    {
         delete(untypedModelType: modelType,
                modelSchema: modelSchema,
                withId: id,
-               condition: condition) { result in
+               condition: condition)
+        { result in
             switch result {
             case .success:
                 completion(.success(nil))
@@ -257,11 +265,13 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                    modelSchema: ModelSchema,
                    withIdentifier identifier: ModelIdentifierProtocol,
                    condition: QueryPredicate?,
-                   completion: @escaping DataStoreCallback<M?>) where M: Model {
+                   completion: @escaping DataStoreCallback<M?>) where M: Model
+    {
         delete(untypedModelType: modelType,
                modelSchema: modelSchema,
                withIdentifier: identifier,
-               condition: condition) { result in
+               condition: condition)
+        { result in
             switch result {
             case .success:
                 completion(.success(nil))
@@ -275,7 +285,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                 modelSchema: ModelSchema,
                 withId id: Model.Identifier,
                 condition: QueryPredicate? = nil,
-                completion: DataStoreCallback<Void>) {
+                completion: DataStoreCallback<Void>)
+    {
         delete(untypedModelType: modelType,
                modelSchema: modelSchema,
                withIdentifier: DefaultModelIdentifier<AnyModel>.makeDefault(id: id),
@@ -287,8 +298,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                 modelSchema: ModelSchema,
                 withIdentifier id: ModelIdentifierProtocol,
                 condition: QueryPredicate? = nil,
-                completion: DataStoreCallback<Void>) {
-        guard let connection = connection else {
+                completion: DataStoreCallback<Void>)
+    {
+        guard let connection else {
             completion(.failure(DataStoreError.nilSQLiteConnection()))
             return
         }
@@ -309,7 +321,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                          sort: [QuerySortDescriptor]? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          eagerLoad: Bool = true,
-                         completion: DataStoreCallback<[M]>) {
+                         completion: DataStoreCallback<[M]>)
+    {
         query(modelType,
               modelSchema: modelType.schema,
               predicate: predicate,
@@ -325,7 +338,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                          sort: [QuerySortDescriptor]? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          eagerLoad: Bool = true,
-                         completion: DataStoreCallback<[M]>) {
+                         completion: DataStoreCallback<[M]>)
+    {
         completion(query(modelType,
                          modelSchema: modelSchema,
                          predicate: predicate,
@@ -339,8 +353,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                          predicate: QueryPredicate? = nil,
                          sort: [QuerySortDescriptor]? = nil,
                          paginationInput: QueryPaginationInput? = nil,
-                         eagerLoad: Bool = true) -> DataStoreResult<[M]> {
-        guard let connection = connection else {
+                         eagerLoad: Bool = true) -> DataStoreResult<[M]>
+    {
+        guard let connection else {
             return .failure(DataStoreError.nilSQLiteConnection())
         }
         do {
@@ -363,7 +378,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     // MARK: - Exists
     func exists(_ modelSchema: ModelSchema,
                 withId id: String,
-                predicate: QueryPredicate? = nil) throws -> Bool {
+                predicate: QueryPredicate? = nil) throws -> Bool
+    {
         try exists(modelSchema,
                         withIdentifier: DefaultModelIdentifier<AnyModel>.makeDefault(id: id),
                         predicate: predicate)
@@ -371,14 +387,15 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func exists(_ modelSchema: ModelSchema,
                 withIdentifier id: ModelIdentifierProtocol,
-                predicate: QueryPredicate? = nil) throws -> Bool {
-        guard let connection = connection else {
+                predicate: QueryPredicate? = nil) throws -> Bool
+    {
+        guard let connection else {
             throw DataStoreError.nilSQLiteConnection()
         }
         let primaryKey = modelSchema.primaryKey.sqlName.quoted()
         var sql = "select count(\(primaryKey)) from \"\(modelSchema.name)\" where \(primaryKey) = ?"
         var variables: [Binding?] = [id.stringValue]
-        if let predicate = predicate {
+        if let predicate {
             let conditionStatement = ConditionStatement(modelSchema: modelSchema, predicate: predicate)
             sql = """
             \(sql)
@@ -405,7 +422,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func queryMutationSync(for models: [Model], modelName: String) throws -> [MutationSync<AnyModel>] {
-        guard let connection = connection else {
+        guard let connection else {
             throw DataStoreError.nilSQLiteConnection()
         }
 
@@ -447,8 +464,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func queryMutationSyncMetadata(for modelIds: [String],
-                                   modelName: String) throws -> [MutationSyncMetadata] {
-        guard let connection = connection else {
+                                   modelName: String) throws -> [MutationSyncMetadata]
+    {
+        guard let connection else {
             throw DataStoreError.nilSQLiteConnection()
         }
         let modelType = MutationSyncMetadata.self
@@ -476,7 +494,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func queryModelSyncMetadata(for modelSchema: ModelSchema) throws -> ModelSyncMetadata? {
-        guard let connection = connection else {
+        guard let connection else {
             throw DataStoreError.nilSQLiteConnection()
         }
         let statement = SelectStatement(from: ModelSyncMetadata.schema,
@@ -489,7 +507,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func transaction(_ transactionBlock: BasicThrowableClosure) throws {
-        guard let connection = connection else {
+        guard let connection else {
             throw DataStoreError.nilSQLiteConnection()
         }
         try connection.transaction {
@@ -498,7 +516,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {
-        guard let dbFilePath = dbFilePath else {
+        guard let dbFilePath else {
             log.error("Attempt to clear DB, but file path was empty")
             completion(.failure(causedBy: DataStoreError.invalidDatabase(path: "Database path not set", nil)))
             return
@@ -516,7 +534,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func shouldIgnoreError(error: DataStoreError) -> Bool {
         if let sqliteError = SQLiteResultError(from: error),
-           case .constraintViolation = sqliteError {
+           case .constraintViolation = sqliteError
+        {
             return true
         }
 
@@ -526,7 +545,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     static func clearIfNewVersion(version: String,
                                   dbFilePath: URL,
                                   userDefaults: UserDefaults = UserDefaults.standard,
-                                  fileManager: FileManager = FileManager.default) throws -> Bool {
+                                  fileManager: FileManager = FileManager.default) throws -> Bool
+    {
 
         guard let previousVersion = userDefaults.string(forKey: dbVersionKey) else {
             return false

@@ -16,16 +16,18 @@ public struct TodoImplicitOwnerField: Model {
   public var updatedAt: Temporal.DateTime?
 
   public init(id: String = UUID().uuidString,
-      content: String) {
+      content: String)
+  {
     self.init(id: id,
       content: content,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       content: String,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.content = content
       self.createdAt = createdAt

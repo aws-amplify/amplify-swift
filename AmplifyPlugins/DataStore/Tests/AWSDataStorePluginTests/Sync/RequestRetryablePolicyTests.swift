@@ -187,7 +187,7 @@ class RequestRetryablePolicyTests: XCTestCase {
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 200, lessThan: 300)
     }
-    
+
     func testNetworkConnectionLostError() {
         let retryableErrorCode = URLError.init(.networkConnectionLost)
 
@@ -266,7 +266,7 @@ class RequestRetryablePolicyTests: XCTestCase {
     }
 
     func assertMilliseconds(_ retryInterval: DispatchTimeInterval?, greaterThan: Int, lessThan: Int) {
-        guard let retryInterval = retryInterval else {
+        guard let retryInterval else {
             XCTFail("retryInterval is nil")
             return
         }
@@ -281,7 +281,7 @@ class RequestRetryablePolicyTests: XCTestCase {
     }
 
     func assertSeconds(_ retryInterval: DispatchTimeInterval?, seconds expectedSeconds: Int) {
-        guard let retryInterval = retryInterval else {
+        guard let retryInterval else {
             XCTFail("retryInterval is nil")
             return
         }

@@ -18,18 +18,20 @@ public struct TodoCustomOwnerExplicit: Model {
 
   public init(id: String = UUID().uuidString,
       title: String,
-      dominus: String? = nil) {
+      dominus: String? = nil)
+  {
     self.init(id: id,
       title: title,
       dominus: dominus,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       title: String,
       dominus: String? = nil,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.title = title
       self.dominus = dominus

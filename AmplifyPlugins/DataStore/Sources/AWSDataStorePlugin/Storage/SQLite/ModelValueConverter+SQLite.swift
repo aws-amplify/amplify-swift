@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 import SQLite
 
-internal extension Bool {
+extension Bool {
 
     var intValue: Int {
         return self ? Int(1) : Int(0)
@@ -50,7 +50,8 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
             return (value as? EnumPersistable)?.rawValue
         case .model:
             if let modelInstance = (value as? Model),
-               let modelSchema = ModelRegistry.modelSchema(from: modelInstance.modelName) {
+               let modelSchema = ModelRegistry.modelSchema(from: modelInstance.modelName)
+            {
                 return modelInstance.identifier(schema: modelSchema).stringValue
             }
             return nil

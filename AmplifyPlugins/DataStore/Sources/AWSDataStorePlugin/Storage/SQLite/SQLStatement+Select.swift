@@ -23,7 +23,8 @@ struct SelectStatementMetadata {
                          predicate: QueryPredicate? = nil,
                          sort: [QuerySortDescriptor]? = nil,
                          paginationInput: QueryPaginationInput? = nil,
-                         eagerLoad: Bool = true) -> SelectStatementMetadata {
+                         eagerLoad: Bool = true) -> SelectStatementMetadata
+    {
         let rootNamespace = "root"
         let fields = modelSchema.columns
         let tableName = modelSchema.name
@@ -46,7 +47,7 @@ struct SelectStatementMetadata {
         """.trimmingCharacters(in: .whitespacesAndNewlines)
 
         var bindings: [Binding?] = []
-        if let predicate = predicate {
+        if let predicate {
             let conditionStatement = ConditionStatement(modelSchema: modelSchema,
                                                         predicate: predicate,
                                                         namespace: rootNamespace[...])
@@ -58,14 +59,14 @@ struct SelectStatementMetadata {
             """
         }
 
-        if let sort = sort, !sort.isEmpty {
+        if let sort, !sort.isEmpty {
             sql = """
             \(sql)
             order by \(sort.sortStatement(namespace: rootNamespace))
             """
         }
 
-        if let paginationInput = paginationInput {
+        if let paginationInput {
             sql = """
             \(sql)
             \(paginationInput.sqlStatement)
@@ -149,7 +150,8 @@ struct SelectStatement: SQLStatement {
          predicate: QueryPredicate? = nil,
          sort: [QuerySortDescriptor]? = nil,
          paginationInput: QueryPaginationInput? = nil,
-         eagerLoad: Bool = true) {
+         eagerLoad: Bool = true)
+    {
         self.modelSchema = modelSchema
         self.metadata = .metadata(from: modelSchema,
                                   predicate: predicate,
@@ -175,7 +177,7 @@ struct SelectStatement: SQLStatement {
 /// - Parameter columns the list of column names
 /// - Parameter perLine max numbers of columns per line
 /// - Returns: a list of columns that can be used in `select` SQL statements
-internal func joinedAsSelectedColumns(_ columns: [String], perLine: Int = 3) -> String {
+func joinedAsSelectedColumns(_ columns: [String], perLine: Int = 3) -> String {
     return columns.enumerated().reduce("") { partial, entry in
         let spacer = entry.offset == 0 || entry.offset % perLine == 0 ? "\n  " : " "
         let isFirstOrLast = entry.offset == 0 || entry.offset >= columns.count

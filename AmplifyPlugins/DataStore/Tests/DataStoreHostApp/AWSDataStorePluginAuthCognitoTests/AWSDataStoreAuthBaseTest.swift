@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import XCTest
-import Combine
-import AWSDataStorePlugin
-import AWSPluginsCore
 import AWSAPIPlugin
 import AWSCognitoAuthPlugin
+import AWSDataStorePlugin
+import AWSPluginsCore
+import Combine
+import Foundation
+import XCTest
 #if !os(watchOS)
 @testable import DataStoreHostApp
 #endif
@@ -24,7 +24,7 @@ struct TestUser {
 }
 
 class AuthRecorderInterceptor: URLRequestInterceptor {
-    let awsAuthService: AWSAuthService = AWSAuthService()
+    let awsAuthService: AWSAuthService = .init()
     var consumedAuthTypes: Set<AWSAuthorizationType> = []
     private let accessQueue = DispatchQueue(label: "com.amazon.AuthRecorderInterceptor.consumedAuthTypes")
 
@@ -46,14 +46,16 @@ class AuthRecorderInterceptor: URLRequestInterceptor {
             recordAuthType(.apiKey)
         }
 
-        if let authHeaderValue = authHeaderValue,
+        if let authHeaderValue,
            case let .success(claims) = awsAuthService.getTokenClaims(tokenString: authHeaderValue),
-           let cognitoIss = claims["iss"] as? String, cognitoIss.contains("cognito") {
+           let cognitoIss = claims["iss"] as? String, cognitoIss.contains("cognito")
+        {
             recordAuthType(.amazonCognitoUserPools)
         }
 
-        if let authHeaderValue = authHeaderValue,
-           authHeaderValue.starts(with: "AWS4-HMAC-SHA256") {
+        if let authHeaderValue,
+           authHeaderValue.starts(with: "AWS4-HMAC-SHA256")
+        {
             recordAuthType(.awsIAM)
         }
 
@@ -128,7 +130,8 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
             guard let user1 = credentials["user1"],
                   let user2 = credentials["user2"],
                   let passwordUser1 = credentials["passwordUser1"],
-                  let passwordUser2 = credentials["passwordUser2"] else {
+                  let passwordUser2 = credentials["passwordUser2"]
+            else {
                 XCTFail("Invalid \(credentialsFile).json data")
                 return
             }
@@ -148,7 +151,8 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
 
     func apiEndpointName() throws -> String {
         guard let apiPlugin = amplifyConfig.api?.plugins["awsAPIPlugin"],
-              case .object(let value) = apiPlugin else {
+              case .object(let value) = apiPlugin
+        else {
             throw APIError.invalidConfiguration("API endpoint not found.", "Check the provided configuration")
         }
         return value.keys.first!
@@ -209,8 +213,9 @@ extension AWSDataStoreAuthBaseTest {
     /// - Parameter user
     func signIn(user: TestUser?,
                 file: StaticString = #file,
-                line: UInt = #line) async throws {
-        guard let user = user else {
+                line: UInt = #line) async throws
+    {
+        guard let user else {
             XCTFail("Invalid user", file: file, line: line)
             return
         }
@@ -228,7 +233,8 @@ extension AWSDataStoreAuthBaseTest {
 
     /// Signout current signed-in user
     func signOut(file: StaticString = #file,
-                 line: UInt = #line) async throws {
+                 line: UInt = #line) async throws
+    {
         do {
             _ = await Amplify.Auth.signOut()
             print("signOut successfull")
@@ -249,7 +255,7 @@ extension AWSDataStoreAuthBaseTest {
             throw error
         }
     }
-    
+
     func getUserSub() async throws -> String {
         do {
             let authSession = try await Amplify.Auth.fetchAuthSession()
@@ -264,7 +270,7 @@ extension AWSDataStoreAuthBaseTest {
             throw error
         }
     }
-    
+
     func getIdentityId() async throws -> String! {
         do {
             let authSession = try await Amplify.Auth.fetchAuthSession()
@@ -283,7 +289,8 @@ extension AWSDataStoreAuthBaseTest {
     func queryModel<M: Model>(_ model: M.Type,
                               byId id: String,
                               file: StaticString = #file,
-                              line: UInt = #line) async throws -> M? {
+                              line: UInt = #line) async throws -> M?
+    {
         return try await Amplify.DataStore.query(M.self, byId: id)
     }
 }
@@ -295,9 +302,10 @@ extension AWSDataStoreAuthBaseTest {
     ///   - modelType: model type
     ///   - expectation: success XCTestExpectation
     ///   - onFailure: on failure callback
-    func assertQuerySuccess<M: Model>(modelType: M.Type,
+    func assertQuerySuccess(modelType: (some Model).Type,
                                       _ expectations: AuthTestExpectations,
-                                      onFailure: @escaping (_ error: DataStoreError) -> Void) async throws {
+                                      onFailure: @escaping (_ error: DataStoreError) -> Void) async throws
+    {
         Task {
             do {
                 let posts = try await Amplify.DataStore.query(modelType)
@@ -309,7 +317,7 @@ extension AWSDataStoreAuthBaseTest {
         }
         await fulfillment(of: [expectations.query], timeout: 60)
     }
-    
+
     /// Asserts that DataStore is in a ready state and subscriptions are established
     /// - Parameter events: DataStore Hub events
     func assertDataStoreReady(
@@ -334,28 +342,28 @@ extension AWSDataStoreAuthBaseTest {
                         expectations.modelsSynced.fulfill()
                     }
                 }
-                
+
                 if event.eventName == dataStoreEvents.ready {
                     expectations.ready.fulfill()
                 }
             }
             .store(in: &requests)
-        
+
         try await Amplify.DataStore.start()
-        
+
         await fulfillment(of: [expectations.subscriptionsEstablished,
                                    expectations.modelsSynced,
                                    expectations.ready],
                                   timeout: 60)
     }
-    
+
     /// Assert that a save and a delete mutation complete successfully.
     /// - Parameters:
     ///   - model: model instance saved and then deleted
     ///   - expectations: test expectations
     ///   - onFailure: failure callback
-    func assertMutations<M: Model>(
-        model: M,
+    func assertMutations(
+        model: some Model,
         _ expectations: AuthTestExpectations,
         onFailure: @escaping (_ error: DataStoreError) -> Void
     ) async throws {
@@ -366,7 +374,8 @@ extension AWSDataStoreAuthBaseTest {
             .filter { $0.eventName == HubPayload.EventName.DataStore.syncReceived }
             .sink { payload in
                 guard let mutationEvent = payload.data as? MutationEvent,
-                      mutationEvent.modelId == model.identifier else {
+                      mutationEvent.modelId == model.identifier
+                else {
                     return
                 }
 
@@ -407,7 +416,8 @@ extension AWSDataStoreAuthBaseTest {
 
     func assertUsedAuthTypes(_ authTypes: [AWSAuthorizationType],
                              file: StaticString = #file,
-                             line: UInt = #line) {
+                             line: UInt = #line)
+    {
         XCTAssertEqual(authRecorderInterceptor.consumedAuthTypes,
                        Set(authTypes),
                        file: file,

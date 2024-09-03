@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
 import SQLite3
+import XCTest
 
 @testable import Amplify
-@testable import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -24,7 +24,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     /// - Then:
     ///   - call `query(Post)` to check if the model was correctly inserted
     func testInsertPost() {
-        let expectation = self.expectation(
+        let expectation = expectation(
             description: "it should save and select a Post from the database")
 
         // insert a post
@@ -63,7 +63,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     /// - Then:
     ///   - call `query(Post)` to check if the model was correctly inserted
     func testInsertPostWithAll() {
-        let expectation = self.expectation(
+        let expectation = expectation(
             description: "it should save and select a Post from the database")
 
         // insert a post
@@ -103,7 +103,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     ///   - call `query(Post, where: title == post.title)` to check
     ///   if the model was correctly inserted using a predicate
     func testInsertPostAndSelectByTitle() {
-        let expectation = self.expectation(
+        let expectation = expectation(
             description: "it should save and select a Post from the database")
 
         // insert a post
@@ -145,7 +145,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     ///   - check if the `query(Post)` returns only 1 post
     ///   - the post has the updated title
     func testInsertPostAndThenUpdateIt() {
-        let expectation = self.expectation(
+        let expectation = expectation(
             description: "it should insert and update a Post")
 
         func checkSavedPost(id: String) {
@@ -195,7 +195,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     ///    - a successful update for `update(post, condition)`
     ///    - call `query(Post)` to check if the model was correctly updated
     func testInsertPostAndThenUpdateItWithCondition() {
-        let expectation = self.expectation(
+        let expectation = expectation(
             description: "it should insert and update a Post")
 
         func checkSavedPost(id: String) {
@@ -245,7 +245,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     ///    - a successful update for `update(post, condition)`
     ///    - call `query(Post)` to check if the model was correctly updated
     func testInsertPostAndThenUpdateItWithConditionAll() {
-        let expectation = self.expectation(
+        let expectation = expectation(
             description: "it should insert and update a Post")
 
         func checkSavedPost(id: String) {
@@ -292,7 +292,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     /// - Then:
     ///    - Fails with conditional save failed error when there is no existing model instance
     func testUpdateWithConditionFailsWhenNoExistingModel() {
-        let expectation = self.expectation(
+        let expectation = expectation(
             description: "it should fail to update the Post that does not exist")
 
         let post = Post(title: "title", content: "content", createdAt: .now())
@@ -321,7 +321,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     ///    - call `update(post, condition)` with `post.title` updated and condition does not match
     ///    - the update for `update(post, condition)` fails with conditional save failed error
     func testInsertPostAndThenUpdateItWithConditionDoesNotMatchShouldReturnError() {
-        let expectation = self.expectation(
+        let expectation = expectation(
             description: "it should insert and then fail to update the Post, given bad condition")
 
         var post = Post(title: "title not updated", content: "content", createdAt: .now())
@@ -369,7 +369,8 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                 saveExpectation.fulfill()
                 self.storageAdapter.delete(untypedModelType: Post.self,
                                            modelSchema: Post.schema,
-                                           withIdentifier: post.identifier(schema: Post.schema)) {
+                                           withIdentifier: post.identifier(schema: Post.schema))
+                {
                     switch $0 {
                     case .success:
                         deleteExpectation.fulfill()
@@ -404,7 +405,8 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                 self.storageAdapter.delete(Post.self,
                                            modelSchema: Post.schema,
                                            withIdentifier: post.identifier(schema: Post.schema),
-                                           condition: predicate) { result in
+                                           condition: predicate)
+                { result in
                     switch result {
                     case .success:
                         deleteExpectation.fulfill()
@@ -439,7 +441,8 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                 self.storageAdapter.delete(Post.self,
                                            modelSchema: Post.schema,
                                            withIdentifier: post.identifier(schema: Post.schema),
-                                           condition: predicate) { result in
+                                           condition: predicate)
+                { result in
                     switch result {
                     case .success:
                         deleteCompleteExpectation.fulfill()
@@ -512,7 +515,8 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                         saveExpectation.fulfill()
                         self.storageAdapter.delete(Post.self,
                                                    modelSchema: Post.schema,
-                                                   filter: QueryPredicateConstant.all) { result in
+                                                   filter: QueryPredicateConstant.all)
+                        { result in
                             switch result {
                             case .success:
                                 deleteExpectation.fulfill()

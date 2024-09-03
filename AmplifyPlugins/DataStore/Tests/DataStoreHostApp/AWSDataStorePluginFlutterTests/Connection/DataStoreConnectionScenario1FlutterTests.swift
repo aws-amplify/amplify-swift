@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -35,17 +36,20 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         let syncedTeamReceived = expectation(description: "received team from sync path")
         let syncProjectReceived = expectation(description: "received project from sync path")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
             if let syncedTeam = mutationEvent.modelId as String?,
-               syncedTeam == team.idString() {
+               syncedTeam == team.idString()
+            {
                 syncedTeamReceived.fulfill()
             } else if let syncedProject = mutationEvent.modelId as String?,
 
-                    syncedProject == project.idString() {
+                    syncedProject == project.idString()
+            {
                 syncProjectReceived.fulfill()
             }
         }
@@ -104,13 +108,15 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         try expectedUpdatedProject.setTeam(team: anotherTeam.model)
         let syncUpdatedProjectReceived = expectation(description: "received updated project from sync path")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                                             eventName: HubPayload.EventName.DataStore.syncReceived)
+        { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
             if let syncedUpdatedProject = try? mutationEvent.modelId as String,
-               expectedUpdatedProject.idString() == syncedUpdatedProject {
+               expectedUpdatedProject.idString() == syncedUpdatedProject
+            {
                 syncUpdatedProjectReceived.fulfill()
             }
         }
@@ -182,7 +188,8 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         guard let team = try saveTeam(name: "name"),
-              let project = try saveProject(team: team) else {
+              let project = try saveProject(team: team)
+        else {
             XCTFail("Could not save team and project")
             return
         }
@@ -213,7 +220,8 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         guard let team = try saveTeam(name: "name"),
-              let project = try saveProject(team: team) else {
+              let project = try saveProject(team: team)
+        else {
             XCTFail("Could not save team and project")
             return
         }
@@ -240,7 +248,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         let queriedProjectExpect0 = queryProject(id: project.model.id)
         XCTAssertNotNil(queriedProjectExpect0)
         XCTAssertEqual(0, queriedProjectExpect0!.count)
-        if queriedProjectExpect0!.count == 0 {
+        if queriedProjectExpect0!.isEmpty {
             getProjectAfterDeleteCompleted.fulfill()
         }
         await fulfillment(of: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
@@ -250,7 +258,8 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         guard let team = try saveTeam(name: "name"),
-              let project = try saveProject(team: team) else {
+              let project = try saveProject(team: team)
+        else {
             XCTFail("Could not save team and project")
             return
         }
@@ -335,7 +344,8 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
     }
 
     func saveProject(name: String = "project",
-                     team: TeamWrapper) throws -> Project1Wrapper? {
+                     team: TeamWrapper) throws -> Project1Wrapper?
+    {
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         let project = try Project1Wrapper(name: name, team: team.model)
         var result: FlutterSerializedModel?

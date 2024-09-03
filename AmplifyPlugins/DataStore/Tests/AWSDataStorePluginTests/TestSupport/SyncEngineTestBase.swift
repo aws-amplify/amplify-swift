@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
 import SQLite
 import XCTest
-import Combine
 
 @testable import Amplify
-@testable import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 /// Base class for SyncEngine and sync-enabled DataStore tests
 class SyncEngineTestBase: XCTestCase {
@@ -38,7 +38,7 @@ class SyncEngineTestBase: XCTestCase {
     var remoteSyncEngineSink: AnyCancellable!
 
     var requestRetryablePolicy: MockRequestRetryablePolicy!
-    
+
     var token: UnsubscribeToken!
 
     // MARK: - Setup
@@ -64,7 +64,7 @@ class SyncEngineTestBase: XCTestCase {
 
         amplifyConfig = AmplifyConfiguration(api: apiConfig, auth: authConfig, dataStore: dataStoreConfig)
 
-        if let reachabilityPublisher = reachabilityPublisher {
+        if let reachabilityPublisher {
             apiPlugin = MockAPICategoryPlugin(
                 reachabilityPublisher: reachabilityPublisher
             )
@@ -76,7 +76,7 @@ class SyncEngineTestBase: XCTestCase {
         try Amplify.add(plugin: apiPlugin)
         try Amplify.add(plugin: authPlugin)
     }
-    
+
     override func tearDown() async throws {
         amplifyConfig = nil
         apiPlugin = nil
@@ -101,15 +101,14 @@ class SyncEngineTestBase: XCTestCase {
         connection: Connection? = nil
     ) throws {
         models.forEach { ModelRegistry.register(modelType: $0) }
-        let resolvedConnection: Connection
-        if let connection = connection {
-            resolvedConnection = connection
+        let resolvedConnection: Connection = if let connection {
+            connection
         } else {
-            resolvedConnection = try Connection(.inMemory)
+            try Connection(.inMemory)
         }
 
         storageAdapter = try SQLiteStorageEngineAdapter(connection: resolvedConnection)
-        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + models.map { $0.schema })
+        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + models.map(\.schema))
     }
 
     /// Sets up a DataStorePlugin backed by the storageAdapter created in `setUpStorageAdapter()`, and an optional
@@ -177,10 +176,10 @@ class SyncEngineTestBase: XCTestCase {
         try Amplify.configure(amplifyConfig)
         try await Amplify.DataStore.start()
     }
-    
+
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message
     /// before returning.
-    private func startAmplifyAndWaitForSync(completion: @escaping (Swift.Result<Void, Error>)->Void) {
+    private func startAmplifyAndWaitForSync(completion: @escaping (Swift.Result<Void, Error>) -> Void) {
         token = Amplify.Hub.listen(to: .dataStore) { [weak self] payload in
             if payload.eventName == "DataStore.syncStarted" {
                 if let token = self?.token {
@@ -189,14 +188,14 @@ class SyncEngineTestBase: XCTestCase {
                 }
             }
         }
-        
-        
+
+
         Task {
             guard try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
                 XCTFail("Never registered listener for sync started")
                 return
             }
-            
+
             do {
                 try await startAmplify()
             } catch {
@@ -204,7 +203,7 @@ class SyncEngineTestBase: XCTestCase {
                 completion(.failure(error))
             }
         }
-        
+
     }
 
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message
@@ -216,13 +215,14 @@ class SyncEngineTestBase: XCTestCase {
             }
         }
     }
-    
+
     // MARK: - Data methods
 
     /// Saves a mutation event directly to StorageAdapter. Used for pre-populating database before tests
     func saveMutationEvent(of mutationType: MutationEvent.MutationType,
                            for post: Post,
-                           inProcess: Bool = false) throws {
+                           inProcess: Bool = false) throws
+    {
         let mutationEvent = try MutationEvent(id: SyncEngineTestBase.mutationEventId(for: post),
                                               modelId: post.id,
                                               modelName: post.modelName,

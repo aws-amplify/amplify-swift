@@ -5,19 +5,19 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
 import Amplify
-import AWSPluginsCore
 import AWSDataStorePlugin
+import AWSPluginsCore
 
 extension AWSDataStoreLazyLoadPostComment4V2Tests {
 
     static let loggingContext = "multiSaveWithInterruptions"
 
-    /// Test performing save's and stop/start concurrently. 
+    /// Test performing save's and stop/start concurrently.
     ///
     /// This test was validated prior to [PR 3492](https://github.com/aws-amplify/amplify-swift/pull/3492)
     /// and will fail. The failure will show up when the test asserts that a queried comment from AppSync should contain the associated
@@ -63,7 +63,7 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
 
         /// The minimum number of iterations, through trial and error, found to reproduce the bug.
         private let count = 15
-        
+
         /// `isOutboxEmpty` is used to return the flow back to the caller via fulfilling the `savesSyncedExpectation`.
         /// By listening to the OutboxEvent after performing the operations, the last outboxEvent to be `true` while `index`
         /// is the last index, will be when `savesSyncedExpectation` is fulfilled and returned execution back to the caller.
@@ -82,10 +82,10 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
             while isOutboxEmpty == false {
                 try await Task.sleep(seconds: 1)
             }
-            for i in 0..<count {
+            for i in 0 ..< count {
                 let post = Post(title: "title")
                 let comment = Comment(content: "content", post: post)
-                savedModels.append((comment,post))
+                savedModels.append((comment, post))
 
                 Task.detached {
                     Amplify.Logging.info("[\(AWSDataStoreLazyLoadPostComment4V2Tests.loggingContext)] Saving comment and post, index: \(i)")
@@ -102,7 +102,7 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
                     try await Amplify.DataStore.stop()
                     try await Amplify.DataStore.start()
                 }
-                self.index = i
+                index = i
                 try await Task.sleep(seconds: 0.01)
             }
         }
@@ -111,7 +111,7 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
         /// Maintain the latest state of whether the outbox is empty or not in `isOutboxEmpty` variable.
         /// Fulfill `savesSyncedExpectation` after all tasks have been created and the outbox is empty.
         private func subscribeToOutboxEvent(_ savesSyncedExpectation: XCTestExpectation) {
-            self.subscribeToOutboxEventTask = Task {
+            subscribeToOutboxEventTask = Task {
                 for await event in Amplify.Hub.publisher(for: .dataStore).values {
                     switch event.eventName {
                     case HubPayload.EventName.DataStore.outboxStatus:
@@ -134,9 +134,10 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
     }
 
     func assertQueryComment(_ savedComment: Comment, post: Post) async throws {
-        guard (try await Amplify.DataStore.query(
+        guard try await (Amplify.DataStore.query(
             Comment.self,
-            byIdentifier: savedComment.identifier)) != nil else {
+            byIdentifier: savedComment.identifier)) != nil
+        else {
             Amplify.Logging.info("[\(AWSDataStoreLazyLoadPostComment4V2Tests.loggingContext)] Comment \(savedComment.id) is not persisted in local DB")
 
             let result = try await Amplify.API.query(
@@ -177,9 +178,10 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
     }
 
     func assertQueryPost(_ savedPost: Post) async throws {
-        guard (try await Amplify.DataStore.query(
+        guard try await (Amplify.DataStore.query(
             Post.self,
-            byIdentifier: savedPost.identifier)) != nil else {
+            byIdentifier: savedPost.identifier)) != nil
+        else {
             Amplify.Logging.info("[\(AWSDataStoreLazyLoadPostComment4V2Tests.loggingContext)] Post \(savedPost.id) is not persisted in local DB")
             let result = try await Amplify.API.query(
                 request: .get(

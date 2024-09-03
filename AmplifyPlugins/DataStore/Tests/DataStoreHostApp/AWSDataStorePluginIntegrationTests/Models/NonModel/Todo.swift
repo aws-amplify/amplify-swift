@@ -8,6 +8,7 @@
 // swiftlint:disable all
 import Amplify
 import Foundation
+
 /*
 The schema used to codegen this model:
  type Todo @model {
@@ -50,7 +51,8 @@ public struct Todo: Model {
                 description: String? = nil,
                 categories: [Category]? = [],
                 section: Section? = nil,
-                stickies: [String]? = []) {
+                stickies: [String]? = [])
+    {
         self.id = id
         self.name = name
         self.description = description

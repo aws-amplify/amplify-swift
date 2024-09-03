@@ -18,18 +18,20 @@ public struct Post5V2: Model {
 
   public init(id: String = UUID().uuidString,
       title: String,
-      editors: List<PostEditor5V2>? = []) {
+      editors: List<PostEditor5V2>? = [])
+  {
     self.init(id: id,
       title: title,
       editors: editors,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       title: String,
       editors: List<PostEditor5V2>? = [],
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.title = title
       self.editors = editors

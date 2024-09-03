@@ -16,16 +16,18 @@ public struct TodoIAMPrivate: Model {
   public var updatedAt: Temporal.DateTime?
 
   public init(id: String = UUID().uuidString,
-      title: String) {
+      title: String)
+  {
     self.init(id: id,
       title: title,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       title: String,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.title = title
       self.createdAt = createdAt

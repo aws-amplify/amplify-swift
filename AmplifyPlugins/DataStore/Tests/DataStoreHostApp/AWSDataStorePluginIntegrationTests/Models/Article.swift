@@ -20,7 +20,8 @@ public struct Article: Model {
                 content: String,
                 createdAt: Temporal.DateTime,
                 owner: String?,
-                authorNotes: String?) {
+                authorNotes: String?)
+    {
         self.id = id
         self.content = content
         self.createdAt = createdAt

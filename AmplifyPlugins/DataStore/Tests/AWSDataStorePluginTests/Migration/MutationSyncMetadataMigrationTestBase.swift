@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -45,7 +45,7 @@ class MutationSyncMetadataMigrationTestBase: XCTestCase {
 
     // MARK: - Helpers
 
-    func save<M: Model>(_ model: M) {
+    func save(_ model: some Model) {
         let saveSuccess = expectation(description: "Save successful")
         storageAdapter.save(model) { result in
             switch result {

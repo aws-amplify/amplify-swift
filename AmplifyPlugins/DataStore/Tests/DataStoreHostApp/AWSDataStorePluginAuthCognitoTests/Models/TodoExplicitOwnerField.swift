@@ -18,18 +18,20 @@ public struct TodoExplicitOwnerField: Model {
 
   public init(id: String = UUID().uuidString,
       content: String,
-      owner: String? = nil) {
+      owner: String? = nil)
+  {
     self.init(id: id,
       content: content,
       owner: owner,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       content: String,
       owner: String? = nil,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.content = content
       self.owner = owner

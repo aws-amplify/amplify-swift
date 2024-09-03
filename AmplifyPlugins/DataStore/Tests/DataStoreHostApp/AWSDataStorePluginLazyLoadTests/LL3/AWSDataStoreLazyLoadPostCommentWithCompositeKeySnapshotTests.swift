@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
-    
+
     func testPostSelectionSets() {
         setUpModelRegistrationOnly(withModels: PostCommentWithCompositeKeyModels())
         continueAfterFailure = true
@@ -35,7 +35,7 @@ extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
         }
         """
         XCTAssertEqual(createRequest.document, createDocument)
-        
+
         // Update
         let updateRequest = GraphQLRequest<MutationSyncResult>.updateMutation(of: post, modelSchema: Post.schema)
         let updateDocument = """
@@ -53,7 +53,7 @@ extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
         }
         """
         XCTAssertEqual(updateRequest.document, updateDocument)
-        
+
         // Delete
         let deleteRequest = GraphQLRequest<MutationSyncResult>.deleteMutation(of: post, modelSchema: Post.schema)
         let deleteDocument = """
@@ -71,7 +71,7 @@ extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
         }
         """
         XCTAssertEqual(deleteRequest.document, deleteDocument)
-        
+
         // onCreate
         let onCreateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Post.self, subscriptionType: .onCreate)
         let onCreateDocument = """
@@ -89,7 +89,7 @@ extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
         }
         """
         XCTAssertEqual(onCreateRequest.document, onCreateDocument)
-        
+
         // onUpdate
         let onUpdateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Post.self, subscriptionType: .onUpdate)
         let onUpdateDocument = """
@@ -107,7 +107,7 @@ extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
         }
         """
         XCTAssertEqual(onUpdateRequest.document, onUpdateDocument)
-        
+
         // onDelete
         let onDeleteRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Post.self, subscriptionType: .onDelete)
         let onDeleteDocument = """
@@ -125,7 +125,7 @@ extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
         }
         """
         XCTAssertEqual(onDeleteRequest.document, onDeleteDocument)
-        
+
         // SyncQuery
         let syncRequest = GraphQLRequest<MutationSyncResult>.syncQuery(modelType: Post.self)
         let syncDocument = """
@@ -148,13 +148,13 @@ extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
         """
         XCTAssertEqual(syncRequest.document, syncDocument)
     }
-    
+
     func testCommentSelectionSets() {
         setUpModelRegistrationOnly(withModels: PostCommentWithCompositeKeyModels())
         continueAfterFailure = true
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
-        
+
         // Create
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: comment, modelSchema: Comment.schema)
         let createDocument = """
@@ -182,7 +182,7 @@ extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
         }
         """
         XCTAssertEqual(createRequest.document, createDocument)
-        
+
         // Update
         let updateRequest = GraphQLRequest<MutationSyncResult>.updateMutation(of: comment, modelSchema: Comment.schema)
         let updateDocument = """
@@ -210,7 +210,7 @@ extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
         }
         """
         XCTAssertEqual(updateRequest.document, updateDocument)
-        
+
         // Delete
         let deleteRequest = GraphQLRequest<MutationSyncResult>.deleteMutation(of: comment, modelSchema: Comment.schema)
         let deleteDocument = """
@@ -238,7 +238,7 @@ extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
         }
         """
         XCTAssertEqual(deleteRequest.document, deleteDocument)
-        
+
         // onCreate
         let onCreateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Comment.schema, subscriptionType: .onCreate)
         let onCreateDocument = """
@@ -262,7 +262,7 @@ extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
         }
         """
         XCTAssertEqual(onCreateRequest.document, onCreateDocument)
-        
+
         // onUpdate
         let onUpdateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Comment.self, subscriptionType: .onUpdate)
         let onUpdateDocument = """
@@ -286,7 +286,7 @@ extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
         }
         """
         XCTAssertEqual(onUpdateRequest.document, onUpdateDocument)
-        
+
         // onDelete
         let onDeleteRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Comment.self, subscriptionType: .onDelete)
         let onDeleteDocument = """
@@ -310,7 +310,7 @@ extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
         }
         """
         XCTAssertEqual(onDeleteRequest.document, onDeleteDocument)
-        
+
         // SyncQuery
         let syncRequest = GraphQLRequest<MutationSyncResult>.syncQuery(modelType: Comment.self)
         let syncDocument = """

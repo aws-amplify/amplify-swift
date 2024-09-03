@@ -16,7 +16,8 @@ public struct Post5: Model {
 
   public init(id: String = UUID().uuidString,
       title: String,
-      editors: List<PostEditor5>? = []) {
+      editors: List<PostEditor5>? = [])
+  {
       self.id = id
       self.title = title
       self.editors = editors

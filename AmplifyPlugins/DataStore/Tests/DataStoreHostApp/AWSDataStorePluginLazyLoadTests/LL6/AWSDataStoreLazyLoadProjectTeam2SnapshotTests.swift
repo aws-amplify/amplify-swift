@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 extension AWSDataStoreLazyLoadProjectTeam2Tests {
-    
+
     func testProjectSelectionSets() {
         setUpModelRegistrationOnly(withModels: ProjectTeam2Models())
         continueAfterFailure = true
@@ -48,7 +48,7 @@ extension AWSDataStoreLazyLoadProjectTeam2Tests {
         }
         """
         XCTAssertEqual(createRequest.document, createDocument)
-        
+
         // Update
         let updateRequest = GraphQLRequest<MutationSyncResult>.updateMutation(of: project, modelSchema: Project.schema)
         let updateDocument = """
@@ -78,7 +78,7 @@ extension AWSDataStoreLazyLoadProjectTeam2Tests {
         }
         """
         XCTAssertEqual(updateRequest.document, updateDocument)
-        
+
         // Delete
         let deleteRequest = GraphQLRequest<MutationSyncResult>.deleteMutation(of: project, modelSchema: Project.schema)
         let deleteDocument = """
@@ -108,7 +108,7 @@ extension AWSDataStoreLazyLoadProjectTeam2Tests {
         }
         """
         XCTAssertEqual(deleteRequest.document, deleteDocument)
-        
+
         // onCreate
         let onCreateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Project.self, subscriptionType: .onCreate)
         let onCreateDocument = """
@@ -134,7 +134,7 @@ extension AWSDataStoreLazyLoadProjectTeam2Tests {
         }
         """
         XCTAssertEqual(onCreateRequest.document, onCreateDocument)
-        
+
         // onUpdate
         let onUpdateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Project.self, subscriptionType: .onUpdate)
         let onUpdateDocument = """
@@ -160,7 +160,7 @@ extension AWSDataStoreLazyLoadProjectTeam2Tests {
         }
         """
         XCTAssertEqual(onUpdateRequest.document, onUpdateDocument)
-        
+
         // onDelete
         let onDeleteRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Project.self, subscriptionType: .onDelete)
         let onDeleteDocument = """
@@ -186,7 +186,7 @@ extension AWSDataStoreLazyLoadProjectTeam2Tests {
         }
         """
         XCTAssertEqual(onDeleteRequest.document, onDeleteDocument)
-        
+
         // SyncQuery
         let syncRequest = GraphQLRequest<MutationSyncResult>.syncQuery(modelType: Project.self)
         let syncDocument = """
@@ -217,12 +217,12 @@ extension AWSDataStoreLazyLoadProjectTeam2Tests {
         """
         XCTAssertEqual(syncRequest.document, syncDocument)
     }
-    
+
     func testTeamSelectionSets() {
         setUpModelRegistrationOnly(withModels: ProjectTeam2Models())
         continueAfterFailure = true
         let team = Team(teamId: UUID().uuidString, name: "name")
-        
+
         // Create
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: team, modelSchema: Team.schema)
         let createDocument = """
@@ -240,7 +240,7 @@ extension AWSDataStoreLazyLoadProjectTeam2Tests {
         }
         """
         XCTAssertEqual(createRequest.document, createDocument)
-        
+
         // Update
         let updateRequest = GraphQLRequest<MutationSyncResult>.updateMutation(of: team, modelSchema: Team.schema)
         let updateDocument = """
@@ -258,7 +258,7 @@ extension AWSDataStoreLazyLoadProjectTeam2Tests {
         }
         """
         XCTAssertEqual(updateRequest.document, updateDocument)
-        
+
         // Delete
         let deleteRequest = GraphQLRequest<MutationSyncResult>.deleteMutation(of: team, modelSchema: Team.schema)
         let deleteDocument = """
@@ -276,7 +276,7 @@ extension AWSDataStoreLazyLoadProjectTeam2Tests {
         }
         """
         XCTAssertEqual(deleteRequest.document, deleteDocument)
-        
+
         // onCreate
         let onCreateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Team.schema, subscriptionType: .onCreate)
         let onCreateDocument = """
@@ -294,7 +294,7 @@ extension AWSDataStoreLazyLoadProjectTeam2Tests {
         }
         """
         XCTAssertEqual(onCreateRequest.document, onCreateDocument)
-        
+
         // onUpdate
         let onUpdateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Team.self, subscriptionType: .onUpdate)
         let onUpdateDocument = """
@@ -312,7 +312,7 @@ extension AWSDataStoreLazyLoadProjectTeam2Tests {
         }
         """
         XCTAssertEqual(onUpdateRequest.document, onUpdateDocument)
-        
+
         // onDelete
         let onDeleteRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Team.self, subscriptionType: .onDelete)
         let onDeleteDocument = """
@@ -330,7 +330,7 @@ extension AWSDataStoreLazyLoadProjectTeam2Tests {
         }
         """
         XCTAssertEqual(onDeleteRequest.document, onDeleteDocument)
-        
+
         // SyncQuery
         let syncRequest = GraphQLRequest<MutationSyncResult>.syncQuery(modelType: Team.self)
         let syncDocument = """

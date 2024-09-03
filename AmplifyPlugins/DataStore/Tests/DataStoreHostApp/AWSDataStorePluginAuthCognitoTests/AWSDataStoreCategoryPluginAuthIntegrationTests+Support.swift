@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import AWSPluginsCore
 import Amplify
+import AWSPluginsCore
+import XCTest
 #if !os(watchOS)
 import DataStoreHostApp
 #endif
 
 extension AWSDataStoreCategoryPluginAuthIntegrationTests {
-    func saveModel<T: Model>(_ model: T) async throws {
+    func saveModel(_ model: some Model) async throws {
         let localSaveInvoked = expectation(description: "local model was saved")
         Task {
             do {

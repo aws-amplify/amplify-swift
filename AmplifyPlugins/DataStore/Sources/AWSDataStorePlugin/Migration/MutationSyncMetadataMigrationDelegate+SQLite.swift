@@ -6,9 +6,9 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Foundation
 import SQLite
-import AWSPluginsCore
 
 final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMigrationDelegate {
 
@@ -46,7 +46,7 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
     // MARK: - Clear
 
     @discardableResult func emptyMutationSyncMetadataStore() throws -> String {
-        guard let storageAdapter = storageAdapter else {
+        guard let storageAdapter else {
             log.debug("Missing SQLiteStorageEngineAdapter for model migration")
             throw DataStoreError.nilStorageAdapter()
         }
@@ -55,7 +55,7 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
     }
 
     @discardableResult func emptyModelSyncMetadataStore() throws -> String {
-        guard let storageAdapter = storageAdapter else {
+        guard let storageAdapter else {
             log.debug("Missing SQLiteStorageEngineAdapter for model migration")
             throw DataStoreError.nilStorageAdapter()
         }
@@ -66,7 +66,7 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
     // MARK: - Migration
 
     @discardableResult func removeMutationSyncMetadataCopyStore() throws -> String {
-        guard let storageAdapter = storageAdapter else {
+        guard let storageAdapter else {
             log.debug("Missing SQLiteStorageEngineAdapter for model migration")
             throw DataStoreError.nilStorageAdapter()
         }
@@ -75,7 +75,7 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
     }
 
     @discardableResult func createMutationSyncMetadataCopyStore() throws -> String {
-        guard let storageAdapter = storageAdapter else {
+        guard let storageAdapter else {
             log.debug("Missing SQLiteStorageEngineAdapter for model migration")
             throw DataStoreError.nilStorageAdapter()
         }
@@ -84,7 +84,7 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
     }
 
     @discardableResult func backfillMutationSyncMetadata() throws -> String {
-        guard let storageAdapter = storageAdapter else {
+        guard let storageAdapter else {
             log.debug("Missing SQLiteStorageEngineAdapter for model migration")
             throw DataStoreError.nilStorageAdapter()
         }
@@ -110,7 +110,7 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
     }
 
     @discardableResult func removeMutationSyncMetadataStore() throws -> String {
-        guard let storageAdapter = storageAdapter else {
+        guard let storageAdapter else {
             log.debug("Missing SQLiteStorageEngineAdapter for model migration")
             throw DataStoreError.nilStorageAdapter()
         }
@@ -119,7 +119,7 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
     }
 
     @discardableResult func renameMutationSyncMetadataCopy() throws -> String {
-        guard let storageAdapter = storageAdapter else {
+        guard let storageAdapter else {
             log.debug("Missing SQLiteStorageEngineAdapter for model migration")
             throw DataStoreError.nilStorageAdapter()
         }

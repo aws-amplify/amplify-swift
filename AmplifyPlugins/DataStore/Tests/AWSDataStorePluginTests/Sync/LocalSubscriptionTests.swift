@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 
 import Combine
 @testable import Amplify
-@testable import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 /// Tests behavior of local DataStore subscriptions (as opposed to remote API subscription behaviors)
 class LocalSubscriptionTests: XCTestCase {
@@ -198,7 +198,7 @@ class LocalSubscriptionTests: XCTestCase {
                 XCTFail("Unexpected error: \(error)")
             }
         }
-        
+
         _ = try await Amplify.DataStore.save(newModel)
 
         await fulfillment(of: [receivedMutationEvent], timeout: 1.0)

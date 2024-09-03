@@ -20,7 +20,8 @@ public struct Post7V2: Model {
   public init(id: String = UUID().uuidString,
       title: String,
       blog: Blog7V2? = nil,
-      comments: List<Comment7V2>? = []) {
+      comments: List<Comment7V2>? = [])
+  {
     self.init(id: id,
       title: title,
       blog: blog,
@@ -28,12 +29,13 @@ public struct Post7V2: Model {
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       title: String,
       blog: Blog7V2? = nil,
       comments: List<Comment7V2>? = [],
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.title = title
       self.blog = blog

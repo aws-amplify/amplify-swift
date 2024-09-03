@@ -21,7 +21,8 @@ public class UserProfile: Model {
     public var account: UserAccount
 
     public init(id: String = UUID().uuidString,
-                account: UserAccount) {
+                account: UserAccount)
+    {
         self.id = id
         self.account = account
     }

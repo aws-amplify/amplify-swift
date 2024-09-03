@@ -5,20 +5,20 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 class AWSDataStoreLazyLoadCompositePKTests: AWSDataStoreLazyLoadBaseTest {
-    
+
     func testStart() async throws {
         await setup(withModels: CompositePKModels())
         try await startAndWaitForReady()
     }
-    
+
     func testSaveCompositePKParent() async throws {
         await setup(withModels: CompositePKModels())
         let parent = initParent()
@@ -27,7 +27,7 @@ class AWSDataStoreLazyLoadCompositePKTests: AWSDataStoreLazyLoadBaseTest {
 }
 
 extension AWSDataStoreLazyLoadCompositePKTests {
-    
+
     struct CompositePKModels: AmplifyModelRegistration {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
@@ -38,7 +38,7 @@ extension AWSDataStoreLazyLoadCompositePKTests {
             ModelRegistry.register(modelType: ChildSansBelongsTo.self)
         }
     }
-    
+
     func initParent() -> CompositePKParent {
         CompositePKParent(customId: UUID().uuidString,
                           content: UUID().uuidString)

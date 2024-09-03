@@ -17,7 +17,8 @@ final class MutationEventSubscription: Subscription {
     init<S>(subscriber: S,
             publisher: AWSMutationEventPublisher) where S: Subscriber,
         S.Failure == DataStoreError,
-        S.Input == MutationEvent {
+        S.Input == MutationEvent
+    {
             self.subscriber = MutationEventSubscriber(subscriber: subscriber)
             self.publisher = publisher
     }

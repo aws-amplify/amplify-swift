@@ -31,16 +31,18 @@ public struct SchemaDrift: Model {
   public var updatedAt: Temporal.DateTime?
 
   public init(id: String = UUID().uuidString,
-      enumValue: EnumDrift? = nil) {
+      enumValue: EnumDrift? = nil)
+  {
     self.init(id: id,
       enumValue: enumValue,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       enumValue: EnumDrift? = nil,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.enumValue = enumValue
       self.createdAt = createdAt

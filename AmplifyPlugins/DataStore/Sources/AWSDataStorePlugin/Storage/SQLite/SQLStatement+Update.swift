@@ -22,7 +22,7 @@ struct UpdateStatement: SQLStatement {
         self.modelSchema = modelSchema
 
         var conditionStatement: ConditionStatement?
-        if let condition = condition {
+        if let condition {
             let statement = ConditionStatement(modelSchema: modelSchema,
                                                predicate: condition)
             conditionStatement = statement
@@ -45,7 +45,7 @@ struct UpdateStatement: SQLStatement {
         where \(modelSchema.primaryKey.columnName()) = ?
         """
 
-        if let conditionStatement = conditionStatement {
+        if let conditionStatement {
             sql = """
             \(sql)
             \(conditionStatement.stringValue)
@@ -58,7 +58,7 @@ struct UpdateStatement: SQLStatement {
     var variables: [Binding?] {
         var bindings = model.sqlValues(for: updateColumns, modelSchema: modelSchema)
         bindings.append(model.identifier(schema: modelSchema).stringValue)
-        if let conditionStatement = conditionStatement {
+        if let conditionStatement {
             bindings.append(contentsOf: conditionStatement.variables)
         }
         return bindings

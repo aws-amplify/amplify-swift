@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
 import Foundation
 import XCTest
-import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 class SortedListTests: XCTestCase {
 
@@ -153,7 +153,8 @@ class SortedListTests: XCTestCase {
                     draft: Bool = false,
                     rating: Double = 1.0,
                     createdAt: Temporal.DateTime = .now(),
-                    status: PostStatus? = .draft) -> Post {
+                    status: PostStatus? = .draft) -> Post
+    {
         Post(id: id,
              title: "A",
              content: "content",

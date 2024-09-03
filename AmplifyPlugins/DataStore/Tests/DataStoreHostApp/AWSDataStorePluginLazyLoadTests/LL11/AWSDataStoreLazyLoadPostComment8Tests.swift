@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest {
 
@@ -19,10 +19,10 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
         let post = Post(postId: UUID().uuidString, title: "title")
         try await createAndWaitForSync(post)
     }
-    
+
     func testSaveComment() async throws {
         await setup(withModels: PostComment8Models())
-        
+
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
                               content: "content",
@@ -31,10 +31,10 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
         try await createAndWaitForSync(post)
         try await createAndWaitForSync(comment)
     }
-    
+
     func testLazyLoad() async throws {
         await setup(withModels: PostComment8Models())
-        
+
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
                               content: "content",
@@ -49,19 +49,20 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
         let queriedPost = try await query(for: savedPost)
         try await assertPost(queriedPost, canLazyLoad: savedComment)
     }
-    
+
     func assertComment(_ comment: Comment, contains post: Post) {
         XCTAssertEqual(comment.postId, post.postId)
         XCTAssertEqual(comment.postTitle, post.title)
     }
-    
+
     func assertCommentDoesNotContainPost(_ comment: Comment) {
         XCTAssertNil(comment.postId)
         XCTAssertNil(comment.postTitle)
     }
-    
+
     func assertPost(_ post: Post,
-                    canLazyLoad comment: Comment) async throws {
+                    canLazyLoad comment: Comment) async throws
+    {
         guard let comments = post.comments else {
             XCTFail("Missing comments on post")
             return
@@ -76,7 +77,7 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
         }
         assertComment(comment, contains: post)
     }
-    
+
     func testSaveWithoutPost() async throws {
         await setup(withModels: PostComment8Models())
         let comment = Comment(commentId: UUID().uuidString, content: "content")
@@ -91,7 +92,7 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
         let queriedComment2 = try await query(for: saveCommentWithPost)
         assertComment(queriedComment2, contains: post)
     }
-    
+
     func testUpdateFromQueriedComment() async throws {
         await setup(withModels: PostComment8Models())
         let post = Post(postId: UUID().uuidString, title: "title")
@@ -107,10 +108,10 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
         let queriedComment2 = try await query(for: savedQueriedComment)
         assertComment(queriedComment2, contains: savedPost)
     }
-    
+
     func testUpdateToNewPost() async throws {
         await setup(withModels: PostComment8Models())
-        
+
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
                               content: "content",
@@ -128,10 +129,10 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
         let queriedComment2 = try await query(for: saveCommentWithNewPost)
         assertComment(queriedComment2, contains: newPost)
     }
-    
+
     func testUpdateRemovePost() async throws {
         await setup(withModels: PostComment8Models())
-        
+
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
                               content: "content",
@@ -141,18 +142,18 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
         let savedComment = try await createAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
         assertComment(queriedComment, contains: post)
-        
+
         queriedComment.postId = nil
         queriedComment.postTitle = nil
-        
+
         let saveCommentRemovePost = try await updateAndWaitForSync(queriedComment)
         let queriedCommentNoPost = try await query(for: saveCommentRemovePost)
         assertCommentDoesNotContainPost(queriedCommentNoPost)
     }
-    
+
     func testDelete() async throws {
         await setup(withModels: PostComment8Models())
-        
+
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
                               content: "content",
@@ -161,14 +162,14 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
         let savedPost = try await createAndWaitForSync(post)
         let savedComment = try await createAndWaitForSync(comment)
         try await deleteAndWaitForSync(savedPost)
-        
+
         // The expected behavior when deleting a post should be that the
         // child models are deleted (comment) followed by the parent model (post).
         try await assertModelDoesNotExist(savedPost)
         // Is there a way to delete the children models in uni directional relationships?
         try await assertModelExists(savedComment)
     }
-    
+
     func testObservePost() async throws {
         await setup(withModels: PostComment8Models())
         try await startAndWaitForReady()
@@ -184,25 +185,26 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedPost = try? mutationEvent.decodeModel(as: Post.self),
-                   receivedPost.postId == post.postId {
+                   receivedPost.postId == post.postId
+                {
                     let savedComment = try await createAndWaitForSync(comment)
                     try await assertPost(receivedPost, canLazyLoad: savedComment)
                     mutationEventReceived.fulfill()
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: Post.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
-    
+
     func testObserveComment() async throws {
         await setup(withModels: PostComment8Models())
         try await startAndWaitForReady()
@@ -219,24 +221,25 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedComment = try? mutationEvent.decodeModel(as: Comment.self),
-                   receivedComment.commentId == comment.commentId {
+                   receivedComment.commentId == comment.commentId
+                {
                     assertComment(receivedComment, contains: savedPost)
                     mutationEventReceived.fulfill()
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: comment, modelSchema: Comment.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
-    
+
     func testObserveQueryPost() async throws {
         await setup(withModels: PostComment8Models())
         try await startAndWaitForReady()
@@ -256,22 +259,22 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: Post.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
-    
+
     func testObserveQueryComment() async throws {
         await setup(withModels: PostComment8Models())
         try await startAndWaitForReady()
-        
+
         let post = Post(postId: UUID().uuidString, title: "title")
         let savedPost = try await createAndWaitForSync(post)
         let comment = Comment(commentId: UUID().uuidString,
@@ -288,14 +291,14 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: comment, modelSchema: Comment.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
@@ -304,7 +307,7 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
 extension AWSDataStoreLazyLoadPostComment8Tests {
     typealias Post = Post8
     typealias Comment = Comment8
-    
+
     struct PostComment8Models: AmplifyModelRegistration {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {

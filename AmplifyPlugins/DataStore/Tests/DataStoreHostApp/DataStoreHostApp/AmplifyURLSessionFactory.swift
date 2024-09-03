@@ -5,9 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import Foundation
 import AWSAPIPlugin
+import Foundation
 
 class AmplifyURLSessionFactory: URLSessionBehaviorFactory {
     func makeSession(withDelegate delegate: URLSessionBehaviorDelegate?) -> URLSessionBehavior {
@@ -15,7 +14,7 @@ class AmplifyURLSessionFactory: URLSessionBehaviorFactory {
         let configuration = URLSessionConfiguration.default
         configuration.tlsMinimumSupportedProtocolVersion = .TLSv12
         configuration.tlsMaximumSupportedProtocolVersion = .TLSv13
-        
+
         let session = URLSession(configuration: configuration,
                                  delegate: urlSessionDelegate,
                                  delegateQueue: nil)

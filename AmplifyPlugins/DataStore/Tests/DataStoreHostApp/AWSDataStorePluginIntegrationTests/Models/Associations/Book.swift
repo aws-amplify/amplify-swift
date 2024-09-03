@@ -16,7 +16,8 @@ public struct Book: Model {
     public var authors: List<BookAuthor>
 
     public init(id: String = UUID().uuidString,
-                authors: List<BookAuthor> = []) {
+                authors: List<BookAuthor> = [])
+    {
         self.id = id
         self.authors = authors
     }

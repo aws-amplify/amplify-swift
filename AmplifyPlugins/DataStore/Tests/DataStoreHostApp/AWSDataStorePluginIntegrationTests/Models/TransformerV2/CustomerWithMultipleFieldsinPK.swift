@@ -30,7 +30,8 @@ public struct CustomerWithMultipleFieldsinPK: Model {
       priority: Priority,
       height: Double,
       firstName: String? = nil,
-      lastName: String? = nil) {
+      lastName: String? = nil)
+  {
     self.init(id: id,
       dob: dob,
       date: date,
@@ -43,7 +44,7 @@ public struct CustomerWithMultipleFieldsinPK: Model {
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       dob: Temporal.DateTime,
       date: Temporal.Date,
       time: Temporal.Time,
@@ -53,7 +54,8 @@ public struct CustomerWithMultipleFieldsinPK: Model {
       firstName: String? = nil,
       lastName: String? = nil,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.dob = dob
       self.date = date

@@ -19,7 +19,8 @@ public struct OutboxMutationEvent {
     }
     public static func fromModelWithMetadata(modelName: String,
                                              model: Model,
-                                             mutationSync: MutationSync<AnyModel>) -> OutboxMutationEvent {
+                                             mutationSync: MutationSync<AnyModel>) -> OutboxMutationEvent
+    {
         let element = OutboxMutationEventElement(model: model,
                                                  version: mutationSync.syncMetadata.version,
                                                  lastChangedAt: mutationSync.syncMetadata.lastChangedAt,
@@ -28,7 +29,8 @@ public struct OutboxMutationEvent {
     }
 
     public static func fromModelWithoutMetadata(modelName: String,
-                                                model: Model) -> OutboxMutationEvent {
+                                                model: Model) -> OutboxMutationEvent
+    {
         let element = OutboxMutationEventElement(model: model)
         return OutboxMutationEvent(modelName: modelName, element: element)
     }

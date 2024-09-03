@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
 import Foundation
 import XCTest
-import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 class SyncEventEmitterTests: XCTestCase {
     var initialSyncOrchestrator: MockAWSInitialSyncOrchestrator?
@@ -123,7 +123,7 @@ class SyncEventEmitterTests: XCTestCase {
                                 isFullSync: true, isDeltaSync: false,
                                 added: 0, updated: 0, deleted: 0)]
 
-        let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
+        let syncableModelSchemas = ModelRegistry.modelSchemas.filter(\.isSyncable)
 
         reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelSchemas: syncableModelSchemas,
                                                                       api: nil,
@@ -221,7 +221,7 @@ class SyncEventEmitterTests: XCTestCase {
                                 added: 1, updated: 0, deleted: 0)]
         var modelSyncedEventPayloads = [ModelSyncedEvent]()
 
-        let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
+        let syncableModelSchemas = ModelRegistry.modelSchemas.filter(\.isSyncable)
 
         reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelSchemas: syncableModelSchemas,
                                                                       api: nil,

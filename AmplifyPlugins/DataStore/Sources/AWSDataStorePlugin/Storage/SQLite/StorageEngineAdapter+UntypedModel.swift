@@ -12,19 +12,20 @@ extension SQLiteStorageEngineAdapter {
 
     func save(untypedModel: Model,
               eagerLoad: Bool = true,
-              completion: DataStoreCallback<Model>) {
-        guard let connection = connection else {
+              completion: DataStoreCallback<Model>)
+    {
+        guard let connection else {
             completion(.failure(.nilSQLiteConnection()))
             return
         }
 
         do {
-            let modelName: ModelName
-            if let jsonModel = untypedModel as? JSONValueHolder,
-               let modelNameFromJson = jsonModel.jsonValue(for: "__typename") as? String {
-                modelName = modelNameFromJson
+            let modelName: ModelName = if let jsonModel = untypedModel as? JSONValueHolder,
+               let modelNameFromJson = jsonModel.jsonValue(for: "__typename") as? String
+            {
+                modelNameFromJson
             } else {
-                modelName = untypedModel.modelName
+                untypedModel.modelName
             }
 
             guard let modelSchema = ModelRegistry.modelSchema(from: modelName) else {
@@ -45,7 +46,8 @@ extension SQLiteStorageEngineAdapter {
 
             query(modelSchema: modelSchema,
                   predicate: untypedModel.identifier(schema: modelSchema).predicate,
-                  eagerLoad: eagerLoad) {
+                  eagerLoad: eagerLoad)
+            {
                 switch $0 {
                 case .success(let result):
                     if let saved = result.first {
@@ -67,8 +69,9 @@ extension SQLiteStorageEngineAdapter {
     func query(modelSchema: ModelSchema,
                predicate: QueryPredicate? = nil,
                eagerLoad: Bool = true,
-               completion: DataStoreCallback<[Model]>) {
-        guard let connection = connection else {
+               completion: DataStoreCallback<[Model]>)
+    {
+        guard let connection else {
             completion(.failure(.nilSQLiteConnection()))
             return
         }

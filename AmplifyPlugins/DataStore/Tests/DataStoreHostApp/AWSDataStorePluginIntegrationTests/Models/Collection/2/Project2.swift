@@ -18,7 +18,8 @@ public struct Project2: Model {
   public init(id: String = UUID().uuidString,
       name: String? = nil,
       teamID: String,
-      team: Team2? = nil) {
+      team: Team2? = nil)
+  {
       self.id = id
       self.name = name
       self.teamID = teamID

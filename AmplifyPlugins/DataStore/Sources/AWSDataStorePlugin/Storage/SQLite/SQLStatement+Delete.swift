@@ -20,7 +20,7 @@ struct DeleteStatement: SQLStatement {
         self.modelSchema = modelSchema
 
         var conditionStatement: ConditionStatement?
-        if let predicate = predicate {
+        if let predicate {
             let statement = ConditionStatement(modelSchema: modelSchema,
                                                predicate: predicate,
                                                namespace: namespace[...])
@@ -32,7 +32,8 @@ struct DeleteStatement: SQLStatement {
     init<M: Model>(_: M.Type,
                    modelSchema: ModelSchema,
                    withId id: String,
-                   predicate: QueryPredicate? = nil) {
+                   predicate: QueryPredicate? = nil)
+    {
         let identifier = DefaultModelIdentifier<M>.makeDefault(id: id)
         self.init(modelSchema: modelSchema,
                   withIdentifier: identifier,
@@ -41,10 +42,11 @@ struct DeleteStatement: SQLStatement {
 
     init(modelSchema: ModelSchema,
          withIdentifier id: ModelIdentifierProtocol,
-         predicate: QueryPredicate? = nil) {
+         predicate: QueryPredicate? = nil)
+    {
         var queryPredicate: QueryPredicate = field(modelSchema.primaryKey.sqlName)
             .eq(id.stringValue)
-        if let predicate = predicate {
+        if let predicate {
             queryPredicate = field(modelSchema.primaryKey.sqlName)
                 .eq(id.stringValue).and(predicate)
         }
@@ -60,7 +62,7 @@ struct DeleteStatement: SQLStatement {
         delete from "\(modelSchema.name)" as \(namespace)
         """
 
-        if let conditionStatement = conditionStatement {
+        if let conditionStatement {
             return """
             \(sql)
             where 1 = 1

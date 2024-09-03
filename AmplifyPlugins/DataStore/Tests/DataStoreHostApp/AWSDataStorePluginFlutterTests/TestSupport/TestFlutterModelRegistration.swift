@@ -4,24 +4,25 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import Amplify
 import AmplifyTestCommon
 
 struct TestFlutterModelRegistration: AmplifyModelRegistration {
     var version: String = "1"
-    private let decoder: (String, JSONDecoder?) throws -> Model = { (jsonString, decoder) -> Model in
-        let resolvedDecoder: JSONDecoder
-        if let decoder = decoder {
-            resolvedDecoder = decoder
+    private let decoder: (String, JSONDecoder?) throws -> Model = { jsonString, decoder -> Model in
+        let resolvedDecoder: JSONDecoder = if let decoder {
+            decoder
         } else {
-            resolvedDecoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
+            JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
         }
         // Convert jsonstring to object
         let data = Data(jsonString.utf8)
         let jsonValue = try resolvedDecoder.decode(JSONValue.self, from: data)
         if case .array(let jsonArray) = jsonValue,
            case .object(let jsonObj) = jsonArray[0],
-           case .string(let id) = jsonObj["id"] {
+           case .string(let id) = jsonObj["id"]
+        {
             let model = FlutterSerializedModel(id: id, map: jsonObj)
             return model
         }

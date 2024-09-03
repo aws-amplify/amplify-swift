@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 
 import Combine
 @testable import Amplify
-@testable import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 /// Tests behavior of local DataStore subscriptions (as opposed to remote API subscription behaviors)
 /// using serialized JSON models
@@ -382,7 +382,8 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
         let queryCommentSuccess = expectation(description: "querying for comment should exist")
         dataStorePlugin.query(DynamicModel.self,
                               modelSchema: commentSchema,
-                              where: DynamicModel.keys.id == commentModel.id) { result in
+                              where: DynamicModel.keys.id == commentModel.id)
+        { result in
             switch result {
             case .success(let comments):
                 XCTAssertEqual(comments.count, 1)
@@ -408,7 +409,8 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
         let queryCommentEmpty = expectation(description: "querying for comment should be empty")
         dataStorePlugin.query(DynamicModel.self,
                               modelSchema: commentSchema,
-                              where: DynamicModel.keys.id == commentModel.id) { result in
+                              where: DynamicModel.keys.id == commentModel.id)
+        { result in
             switch result {
             case .success(let comments):
                 XCTAssertEqual(comments.count, 0)

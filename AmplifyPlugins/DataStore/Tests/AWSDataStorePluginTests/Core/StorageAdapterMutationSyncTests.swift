@@ -8,8 +8,8 @@
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 class StorageAdapterMutationSyncTests: BaseDataStoreTests {
 
@@ -39,9 +39,9 @@ class StorageAdapterMutationSyncTests: BaseDataStoreTests {
 
         do {
             let mutationSync = try storageAdapter.queryMutationSync(for: posts, modelName: Post.modelName)
-            mutationSync.forEach {
-                XCTAssertEqual($0.model.id, $0.syncMetadata.modelId)
-                let post = $0.model.instance as? Post
+            for item in mutationSync {
+                XCTAssertEqual(item.model.id, item.syncMetadata.modelId)
+                let post = item.model.instance as? Post
                 XCTAssertNotNil(post)
             }
             expect.fulfill()

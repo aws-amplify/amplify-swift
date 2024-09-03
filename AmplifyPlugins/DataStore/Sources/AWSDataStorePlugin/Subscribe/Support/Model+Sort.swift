@@ -86,7 +86,8 @@ extension ModelSchema {
     // swiftlint:disable:next cyclomatic_complexity
     func comparator(model1: Model,
                     model2: Model,
-                    sortBy: QuerySortDescriptor) -> Bool? {
+                    sortBy: QuerySortDescriptor) -> Bool?
+    {
         let fieldName = sortBy.fieldName
         let sortOrder = sortBy.order
         guard let modelField = field(withName: fieldName) else {
@@ -133,7 +134,8 @@ extension ModelSchema {
                 .sortComparator(sortOrder: sortOrder)
         case .dateTime:
             guard let value1Optional = value1 as? Temporal.DateTime?,
-                  let value2Optional = value2 as? Temporal.DateTime? else {
+                  let value2Optional = value2 as? Temporal.DateTime?
+            else {
                 return false
             }
             return ModelValueCompare(value1Optional: value1Optional,
@@ -156,8 +158,9 @@ extension ModelSchema {
                 .sortComparator(sortOrder: sortOrder)
         case .enum:
             // swiftlint:disable syntactic_sugar
-            guard case .some(Optional<Any>.some(let value1Optional)) = value1,
-                  case .some(Optional<Any>.some(let value2Optional)) = value2 else {
+            guard case .some(Any?.some(let value1Optional)) = value1,
+                  case .some(Any?.some(let value2Optional)) = value2
+            else {
                   if value1 == nil && value2 != nil {
                       return sortOrder == .ascending
                   } else if value1 != nil && value2 == nil {

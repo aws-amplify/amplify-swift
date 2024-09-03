@@ -52,7 +52,8 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
-                             predicate: predicate) { result in
+                             predicate: predicate)
+        { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
@@ -104,7 +105,8 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
-                             predicate: predicate) { result in
+                             predicate: predicate)
+        { result in
             switch result {
             case .failure(let dataStoreError):
                 XCTAssertNil(dataStoreError)
@@ -122,7 +124,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             }
             mutationEventVerified.fulfill()
         }
-        
+
         await fulfillment(of: [mutationEventVerified], timeout: 1.0)
     }
 
@@ -145,13 +147,14 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             try setUpDataStore()
             try await startAmplifyAndWaitForSync()
         }
-        
+
         try await Amplify.DataStore.delete(post)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
-                             predicate: predicate) { result in
+                             predicate: predicate)
+        { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
@@ -195,7 +198,8 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
-                             predicate: predicate) { result in
+                             predicate: predicate)
+        { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
@@ -249,7 +253,8 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
-                             predicate: predicate) { result in
+                             predicate: predicate)
+        { result in
             switch result {
             case .failure(let dataStoreError):
                 XCTAssertNil(dataStoreError)
@@ -267,7 +272,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             }
             mutationEventVerified.fulfill()
         }
-        
+
         await fulfillment(of: [mutationEventVerified], timeout: 1.0)
     }
 
@@ -290,13 +295,14 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             try setUpDataStore()
             try await startAmplifyAndWaitForSync()
         }
-        
+
         try await Amplify.DataStore.delete(post)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
-                             predicate: predicate) { result in
+                             predicate: predicate)
+        { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
@@ -344,7 +350,8 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
-                             predicate: predicate) { result in
+                             predicate: predicate)
+        { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
@@ -394,7 +401,8 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
-                             predicate: predicate) { result in
+                             predicate: predicate)
+        { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
@@ -433,7 +441,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
 
         let savedPost = try await Amplify.DataStore.save(post)
         XCTAssertNotNil(savedPost)
-        
+
         let mutationEventVerified = expectation(description: "Verified mutation event")
         storageAdapter.query(MutationEvent.self, predicate: nil) { result in
             switch result {
@@ -565,7 +573,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
 
         let savedPost = try await Amplify.DataStore.save(post)
         XCTAssertNotNil(savedPost)
-        
+
         let mutationEventVerified = expectation(description: "Verified mutation event")
         storageAdapter.query(MutationEvent.self, predicate: nil) { result in
             switch result {
@@ -657,7 +665,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         }
 
         try await Amplify.DataStore.delete(post)
-        
+
         let mutationEventVerified = expectation(description: "Verified mutation event")
         storageAdapter.query(MutationEvent.self, predicate: nil) { result in
             switch result {

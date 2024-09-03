@@ -4,11 +4,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import XCTest
-@testable import DataStoreHostApp
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
+@testable import DataStoreHostApp
 
 class SyncEngineFlutterIntegrationTestBase: XCTestCase {
 
@@ -68,7 +69,8 @@ class SyncEngineFlutterIntegrationTestBase: XCTestCase {
 
         var token: UnsubscribeToken!
         token = Amplify.Hub.listen(to: .dataStore,
-                                   eventName: HubPayload.EventName.DataStore.syncStarted) { _ in
+                                   eventName: HubPayload.EventName.DataStore.syncStarted)
+        { _ in
             syncStarted.fulfill()
             Amplify.Hub.removeListener(token)
         }

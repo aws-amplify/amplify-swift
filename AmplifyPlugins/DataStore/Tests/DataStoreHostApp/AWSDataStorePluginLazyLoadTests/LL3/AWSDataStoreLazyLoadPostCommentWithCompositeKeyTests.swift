@@ -5,18 +5,18 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLazyLoadBaseTest {
 
     func testLazyLoad() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
-        
+
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         let savedPost = try await createAndWaitForSync(post)
@@ -28,30 +28,32 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         let queriedPost = try await query(for: savedPost)
         try await assertPost(queriedPost, canLazyLoad: savedComment)
     }
-    
+
     func assertComment(_ comment: Comment,
-                       hasEagerLoaded post: Post) async throws {
+                       hasEagerLoaded post: Post) async throws
+    {
         assertLazyReference(comment._post,
                         state: .loaded(model: post))
-        
+
         guard let loadedPost = try await comment.post else {
             XCTFail("Failed to retrieve the post from the comment")
             return
         }
         XCTAssertEqual(loadedPost.id, post.id)
-        
+
         // retrieve loaded model
         guard let loadedPost = try await comment.post else {
             XCTFail("Failed to retrieve the loaded post from the comment")
             return
         }
         XCTAssertEqual(loadedPost.id, post.id)
-        
+
         try await assertPost(loadedPost, canLazyLoad: comment)
     }
-    
+
     func assertComment(_ comment: Comment,
-                       canLazyLoad post: Post) async throws {
+                       canLazyLoad post: Post) async throws
+    {
         assertLazyReference(comment._post,
                         state: .notLoaded(identifiers: [
                             .init(name: Post.keys.id.stringValue, value: post.id),
@@ -66,9 +68,10 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                         state: .loaded(model: post))
         try await assertPost(loadedPost, canLazyLoad: comment)
     }
-    
+
     func assertPost(_ post: Post,
-                    canLazyLoad comment: Comment) async throws {
+                    canLazyLoad comment: Comment) async throws
+    {
         guard let comments = post.comments else {
             XCTFail("Missing comments on post")
             return
@@ -87,7 +90,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                             .init(name: Post.keys.title.stringValue, value: post.title)
                         ]))
     }
-    
+
     func testSaveWithoutPost() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
         let comment = Comment(content: "content")
@@ -102,7 +105,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         let queriedComment2 = try await query(for: saveCommentWithPost)
         try await assertComment(queriedComment2, canLazyLoad: post)
     }
-    
+
     func testUpdateFromQueriedComment() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
@@ -119,10 +122,10 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         let queriedComment2 = try await query(for: savedQueriedComment)
         try await assertComment(queriedComment2, canLazyLoad: savedPost)
     }
-    
+
     func testUpdateToNewPost() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
-        
+
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         _ = try await createAndWaitForSync(post)
@@ -133,7 +136,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                             .init(name: Post.keys.id.stringValue, value: post.id),
                             .init(name: Post.keys.title.stringValue, value: post.title)
                         ]))
-        
+
         let newPost = Post(title: "title")
         _ = try await createAndWaitForSync(newPost)
         queriedComment.setPost(newPost)
@@ -141,10 +144,10 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         let queriedComment2 = try await query(for: saveCommentWithNewPost)
         try await assertComment(queriedComment2, canLazyLoad: newPost)
     }
-    
+
     func testUpdateRemovePost() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
-        
+
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         _ = try await createAndWaitForSync(post)
@@ -155,17 +158,17 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                             .init(name: Post.keys.id.stringValue, value: post.id),
                             .init(name: Post.keys.title.stringValue, value: post.title)
                         ]))
-        
+
         queriedComment.setPost(nil)
         let saveCommentRemovePost = try await updateAndWaitForSync(queriedComment)
         let queriedCommentNoPost = try await query(for: saveCommentRemovePost)
         assertLazyReference(queriedCommentNoPost._post,
                         state: .notLoaded(identifiers: nil))
     }
-    
+
     func testDelete() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
-        
+
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         let savedPost = try await createAndWaitForSync(post)
@@ -174,7 +177,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         try await assertModelDoesNotExist(savedComment)
         try await assertModelDoesNotExist(savedPost)
     }
-    
+
     func testObservePost() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
         try await startAndWaitForReady()
@@ -187,8 +190,9 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedPost = try? mutationEvent.decodeModel(as: Post.self),
-                   receivedPost.id == post.id {
-                        
+                   receivedPost.id == post.id
+                {
+
                     try await createAndWaitForSync(comment)
                     guard let comments = receivedPost.comments else {
                         XCTFail("Lazy List does not exist")
@@ -200,23 +204,23 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                         XCTFail("Failed to lazy load comments \(error)")
                     }
                     XCTAssertEqual(comments.count, 1)
-                    
+
                     mutationEventReceived.fulfill()
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: Post.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
-    
+
     func testObserveComment() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
         try await startAndWaitForReady()
@@ -230,24 +234,25 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedComment = try? mutationEvent.decodeModel(as: Comment.self),
-                   receivedComment.id == comment.id {
+                   receivedComment.id == comment.id
+                {
                     try await assertComment(receivedComment, canLazyLoad: savedPost)
                     mutationEventReceived.fulfill()
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: comment, modelSchema: Comment.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
-    
+
     func testObserveQueryPost() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
         try await startAndWaitForReady()
@@ -269,27 +274,27 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                         XCTFail("Failed to lazy load comments \(error)")
                     }
                     XCTAssertEqual(comments.count, 1)
-                    
+
                     snapshotReceived.fulfill()
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: Post.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
-    
+
     func testObserveQueryComment() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
         try await startAndWaitForReady()
-        
+
         let post = Post(title: "title")
         let savedPost = try await createAndWaitForSync(post)
         let comment = Comment(content: "content", post: post)
@@ -303,14 +308,14 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: comment, modelSchema: Comment.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
@@ -319,7 +324,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
 extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
     typealias Post = PostWithCompositeKey
     typealias Comment = CommentWithCompositeKey
-    
+
     struct PostCommentWithCompositeKeyModels: AmplifyModelRegistration {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import SQLite
 import Combine
+import SQLite
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -25,7 +25,7 @@ class InitialSyncOperationTests: XCTestCase {
     // MARK: - GetLastSyncTime
 
     func testFullSyncWhenLastSyncPredicateNilAndCurrentSyncPredicateNonNil() async {
-        let lastSyncTime: Int64 = 123456
+        let lastSyncTime: Int64 = 123_456
         let lastSyncPredicate: String? = nil
         let currentSyncPredicate: DataStoreConfiguration
         #if os(watchOS)
@@ -84,7 +84,7 @@ class InitialSyncOperationTests: XCTestCase {
     }
 
     func testFullSyncWhenLastSyncPredicateNonNilAndCurrentSyncPredicateNil() async {
-        let lastSyncTime: Int64 = 123456
+        let lastSyncTime: Int64 = 123_456
         let lastSyncPredicate: String? = "non nil"
         let expectedSyncType = SyncType.fullSync
         let expectedLastSync: Int64? = nil
@@ -121,7 +121,7 @@ class InitialSyncOperationTests: XCTestCase {
     }
 
     func testFullSyncWhenLastSyncPredicateDifferentFromCurrentSyncPredicate() async {
-        let lastSyncTime: Int64 = 123456
+        let lastSyncTime: Int64 = 123_456
         let lastSyncPredicate: String? = "non nil different from current predicate"
         let currentSyncPredicate: DataStoreConfiguration
         #if os(watchOS)
@@ -490,7 +490,8 @@ class InitialSyncOperationTests: XCTestCase {
         reconciliationQueue.listeners.append { message in
             if message.hasPrefix("offer(_:)")
                 && message.contains("MutationSync<AWSPluginsCore.AnyModel>")
-                && message.contains(#"id: "1"#) {
+                && message.contains(#"id: "1"#)
+            {
                 itemSubmitted.fulfill()
             }
         }
@@ -620,14 +621,16 @@ class InitialSyncOperationTests: XCTestCase {
         #if os(watchOS)
         let configuration = DataStoreConfiguration.custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
-                case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
+                case let .api(amplifyError, mutationEventOptional) = dataStoreError
+            else {
                     XCTFail("Expected API error with mutationEvent")
                     return
             }
             guard let actualAPIError = amplifyError as? APIError,
                 case let .operationError(_, _, underlyingError) = actualAPIError,
                 let authError = underlyingError as? AuthError,
-                case .signedOut = authError else {
+                case .signedOut = authError
+            else {
                     XCTFail("Should be `signedOut` error but got \(amplifyError)")
                     return
             }
@@ -637,14 +640,16 @@ class InitialSyncOperationTests: XCTestCase {
         #else
         let configuration = DataStoreConfiguration.custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
-                case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
+                case let .api(amplifyError, mutationEventOptional) = dataStoreError
+            else {
                     XCTFail("Expected API error with mutationEvent")
                     return
             }
             guard let actualAPIError = amplifyError as? APIError,
                 case let .operationError(_, _, underlyingError) = actualAPIError,
                 let authError = underlyingError as? AuthError,
-                case .signedOut = authError else {
+                case .signedOut = authError
+            else {
                     XCTFail("Should be `signedOut` error but got \(amplifyError)")
                     return
             }

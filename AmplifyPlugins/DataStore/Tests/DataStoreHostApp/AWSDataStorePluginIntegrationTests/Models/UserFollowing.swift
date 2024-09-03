@@ -16,7 +16,8 @@ public struct UserFollowing: Model {
 
   public init(id: String = UUID().uuidString,
       user: User? = nil,
-      followingUser: User? = nil) {
+      followingUser: User? = nil)
+  {
       self.id = id
       self.user = user
       self.followingUser = followingUser

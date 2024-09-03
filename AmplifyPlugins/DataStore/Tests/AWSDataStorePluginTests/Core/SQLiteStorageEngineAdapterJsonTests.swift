@@ -77,7 +77,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
     /// - Then:
     ///   - call `query(Post)` to check if the model was correctly inserted
     func testInsertPost() async {
-        let expectation = self.expectation(
+        let expectation = expectation(
             description: "it should save and select a Post from the database")
 
         // insert a post
@@ -94,7 +94,8 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             case .success:
                 self.storageAdapter.query(
                     DynamicModel.self,
-                    modelSchema: ModelRegistry.modelSchema(from: "Post")!) { queryResult in
+                    modelSchema: ModelRegistry.modelSchema(from: "Post")!)
+                { queryResult in
                     switch queryResult {
                     case .success(let posts):
                         XCTAssert(posts.count == 1)
@@ -125,7 +126,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
     ///   - call `query(Post, where: title == post.title)` to check
     ///   if the model was correctly inserted using a predicate
     func testInsertPostAndSelectByTitle() async {
-        let expectation = self.expectation(
+        let expectation = expectation(
             description: "it should save and select a Post from the database")
 
         // insert a post
@@ -174,7 +175,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
     ///   - check if the `query(Post)` returns only 1 post
     ///   - the post has the updated title
     func testInsertPostAndThenUpdateIt() async {
-        let expectation = self.expectation(
+        let expectation = expectation(
             description: "it should insert and update a Post")
 
         // insert a post
@@ -247,7 +248,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                     "createdAt": .string(createdAt)] as [String: JSONValue]
         let model = DynamicModel(values: post)
         let schema = ModelRegistry.modelSchema(from: "Post")!
- 
+
         storageAdapter.save(model, modelSchema: schema) { insertResult in
             switch insertResult {
             case .success:
@@ -255,7 +256,8 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                 self.storageAdapter.delete(DynamicModel.self,
                                            modelSchema: schema,
                                            withIdentifier: model.identifier(schema: schema),
-                                           condition: nil) {
+                                           condition: nil)
+                {
                     switch $0 {
                     case .success:
                         deleteExpectation.fulfill()
@@ -281,7 +283,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
     ///    - a successful update for `update(post, condition)`
     ///    - call `query(Post)` to check if the model was correctly updated
     func testInsertPostAndThenUpdateItWithCondition() {
-        let expectation = self.expectation(description: "it should insert and update a Post")
+        let expectation = expectation(description: "it should insert and update a Post")
         let schema = ModelRegistry.modelSchema(from: "Post")!
         func checkSavedPost(id: String) {
             storageAdapter.query(DynamicModel.self, modelSchema: schema) {
@@ -339,7 +341,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
     /// - Then:
     ///    - Fails with conditional save failed error when there is no existing model instance
     func testUpdateWithConditionFailsWhenNoExistingModel() {
-        let expectation = self.expectation(
+        let expectation = expectation(
             description: "it should fail to update the Post that does not exist")
 
         // insert a post
@@ -376,7 +378,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
     ///    - call `update(post, condition)` with `post.title` updated and condition does not match
     ///    - the update for `update(post, condition)` fails with conditional save failed error
     func testInsertPostAndThenUpdateItWithConditionDoesNotMatchShouldReturnError() {
-        let expectation = self.expectation(
+        let expectation = expectation(
             description: "it should insert and then fail to update the Post, given bad condition")
 
         // insert a post
@@ -400,7 +402,8 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                                                         operator: .equals("content 2 does not match previous content"))
                 self.storageAdapter.save(updatedModel,
                                          modelSchema: schema,
-                                         condition: condition) { updateResult in
+                                         condition: condition)
+                { updateResult in
                     switch updateResult {
                     case .success:
                         XCTFail("Update should not be successful")
@@ -446,7 +449,8 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                                                         operator: .greaterThan(dateTestStart.iso8601String))
                 self.storageAdapter.delete(DynamicModel.self,
                                            modelSchema: Post.schema,
-                                           filter: predicate) { result in
+                                           filter: predicate)
+                { result in
                     switch result {
                     case .success:
                         deleteExpectation.fulfill()
@@ -492,7 +496,8 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                         saveExpectation.fulfill()
                         self.storageAdapter.delete(DynamicModel.self,
                                                    modelSchema: schema,
-                                                   filter: QueryPredicateConstant.all) { result in
+                                                   filter: QueryPredicateConstant.all)
+                        { result in
                             switch result {
                             case .success:
                                 deleteExpectation.fulfill()

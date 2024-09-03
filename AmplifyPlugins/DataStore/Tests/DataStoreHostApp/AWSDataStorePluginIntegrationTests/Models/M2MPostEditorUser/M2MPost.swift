@@ -16,7 +16,8 @@ public struct M2MPost: Model {
 
   public init(id: String = UUID().uuidString,
       title: String,
-      editors: List<M2MPostEditor>? = []) {
+      editors: List<M2MPostEditor>? = [])
+  {
       self.id = id
       self.title = title
       self.editors = editors

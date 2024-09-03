@@ -23,7 +23,8 @@ final class MutationEventClearState {
                              predicate: predicate,
                              sort: [sort],
                              paginationInput: nil,
-                             eagerLoad: true) { result in
+                             eagerLoad: true)
+        { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     log.error("Failed on clearStateOutgoingMutations: \(dataStoreError)")
