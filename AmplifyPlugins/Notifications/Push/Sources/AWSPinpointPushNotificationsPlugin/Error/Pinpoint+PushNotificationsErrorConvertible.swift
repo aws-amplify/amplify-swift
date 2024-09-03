@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import AWSClientRuntime
 import AWSPinpoint
 import ClientRuntime
-import AWSClientRuntime
+import Foundation
 
 private func recoverySuggestion(for error: ClientRuntime.ModeledError) -> String {
     type(of: error).isRetryable

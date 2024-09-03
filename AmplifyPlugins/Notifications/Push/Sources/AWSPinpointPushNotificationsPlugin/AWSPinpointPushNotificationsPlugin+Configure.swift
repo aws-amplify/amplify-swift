@@ -71,7 +71,8 @@ extension AWSPinpointPushNotificationsPlugin {
     // MARK: Internal
     /// Internal configure method to set the properties of the plugin
     func configure(pinpoint: AWSPinpointBehavior,
-                   remoteNotificationsHelper: RemoteNotificationsBehaviour) {
+                   remoteNotificationsHelper: RemoteNotificationsBehaviour)
+    {
         self.pinpoint = pinpoint
         Task {
             await remoteNotificationsHelper.registerForRemoteNotifications()

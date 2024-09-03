@@ -18,18 +18,18 @@ import UIKit
 import AppKit
 #endif
 
-extension AWSPinpointPushNotificationsPlugin {
-    public func identifyUser(userId: String, userProfile: UserProfile?) async throws {
+public extension AWSPinpointPushNotificationsPlugin {
+    func identifyUser(userId: String, userProfile: UserProfile?) async throws {
         var currentEndpointProfile = await pinpoint.currentEndpointProfile()
         currentEndpointProfile.addUserId(userId)
-        if let userProfile = userProfile {
+        if let userProfile {
             currentEndpointProfile.addUserProfile(userProfile)
         }
         try await pinpoint.updateEndpoint(with: currentEndpointProfile,
                                           source: .pushNotifications)
     }
 
-    public func registerDevice(apnsToken: Data) async throws {
+    func registerDevice(apnsToken: Data) async throws {
         var currentEndpointProfile = await pinpoint.currentEndpointProfile()
         currentEndpointProfile.setAPNsToken(apnsToken)
         do {
@@ -40,8 +40,8 @@ extension AWSPinpointPushNotificationsPlugin {
         }
     }
 
-    public func recordNotificationReceived(_ userInfo: Notifications.Push.UserInfo) async throws {
-        let applicationState = await self.applicationState
+    func recordNotificationReceived(_ userInfo: Notifications.Push.UserInfo) async throws {
+        let applicationState = await applicationState
         await recordNotification(
             userInfo,
             applicationState: applicationState,
@@ -50,8 +50,8 @@ extension AWSPinpointPushNotificationsPlugin {
     }
 
 #if !os(tvOS)
-    public func recordNotificationOpened(_ response: UNNotificationResponse) async throws {
-        let applicationState = await self.applicationState
+    func recordNotificationOpened(_ response: UNNotificationResponse) async throws {
+        let applicationState = await applicationState
         await recordNotification(
             response.notification.request.content.userInfo,
             applicationState: applicationState,
@@ -63,14 +63,15 @@ extension AWSPinpointPushNotificationsPlugin {
     /// Retrieves the escape hatch to perform actions directly on PinpointClient.
     ///
     /// - Returns: PinpointClientProtocol instance
-    public func getEscapeHatch() -> PinpointClientProtocol {
+    func getEscapeHatch() -> PinpointClientProtocol {
         pinpoint.pinpointClient
     }
 
     private func recordNotification(_ userInfo: [String: Any],
                                     applicationState: ApplicationState,
-                                    action: PushNotification.Action) async {
-        let userInfo: PushNotification.UserInfo = Dictionary(uniqueKeysWithValues: userInfo.map({($0, $1)}))
+                                    action: PushNotification.Action) async
+    {
+        let userInfo: PushNotification.UserInfo = Dictionary(uniqueKeysWithValues: userInfo.map {($0, $1)})
         await recordNotification(
             userInfo,
             applicationState: applicationState,
@@ -80,7 +81,8 @@ extension AWSPinpointPushNotificationsPlugin {
 
     private func recordNotification(_ userInfo: PushNotification.UserInfo,
                                     applicationState: ApplicationState,
-                                    action: PushNotification.Action) async {
+                                    action: PushNotification.Action) async
+    {
         // Retrieve the payload from the notification
         guard let payload = userInfo.payload else {
             log.error(

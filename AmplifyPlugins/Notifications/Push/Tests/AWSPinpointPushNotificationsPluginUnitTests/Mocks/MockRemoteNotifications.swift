@@ -6,9 +6,9 @@
 //
 
 import Foundation
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 import UserNotifications
 import XCTest
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class MockRemoteNotifications: RemoteNotificationsBehaviour {
     var isRegisteredForRemoteNotifications: Bool = true

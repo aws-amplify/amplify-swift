@@ -11,7 +11,8 @@ import Foundation
 extension PushNotification.UserInfo {
     private var root: [String: Any]? {
         guard let data = self[Constants.Keys.data] as? [String: Any],
-              let root = data[Constants.Keys.pinpoint] as? [String: Any] else {
+              let root = data[Constants.Keys.pinpoint] as? [String: Any]
+        else {
             return nil
         }
 
@@ -19,7 +20,7 @@ extension PushNotification.UserInfo {
     }
 
     var payload: PushNotification.Payload? {
-        guard let root = root else {
+        guard let root else {
             return nil
         }
 
@@ -34,7 +35,8 @@ extension PushNotification.UserInfo {
 
     var deeplinkUrl: URL? {
         if let urlString = root?[Constants.Keys.deeplink] as? String,
-           let deeplinkUrl = URL(string: urlString) {
+           let deeplinkUrl = URL(string: urlString)
+        {
             return deeplinkUrl
         }
         return nil
@@ -42,8 +44,8 @@ extension PushNotification.UserInfo {
 }
 
 extension PushNotification.UserInfo {
-    private struct Constants {
-        struct Keys {
+    private enum Constants {
+        enum Keys {
             static let data = "data"
             static let pinpoint = "pinpoint"
             static let campaing = "campaign"

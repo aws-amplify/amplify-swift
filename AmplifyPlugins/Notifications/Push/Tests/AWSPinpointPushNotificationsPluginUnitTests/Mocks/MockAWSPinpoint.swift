@@ -7,9 +7,9 @@
 
 import Amplify
 import AWSPinpoint
+import XCTest
 @testable import AWSPinpointPushNotificationsPlugin
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
-import XCTest
 
 class MockAWSPinpoint: AWSPinpointBehavior {
     var pinpointClient: PinpointClientProtocol = try! PinpointClient(region: "us-east-1")
@@ -27,7 +27,7 @@ class MockAWSPinpoint: AWSPinpointBehavior {
     }
 
     var setRemoteGlobalAttributesCount = 0
-    func setRemoteGlobalAttributes(_ attributes: [String : String]) async {
+    func setRemoteGlobalAttributes(_ attributes: [String: String]) async {
         setRemoteGlobalAttributesCount += 1
     }
 
@@ -49,7 +49,8 @@ class MockAWSPinpoint: AWSPinpointBehavior {
     var updateEndpointCount = 0
     var updatedPinpointEndpointProfile: PinpointEndpointProfile?
     func updateEndpoint(with endpointProfile: PinpointEndpointProfile,
-                        source: AWSPinpointSource) async throws {
+                        source: AWSPinpointSource) async throws
+    {
         updateEndpointCount += 1
         updatedPinpointEndpointProfile = endpointProfile
     }
