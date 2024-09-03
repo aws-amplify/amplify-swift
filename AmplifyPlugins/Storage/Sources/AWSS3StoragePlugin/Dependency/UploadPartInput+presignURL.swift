@@ -3,11 +3,12 @@
 // All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
+//
 
-import Foundation
+import AWSClientRuntime
 import AWSS3
 import ClientRuntime
-import AWSClientRuntime
+import Foundation
 
 extension UploadPartInput {
     func customPresignURL(config: S3Client.S3ClientConfiguration, expiration: TimeInterval) async throws -> ClientRuntime.URL? {
@@ -39,7 +40,7 @@ extension UploadPartInput {
         operation.serializeStep.intercept(
             position: .after, middleware: ClientRuntime.QueryItemMiddleware<UploadPartInput, UploadPartOutput>(UploadPartInput.queryItemProvider(_:)))
         operation.finalizeStep.intercept(
-            position: .after, 
+            position: .after,
             middleware: ClientRuntime.RetryMiddleware<ClientRuntime.DefaultRetryStrategy, AWSClientRuntime.AWSRetryErrorInfoProvider, UploadPartOutput>(
                 options: config.retryStrategyOptions))
         let sigv4Config = AWSClientRuntime.SigV4Config(

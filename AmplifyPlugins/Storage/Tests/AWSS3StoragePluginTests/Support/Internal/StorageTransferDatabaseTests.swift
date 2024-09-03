@@ -7,10 +7,10 @@
 
 import XCTest
 
-@testable import AWSS3StoragePlugin
-@testable import Amplify
-import AmplifyTestCommon
 @_implementationOnly import AmplifyAsyncTesting
+import AmplifyTestCommon
+@testable import Amplify
+@testable import AWSS3StoragePlugin
 
 // swiftlint:disable line_length
 
@@ -67,7 +67,7 @@ class StorageTransferDatabaseTests: XCTestCase {
 
         // set the session task and taskIdentifier
         var taskIdentifier = 0
-        [downloadTask, uploadTask, multipartUploadTask].forEach { task in
+        for task in [downloadTask, uploadTask, multipartUploadTask] {
             taskIdentifier += 1
             task.sessionTask = MockStorageSessionTask(taskIdentifier: taskIdentifier)
         }
@@ -127,7 +127,7 @@ class StorageTransferDatabaseTests: XCTestCase {
         let originalTask = createTask(transferType: .multiPartUpload(onEvent: mockMultiPartUploadEvent))
         originalTask.uploadId = uploadId
 
-        let fileSize: UInt64 = UInt64(Bytes.megabytes(12).bytes)
+        let fileSize = UInt64(Bytes.megabytes(12).bytes)
         let uploadFile = UploadFile(fileURL: fileSystem.createTemporaryFileURL(), temporaryFileCreated: true, size: fileSize)
         let partSize = try StorageUploadPartSize(fileSize: uploadFile.size)
         let parts = try StorageUploadParts(fileSize: uploadFile.size, partSize: partSize, logger: logger)
@@ -172,7 +172,7 @@ class StorageTransferDatabaseTests: XCTestCase {
         let originalTask = createTask(transferType: .multiPartUpload(onEvent: mockMultiPartUploadEvent))
         originalTask.uploadId = uploadId
 
-        let fileSize: UInt64 = UInt64(Bytes.megabytes(12).bytes)
+        let fileSize = UInt64(Bytes.megabytes(12).bytes)
         let uploadFile = UploadFile(fileURL: fileSystem.createTemporaryFileURL(), temporaryFileCreated: true, size: fileSize)
         let partSize = try StorageUploadPartSize(fileSize: uploadFile.size)
         var parts = try StorageUploadParts(fileSize: uploadFile.size, partSize: partSize, logger: logger)
@@ -280,7 +280,8 @@ class StorageTransferDatabaseTests: XCTestCase {
 
     private func createSubTask(createMultipartUploadTask: StorageTransferTask,
                                uploadId: UploadID,
-                               partNumber: PartNumber) -> StorageTransferTask {
+                               partNumber: PartNumber) -> StorageTransferTask
+    {
         let transferType: StorageTransferType = .multiPartUploadPart(uploadId: uploadId, partNumber: partNumber)
         let subTask = StorageTransferTask(transferType: transferType,
                                           bucket: createMultipartUploadTask.bucket,

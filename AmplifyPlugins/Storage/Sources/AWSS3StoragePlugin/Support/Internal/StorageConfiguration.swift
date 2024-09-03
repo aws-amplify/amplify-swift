@@ -8,7 +8,7 @@
 import Foundation
 
 struct StorageConfiguration {
-    struct Defaults {
+    enum Defaults {
         static let sessionIdentifier =  "com.amazon.aws.default.identifier"
         static let sharedContainerIdentifier = "com.amazon.aws.default.identifier-shared"
         static let allowsCellularAccess = true
@@ -20,14 +20,13 @@ struct StorageConfiguration {
     let allowsCellularAccess: Bool
     let timeoutIntervalForResource: TimeInterval
 
-    static let `default`: StorageConfiguration = {
-        StorageConfiguration()
-    }()
+    static let `default`: StorageConfiguration = .init()
 
     init(sessionIdentifier: String = Defaults.sessionIdentifier,
          sharedContainerIdentifier: String = Defaults.sharedContainerIdentifier,
          allowsCellularAccess: Bool = Defaults.allowsCellularAccess,
-         timeoutIntervalForResource: TimeInterval = Defaults.timeoutIntervalForResource) {
+         timeoutIntervalForResource: TimeInterval = Defaults.timeoutIntervalForResource)
+    {
         self.sessionIdentifier = sessionIdentifier
         self.sharedContainerIdentifier = sharedContainerIdentifier
         self.allowsCellularAccess = allowsCellularAccess

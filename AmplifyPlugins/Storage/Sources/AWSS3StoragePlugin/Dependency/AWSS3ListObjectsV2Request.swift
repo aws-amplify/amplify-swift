@@ -9,9 +9,9 @@ import Foundation
 
 import Amplify
 
+import AWSClientRuntime
 import AWSS3
 import ClientRuntime
-import AWSClientRuntime
 
 struct AWSS3ListObjectsV2Request {
     let bucket: String
@@ -28,7 +28,8 @@ struct AWSS3ListObjectsV2Request {
          continuationToken: String? = nil,
          delimiter: String? = nil,
          maxKeys: Int = 1_000,
-         startAfter: String? = nil) {
+         startAfter: String? = nil)
+    {
         self.bucket = bucket
         self.prefix = prefix
         self.path = path

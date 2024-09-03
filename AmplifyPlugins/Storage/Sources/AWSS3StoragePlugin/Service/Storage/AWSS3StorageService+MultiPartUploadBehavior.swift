@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension AWSS3StorageService {
 
@@ -15,19 +15,20 @@ extension AWSS3StorageService {
                          contentType: String?,
                          metadata: [String: String]?,
                          accelerate: Bool?,
-                         onEvent: @escaping StorageServiceMultiPartUploadEventHandler) {
+                         onEvent: @escaping StorageServiceMultiPartUploadEventHandler)
+    {
         let fail: (Error) -> Void = { error in
             let storageError = StorageError(error: error)
             onEvent(.failed(storageError))
         }
 
         // Validate parameters
-        guard attempt(try validateParameters(bucket: bucket, key: serviceKey, accelerationModeEnabled: false), fail: fail) else { return }
+        guard try attempt(validateParameters(bucket: bucket, key: serviceKey, accelerationModeEnabled: false), fail: fail) else { return }
 
         let requestHeaders: [String: String] = [:]
 
         // Get file using upload source
-        guard let uploadFile = attempt(try uploadSource.getFile(), fail: fail) else { return }
+        guard let uploadFile = try attempt(uploadSource.getFile(), fail: fail) else { return }
 
         let client = DefaultStorageMultipartUploadClient(serviceProxy: self,
                                                          bucket: bucket,

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension StorageRequestUtils {
 
@@ -14,8 +14,9 @@ extension StorageRequestUtils {
 
     /// Validate `targetIdentityId` is specified only for `protected` accessLevel.
     static func validateTargetIdentityId(_ targetIdentityId: String?,
-                                         accessLevel: StorageAccessLevel) -> StorageError? {
-        if let targetIdentityId = targetIdentityId {
+                                         accessLevel: StorageAccessLevel) -> StorageError?
+    {
+        if let targetIdentityId {
             if targetIdentityId.isEmpty {
                 return StorageError.validation(StorageErrorConstants.identityIdIsEmpty.field,
                                                StorageErrorConstants.identityIdIsEmpty.errorDescription,
@@ -56,7 +57,7 @@ extension StorageRequestUtils {
 
     /// Validate `path` is non-empty, if specified.
     static func validatePath(_ path: String?) -> StorageError? {
-        if let path = path {
+        if let path {
             if path.isEmpty {
                 return StorageError.validation(StorageErrorConstants.pathIsEmpty.field,
                                                StorageErrorConstants.pathIsEmpty.errorDescription,
@@ -69,7 +70,7 @@ extension StorageRequestUtils {
 
     // Validate `contentType` is non-empty string
     static func validateContentType(_ contentType: String?) -> StorageError? {
-        if let contentType = contentType {
+        if let contentType {
             if contentType.isEmpty {
                 return StorageError.validation(StorageErrorConstants.contentTypeIsEmpty.field,
                                                StorageErrorConstants.contentTypeIsEmpty.errorDescription,
@@ -82,7 +83,7 @@ extension StorageRequestUtils {
 
     // Validate `metadata` dictionary contains lowercased keys
     static func validateMetadata(_ metadata: [String: String]?) -> StorageError? {
-        if let metadata = metadata {
+        if let metadata {
             for (key, _) in metadata {
                 if key != key.lowercased() {
                     return StorageError.validation(StorageErrorConstants.metadataKeysInvalid.field,

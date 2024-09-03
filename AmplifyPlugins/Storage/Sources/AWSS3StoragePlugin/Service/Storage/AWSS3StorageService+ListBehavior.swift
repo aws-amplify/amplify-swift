@@ -5,29 +5,30 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import AWSClientRuntime
 import AWSS3
 import ClientRuntime
-import AWSClientRuntime
+import Foundation
 
 extension AWSS3StorageService {
 
     func list(prefix: String,
-              options: StorageListRequest.Options) async throws -> StorageListResult {
+              options: StorageListRequest.Options) async throws -> StorageListResult
+    {
         if let error = StorageRequestUtils.validateTargetIdentityId(options.targetIdentityId,
-                                                                    accessLevel: options.accessLevel) {
+                                                                    accessLevel: options.accessLevel)
+        {
             throw error
         }
         if let error = StorageRequestUtils.validatePath(options.path) {
             throw error
         }
 
-        let finalPrefix: String
-        if let path = options.path {
-            finalPrefix = prefix + path
+        let finalPrefix: String = if let path = options.path {
+            prefix + path
         } else {
-            finalPrefix = prefix
+            prefix
         }
         let input = ListObjectsV2Input(bucket: bucket,
                                        continuationToken: options.nextToken,

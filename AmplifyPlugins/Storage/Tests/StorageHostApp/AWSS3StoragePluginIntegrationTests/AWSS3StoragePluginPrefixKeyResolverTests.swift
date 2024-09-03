@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSS3StoragePlugin
+import XCTest
 
-@testable import Amplify
 import AWSCognitoAuthPlugin
+@testable import Amplify
 
 class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
 
@@ -73,7 +73,7 @@ class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
             downloadCompleted.fulfill()
         }
         await fulfillment(of: [downloadCompleted])
-        
+
         // Remove the key
         await remove(key: key)
     }

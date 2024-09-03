@@ -8,9 +8,9 @@
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSS3StoragePlugin
 @testable import AWSPluginsCore
 @testable import AWSPluginsTestCommon
+@testable import AWSS3StoragePlugin
 
 import AWSS3
 
@@ -30,7 +30,8 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
                                                           storageConfiguration: testStorageConfiguration,
                                                           storageService: mockStorageService,
                                                           authService: mockAuthService,
-                                                          progressListener: nil) { result in
+                                                          progressListener: nil)
+        { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -58,7 +59,8 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
                                                           storageConfiguration: testStorageConfiguration,
                                                           storageService: mockStorageService,
                                                           authService: mockAuthService,
-                                                          progressListener: nil) { result in
+                                                          progressListener: nil)
+        { result in
             switch result {
             case .failure(let error):
                 guard case .authError = error else {
@@ -72,7 +74,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         }
 
         operation.start()
-        
+
         await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
@@ -201,7 +203,8 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
                                                           storageConfiguration: testStorageConfiguration,
                                                           storageService: mockStorageService,
                                                           authService: mockAuthService,
-                                                          progressListener: nil) { result in
+                                                          progressListener: nil)
+        { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -233,7 +236,8 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
                                                           storageConfiguration: testStorageConfiguration,
                                                           storageService: mockStorageService,
                                                           authService: mockAuthService,
-                                                          progressListener: nil) { result in
+                                                          progressListener: nil)
+        { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -265,7 +269,8 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
                                                           storageConfiguration: testStorageConfiguration,
                                                           storageService: mockStorageService,
                                                           authService: mockAuthService,
-                                                          progressListener: nil) { result in
+                                                          progressListener: nil)
+        { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -297,7 +302,8 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
                                                           storageConfiguration: testStorageConfiguration,
                                                           storageService: mockStorageService,
                                                           authService: mockAuthService,
-                                                          progressListener: nil) { result in
+                                                          progressListener: nil)
+        { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -351,7 +357,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
 
         await fulfillment(of: [completeInvoked, inProcessInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
-        mockStorageService.verifyDownload(serviceKey: "public/\(self.testKey)", fileURL: url)
+        mockStorageService.verifyDownload(serviceKey: "public/\(testKey)", fileURL: url)
     }
 
     /// Given: Storage Download File Operation
@@ -391,7 +397,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
 
         await fulfillment(of: [completeInvoked, inProcessInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
-        mockStorageService.verifyDownload(serviceKey: "public/\(testIdentityId)/\(self.testKey)", fileURL: url)
+        mockStorageService.verifyDownload(serviceKey: "public/\(testIdentityId)/\(testKey)", fileURL: url)
     }
 
     // TODO: missing unit tests for pause resume and cancel. do we create a mock of the StorageTaskReference?

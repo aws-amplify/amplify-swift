@@ -7,8 +7,8 @@
 
 import XCTest
 
-@testable import AWSS3StoragePlugin
 @testable import Amplify
+@testable import AWSS3StoragePlugin
 
 class StorageUploadPartSizeTests: XCTestCase {
 
@@ -49,10 +49,11 @@ class StorageUploadPartSizeTests: XCTestCase {
     func testUploadPartSizeForLargeValidFile() throws {
         // use a file size which requires increasing from minimum part size
         let fileSize = minimumPartSize * UInt64(maximumPartCount) * 10
-        let partSize = assertNoThrow(try StorageUploadPartSize(fileSize: fileSize))
+        let partSize = try assertNoThrow(StorageUploadPartSize(fileSize: fileSize))
         XCTAssertNotNil(partSize)
-        if let partSize = partSize,
-           let parts = try? StorageUploadParts(fileSize: fileSize, partSize: partSize) {
+        if let partSize,
+           let parts = try? StorageUploadParts(fileSize: fileSize, partSize: partSize)
+        {
             print("Part Size: \(partSize.size)")
             print("Parts Count: \(parts.count)")
             XCTAssertGreaterThan(partSize.size, minimumPartSize)
@@ -63,10 +64,11 @@ class StorageUploadPartSizeTests: XCTestCase {
     func testUploadPartSizeForSuperCrazyBigFile() throws {
         // use the maximum object size / max part count
         let fileSize = maximumObjectSize / UInt64(maximumPartCount)
-        let partSize = assertNoThrow(try StorageUploadPartSize(fileSize: fileSize))
+        let partSize = try assertNoThrow(StorageUploadPartSize(fileSize: fileSize))
         XCTAssertNotNil(partSize)
-        if let partSize = partSize,
-           let parts = try? StorageUploadParts(fileSize: fileSize, partSize: partSize) {
+        if let partSize,
+           let parts = try? StorageUploadParts(fileSize: fileSize, partSize: partSize)
+        {
             print("Part Size: \(partSize.size)")
             print("Parts Count: \(parts.count)")
             print("Max Part Size: \(maximumPartSize)")
@@ -81,10 +83,11 @@ class StorageUploadPartSizeTests: XCTestCase {
         let fileSize = UInt64(Bytes.gigabytes(50).bytes)
         print("      File Size: \(fileSize)")
         print("Max Object Size: \(maximumObjectSize)")
-        let partSize = assertNoThrow(try StorageUploadPartSize(fileSize: fileSize))
+        let partSize = try assertNoThrow(StorageUploadPartSize(fileSize: fileSize))
         XCTAssertNotNil(partSize)
-        if let partSize = partSize,
-           let parts = try? StorageUploadParts(fileSize: fileSize, partSize: partSize) {
+        if let partSize,
+           let parts = try? StorageUploadParts(fileSize: fileSize, partSize: partSize)
+        {
             print("     Part Size: \(partSize.size)")
             print("   Parts Count: \(parts.count)")
             print(" Min Part Size: \(minimumPartSize)")
@@ -101,7 +104,8 @@ class StorageUploadPartSizeTests: XCTestCase {
         _ expression: @autoclosure () throws -> T,
         _ message: @autoclosure () -> String = "",
         file: StaticString = #filePath,
-        line: UInt = #line) -> T? {
+        line: UInt = #line) -> T?
+    {
         var result: T?
         XCTAssertNoThrow(
             try { result = try expression() }(), message(), file: file, line: line)

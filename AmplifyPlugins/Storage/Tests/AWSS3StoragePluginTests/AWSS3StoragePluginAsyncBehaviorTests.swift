@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
-@testable import AWSS3StoragePlugin
+import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSPluginsTestCommon
+@testable import AWSS3StoragePlugin
 
 class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase {
 
@@ -59,7 +59,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase {
 
     func testPluginDownloadFileAsync() async throws {
         storageService.storageServiceDownloadEvents = [.completed(nil)]
-        
+
         let task = storagePlugin.downloadFile(key: testKey,
                                               local: testURL,
                                               options: nil)
@@ -105,7 +105,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase {
     func testPluginListAsync() async throws  {
         let testKey = UUID().uuidString
         let item = StorageListResult.Item(key: testKey)
-        storageService.listHandler = { (_, _) in
+        storageService.listHandler = { _, _ in
             return .init(items: [item])
         }
         let output = try await storagePlugin.list(options: nil)
@@ -118,7 +118,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase {
     /// - When: The list API is invoked with subpathStrategy set to .exclude
     /// - Then: The list of excluded subpaths and the list of items should be populated
     func testPluginListWithCommonPrefixesAsync() async throws  {
-        storageService.listHandler = { (_, _) in
+        storageService.listHandler = { _, _ in
             return .init(
                 items: [.init(path: "path")],
                 excludedSubpaths: ["subpath1", "subpath2"]

@@ -1,7 +1,14 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 import XCTest
 
-@testable import AWSS3StoragePlugin
 @testable import Amplify
+@testable import AWSS3StoragePlugin
 
 class MockMultipartUploadClient: StorageMultipartUploadClient {
 
@@ -37,7 +44,7 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
     }
 
     func createMultipartUpload() throws {
-        guard let session = session else { throw Failure.sessionNotIntegrated }
+        guard let session else { throw Failure.sessionNotIntegrated }
 
         let uploadId = UUID().uuidString
         session.handle(multipartUploadEvent: .created(uploadFile: uploadFile, uploadId: uploadId))
@@ -52,7 +59,7 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
                   fatalError()
               }
         print("Upload Part \(partNumber)")
-        guard let session = session else { throw Failure.sessionNotIntegrated }
+        guard let session else { throw Failure.sessionNotIntegrated }
 
         uploadPartCount += 1
 
@@ -83,7 +90,7 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
     }
 
     func completeMultipartUpload(uploadId: UploadID) throws {
-        guard let session = session else { throw Failure.sessionNotIntegrated }
+        guard let session else { throw Failure.sessionNotIntegrated }
 
         completeMultipartUploadCount += 1
 
@@ -92,7 +99,7 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
     }
 
     func abortMultipartUpload(uploadId: UploadID, error: Error?) throws {
-        guard let session = session else { throw Failure.sessionNotIntegrated }
+        guard let session else { throw Failure.sessionNotIntegrated }
 
         abortMultipartUploadCount += 1
 

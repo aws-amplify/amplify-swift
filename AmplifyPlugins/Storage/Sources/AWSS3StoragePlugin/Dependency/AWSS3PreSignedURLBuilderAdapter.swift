@@ -8,10 +8,10 @@
 import Foundation
 
 import Amplify
-import AWSS3
-import AWSPluginsCore
-import ClientRuntime
 import AWSClientRuntime
+import AWSPluginsCore
+import AWSS3
+import ClientRuntime
 
 /// The class confirming to AWSS3PreSignedURLBuilderBehavior which uses GetObjectInput to
 /// create a pre-signed URL.
@@ -36,7 +36,8 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
                          signingOperation: AWSS3SigningOperation,
                          metadata: [String: String]? = nil,
                          accelerate: Bool? = nil,
-                         expires: Int64? = nil) async throws -> URL {
+                         expires: Int64? = nil) async throws -> URL
+    {
         let expiresDate = Date(timeIntervalSinceNow: Double(expires ?? defaultExpiration))
         let expiration = expiresDate.timeIntervalSinceNow
         let config = try config.withAccelerate(accelerate)
@@ -65,7 +66,7 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
     }
 
     private func urlWithEscapedToken(_ url: URL?) -> URL? {
-        guard let url = url,
+        guard let url,
               var components = URLComponents(string: url.absoluteString),
               var token = components.queryItems?.first(where: { $0.name == "X-Amz-Security-Token" }) else {
                   return nil

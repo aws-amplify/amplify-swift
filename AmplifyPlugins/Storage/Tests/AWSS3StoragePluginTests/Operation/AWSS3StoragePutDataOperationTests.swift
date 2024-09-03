@@ -8,9 +8,9 @@
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSS3StoragePlugin
 @testable import AWSPluginsCore
 @testable import AWSPluginsTestCommon
+@testable import AWSS3StoragePlugin
 
 import AWSS3
 
@@ -25,7 +25,8 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
                                                         storageConfiguration: testStorageConfiguration,
                                                         storageService: mockStorageService,
                                                         authService: mockAuthService,
-                                                        progressListener: nil) { result in
+                                                        progressListener: nil)
+        { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -55,7 +56,8 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
                                                         storageConfiguration: testStorageConfiguration,
                                                         storageService: mockStorageService,
                                                         authService: mockAuthService,
-                                                        progressListener: nil) { result in
+                                                        progressListener: nil)
+        { result in
             switch result {
             case .failure(let error):
                 guard case .authError = error else {
@@ -385,7 +387,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         await fulfillment(of: [completeInvoked, inProcessInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
-        mockStorageService.verifyUpload(serviceKey: "public/\(self.testKey)",
+        mockStorageService.verifyUpload(serviceKey: "public/\(testKey)",
                                         key: testKey,
                                         uploadSource: expectedUploadSource,
                                         contentType: testContentType,

@@ -8,9 +8,9 @@
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSS3StoragePlugin
 @testable import AWSPluginsCore
 @testable import AWSPluginsTestCommon
+@testable import AWSS3StoragePlugin
 
 import AWSS3
 
@@ -25,7 +25,8 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
                                                         storageConfiguration: testStorageConfiguration,
                                                         storageService: mockStorageService,
                                                         authService: mockAuthService,
-                                                        progressListener: nil) { result in
+                                                        progressListener: nil)
+        { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -57,7 +58,8 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
                                                         storageConfiguration: testStorageConfiguration,
                                                         storageService: mockStorageService,
                                                         authService: mockAuthService,
-                                                        progressListener: nil) { result in
+                                                        progressListener: nil)
+        { result in
             switch result {
             case .failure(let error):
                 guard case .authError = error else {
@@ -86,7 +88,8 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
                                                         storageConfiguration: testStorageConfiguration,
                                                         storageService: mockStorageService,
                                                         authService: mockAuthService,
-                                                        progressListener: nil) { event in
+                                                        progressListener: nil)
+        { event in
             switch event {
             case .failure(let error):
                 guard case .localFileNotFound = error else {
@@ -283,7 +286,8 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
                                                         storageConfiguration: testStorageConfiguration,
                                                         storageService: mockStorageService,
                                                         authService: mockAuthService,
-                                                        progressListener: nil) { result in
+                                                        progressListener: nil)
+        { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -329,7 +333,8 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
                                                         storageConfiguration: testStorageConfiguration,
                                                         storageService: mockStorageService,
                                                         authService: mockAuthService,
-                                                        progressListener: nil) { result in
+                                                        progressListener: nil)
+        { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -375,7 +380,8 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
                                                         storageConfiguration: testStorageConfiguration,
                                                         storageService: mockStorageService,
                                                         authService: mockAuthService,
-                                                        progressListener: nil) { result in
+                                                        progressListener: nil)
+        { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -421,7 +427,8 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
                                                         storageConfiguration: testStorageConfiguration,
                                                         storageService: mockStorageService,
                                                         authService: mockAuthService,
-                                                        progressListener: nil) { result in
+                                                        progressListener: nil)
+        { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {

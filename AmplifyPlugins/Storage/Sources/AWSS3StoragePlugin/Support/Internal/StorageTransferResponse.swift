@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 class StorageTransferResponse {
     let task: URLSessionTask
@@ -15,7 +15,7 @@ class StorageTransferResponse {
     let transferTask: StorageTransferTask
 
     var userInfo: [AnyHashable: Any]? {
-        guard let httpResponse = httpResponse else {
+        guard let httpResponse else {
             return nil
         }
         return httpResponse.allHeaderFields
@@ -23,7 +23,7 @@ class StorageTransferResponse {
 
     var responseError: StorageError? {
         let error: StorageError?
-        if let httpResponse = httpResponse {
+        if let httpResponse {
             let statusCode = httpResponse.statusCode
             if statusCode / 100 == 3, statusCode != 304 {
                 // 300 range: Redirection
@@ -35,7 +35,7 @@ class StorageTransferResponse {
                     error = .accessDenied(description,
                                           "Make sure the user has access to the key before trying to download/upload it.",
                                           self.error)
-                } else if 404 == statusCode {
+                } else if statusCode == 404 {
                     error = .keyNotFound(transferTask.key,
                                          description,
                                          "Make sure the key exists before trying to download it.",
@@ -58,8 +58,9 @@ class StorageTransferResponse {
     var isErrorRetriable: Bool {
         // See https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html for S3 error responses
 
-        guard let httpResponse = httpResponse,
-            transferTask.retryCount < transferTask.retryLimit else {
+        guard let httpResponse,
+            transferTask.retryCount < transferTask.retryLimit
+        else {
             return false
         }
 
@@ -69,14 +70,15 @@ class StorageTransferResponse {
         if [500, 503].contains(statusCode) {
             // 500 and 503 are retriable.
             result = true
-        } else if 400 == statusCode {
+        } else if statusCode == 400 {
             // 400 is a bad request
             result = false
         } else if (transferTask.responseText ?? "").isEmpty {
             // If we didn't get any more info from the server, error is retriable
             result = true
         } else if let responseText = transferTask.responseText,
-            ["RequestTimeout", "ExpiredToken", "TokenRefreshRequired"].contains(responseText) {
+            ["RequestTimeout", "ExpiredToken", "TokenRefreshRequired"].contains(responseText)
+        {
             result = true
         } else {
             result = false
@@ -93,16 +95,15 @@ class StorageTransferResponse {
     }
 
     private func errorDescription(forStatusCode statusCode: Int) -> ErrorDescription {
-        let description: String
-        switch statusCode {
+        let description = switch statusCode {
         case 401:
-            description = "Unauthorized"
+            "Unauthorized"
         case 403:
-            description = "Forbidden"
+            "Forbidden"
         case 404:
-            description = "NotFound"
+            "NotFound"
         default:
-            description = ""
+            ""
         }
 
         return "Received HTTP Response status code \(statusCode) \(description)"

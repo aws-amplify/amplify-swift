@@ -29,7 +29,7 @@ final class MockS3Client {
 
     var headObjectHandler: (HeadObjectInput) async throws -> HeadObjectOutput = { _ in return HeadObjectOutput() }
 
-    var deleteObjectHandler: ((DeleteObjectInput) async throws -> DeleteObjectOutput)? = nil
+    var deleteObjectHandler: ((DeleteObjectInput) async throws -> DeleteObjectOutput)?
 }
 
 extension MockS3Client: S3ClientProtocol {
@@ -113,7 +113,7 @@ extension MockS3Client: S3ClientProtocol {
     }
 
     func deleteObject(input: AWSS3.DeleteObjectInput) async throws -> AWSS3.DeleteObjectOutput {
-        guard let deleteObjectHandler = deleteObjectHandler else {
+        guard let deleteObjectHandler else {
             throw ClientError.missingImplementation
         }
         return try await deleteObjectHandler(input)

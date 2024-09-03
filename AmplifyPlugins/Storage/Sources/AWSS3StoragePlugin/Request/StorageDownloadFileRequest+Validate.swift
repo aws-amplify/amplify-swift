@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension StorageDownloadFileRequest {
     /// Performs client side validation and returns a `StorageError` for any validation failures.
@@ -17,7 +17,8 @@ extension StorageDownloadFileRequest {
             return nil
         }
         if let error = StorageRequestUtils.validateTargetIdentityId(options.targetIdentityId,
-                                                                    accessLevel: options.accessLevel) {
+                                                                    accessLevel: options.accessLevel)
+        {
             return error
         }
 

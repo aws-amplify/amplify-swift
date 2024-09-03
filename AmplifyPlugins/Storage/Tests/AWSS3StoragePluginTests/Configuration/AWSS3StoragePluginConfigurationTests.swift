@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSS3StoragePlugin
 
@@ -19,7 +19,8 @@ class AWSS3StoragePluginConfigurationTests: XCTestCase {
 
     struct MockPrefixResolver: AWSS3PluginPrefixResolver {
         func resolvePrefix(for accessLevel: StorageAccessLevel,
-                           targetIdentityId: String?) async throws -> String {
+                           targetIdentityId: String?) async throws -> String
+        {
             ""
         }
     }

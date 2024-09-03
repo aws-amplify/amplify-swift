@@ -7,12 +7,12 @@
 
 @testable import Amplify
 
+import AWSClientRuntime
+import AWSS3
 import AWSS3StoragePlugin
 import ClientRuntime
-import AWSClientRuntime
 import CryptoKit
 import XCTest
-import AWSS3
 
 class AWSS3StoragePluginGetURLIntegrationTests: AWSS3StoragePluginTestBase {
 
@@ -31,7 +31,7 @@ class AWSS3StoragePluginGetURLIntegrationTests: AWSS3StoragePluginTestBase {
         let remoteURL = try await Amplify.Storage.getURL(path: .fromString(key))
 
         // The presigned URL generation does not result in an SDK or HTTP call.
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method} , [])
+        XCTAssertEqual(requestRecorder.sdkRequests.map(\.method), [])
 
         let (data, response) = try await URLSession.shared.data(from: remoteURL)
         let httpResponse = try XCTUnwrap(response as? HTTPURLResponse)
@@ -63,7 +63,7 @@ class AWSS3StoragePluginGetURLIntegrationTests: AWSS3StoragePluginTestBase {
         // A S3 HeadObject call is expected
         XCTAssert(requestRecorder.sdkRequests.map(\.method).allSatisfy { $0 == .head })
 
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, [])
+        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), [])
     }
 
     /// - Given: A key for a non-existent S3 object
@@ -80,7 +80,7 @@ class AWSS3StoragePluginGetURLIntegrationTests: AWSS3StoragePluginTestBase {
         XCTAssertNotNil(url)
 
         // No SDK or URLRequest calls expected
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method} , [])
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, [])
+        XCTAssertEqual(requestRecorder.sdkRequests.map(\.method), [])
+        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), [])
     }
 }

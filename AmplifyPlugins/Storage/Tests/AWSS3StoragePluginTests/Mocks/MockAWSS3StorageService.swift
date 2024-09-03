@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import Foundation
 import Amplify
 import AWSS3
+import Foundation
+import XCTest
 @testable import AWSS3StoragePlugin
 
 public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
@@ -63,7 +63,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
         interactions.append(#function)
     }
 
-        
+
     public func download(serviceKey: String, fileURL: URL?, accelerate: Bool?, onEvent: @escaping StorageServiceDownloadEventHandler) {
         interactions.append(#function)
 
@@ -77,7 +77,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
         }
     }
 
-    var getPreSignedURLHandler: (String, AWSS3SigningOperation, Int) async throws -> URL = { (_, _, _) in
+    var getPreSignedURLHandler: (String, AWSS3SigningOperation, Int) async throws -> URL = { _, _, _ in
         return URL(fileURLWithPath: NSTemporaryDirectory())
     }
 
@@ -103,7 +103,8 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
                        contentType: String?,
                        metadata: [String: String]?,
                        accelerate: Bool?,
-                       onEvent: @escaping StorageServiceUploadEventHandler) {
+                       onEvent: @escaping StorageServiceUploadEventHandler)
+    {
         interactions.append(#function)
         uploadCalled += 1
 
@@ -122,7 +123,8 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
                                 contentType: String?,
                                 metadata: [String: String]?,
                                 accelerate: Bool?,
-                                onEvent: @escaping StorageServiceMultiPartUploadEventHandler) {
+                                onEvent: @escaping StorageServiceMultiPartUploadEventHandler)
+    {
         interactions.append(#function)
         multiPartUploadCalled += 1
 
@@ -140,7 +142,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
         case unimplemented
     }
 
-    var listHandler: (String, StorageListRequest.Options) async throws -> StorageListResult = { (_, _) in
+    var listHandler: (String, StorageListRequest.Options) async throws -> StorageListResult = { _, _ in
         throw ListError.unimplemented
     }
 
@@ -176,10 +178,11 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
                              key: String,
                              uploadSource: UploadSource,
                              contentType: String?,
-                             metadata: [String: String]?) {
+                             metadata: [String: String]?)
+    {
         XCTAssertEqual(uploadCalled, 1)
         XCTAssertEqual(uploadServiceKey, serviceKey)
-        if let uploadUploadSource = uploadUploadSource {
+        if let uploadUploadSource {
             var uploadSourceEqual = false
             if case .data = uploadSource, case .data = uploadUploadSource {
                 uploadSourceEqual = true
@@ -200,11 +203,12 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
                                       key: String,
                                       uploadSource: UploadSource,
                                       contentType: String?,
-                                      metadata: [String: String]?) {
+                                      metadata: [String: String]?)
+    {
         XCTAssertEqual(multiPartUploadCalled, 1)
 
         XCTAssertEqual(multiPartUploadServiceKey, serviceKey)
-        if let multiPartUploadUploadSource = multiPartUploadUploadSource {
+        if let multiPartUploadUploadSource {
             var uploadSourceEqual = false
             if case .data = uploadSource, case .data = multiPartUploadUploadSource {
                 uploadSourceEqual = true

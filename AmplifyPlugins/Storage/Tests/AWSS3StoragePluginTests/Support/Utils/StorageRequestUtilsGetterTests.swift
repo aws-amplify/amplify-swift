@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import XCTest
 @testable import AWSS3StoragePlugin
-import Amplify
 
 class StorageRequestUtilsGetterTests: XCTestCase {
 
@@ -82,7 +82,8 @@ class StorageRequestUtilsGetterTests: XCTestCase {
         let fileURL = URL(fileURLWithPath: "path")
 
         XCTAssertThrowsError(try StorageRequestUtils.getSize(fileURL),
-                             "GetSize for missing file should throw") { error in
+                             "GetSize for missing file should throw")
+        { error in
             guard case StorageError.localFileNotFound = error else {
                 XCTFail("Expected StorageError.StorageError")
                 return

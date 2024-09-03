@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 /// Storage Remove Operation.
 ///
@@ -28,7 +28,8 @@ class AWSS3StorageRemoveOperation: AmplifyOperation<
          storageConfiguration: AWSS3StoragePluginConfiguration,
          storageService: AWSS3StorageServiceBehavior,
          authService: AWSAuthServiceBehavior,
-         resultListener: ResultListener? = nil) {
+         resultListener: ResultListener? = nil)
+    {
 
         self.storageConfiguration = storageConfiguration
         self.storageService = storageService

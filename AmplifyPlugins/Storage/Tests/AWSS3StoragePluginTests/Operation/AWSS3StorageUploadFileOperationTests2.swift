@@ -1,4 +1,4 @@
-////
+//
 // Copyright Amazon.com Inc. or its affiliates.
 // All Rights Reserved.
 //
@@ -7,18 +7,18 @@
 
 @testable import Amplify
 @testable import AmplifyTestCommon
+@testable import AWSPluginsCore
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
-@testable import AWSPluginsCore
 
 import AWSS3
 import XCTest
 
 final class AWSS3StorageUploadFileOperationTests2: AWSS3StorageOperationTestBase {
-    
+
     override func setUp() {
         super.setUp()
-        self.continueAfterFailure = false
+        continueAfterFailure = false
     }
 
     /// - Given: A file with no read permissions from the user

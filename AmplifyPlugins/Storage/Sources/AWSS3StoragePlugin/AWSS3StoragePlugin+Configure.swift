@@ -41,10 +41,10 @@ extension AWSS3StoragePlugin {
             let storageService = try AWSS3StorageService(authService: authService,
                                                          region: configClosures.retrieveRegion(),
                                                          bucket: configClosures.retrieveBucket(),
-                                                         httpClientEngineProxy: self.httpClientEngineProxy)
-            storageService.urlRequestDelegate = self.urlRequestDelegate
+                                                         httpClientEngineProxy: httpClientEngineProxy)
+            storageService.urlRequestDelegate = urlRequestDelegate
 
-            configure(storageService: storageService, 
+            configure(storageService: storageService,
                       authService: authService,
                       defaultAccessLevel: defaultAccessLevel)
         } catch let storageError as StorageError {
@@ -74,7 +74,8 @@ extension AWSS3StoragePlugin {
     func configure(storageService: AWSS3StorageServiceBehavior,
                    authService: AWSAuthServiceBehavior,
                    defaultAccessLevel: StorageAccessLevel,
-                   queue: OperationQueue = OperationQueue()) {
+                   queue: OperationQueue = OperationQueue())
+    {
         self.storageService = storageService
         self.authService = authService
         self.queue = queue

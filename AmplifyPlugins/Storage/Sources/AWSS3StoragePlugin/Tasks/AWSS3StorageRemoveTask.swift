@@ -6,9 +6,9 @@
 //
 
 import Amplify
-import Foundation
-import AWSS3
 import AWSPluginsCore
+import AWSS3
+import Foundation
 
 protocol StorageRemoveTask: AmplifyTaskExecution where Request == AWSS3DeleteObjectRequest, Success == String, Failure == StorageError {}
 
@@ -20,7 +20,8 @@ class AWSS3StorageRemoveTask: StorageRemoveTask, DefaultLogger {
 
     init(_ request: StorageRemoveRequest,
          storageConfiguration: AWSS3StoragePluginConfiguration,
-         storageBehaviour: AWSS3StorageServiceBehavior) {
+         storageBehaviour: AWSS3StorageServiceBehavior)
+    {
         self.request = request
         self.storageConfiguration = storageConfiguration
         self.storageBehaviour = storageBehaviour
@@ -48,7 +49,7 @@ class AWSS3StorageRemoveTask: StorageRemoveTask, DefaultLogger {
             _ = try await storageBehaviour.client.deleteObject(input: input)
         } catch let error as StorageErrorConvertible {
             throw error.storageError
-        } catch let error {
+        } catch {
             throw StorageError.service(
                 "Service error occurred.",
                 "Please inspect the underlying error for more details.",

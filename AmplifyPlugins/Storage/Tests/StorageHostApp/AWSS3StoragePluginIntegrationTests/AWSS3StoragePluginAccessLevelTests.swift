@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
 import AWSPluginsCore
+import XCTest
 @testable import AWSS3StoragePlugin
 
 class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
@@ -39,7 +39,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                                                      path: key)
             _ = try await Amplify.Storage.list(options: options).items
             XCTFail("Expecting failure")
-        } catch StorageError.accessDenied(let description, _, _){
+        } catch StorageError.accessDenied(let description, _, _) {
             XCTAssertEqual(description, StorageErrorConstants.accessDenied.errorDescription)
         } catch {
             XCTFail(String(describing: error))

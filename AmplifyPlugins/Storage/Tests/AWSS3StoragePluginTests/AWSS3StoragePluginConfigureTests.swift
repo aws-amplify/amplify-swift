@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 @testable import AWSS3StoragePlugin
 
 class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
@@ -78,7 +78,8 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
             XCTFail("Storage configuration should not succeed")
         } catch {
             guard let pluginError = error as? PluginError,
-                case .pluginConfigurationError = pluginError else {
+                case .pluginConfigurationError = pluginError
+            else {
                     XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
                     return
             }

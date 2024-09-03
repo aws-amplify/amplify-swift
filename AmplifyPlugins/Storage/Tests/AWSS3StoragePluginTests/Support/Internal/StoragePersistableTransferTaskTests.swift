@@ -7,8 +7,8 @@
 
 import XCTest
 
-@testable import AWSS3StoragePlugin
 @testable import Amplify
+@testable import AWSS3StoragePlugin
 
 class StoragePersistableTransferTaskTests: XCTestCase {
     var database: StorageTransferDatabase!
@@ -224,7 +224,8 @@ class StoragePersistableTransferTaskTests: XCTestCase {
     // MARK: - Private -
 
     private func createTask(transferType: StorageTransferType,
-                            sessionTask: StorageSessionTask? = nil) -> StorageTransferTask {
+                            sessionTask: StorageSessionTask? = nil) -> StorageTransferTask
+    {
         let transferID = UUID().uuidString
         let bucket = "BUCKET"
         let key = UUID().uuidString

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 /// Resolves the final prefix prepended to the S3 key for a given request.
 ///
@@ -25,7 +25,8 @@ public protocol AWSS3PluginPrefixResolver {
 @available(*, deprecated)
 public struct PassThroughPrefixResolver: AWSS3PluginPrefixResolver {
     public func resolvePrefix(for accessLevel: StorageAccessLevel,
-                              targetIdentityId: String?) async throws -> String {
+                              targetIdentityId: String?) async throws -> String
+    {
         ""
     }
 }
@@ -45,7 +46,8 @@ struct StorageAccessLevelAwarePrefixResolver {
 
 extension StorageAccessLevelAwarePrefixResolver: AWSS3PluginPrefixResolver {
     func resolvePrefix(for accessLevel: StorageAccessLevel,
-                       targetIdentityId: String?) async throws -> String {
+                       targetIdentityId: String?) async throws -> String
+    {
         do {
             let identityId = try await authService.getIdentityID()
             let prefix = StorageRequestUtils.getAccessLevelPrefix(accessLevel: accessLevel,

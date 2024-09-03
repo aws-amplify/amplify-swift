@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 @testable import AmplifyTestCommon
-@testable import AWSS3StoragePlugin
 @testable import AWSPluginsTestCommon
+@testable import AWSS3StoragePlugin
 
-extension Sequence where Element == PrefixTestData {
+extension Sequence<PrefixTestData> {
     /// Convert to asynchronous sequence.
     var async: AmplifyAsyncSequence<Self.Element> {
         let sequence = AmplifyAsyncSequence<Self.Element>()
@@ -30,7 +30,8 @@ struct PrefixTestData {
     let line: UInt
 
     init(_ accessLevel: StorageAccessLevel, _ targetIdentityId: String?, _ expectedPrefix: String,
-         file: StaticString = #filePath, line: UInt = #line) {
+         file: StaticString = #filePath, line: UInt = #line)
+    {
         self.accessLevel = accessLevel
         self.targetIdentityId = targetIdentityId
         self.expectedPrefix = expectedPrefix

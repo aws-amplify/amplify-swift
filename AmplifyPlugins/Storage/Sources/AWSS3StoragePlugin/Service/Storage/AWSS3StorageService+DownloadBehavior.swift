@@ -5,21 +5,22 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension AWSS3StorageService {
 
     func download(serviceKey: String,
                   fileURL: URL?,
                   accelerate: Bool?,
-              onEvent: @escaping StorageServiceDownloadEventHandler) {
+              onEvent: @escaping StorageServiceDownloadEventHandler)
+    {
         let fail: (Error) -> Void = { error in
             let storageError = StorageError(error: error)
             onEvent(.failed(storageError))
         }
 
-        guard attempt(try validateParameters(bucket: bucket, key: serviceKey, accelerationModeEnabled: false), fail: fail) else { return }
+        guard try attempt(validateParameters(bucket: bucket, key: serviceKey, accelerationModeEnabled: false), fail: fail) else { return }
 
         let transferTask = createTransferTask(transferType: .download(onEvent: onEvent),
                                               bucket: bucket,
@@ -42,14 +43,15 @@ extension AWSS3StorageService {
 
     private func startDownload(preSignedURL: URL,
                                transferTask: StorageTransferTask,
-                               startTransfer: Bool = true) async {
+                               startTransfer: Bool = true) async
+    {
         guard case .download = transferTask.transferType else {
             fatalError("Transfer type must be download")
         }
         var request = URLRequest(url: preSignedURL)
         request.cachePolicy = .reloadIgnoringLocalCacheData
         request.httpMethod = "GET"
-        request.setValue(await userAgent, forHTTPHeaderField: "User-Agent")
+        await request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
         request.setHTTPRequestHeaders(transferTask: transferTask)
 
         urlRequestDelegate?.willSend(request: request)

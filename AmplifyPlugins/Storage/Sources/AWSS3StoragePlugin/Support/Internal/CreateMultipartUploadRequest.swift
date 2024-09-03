@@ -26,7 +26,8 @@ struct CreateMultipartUploadRequest {
          contentEncoding: String? = nil,
          contentLanguage: String? = nil,
          contentType: String? = nil,
-         metadata: [String: String]? = nil) {
+         metadata: [String: String]? = nil)
+    {
         self.bucket = bucket
         self.key = key
 

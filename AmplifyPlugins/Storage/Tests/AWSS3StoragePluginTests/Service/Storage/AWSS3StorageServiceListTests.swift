@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
+import AWSClientRuntime
 import AWSClientRuntime
 import AWSS3
-import Amplify
 import ClientRuntime
 import XCTest
-import AWSClientRuntime
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
 
@@ -59,14 +59,14 @@ final class AWSS3StorageServiceListTests: XCTestCase {
             inputs.append(input)
             return .init(contents: [])
         }
-        let pageSize: UInt = UInt.random(in: 1..<1_000)
+        let pageSize = UInt.random(in: 1 ..< 1_000)
         let nextToken = UUID().uuidString
         let options = StorageListRequest.Options(pageSize: pageSize,
                                                  nextToken: nextToken)
         let listing = try await systemUnderTest.list(prefix: prefix, options: options)
-        XCTAssertEqual(listing.items.map { $0.key }, [])
-        XCTAssertEqual(inputs.map { $0.continuationToken }, [nextToken])
-        XCTAssertEqual(inputs.map { $0.maxKeys }, [Int(pageSize)])
+        XCTAssertEqual(listing.items.map(\.key), [])
+        XCTAssertEqual(inputs.map(\.continuationToken), [nextToken])
+        XCTAssertEqual(inputs.map(\.maxKeys), [Int(pageSize)])
     }
 
     /// Given: A empty S3 bucket (client)
@@ -78,7 +78,7 @@ final class AWSS3StorageServiceListTests: XCTestCase {
         }
         let options = StorageListRequest.Options(accessLevel: .protected, targetIdentityId: targetIdentityId, path: path)
         let listing = try await systemUnderTest.list(prefix: prefix, options: options)
-        XCTAssertEqual(listing.items.map { $0.key }, [])
+        XCTAssertEqual(listing.items.map(\.key), [])
     }
 
     /// Given: A empty S3 bucket (client)
@@ -90,7 +90,7 @@ final class AWSS3StorageServiceListTests: XCTestCase {
         }
         let options = StorageListRequest.Options(accessLevel: .protected, targetIdentityId: targetIdentityId, path: nil)
         let listing = try await systemUnderTest.list(prefix: prefix, options: options)
-        XCTAssertEqual(listing.items.map { $0.key }, [])
+        XCTAssertEqual(listing.items.map(\.key), [])
     }
 
     /// Given: A misconfigured or S3 bucket with restricted permissions

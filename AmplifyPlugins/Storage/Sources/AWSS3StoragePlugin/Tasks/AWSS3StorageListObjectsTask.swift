@@ -6,9 +6,9 @@
 //
 
 import Amplify
-import Foundation
-import AWSS3
 import AWSPluginsCore
+import AWSS3
+import Foundation
 
 protocol StorageListObjectsTask: AmplifyTaskExecution where Request == StorageListRequest, Success == StorageListResult, Failure == StorageError {}
 
@@ -20,7 +20,8 @@ class AWSS3StorageListObjectsTask: StorageListObjectsTask, DefaultLogger {
 
     init(_ request: StorageListRequest,
          storageConfiguration: AWSS3StoragePluginConfiguration,
-         storageBehaviour: AWSS3StorageServiceBehavior) {
+         storageBehaviour: AWSS3StorageServiceBehavior)
+    {
         self.request = request
         self.storageConfiguration = storageConfiguration
         self.storageBehaviour = storageBehaviour
@@ -63,7 +64,7 @@ class AWSS3StorageListObjectsTask: StorageListObjectsTask, DefaultLogger {
             let commonPrefixes = response.commonPrefixes ?? []
             return StorageListResult(
                 items: items,
-                excludedSubpaths: commonPrefixes.compactMap { $0.prefix },
+                excludedSubpaths: commonPrefixes.compactMap(\.prefix),
                 nextToken: response.nextContinuationToken
             )
         } catch let error as StorageErrorConvertible {

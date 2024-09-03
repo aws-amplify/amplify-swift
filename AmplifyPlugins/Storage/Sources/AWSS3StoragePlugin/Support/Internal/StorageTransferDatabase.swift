@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 // The recovery process must load active tasks with URLSession and match them using taskIdentifier to a persisted task.
 // Once the task can be "hydrated" the Event Handler can handle events from URLSession delegate methods. Tasks which
@@ -41,7 +41,8 @@ extension StorageTransferDatabase {
 
     func attachEventHandlers(onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler? = nil,
                              onDownload: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler? = nil,
-                             onMultipartUpload: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler? = nil ) {
+                             onMultipartUpload: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler? = nil )
+    {
         attachEventHandlers(onUpload: onUpload, onDownload: onDownload, onMultipartUpload: onMultipartUpload)
     }
 

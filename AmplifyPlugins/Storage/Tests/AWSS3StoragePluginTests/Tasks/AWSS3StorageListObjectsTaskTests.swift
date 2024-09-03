@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSS3
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
-@testable import AWSS3StoragePlugin
 @testable import AWSPluginsTestCommon
-import AWSS3
+@testable import AWSS3StoragePlugin
 
 class AWSS3StorageListObjectsTaskTests: XCTestCase {
 
@@ -66,10 +66,10 @@ class AWSS3StorageListObjectsTaskTests: XCTestCase {
         do {
             _ = try await task.value
             XCTFail("Task should throw an exception")
-        }
-        catch {
+        } catch {
             guard let storageError = error as? StorageError,
-                  case .service(_, _, let underlyingError) = storageError else {
+                  case .service(_, _, let underlyingError) = storageError
+            else {
                 XCTFail("Should throw a Storage service error, instead threw \(error)")
                 return
             }
@@ -93,10 +93,10 @@ class AWSS3StorageListObjectsTaskTests: XCTestCase {
         do {
             _ = try await task.value
             XCTFail("Task should throw an exception")
-        }
-        catch {
+        } catch {
             guard let storageError = error as? StorageError,
-                  case .validation(let field, _, _, _) = storageError else {
+                  case .validation(let field, _, _, _) = storageError
+            else {
                 XCTFail("Should throw a storage validation error, instead threw \(error)")
                 return
             }
@@ -120,10 +120,10 @@ class AWSS3StorageListObjectsTaskTests: XCTestCase {
         do {
             _ = try await task.value
             XCTFail("Task should throw an exception")
-        }
-        catch {
+        } catch {
             guard let storageError = error as? StorageError,
-                  case .validation(let field, _, _, _) = storageError else {
+                  case .validation(let field, _, _, _) = storageError
+            else {
                 XCTFail("Should throw a storage validation error, instead threw \(error)")
                 return
             }
@@ -191,7 +191,7 @@ class AWSS3StorageListObjectsTaskTests: XCTestCase {
         }
 
         let request = StorageListRequest(
-            path: StringStoragePath.fromString("path"), 
+            path: StringStoragePath.fromString("path"),
             options: .init(
                 subpathStrategy: .include
             )

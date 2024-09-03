@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 
 /// - Tag: AWSS3PluginOptions
-struct AWSS3PluginOptions {
+enum AWSS3PluginOptions {
 
     /// - Tag: AWSS3PluginOptionsCodingKeys
     enum CodingKeys: String, CodingKey {

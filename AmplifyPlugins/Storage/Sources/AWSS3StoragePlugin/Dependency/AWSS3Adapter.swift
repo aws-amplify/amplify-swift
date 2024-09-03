@@ -9,9 +9,9 @@ import Foundation
 
 import Amplify
 
+import AWSClientRuntime
 import AWSS3
 import ClientRuntime
-import AWSClientRuntime
 
 /// The class conforming to AWSS3Behavior which uses an instance of the AWSS3 to perform its methods.
 /// This class acts as a wrapper to expose AWSS3 functionality through an instance over a singleton,

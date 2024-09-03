@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 typealias StorageValidationErrorString = (field: Field,
     errorDescription: ErrorDescription,
     recoverySuggestion: RecoverySuggestion)
 typealias StorageServiceErrorString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
 
-struct StorageErrorConstants {
+enum StorageErrorConstants {
 
     static let identityIdIsEmpty: StorageValidationErrorString = (
         "targetIdentityId",

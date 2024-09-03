@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 @testable import AWSS3StoragePlugin
 
 class StorageListRequestTests: XCTestCase {
@@ -31,14 +31,14 @@ class StorageListRequestTests: XCTestCase {
     /// - When: The containing request is validated
     /// - Then: No errors are raised
     func testValidateWithPaginationOptions() {
-        let pageSizeOnly = StorageListRequest(options: StorageListRequest.Options(pageSize: UInt.random(in: 1..<1_000)))
+        let pageSizeOnly = StorageListRequest(options: StorageListRequest.Options(pageSize: UInt.random(in: 1 ..< 1_000)))
         XCTAssertNil(pageSizeOnly.validate())
 
         let nextTokenOnly = StorageListRequest(options: StorageListRequest.Options(nextToken: UUID().uuidString))
         XCTAssertNil(nextTokenOnly.validate())
 
         let pageSizeAndNextToken = StorageListRequest(options: StorageListRequest.Options(
-            pageSize: UInt.random(in: 1..<1_000),
+            pageSize: UInt.random(in: 1 ..< 1_000),
             nextToken: UUID().uuidString
         ))
         XCTAssertNil(pageSizeAndNextToken.validate())

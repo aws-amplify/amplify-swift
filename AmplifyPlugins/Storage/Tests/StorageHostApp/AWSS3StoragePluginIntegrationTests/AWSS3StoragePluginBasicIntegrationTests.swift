@@ -67,10 +67,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.remove(key: key)
 
         // Only the remove operation results in an SDK request
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method } , [.delete])
+        XCTAssertEqual(requestRecorder.sdkRequests.map(\.method), [.delete])
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, ["PUT"])
+        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), ["PUT"])
         try assertUserAgentComponents(urlRequests: requestRecorder.urlRequests)
     }
 
@@ -83,7 +83,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
         _ = try await Amplify.Storage.remove(key: key)
 
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, ["PUT"])
+        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), ["PUT"])
         try assertUserAgentComponents(urlRequests: requestRecorder.urlRequests)
     }
 
@@ -101,10 +101,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.remove(key: key)
 
         // Only the remove operation results in an SDK request
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method} , [.delete])
+        XCTAssertEqual(requestRecorder.sdkRequests.map(\.method), [.delete])
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, ["PUT"])
+        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), ["PUT"])
         try assertUserAgentComponents(urlRequests: requestRecorder.urlRequests)
     }
 
@@ -120,7 +120,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
         _ = try await Amplify.Storage.remove(key: key)
 
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, ["PUT"])
+        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), ["PUT"])
         try assertUserAgentComponents(urlRequests: requestRecorder.urlRequests)
     }
 
@@ -214,7 +214,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let remoteURL = try await Amplify.Storage.getURL(key: key)
 
         // The presigned URL generation does not result in an SDK or HTTP call.
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method} , [])
+        XCTAssertEqual(requestRecorder.sdkRequests.map(\.method), [])
 
         let (data, response) = try await URLSession.shared.data(from: remoteURL)
         let httpResponse = try XCTUnwrap(response as? HTTPURLResponse)
@@ -247,7 +247,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         XCTAssert(requestRecorder.sdkRequests.map(\.method).allSatisfy { $0 == .head })
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, [])
+        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), [])
     }
 
     /// - Given: A key for a non-existent S3 object
@@ -264,8 +264,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         XCTAssertNotNil(url)
 
         // No SDK or URLRequest calls expected
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method} , [])
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, [])
+        XCTAssertEqual(requestRecorder.sdkRequests.map(\.method), [])
+        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), [])
     }
 
     /// Given: An object in storage
@@ -292,11 +292,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.remove(key: key)
 
         // S3 GetObjectList and DeleteObject calls are expected
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method}, [.get, .delete])
+        XCTAssertEqual(requestRecorder.sdkRequests.map(\.method), [.get, .delete])
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
         // A single URLRequest call is expected
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, ["PUT"])
+        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), ["PUT"])
     }
 
     /// Given: A collection of objects in storage numbering `objectCount`.
@@ -304,11 +304,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     ///      corresponding token options.
     /// Then: All objects are listed.
     func testListTwoPages() async throws {
-        let objectCount = UInt.random(in: 16..<32)
+        let objectCount = UInt.random(in: 16 ..< 32)
         // One more than half in order to ensure there are only two pages
-        let pageSize = UInt(objectCount/2) + 1
+        let pageSize = UInt(objectCount / 2) + 1
         let path = "pagination-\(UUID().uuidString)"
-        for i in 0..<objectCount {
+        for i in 0 ..< objectCount {
             let key = "\(path)/\(i).txt"
             let data = Data("\(i)".utf8)
             try await uploadData(key: key, data: data)
@@ -338,16 +338,16 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
         XCTAssertEqual(
             uploadedKeys.sorted(),
-            Array((firstPage + secondPage).map { $0.key }).sorted()
+            Array((firstPage + secondPage).map(\.key)).sorted()
         )
 
         // S3 GetObjectList calls are expected (DeleteObject calls happen during tearDown)
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method}, [.get, .get])
+        XCTAssertEqual(requestRecorder.sdkRequests.map(\.method), [.get, .get])
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
         // A URLRequest call for each uploaded file is expected
         let expectedURLRequestMethods: [String] = uploadedKeys.map { _ in "PUT" }
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, expectedURLRequestMethods)
+        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), expectedURLRequestMethods)
         try assertUserAgentComponents(urlRequests: requestRecorder.urlRequests)
     }
 
@@ -365,11 +365,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         XCTAssertEqual(result.items.count, 0)
 
         // A single SDK call for the ListObjectsV2 request is expected
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method}, [.get])
+        XCTAssertEqual(requestRecorder.sdkRequests.map(\.method), [.get])
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
         // No URLRequest calls expected
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, [])
+        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), [])
     }
 
     /// Given: No object in storage for the key
@@ -394,15 +394,15 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         for item in items {
             XCTAssertTrue(keys.contains(item.key), "The key that was uploaded should match the key listed")
         }
-        
+
         _ = try await Amplify.Storage.remove(key: key)
 
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method}, [.get, .delete])
+        XCTAssertEqual(requestRecorder.sdkRequests.map(\.method), [.get, .delete])
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
         // A URLRequest call for each uploaded file is expected
         let expectedURLRequestMethods: [String] = keys.map { _ in "PUT" }
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, expectedURLRequestMethods)
+        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), expectedURLRequestMethods)
         try assertUserAgentComponents(urlRequests: requestRecorder.urlRequests)
     }
 
@@ -425,24 +425,24 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
                                                  path: key1)
         let result = try await Amplify.Storage.list(options: options)
         let items = result.items
-        
+
         XCTAssertEqual(items.count, keys.count)
         for item in items {
             XCTAssertTrue(keys.contains(item.key), "The key that was uploaded should match the key listed")
         }
-        
+
         for key in keys {
             _ = try await Amplify.Storage.remove(key: key)
         }
 
         // An SDK call for the ListObjectsV2 call and each deletion is expected
         let expectedMethods = [.get] + keys.map {_ in HttpMethodType.delete}
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method}, expectedMethods)
+        XCTAssertEqual(requestRecorder.sdkRequests.map(\.method), expectedMethods)
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
         // A URLRequest call for each uploaded file is expected
         let expectedURLRequestMethods: [String] = keys.map { _ in "PUT" }
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, expectedURLRequestMethods)
+        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), expectedURLRequestMethods)
         try assertUserAgentComponents(urlRequests: requestRecorder.urlRequests)
     }
 
@@ -456,10 +456,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let result = try await Amplify.Storage.remove(key: key, options: nil)
         XCTAssertEqual(result, key)
 
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method}, [.delete])
+        XCTAssertEqual(requestRecorder.sdkRequests.map(\.method), [.delete])
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, ["PUT"])
+        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), ["PUT"])
         try assertUserAgentComponents(urlRequests: requestRecorder.urlRequests)
     }
 
@@ -472,10 +472,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let result = try await Amplify.Storage.remove(key: key, options: nil)
         XCTAssertEqual(result, key)
 
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method}, [.delete])
+        XCTAssertEqual(requestRecorder.sdkRequests.map(\.method), [.delete])
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, [])
+        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), [])
     }
 
 //    /// Given: Object with key `key` in storage
@@ -530,7 +530,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     private func assertUserAgentComponents(sdkRequests: [SdkHttpRequest], file: StaticString = #filePath, line: UInt = #line) throws {
         for request in sdkRequests {
             let headers = request.headers.dictionary
-            let userAgent = try XCTUnwrap(headers["User-Agent"]?.joined(separator:","))
+            let userAgent = try XCTUnwrap(headers["User-Agent"]?.joined(separator: ","))
             for component in SdkUserAgentComponent.allCases {
                 XCTAssertTrue(userAgent.contains(component.rawValue), "\(userAgent.description) does not contain \(component)", file: file, line: line)
             }

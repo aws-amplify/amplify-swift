@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 /// Storage Upload File Operation.
 ///
@@ -35,7 +35,8 @@ class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
          storageService: AWSS3StorageServiceBehavior,
          authService: AWSAuthServiceBehavior,
          progressListener: InProcessListener? = nil,
-         resultListener: ResultListener? = nil) {
+         resultListener: ResultListener? = nil)
+    {
 
         self.storageConfiguration = storageConfiguration
         self.storageService = storageService
@@ -153,7 +154,8 @@ class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
     }
 
     private func onServiceEvent(
-        event: StorageEvent<StorageTaskReference, Progress, Void, StorageError>) {
+        event: StorageEvent<StorageTaskReference, Progress, Void, StorageError>)
+    {
         switch event {
         case .initiated(let reference):
             storageTaskActionQueue.async {
