@@ -21,7 +21,7 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutput: { _ in
-                try await ConfirmForgotPasswordOutput(httpResponse: MockHttpResponse.ok)
+                ConfirmForgotPasswordOutput()
             }
         )
     }
@@ -63,7 +63,7 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     func testSuccessfulConfirmResetPassword() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutput: { _ in
-                try await ConfirmForgotPasswordOutput(httpResponse: MockHttpResponse.ok)
+                ConfirmForgotPasswordOutput()
             }
         )
         try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
@@ -81,7 +81,7 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutput: { _ in
-                try await ConfirmForgotPasswordOutput(httpResponse: MockHttpResponse.ok)
+                ConfirmForgotPasswordOutput()
             }
         )
         do {
@@ -109,7 +109,7 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
             mockConfirmForgotPasswordOutput: { request in
                 XCTAssertNoThrow(request.clientMetadata)
                 XCTAssertEqual(request.clientMetadata?["key"], "value")
-                return try await ConfirmForgotPasswordOutput(httpResponse: MockHttpResponse.ok)
+                return ConfirmForgotPasswordOutput()
             }
         )
         let pluginOptions = AWSAuthConfirmResetPasswordOptions(metadata: ["key": "value"])
@@ -131,7 +131,7 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutput: { _ in
-                try await ConfirmForgotPasswordOutput(httpResponse: MockHttpResponse.ok)
+                ConfirmForgotPasswordOutput()
             }
         )
         do {
@@ -251,9 +251,7 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     func testConfirmResetPasswordWithInvalidLambdaResponseException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutput: { _ in
-                throw try await AWSCognitoIdentityProvider.InvalidLambdaResponseException(
-                     httpResponse: .init(body: .empty, statusCode: .accepted)
-                )
+                throw AWSCognitoIdentityProvider.InvalidLambdaResponseException()
             }
         )
         do {

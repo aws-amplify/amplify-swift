@@ -9,7 +9,7 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
-import AWSClientRuntime
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin

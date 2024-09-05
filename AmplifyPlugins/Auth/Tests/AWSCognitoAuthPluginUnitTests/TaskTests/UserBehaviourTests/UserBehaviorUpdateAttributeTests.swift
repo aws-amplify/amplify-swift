@@ -10,7 +10,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import ClientRuntime
-import AWSClientRuntime
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class UserBehaviorUpdateAttributesTests: BasePluginTest {
 
@@ -68,12 +68,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithAliasExistsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw try await AWSCognitoIdentityProvider.AliasExistsException(
-                httpResponse: .init(body: .empty, statusCode: .accepted),
-                decoder: nil,
-                message: nil,
-                requestID: nil
-            )
+            throw AWSCognitoIdentityProvider.AliasExistsException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))

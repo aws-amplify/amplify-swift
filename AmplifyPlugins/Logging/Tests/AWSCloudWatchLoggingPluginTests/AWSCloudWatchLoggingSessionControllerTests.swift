@@ -56,7 +56,7 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase {
                                        contents: Data(bytes),
                                        attributes: [FileAttributeKey: Any]())
         systemUnderTest = AWSCloudWatchLoggingSessionController(
-            credentialsProvider: mockCredentialProvider,
+            credentialIdentityResolver: mockCredentialProvider,
             authentication: mockAuth,
             logFilter: mockLoggingFilter,
             category: category,

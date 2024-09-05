@@ -14,7 +14,7 @@ import XCTest
 class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBase {
     
     override func setUp() async throws {
-        AWSPinpointFactory.credentialsProvider = MockCredentialsProvider()
+        AWSPinpointFactory.credentialIdentityResolver = MockCredentialsProvider()
         try await super.setUp()
     }
     

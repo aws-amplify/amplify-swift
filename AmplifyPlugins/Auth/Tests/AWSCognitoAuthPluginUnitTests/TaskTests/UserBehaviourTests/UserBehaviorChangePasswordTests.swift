@@ -25,7 +25,7 @@ class UserBehaviorChangePasswordTests: BasePluginTest {
     ///
     func testSuccessfulChangePassword() async throws {
         self.mockIdentityProvider = MockIdentityProvider(mockChangePasswordOutput: { _ in
-            return try await ChangePasswordOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+            return ChangePasswordOutput()
         })
         try await plugin.update(oldPassword: "old password", to: "new password")
     }
@@ -133,12 +133,7 @@ class UserBehaviorChangePasswordTests: BasePluginTest {
     func testChangePasswordWithLimitExceededException() async throws {
 
         self.mockIdentityProvider = MockIdentityProvider(mockChangePasswordOutput: { _ in
-            throw try await AWSCognitoIdentityProvider.LimitExceededException(
-                httpResponse: .init(body: .empty, statusCode: .accepted),
-                decoder: nil,
-                message: nil,
-                requestID: nil
-            )
+            throw AWSCognitoIdentityProvider.LimitExceededException()
         })
         do {
             try await plugin.update(oldPassword: "old password", to: "new password")

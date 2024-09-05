@@ -7,17 +7,24 @@
 
 import Foundation
 import Amplify
-import ClientRuntime
+import Smithy
+import SmithyHTTPAPI
 
-extension ClientError: AuthErrorConvertible {
-    var fallbackDescription: String { "Client Error" }
-
+extension SmithyHTTPAPI.HTTPClientError: AuthErrorConvertible {
     var authError: AuthError {
         switch self {
         case .pathCreationFailed(let message),
-                .queryItemCreationFailed(let message),
-                .serializationFailed(let message),
-                .dataNotFound(let message):
+             .queryItemCreationFailed(let message):
+            return .service(message, "", self)
+        }
+    }
+}
+
+extension Smithy.ClientError: AuthErrorConvertible {
+    var authError: AuthError {
+        switch self {
+        case .serializationFailed(let message),
+             .dataNotFound(let message):
             return .service(message, "", self)
 
         case .authError(let message):

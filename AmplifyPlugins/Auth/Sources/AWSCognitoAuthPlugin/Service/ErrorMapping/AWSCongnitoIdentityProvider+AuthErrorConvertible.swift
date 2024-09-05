@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 import AWSCognitoIdentityProvider
-import AWSClientRuntime
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 extension ForbiddenException: AuthErrorConvertible {
     var fallbackDescription: String { "Access to the requested resource is forbidden" }

@@ -7,29 +7,34 @@
 
 import Foundation
 import Amplify
-import ClientRuntime
-import AWSClientRuntime
-import AwsCommonRuntimeKit
+import AWSSDKHTTPAuth
+import SmithyHTTPAPI
+import SmithyHTTPAuthAPI
+import SmithyHTTPAuth
+import SmithyIdentity
 
 public protocol AWSSignatureV4Signer {
-    func sigV4SignedRequest(requestBuilder: SdkHttpRequestBuilder,
-                            credentialsProvider: AWSClientRuntime.CredentialsProviding,
+    func sigV4SignedRequest(requestBuilder: SmithyHTTPAPI.HTTPRequestBuilder,
+                            credentialIdentityResolver: some AWSCredentialIdentityResolver,
                             signingName: Swift.String,
                             signingRegion: Swift.String,
-                            date: ClientRuntime.Date) async throws -> SdkHttpRequest?
+                            date: Date) async throws -> SmithyHTTPAPI.HTTPRequest?
 }
 
 public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
-    public init() {
+    private let signer: AWSSigV4Signer
+
+    public init(signer: AWSSigV4Signer = .init()) {
+        self.signer = signer
     }
 
-    public func sigV4SignedRequest(requestBuilder: SdkHttpRequestBuilder,
-                                   credentialsProvider: AWSClientRuntime.CredentialsProviding,
+    public func sigV4SignedRequest(requestBuilder: SmithyHTTPAPI.HTTPRequestBuilder,
+                                   credentialIdentityResolver: some AWSCredentialIdentityResolver,
                                    signingName: Swift.String,
                                    signingRegion: Swift.String,
-                                   date: ClientRuntime.Date) async throws -> SdkHttpRequest? {
+                                   date: Date) async throws -> SmithyHTTPAPI.HTTPRequest? {
         do {
-            let credentials = try await credentialsProvider.getCredentials()
+            let credentials = try await credentialIdentityResolver.getIdentity()
 
             let flags = SigningFlags(useDoubleURIEncode: true,
                                      shouldNormalizeURIPath: true,
@@ -46,7 +51,7 @@ public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
                                                  signatureType: .requestHeaders,
                                                  signingAlgorithm: .sigv4)
 
-            let httpRequest = await AWSSigV4Signer.sigV4SignedRequest(
+            let httpRequest = await signer.sigV4SignedRequest(
                 requestBuilder: requestBuilder,
                 signingConfig: signingConfig
             )

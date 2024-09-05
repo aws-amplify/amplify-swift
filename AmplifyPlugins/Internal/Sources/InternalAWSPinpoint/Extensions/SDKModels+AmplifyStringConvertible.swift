@@ -10,30 +10,8 @@ import Foundation
 
 extension PutEventsInput: AmplifyStringConvertible {}
 
-extension PutEventsOutput: AmplifyStringConvertible {
-    enum CodingKeys: Swift.String, Swift.CodingKey {
-        case eventsResponse = "EventsResponse"
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var encodeContainer = encoder.container(keyedBy: CodingKeys.self)
-        if let eventsResponse = self.eventsResponse {
-            try encodeContainer.encode(eventsResponse, forKey: .eventsResponse)
-        }
-    }
-}
+extension PutEventsOutput: AmplifyStringConvertible {}
 
 extension UpdateEndpointInput: AmplifyStringConvertible {}
 
-extension UpdateEndpointOutput: AmplifyStringConvertible {
-    enum CodingKeys: Swift.String, Swift.CodingKey {
-        case messageBody = "MessageBody"
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var encodeContainer = encoder.container(keyedBy: CodingKeys.self)
-        if let messageBody = self.messageBody {
-            try encodeContainer.encode(messageBody, forKey: .messageBody)
-        }
-    }
-}
+extension UpdateEndpointOutput: AmplifyStringConvertible {}

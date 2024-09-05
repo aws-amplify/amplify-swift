@@ -76,12 +76,7 @@ class SendUserAttributeVerificationCodeTests: BasePluginTest {
     func testSendVerificationCodeWithCodeMismatchException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutput: { _ in
-            throw try await AWSCognitoIdentityProvider.CodeDeliveryFailureException(
-                httpResponse: .init(body: .empty, statusCode: .accepted),
-                decoder: nil,
-                message: nil,
-                requestID: nil
-            )
+            throw AWSCognitoIdentityProvider.CodeDeliveryFailureException()
         })
         do {
             _ = try await plugin.sendVerificationCode(forUserAttributeKey: .email)
