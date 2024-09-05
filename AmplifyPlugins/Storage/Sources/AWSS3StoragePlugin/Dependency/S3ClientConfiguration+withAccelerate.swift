@@ -43,7 +43,7 @@ extension S3Client.S3ClientConfiguration {
             telemetryProvider: telemetryProvider,
             retryStrategyOptions: retryStrategyOptions,
             clientLogMode: clientLogMode,
-            endpoint:endpoint,
+            endpoint: endpoint,
             idempotencyTokenGenerator: idempotencyTokenGenerator,
             httpClientEngine: httpClientEngine,
             httpClientConfiguration: httpClientConfiguration,

@@ -108,6 +108,7 @@ extension AmplifyStringConvertible {
     }
 }
 
+// swiftlint:disable identifier_name
 private protocol _AmplifyOptional {
     func _amplifyUnwrap() -> Any?
 }

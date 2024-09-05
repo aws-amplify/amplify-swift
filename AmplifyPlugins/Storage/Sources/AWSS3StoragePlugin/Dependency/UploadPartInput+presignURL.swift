@@ -12,6 +12,8 @@ import Smithy
 import SmithyHTTPAPI
 import SmithyRetries
 
+// swiftlint:disable identifier_name
+// swiftlint:disable line_length
 extension UploadPartInput {
     public func customPresignURL(config: S3Client.S3ClientConfiguration, expiration: Foundation.TimeInterval) async throws -> Foundation.URL? {
         let serviceName = "S3"
