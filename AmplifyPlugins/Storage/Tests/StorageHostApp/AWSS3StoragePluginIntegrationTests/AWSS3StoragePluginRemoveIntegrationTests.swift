@@ -9,7 +9,7 @@
 
 import AWSS3StoragePlugin
 import ClientRuntime
-import AWSClientRuntime
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 import CryptoKit
 import XCTest
 import AWSS3

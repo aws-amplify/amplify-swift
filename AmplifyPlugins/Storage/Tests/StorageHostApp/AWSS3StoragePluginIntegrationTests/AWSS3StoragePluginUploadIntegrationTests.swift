@@ -8,7 +8,7 @@
 @testable import Amplify
 
 import AWSS3StoragePlugin
-import ClientRuntime
+import SmithyHTTPAPI
 import CryptoKit
 import XCTest
 
@@ -179,7 +179,7 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
         }
     }
 
-    private func assertUserAgentComponents(sdkRequests: [SdkHttpRequest], file: StaticString = #filePath, line: UInt = #line) throws {
+    private func assertUserAgentComponents(sdkRequests: [HTTPRequest], file: StaticString = #filePath, line: UInt = #line) throws {
         for request in sdkRequests {
             let headers = request.headers.dictionary
             let userAgent = try XCTUnwrap(headers["User-Agent"]?.joined(separator:","))

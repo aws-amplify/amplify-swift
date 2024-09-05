@@ -8,7 +8,7 @@
 @testable import Amplify
 
 import AWSS3StoragePlugin
-import ClientRuntime
+import SmithyHTTPAPI
 import CryptoKit
 import XCTest
 
@@ -436,7 +436,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         // An SDK call for the ListObjectsV2 call and each deletion is expected
-        let expectedMethods = [.get] + keys.map {_ in HttpMethodType.delete}
+        let expectedMethods = [.get] + keys.map {_ in HTTPMethodType.delete}
         XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method}, expectedMethods)
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
@@ -527,7 +527,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
     }
 
-    private func assertUserAgentComponents(sdkRequests: [SdkHttpRequest], file: StaticString = #filePath, line: UInt = #line) throws {
+    private func assertUserAgentComponents(sdkRequests: [HTTPRequest], file: StaticString = #filePath, line: UInt = #line) throws {
         for request in sdkRequests {
             let headers = request.headers.dictionary
             let userAgent = try XCTUnwrap(headers["User-Agent"]?.joined(separator:","))
