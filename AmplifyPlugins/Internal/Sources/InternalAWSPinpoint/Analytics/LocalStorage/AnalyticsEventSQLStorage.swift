@@ -142,9 +142,9 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
         ORDER BY timestamp ASC
         LIMIT ?
         """
-        let rows = try dbAdapter.executeQuery(queryStatement, [limit])
+        let rows = try dbAdapter.executeQuery(queryStatement, [limit]).makeIterator()
         var result = [PinpointEvent]()
-        for element in rows {
+        while let element = try rows.failableNext() {
             if let event = PinpointEvent.convertToEvent(element) {
                 result.append(event)
             }
