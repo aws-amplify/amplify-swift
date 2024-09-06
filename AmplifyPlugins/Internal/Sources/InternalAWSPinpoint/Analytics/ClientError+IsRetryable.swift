@@ -17,6 +17,8 @@ extension Smithy.ClientError {
             return true
         case .dataNotFound:
             return true
+        case .invalidValue:
+            return true
         case .serializationFailed:
             return false
         case .unknownError:

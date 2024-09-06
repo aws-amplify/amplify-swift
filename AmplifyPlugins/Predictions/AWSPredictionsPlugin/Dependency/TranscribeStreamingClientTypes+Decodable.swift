@@ -9,8 +9,8 @@ import Foundation
 import AWSTranscribeStreaming
 
 extension TranscribeStreamingClientTypes.TranscriptEvent: Decodable {
-    private enum CodingKeys: CodingKey {
-        case transcript
+    private enum CodingKeys: String, CodingKey {
+        case transcript = "Transcript"
     }
 
     public init(from decoder: any Decoder) throws {
@@ -22,8 +22,8 @@ extension TranscribeStreamingClientTypes.TranscriptEvent: Decodable {
 }
 
 extension TranscribeStreamingClientTypes.Transcript: Decodable {
-    private enum CodingKeys: CodingKey {
-        case results
+    private enum CodingKeys: String, CodingKey {
+        case results = "Results"
     }
 
     public init(from decoder: any Decoder) throws {
@@ -35,15 +35,15 @@ extension TranscribeStreamingClientTypes.Transcript: Decodable {
 }
 
 extension TranscribeStreamingClientTypes.Result: Decodable {
-    private enum CodingKeys: CodingKey {
-        case alternatives
-        case channelId
-        case endTime
-        case isPartial
-        case languageCode
-        case languageIdentification
-        case resultId
-        case startTime
+    private enum CodingKeys: String, CodingKey {
+        case alternatives = "Alternatives"
+        case channelId = "ChannelId"
+        case endTime = "EndTime"
+        case isPartial = "IsPartial"
+        case languageCode = "LanguageCode"
+        case languageIdentification = "LanguageIdentification"
+        case resultId = "ResultId"
+        case startTime = "StartTime"
     }
 
     public init(from decoder: any Decoder) throws {
@@ -62,10 +62,10 @@ extension TranscribeStreamingClientTypes.Result: Decodable {
 }
 
 extension TranscribeStreamingClientTypes.Alternative: Decodable {
-    private enum CodingKeys: CodingKey {
-        case entities
-        case items
-        case transcript
+    private enum CodingKeys: String, CodingKey {
+        case entities = "Entities"
+        case items = "Items"
+        case transcript = "Transcript"
     }
 
     public init(from decoder: any Decoder) throws {
@@ -79,13 +79,13 @@ extension TranscribeStreamingClientTypes.Alternative: Decodable {
 }
 
 extension TranscribeStreamingClientTypes.Entity: Decodable {
-    private enum CodingKeys: CodingKey {
-        case category
-        case confidence
-        case content
-        case endTime
-        case startTime
-        case type
+    private enum CodingKeys: String, CodingKey {
+        case category = "Category"
+        case confidence = "Confidence"
+        case content = "Content"
+        case endTime = "EndTime"
+        case startTime = "StartTime"
+        case type = "Type"
     }
 
     public init(from decoder: any Decoder) throws {
@@ -102,15 +102,15 @@ extension TranscribeStreamingClientTypes.Entity: Decodable {
 }
 
 extension TranscribeStreamingClientTypes.Item: Decodable {
-    private enum CodingKeys: CodingKey {
-        case confidence
-        case content
-        case endTime
-        case speaker
-        case stable
-        case startTime
-        case type
-        case vocabularyFilterMatch
+    private enum CodingKeys: String, CodingKey {
+        case confidence = "Confidence"
+        case content = "Content"
+        case endTime = "EndTime"
+        case speaker = "Speaker"
+        case stable = "Stable"
+        case startTime = "StartTime"
+        case type = "Type"
+        case vocabularyFilterMatch = "VocabularyFilterMatch"
     }
 
     public init(from decoder: any Decoder) throws {
@@ -129,9 +129,9 @@ extension TranscribeStreamingClientTypes.Item: Decodable {
 }
 
 extension TranscribeStreamingClientTypes.LanguageWithScore: Decodable {
-    private enum CodingKeys: CodingKey {
-        case languageCode
-        case score
+    private enum CodingKeys: String, CodingKey {
+        case languageCode = "LanguageCode"
+        case score = "Score"
     }
 
     public init(from decoder: any Decoder) throws {

@@ -24,7 +24,8 @@ extension Smithy.ClientError: AuthErrorConvertible {
     var authError: AuthError {
         switch self {
         case .serializationFailed(let message),
-             .dataNotFound(let message):
+             .dataNotFound(let message),
+             .invalidValue(let message):
             return .service(message, "", self)
 
         case .authError(let message):

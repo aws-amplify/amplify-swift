@@ -6,7 +6,7 @@
 
 import Foundation
 @testable import AWSS3
-import ClientRuntime
+@_spi(SmithyReadWrite) import ClientRuntime
 import AWSClientRuntime
 import Smithy
 import SmithyHTTPAPI
