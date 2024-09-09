@@ -50,14 +50,12 @@ class DataStoreAuthBaseTestURLSessionFactory: URLSessionBehaviorFactory {
 
             if let authHeaderValue,
                case let .success(claims) = AWSAuthService().getTokenClaims(tokenString: authHeaderValue),
-               let cognitoIss = claims["iss"] as? String, cognitoIss.contains("cognito")
-            {
+               let cognitoIss = claims["iss"] as? String, cognitoIss.contains("cognito") {
                 result.insert(.amazonCognitoUserPools)
             }
 
             if let authHeaderValue,
-               authHeaderValue.starts(with: "AWS4-HMAC-SHA256")
-            {
+               authHeaderValue.starts(with: "AWS4-HMAC-SHA256") {
                 result.insert(.awsIAM)
             }
 
@@ -91,9 +89,11 @@ class DataStoreAuthBaseTestURLSessionFactory: URLSessionBehaviorFactory {
         configuration.tlsMaximumSupportedProtocolVersion = .TLSv13
         configuration.protocolClasses?.insert(Sniffer.self, at: 0)
 
-        let session = URLSession(configuration: configuration,
-                                 delegate: urlSessionDelegate,
-                                 delegateQueue: nil)
+        let session = URLSession(
+            configuration: configuration,
+            delegate: urlSessionDelegate,
+            delegateQueue: nil
+        )
         return AmplifyURLSession(session: session)
     }
 
@@ -208,8 +208,10 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
             let datastoreConfig = DataStoreConfiguration.custom(authModeStrategy: testType.authStrategy)
             #endif
 
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models,
-                                                       configuration: datastoreConfig))
+            try Amplify.add(plugin: AWSDataStorePlugin(
+                modelRegistration: models,
+                configuration: datastoreConfig
+            ))
 
             let apiPlugin = apiPluginFactory()
 
@@ -242,19 +244,22 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
 extension AWSDataStoreAuthBaseTest {
     /// Signin given user
     /// - Parameter user
-    func signIn(user: TestUser?,
-                file: StaticString = #file,
-                line: UInt = #line) async
-    {
+    func signIn(
+        user: TestUser?,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) async {
         guard let user else {
             XCTFail("Invalid user", file: file, line: line)
             return
         }
         let signInInvoked = expectation(description: "sign in completed")
         do {
-            _ = try await Amplify.Auth.signIn(username: user.username,
-                                                       password: user.password,
-                                                       options: nil)
+            _ = try await Amplify.Auth.signIn(
+                username: user.username,
+                password: user.password,
+                options: nil
+            )
             signInInvoked.fulfill()
         } catch (let error) {
             XCTFail("Signin failure \(error)", file: file, line: line)
@@ -267,9 +272,10 @@ extension AWSDataStoreAuthBaseTest {
     }
 
     /// Signout current signed-in user
-    func signOut(file: StaticString = #file,
-                 line: UInt = #line) async
-    {
+    func signOut(
+        file: StaticString = #file,
+        line: UInt = #line
+    ) async {
         let signoutInvoked = expectation(description: "sign out completed")
         Task {
             _ = await Amplify.Auth.signOut()
@@ -360,11 +366,12 @@ extension AWSDataStoreAuthBaseTest {
         return result
     }
 
-    func queryModel<M: Model>(_ model: M.Type,
-                              byId id: String,
-                              file: StaticString = #file,
-                              line: UInt = #line) async -> M?
-    {
+    func queryModel<M: Model>(
+        _ model: M.Type,
+        byId id: String,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) async -> M? {
         var queriedModel: M?
         let queriedInvoked = expectation(description: "Model queried")
 
@@ -388,10 +395,11 @@ extension AWSDataStoreAuthBaseTest {
     ///   - modelType: model type
     ///   - expectation: success XCTestExpectation
     ///   - onFailure: on failure callback
-    func assertQuerySuccess(modelType: (some Model).Type,
-                                      _ expectations: AuthTestExpectations,
-                                      onFailure: @escaping (_ error: DataStoreError) -> Void) async
-    {
+    func assertQuerySuccess(
+        modelType: (some Model).Type,
+        _ expectations: AuthTestExpectations,
+        onFailure: @escaping (_ error: DataStoreError) -> Void
+    ) async {
         Amplify.Publisher.create {
             try await Amplify.DataStore.query(modelType)
         }.sink {
@@ -403,15 +411,18 @@ extension AWSDataStoreAuthBaseTest {
             XCTAssertNotNil(posts)
             expectations.query.fulfill()
         }.store(in: &requests)
-        await fulfillment(of: [expectations.query],
-             timeout: 60)
+        await fulfillment(
+            of: [expectations.query],
+            timeout: 60
+        )
     }
 
     /// Asserts that DataStore is in a ready state and subscriptions are established
     /// - Parameter events: DataStore Hub events
-    func assertDataStoreReady(_ expectations: AuthTestExpectations,
-                              expectedModelSynced: Int = 1) async
-    {
+    func assertDataStoreReady(
+        _ expectations: AuthTestExpectations,
+        expectedModelSynced: Int = 1
+    ) async {
         var modelSyncedCount = 0
         let dataStoreEvents = HubPayload.EventName.DataStore.self
         Amplify
@@ -442,10 +453,14 @@ extension AWSDataStoreAuthBaseTest {
         } catch (let error) {
             XCTFail("Failure due to error: \(error)")
         }
-        await fulfillment(of: [expectations.subscriptionsEstablished,
-                                   expectations.modelsSynced,
-                                   expectations.ready],
-                             timeout: 60)
+        await fulfillment(
+            of: [
+                expectations.subscriptionsEstablished,
+                expectations.modelsSynced,
+                expectations.ready
+            ],
+            timeout: 60
+        )
     }
 
     /// Assert that a save and a delete mutation complete successfully.
@@ -453,10 +468,11 @@ extension AWSDataStoreAuthBaseTest {
     ///   - model: model instance saved and then deleted
     ///   - expectations: test expectations
     ///   - onFailure: failure callback
-    func assertMutations(model: some Model,
-                                   _ expectations: AuthTestExpectations,
-                                   onFailure: @escaping (_ error: DataStoreError) -> Void) async
-    {
+    func assertMutations(
+        model: some Model,
+        _ expectations: AuthTestExpectations,
+        onFailure: @escaping (_ error: DataStoreError) -> Void
+    ) async {
         Amplify
             .Hub
             .publisher(for: .dataStore)
@@ -545,11 +561,12 @@ extension AWSDataStoreAuthBaseTest {
         var mutationDeleteProcessed: XCTestExpectation
         var ready: XCTestExpectation
         var expectations: [XCTestExpectation] {
-            return [subscriptionsEstablished,
-                    modelsSynced,
-                    query,
-                    mutationSave,
-                    mutationSaveProcessed
+            return [
+                subscriptionsEstablished,
+                modelsSynced,
+                query,
+                mutationSave,
+                mutationSaveProcessed
             ]
         }
     }

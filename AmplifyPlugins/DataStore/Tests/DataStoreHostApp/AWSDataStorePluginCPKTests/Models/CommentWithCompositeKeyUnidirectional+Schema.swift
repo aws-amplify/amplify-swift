@@ -11,8 +11,7 @@ import Foundation
 
 public extension CommentWithCompositeKeyUnidirectional {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case content
     case createdAt
@@ -51,9 +50,10 @@ extension CommentWithCompositeKeyUnidirectional: ModelIdentifiable {
 }
 
 public extension CommentWithCompositeKeyUnidirectional.IdentifierProtocol {
-  static func identifier(id: String,
-      content: String) -> Self
-  {
+  static func identifier(
+    id: String,
+    content: String
+  ) -> Self {
     .make(fields: [(name: "id", value: id), (name: "content", value: content)])
   }
 }

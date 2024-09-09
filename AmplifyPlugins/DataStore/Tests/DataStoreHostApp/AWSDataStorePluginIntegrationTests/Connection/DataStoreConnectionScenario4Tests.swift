@@ -120,9 +120,10 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
 }
 
 extension Post4: Equatable {
-    public static func == (lhs: Post4,
-                           rhs: Post4) -> Bool
-    {
+    public static func == (
+        lhs: Post4,
+        rhs: Post4
+    ) -> Bool {
         return lhs.id == rhs.id
             && lhs.title == rhs.title
     }

@@ -14,11 +14,12 @@ final class MutationEventSubscription: Subscription {
     let subscriber: MutationEventSubscriber
     private weak var publisher: AWSMutationEventPublisher?
 
-    init<S>(subscriber: S,
-            publisher: AWSMutationEventPublisher) where S: Subscriber,
+    init<S>(
+        subscriber: S,
+        publisher: AWSMutationEventPublisher
+    ) where S: Subscriber,
         S.Failure == DataStoreError,
-        S.Input == MutationEvent
-    {
+        S.Input == MutationEvent {
             self.subscriber = MutationEventSubscriber(subscriber: subscriber)
             self.publisher = publisher
     }

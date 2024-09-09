@@ -38,8 +38,10 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
             let outgoingMutationQueue = NoOpMutationQueue()
             let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
             let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
-            stateMachine = MockStateMachine(initialState: .notStarted,
-                                            resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
+            stateMachine = MockStateMachine(
+                initialState: .notStarted,
+                resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:)
+            )
 
             let syncEngine = RemoteSyncEngine(
                 storageAdapter: storageAdapter,
@@ -55,11 +57,13 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
                 requestRetryablePolicy: MockRequestRetryablePolicy()
             )
 
-            storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .testDefault(),
-                                          syncEngine: syncEngine,
-                                          validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+            storageEngine = StorageEngine(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .testDefault(),
+                syncEngine: syncEngine,
+                validAPIPluginKey: validAPIPluginKey,
+                validAuthPluginKey: validAuthPluginKey
+            )
         } catch {
             XCTFail(String(describing: error))
             return
@@ -69,11 +73,13 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()
-        dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestJsonModelRegistration(),
-                                             storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                             dataStorePublisher: dataStorePublisher,
-                                             validAPIPluginKey: validAPIPluginKey,
-                                             validAuthPluginKey: validAuthPluginKey)
+        dataStorePlugin = AWSDataStorePlugin(
+            modelRegistration: TestJsonModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: validAPIPluginKey,
+            validAuthPluginKey: validAuthPluginKey
+        )
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStorePlugin": true
@@ -121,9 +127,11 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
         let title = "a title"
         let content = "some content"
         let createdAt = Temporal.DateTime.now().iso8601String
-        let post = ["title": .string(title),
-                    "content": .string(content),
-                    "createdAt": .string(createdAt)] as [String: JSONValue]
+        let post = [
+            "title": .string(title),
+            "content": .string(content),
+            "createdAt": .string(createdAt)
+        ] as [String: JSONValue]
         let model = DynamicModel(values: post)
         let postSchema = ModelRegistry.modelSchema(from: "Post")!
         dataStorePlugin.save(model, modelSchema: postSchema) { _ in }
@@ -160,24 +168,29 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
                     print("Ignore")
                 }
 
-            })
+            }
+        )
 
         // insert a post
         let title = "a title"
         let content = "some content"
         let createdAt = Temporal.DateTime.now().iso8601String
-        let post = ["title": .string(title),
-                    "content": .string(content),
-                    "createdAt": .string(createdAt)] as [String: JSONValue]
+        let post = [
+            "title": .string(title),
+            "content": .string(content),
+            "createdAt": .string(createdAt)
+        ] as [String: JSONValue]
         let model = DynamicModel(values: post)
         let postSchema = ModelRegistry.modelSchema(from: "Post")!
         dataStorePlugin.save(model, modelSchema: postSchema) { _ in }
 
         // insert a comment
         let commentContent = "some content"
-        let comment = ["content": .string(commentContent),
-                    "createdAt": .string(createdAt),
-                    "post": .object(model.values)] as [String: JSONValue]
+        let comment = [
+            "content": .string(commentContent),
+            "createdAt": .string(createdAt),
+            "post": .object(model.values)
+        ] as [String: JSONValue]
         let commentModel = DynamicModel(values: comment)
         let commentSchema = ModelRegistry.modelSchema(from: "Comment")!
         dataStorePlugin.save(commentModel, modelSchema: commentSchema) { result in
@@ -219,9 +232,11 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
         let title = "a title"
         let content = "some content"
         let createdAt = Temporal.DateTime.now().iso8601String
-        let post = ["title": .string(title),
-                    "content": .string(content),
-                    "createdAt": .string(createdAt)] as [String: JSONValue]
+        let post = [
+            "title": .string(title),
+            "content": .string(content),
+            "createdAt": .string(createdAt)
+        ] as [String: JSONValue]
         let model = DynamicModel(values: post)
         let postSchema = ModelRegistry.modelSchema(from: "Post")!
         dataStorePlugin.save(model, modelSchema: postSchema) { _ in }
@@ -239,9 +254,11 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
         let originalContent = "Content as of \(Date())"
         let title = "a title"
         let createdAt = Temporal.DateTime.now().iso8601String
-        let post = ["title": .string(title),
-                    "content": .string(originalContent),
-                    "createdAt": .string(createdAt)] as [String: JSONValue]
+        let post = [
+            "title": .string(title),
+            "content": .string(originalContent),
+            "createdAt": .string(createdAt)
+        ] as [String: JSONValue]
         let model = DynamicModel(values: post)
         let postSchema = ModelRegistry.modelSchema(from: "Post")!
 
@@ -305,9 +322,11 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
         let title = "a title"
         let content = "some content"
         let createdAt = Temporal.DateTime.now().iso8601String
-        let post = ["title": .string(title),
-                    "content": .string(content),
-                    "createdAt": .string(createdAt)] as [String: JSONValue]
+        let post = [
+            "title": .string(title),
+            "content": .string(content),
+            "createdAt": .string(createdAt)
+        ] as [String: JSONValue]
         let model = DynamicModel(values: post)
         let postSchema = ModelRegistry.modelSchema(from: "Post")!
         dataStorePlugin.save(model, modelSchema: postSchema) { _ in }
@@ -344,9 +363,11 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
         let title = "a title"
         let content = "some content"
         let createdAt = Temporal.DateTime.now().iso8601String
-        let post = ["title": .string(title),
-                    "content": .string(content),
-                    "createdAt": .string(createdAt)] as [String: JSONValue]
+        let post = [
+            "title": .string(title),
+            "content": .string(content),
+            "createdAt": .string(createdAt)
+        ] as [String: JSONValue]
         let model = DynamicModel(values: post)
         let postSchema = ModelRegistry.modelSchema(from: "Post")!
         let savedPost = expectation(description: "post saved")
@@ -362,9 +383,11 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
         wait(for: [savedPost], timeout: 1.0)
 
         let commentContent = "some content"
-        let comment = ["content": .string(commentContent),
-                       "createdAt": .string(createdAt),
-                       "post": .object(model.values)] as [String: JSONValue]
+        let comment = [
+            "content": .string(commentContent),
+            "createdAt": .string(createdAt),
+            "post": .object(model.values)
+        ] as [String: JSONValue]
         let commentModel = DynamicModel(values: comment)
         let commentSchema = ModelRegistry.modelSchema(from: "Comment")!
         let savedComment = expectation(description: "comment saved")
@@ -380,10 +403,11 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
         wait(for: [savedComment], timeout: 1.0)
 
         let queryCommentSuccess = expectation(description: "querying for comment should exist")
-        dataStorePlugin.query(DynamicModel.self,
-                              modelSchema: commentSchema,
-                              where: DynamicModel.keys.id == commentModel.id)
-        { result in
+        dataStorePlugin.query(
+            DynamicModel.self,
+            modelSchema: commentSchema,
+            where: DynamicModel.keys.id == commentModel.id
+        ) { result in
             switch result {
             case .success(let comments):
                 XCTAssertEqual(comments.count, 1)
@@ -407,10 +431,11 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
         subscriptionPost.cancel()
 
         let queryCommentEmpty = expectation(description: "querying for comment should be empty")
-        dataStorePlugin.query(DynamicModel.self,
-                              modelSchema: commentSchema,
-                              where: DynamicModel.keys.id == commentModel.id)
-        { result in
+        dataStorePlugin.query(
+            DynamicModel.self,
+            modelSchema: commentSchema,
+            where: DynamicModel.keys.id == commentModel.id
+        ) { result in
             switch result {
             case .success(let comments):
                 XCTAssertEqual(comments.count, 0)

@@ -89,9 +89,10 @@ extension AWSDataStorePrimaryKeyBaseTest {
     ///   - modelType: model type
     ///   - expectation: success XCTestExpectation
     ///   - onFailure: on failure callback
-    func assertModelDeleted<M: Model & ModelIdentifiable>(modelType: M.Type,
-                                                          identifier: ModelIdentifier<M, M.IdentifierFormat>) async throws
-    {
+    func assertModelDeleted<M: Model & ModelIdentifiable>(
+        modelType: M.Type,
+        identifier: ModelIdentifier<M, M.IdentifierFormat>
+    ) async throws {
         let model = try await Amplify.DataStore.query(modelType, byIdentifier: identifier)
         XCTAssertNil(model)
     }
@@ -203,10 +204,11 @@ extension AWSDataStorePrimaryKeyBaseTest {
     ///   - model: model instance saved and then deleted
     ///   - expectations: test expectations
     ///   - onFailure: failure callback
-    func assertMutationsParentChild(parent: some Model & ModelIdentifiable,
-                                                                  child: some Model & ModelIdentifiable,
-                                                                  shouldDeleteParent: Bool = true) async throws
-    {
+    func assertMutationsParentChild(
+        parent: some Model & ModelIdentifiable,
+        child: some Model & ModelIdentifiable,
+        shouldDeleteParent: Bool = true
+    ) async throws {
         let mutationSaveProcessed = expectation(description: "mutation saved processed")
         mutationSaveProcessed.expectedFulfillmentCount = 2
 

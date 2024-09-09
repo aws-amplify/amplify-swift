@@ -14,10 +14,11 @@ class RequestRetryablePolicy: RequestRetryable {
 
     private static let maxExponentForExponentialBackoff = 31
 
-    public func retryRequestAdvice(urlError: URLError?,
-                                   httpURLResponse: HTTPURLResponse?,
-                                   attemptNumber: Int) -> RequestRetryAdvice
-    {
+    public func retryRequestAdvice(
+        urlError: URLError?,
+        httpURLResponse: HTTPURLResponse?,
+        attemptNumber: Int
+    ) -> RequestRetryAdvice {
         var attemptNumber = attemptNumber
         if attemptNumber <= 0 {
             assertionFailure("attemptNumber should be > 0")
@@ -31,9 +32,10 @@ class RequestRetryablePolicy: RequestRetryable {
         }
     }
 
-    private func determineRetryRequestAdvice(basedOn urlError: URLError,
-                                             attemptNumber: Int) -> RequestRetryAdvice
-    {
+    private func determineRetryRequestAdvice(
+        basedOn urlError: URLError,
+        attemptNumber: Int
+    ) -> RequestRetryAdvice {
         switch urlError.code {
         case .notConnectedToInternet,
              .dnsLookupFailed,
@@ -53,9 +55,10 @@ class RequestRetryablePolicy: RequestRetryable {
         return RequestRetryAdvice(shouldRetry: false)
     }
 
-    private func determineRetryRequestAdvice(basedOn httpURLResponse: HTTPURLResponse?,
-                                             attemptNumber: Int) -> RequestRetryAdvice
-    {
+    private func determineRetryRequestAdvice(
+        basedOn httpURLResponse: HTTPURLResponse?,
+        attemptNumber: Int
+    ) -> RequestRetryAdvice {
         /// If there was no error and no response, then we should not retry.
         guard let httpURLResponse else {
             return RequestRetryAdvice(shouldRetry: false)

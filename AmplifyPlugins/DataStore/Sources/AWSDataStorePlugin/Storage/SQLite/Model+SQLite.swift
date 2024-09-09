@@ -26,8 +26,10 @@ extension Persistable {
         let value = self
         let valueType = type(of: value)
         do {
-            let binding = try SQLiteModelValueConverter.convertToTarget(from: value,
-                                                                        fieldType: .from(type: valueType))
+            let binding = try SQLiteModelValueConverter.convertToTarget(
+                from: value,
+                fieldType: .from(type: valueType)
+            )
             guard let validBinding = binding else {
                 return Fatal.preconditionFailure("""
                 Converting \(String(describing: value)) of type \(String(describing: valueType))
@@ -107,8 +109,7 @@ extension Model {
             // if value is an associated model, get its id
             if field.isForeignKey,
                case let .model(associatedModelName) = field.type,
-               let associatedModelSchema = ModelRegistry.modelSchema(from: associatedModelName)
-            {
+               let associatedModelSchema = ModelRegistry.modelSchema(from: associatedModelName) {
 
                 // Check if it is a Model or json object.
                 if let associatedModelValue = value as? Model {
@@ -126,8 +127,10 @@ extension Model {
                         return model?.identifier
                     }
                 } else if let associatedModelJSON = value as? [String: JSONValue] {
-                    return associatedPrimaryKeyValue(fromJSON: associatedModelJSON,
-                                                     associatedModelSchema: associatedModelSchema)
+                    return associatedPrimaryKeyValue(
+                        fromJSON: associatedModelJSON,
+                        associatedModelSchema: associatedModelSchema
+                    )
                 }
             }
 
@@ -154,9 +157,10 @@ extension Model {
     ///   - associatedModelJSON: model as JSON value
     ///   - associatedModelSchema: model's schema
     /// - Returns: serialized value of the primary key
-    private func associatedPrimaryKeyValue(fromJSON associatedModelJSON: [String: JSONValue],
-                                           associatedModelSchema: ModelSchema) -> String
-    {
+    private func associatedPrimaryKeyValue(
+        fromJSON associatedModelJSON: [String: JSONValue],
+        associatedModelSchema: ModelSchema
+    ) -> String {
         let associatedModelPKFields: ModelIdentifierProtocol.Fields
 
         // get the associated model primary key fields

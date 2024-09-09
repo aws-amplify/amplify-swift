@@ -153,10 +153,12 @@ extension AWSDataStoreLazyLoadPostComment4Tests {
         setUpModelRegistrationOnly(withModels: PostComment4Models())
         continueAfterFailure = true
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            post4CommentsPostId: post.postId,
+            post4CommentsTitle: post.title
+        )
 
         // Create
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: comment, modelSchema: Comment.schema)

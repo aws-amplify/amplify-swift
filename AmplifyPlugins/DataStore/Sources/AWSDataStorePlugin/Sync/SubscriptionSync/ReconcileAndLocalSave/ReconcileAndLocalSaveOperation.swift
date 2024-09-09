@@ -27,8 +27,10 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     typealias AppliedModel = MutationSync<AnyModel>
 
     let id: UUID = .init()
-    private let workQueue = DispatchQueue(label: "com.amazonaws.ReconcileAndLocalSaveOperation",
-                                          target: DispatchQueue.global())
+    private let workQueue = DispatchQueue(
+        label: "com.amazonaws.ReconcileAndLocalSaveOperation",
+        target: DispatchQueue.global()
+    )
 
     private weak var storageAdapter: StorageEngineAdapter?
     private let stateMachine: StateMachine<State, Action>
@@ -44,17 +46,20 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
     var isEagerLoad: Bool = true
 
-    init(modelSchema: ModelSchema,
-         remoteModels: [RemoteModel],
-         storageAdapter: StorageEngineAdapter?,
-         stateMachine: StateMachine<State, Action>? = nil)
-    {
+    init(
+        modelSchema: ModelSchema,
+        remoteModels: [RemoteModel],
+        storageAdapter: StorageEngineAdapter?,
+        stateMachine: StateMachine<State, Action>? = nil
+    ) {
         self.modelSchema = modelSchema
         self.remoteModels = remoteModels
         self.storageAdapter = storageAdapter
         self.stopwatch = Stopwatch()
-        self.stateMachine = stateMachine ?? StateMachine(initialState: .waiting,
-                                                         resolver: Resolver.resolve(currentState:action:))
+        self.stateMachine = stateMachine ?? StateMachine(
+            initialState: .waiting,
+            resolver: Resolver.resolve(currentState:action:)
+        )
         self.mutationEventPublisher = PassthroughSubject<ReconcileAndLocalSaveOperationEvent, DataStoreError>()
 
         self.cancellables = Set<AnyCancellable>()
@@ -268,7 +273,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             do {
                 let localMetadatas = try storageAdapter.queryMutationSyncMetadata(
                     for: remoteModels.map(\.model.identifier),
-                       modelName: self.modelSchema.name)
+                    modelName: self.modelSchema.name
+                )
                 result = .success((remoteModels, localMetadatas))
             } catch {
                 let error = DataStoreError(error: error)
@@ -279,15 +285,18 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         }
     }
 
-    func getDispositions(for remoteModels: [RemoteModel],
-                         localMetadatas: [LocalMetadata]) -> [RemoteSyncReconciler.Disposition]
-    {
+    func getDispositions(
+        for remoteModels: [RemoteModel],
+        localMetadatas: [LocalMetadata]
+    ) -> [RemoteSyncReconciler.Disposition] {
         guard !remoteModels.isEmpty else {
             return []
         }
 
-        let dispositions = RemoteSyncReconciler.getDispositions(remoteModels,
-                                                                localMetadatas: localMetadatas)
+        let dispositions = RemoteSyncReconciler.getDispositions(
+            remoteModels,
+            localMetadatas: localMetadatas
+        )
         notifyDropped(count: remoteModels.count - dispositions.count)
         return dispositions
     }
@@ -342,9 +351,10 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         case dropped
     }
 
-    private func delete(storageAdapter: StorageEngineAdapter,
-                        remoteModel: RemoteModel) -> Future<ApplyRemoteModelResult, DataStoreError>
-    {
+    private func delete(
+        storageAdapter: StorageEngineAdapter,
+        remoteModel: RemoteModel
+    ) -> Future<ApplyRemoteModelResult, DataStoreError> {
         Future<ApplyRemoteModelResult, DataStoreError> { promise in
             guard let modelType = ModelRegistry.modelType(from: self.modelSchema.name) else {
                 let error = DataStoreError.invalidModelName(self.modelSchema.name)
@@ -352,11 +362,12 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 return
             }
 
-            storageAdapter.delete(untypedModelType: modelType,
-                                  modelSchema: self.modelSchema,
-                                  withIdentifier: remoteModel.model.identifier(schema: self.modelSchema),
-                                  condition: nil)
-            { response in
+            storageAdapter.delete(
+                untypedModelType: modelType,
+                modelSchema: self.modelSchema,
+                withIdentifier: remoteModel.model.identifier(schema: self.modelSchema),
+                condition: nil
+            ) { response in
                 switch response {
                 case .failure(let dataStoreError):
                     self.notifyDropped(error: dataStoreError)
@@ -467,11 +478,13 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         }
 
         let modelIdentifier = appliedModel.model.instance.identifier(schema: modelSchema).stringValue
-        let mutationEvent = MutationEvent(modelId: modelIdentifier,
-                                          modelName: modelSchema.name,
-                                          json: json,
-                                          mutationType: mutationType,
-                                          version: appliedModel.syncMetadata.version)
+        let mutationEvent = MutationEvent(
+            modelId: modelIdentifier,
+            modelName: modelSchema.name,
+            json: json,
+            mutationType: mutationType,
+            version: appliedModel.syncMetadata.version
+        )
         mutationEventPublisher.send(.mutationEvent(mutationEvent))
     }
 
@@ -489,14 +502,18 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         }
 
         let modelIdentifier = remoteModel.model.instance.identifier(schema: modelSchema).stringValue
-        let mutationEvent = MutationEvent(modelId: modelIdentifier,
-                                          modelName: modelSchema.name,
-                                          json: json,
-                                          mutationType: mutationType,
-                                          version: remoteModel.syncMetadata.version)
+        let mutationEvent = MutationEvent(
+            modelId: modelIdentifier,
+            modelName: modelSchema.name,
+            json: json,
+            mutationType: mutationType,
+            version: remoteModel.syncMetadata.version
+        )
 
-        let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncReceived,
-                                 data: mutationEvent)
+        let payload = HubPayload(
+            eventName: HubPayload.EventName.DataStore.syncReceived,
+            data: mutationEvent
+        )
         Amplify.Hub.dispatch(to: .dataStore, payload: payload)
     }
 

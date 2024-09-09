@@ -71,21 +71,27 @@ extension AWSDataStoreLazyLoadCompositePKTests {
         // query parent and load the children
         let queriedParent = try await query(for: savedParent)
 
-        assertList(queriedParent.implicitChildren!, state: .isNotLoaded(associatedIds: [queriedParent.identifier],
-                                                                        associatedFields: ["parent"]))
+        assertList(queriedParent.implicitChildren!, state: .isNotLoaded(
+            associatedIds: [queriedParent.identifier],
+            associatedFields: ["parent"]
+        ))
         try await queriedParent.implicitChildren?.fetch()
         assertList(queriedParent.implicitChildren!, state: .isLoaded(count: 1))
 
 
         // query child and load the parent - ImplicitChild
         let queriedImplicitChild = try await query(for: savedChild)
-        assertLazyReference(queriedImplicitChild._parent,
-                            state: .notLoaded(identifiers: [
-                                .init(name: CompositePKParent.keys.customId.stringValue, value: savedParent.customId),
-                                .init(name: CompositePKParent.keys.content.stringValue, value: savedParent.content)
-                            ]))
+        assertLazyReference(
+            queriedImplicitChild._parent,
+            state: .notLoaded(identifiers: [
+                .init(name: CompositePKParent.keys.customId.stringValue, value: savedParent.customId),
+                .init(name: CompositePKParent.keys.content.stringValue, value: savedParent.content)
+            ])
+        )
         let loadedParent = try await queriedImplicitChild.parent
-        assertLazyReference(queriedImplicitChild._parent,
-                            state: .loaded(model: loadedParent))
+        assertLazyReference(
+            queriedImplicitChild._parent,
+            state: .loaded(model: loadedParent)
+        )
     }
 }

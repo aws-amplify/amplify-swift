@@ -108,7 +108,8 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         title updatedAt __typename _version _deleted _lastChangedAt } }
         """
 
-        let input: [String: Any] = ["input":
+        let input: [String: Any] = [
+            "input":
             [
                 "id": id,
                 "title": Optional("This is a new post I created"),
@@ -120,10 +121,12 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
             ]
         ]
 
-        let request = GraphQLRequest(document: document,
-                                     variables: input,
-                                     responseType: Post.self,
-                                     decodePath: "createPost")
+        let request = GraphQLRequest(
+            document: document,
+            variables: input,
+            responseType: Post.self,
+            decodePath: "createPost"
+        )
 
         let graphQLResult = try await Amplify.API.mutate(request: request)
         switch graphQLResult {
@@ -142,7 +145,8 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         title updatedAt __typename _version _deleted _lastChangedAt } }
         """
 
-        let input: [String: Any] = ["input":
+        let input: [String: Any] = [
+            "input":
             [
                 "id": id,
                 "content": content,
@@ -150,10 +154,12 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
             ]
         ]
 
-        let request = GraphQLRequest(document: document,
-                                     variables: input,
-                                     responseType: Post.self,
-                                     decodePath: "updatePost")
+        let request = GraphQLRequest(
+            document: document,
+            variables: input,
+            responseType: Post.self,
+            decodePath: "updatePost"
+        )
 
         let graphQLResult = try await Amplify.API.mutate(request: request)
         switch graphQLResult {
@@ -172,17 +178,20 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         title updatedAt __typename _version _deleted _lastChangedAt } }
         """
 
-        let input: [String: Any] = ["input":
+        let input: [String: Any] = [
+            "input":
             [
                 "id": id,
                 "_version": version
             ]
         ]
 
-        let request = GraphQLRequest(document: document,
-                                     variables: input,
-                                     responseType: Post.self,
-                                     decodePath: "deletePost")
+        let request = GraphQLRequest(
+            document: document,
+            variables: input,
+            responseType: Post.self,
+            decodePath: "deletePost"
+        )
 
         let graphQLResult = try await Amplify.API.mutate(request: request)
         switch graphQLResult {

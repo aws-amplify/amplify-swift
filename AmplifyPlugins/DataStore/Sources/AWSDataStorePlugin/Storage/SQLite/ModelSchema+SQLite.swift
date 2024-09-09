@@ -41,10 +41,12 @@ extension ModelPrimaryKey: SQLColumn {
     /// Convenience method to convert a ModelPrimaryKey to an
     /// ModelField to be used in a SQL query
     var asField: ModelField {
-        ModelField(name: name,
-                   type: .string,
-                   isRequired: true,
-                   attributes: [.primaryKey])
+        ModelField(
+            name: name,
+            type: .string,
+            isRequired: true,
+            attributes: [.primaryKey]
+        )
     }
 
     var sqlType: SQLDataType {
@@ -114,8 +116,7 @@ extension ModelField: SQLColumn {
 
         // association with a model with a single-field PK
         } else if targetNames.count == 1,
-                  let keyName = targetNames.first
-        {
+                  let keyName = targetNames.first {
             return keyName
         }
         // composite PK
@@ -183,8 +184,7 @@ extension ModelSchema {
         for (_, field) in fields {
             if field.isAssociationOwner,
                let association = field.association,
-               case let .belongsTo(_, targetNames: targetNames) = association
-            {
+               case let .belongsTo(_, targetNames: targetNames) = association {
                 associationsFields.formUnion(targetNames)
             }
         }

@@ -11,8 +11,7 @@ import Foundation
 
 public extension EnumTestModel {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case enumVal
     case nullableEnumVal

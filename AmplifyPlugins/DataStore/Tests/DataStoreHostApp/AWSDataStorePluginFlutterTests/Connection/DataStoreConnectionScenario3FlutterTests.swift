@@ -37,20 +37,19 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
         let comment = try Comment3Wrapper(postID: post.idString(), content: "content")
         let syncedPostReceived = expectation(description: "received post from sync event")
         let syncCommentReceived = expectation(description: "received comment from sync event")
-        let hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+        let hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
             if let syncedPost = mutationEvent.modelId as String?,
-               syncedPost == post.idString()
-            {
+               syncedPost == post.idString() {
                 syncedPostReceived.fulfill()
             } else if let syncComment = mutationEvent.modelId as String?,
-                      syncComment == comment.idString()
-            {
+                      syncComment == comment.idString() {
                 syncCommentReceived.fulfill()
             }
 
@@ -189,7 +188,8 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
     func savePost(id: String = UUID().uuidString, title: String, plugin: AWSDataStorePlugin) throws -> Post3Wrapper? {
         let post = try Post3Wrapper(
             id: id,
-            title: title)
+            title: title
+        )
         var result: Post3Wrapper?
         let completeInvoked = expectation(description: "request completed")
         plugin.save(post.model, modelSchema: Post3.schema) { event in

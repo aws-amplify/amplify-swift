@@ -60,15 +60,17 @@ public final class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// - Parameters:
     ///   - modelRegistration: Register DataStore models.
     ///   - dataStoreConfiguration: Configuration object for DataStore
-    public init(modelRegistration: AmplifyModelRegistration,
-                configuration dataStoreConfiguration: DataStoreConfiguration)
-    {
+    public init(
+        modelRegistration: AmplifyModelRegistration,
+        configuration dataStoreConfiguration: DataStoreConfiguration
+    ) {
         self.modelRegistration = modelRegistration
         self.configuration = InternalDatastoreConfiguration(
             isSyncEnabled: false,
             validAPIPluginKey: "awsAPIPlugin",
             validAuthPluginKey: "awsCognitoAuthPlugin",
-            pluginConfiguration: dataStoreConfiguration)
+            pluginConfiguration: dataStoreConfiguration
+        )
 
         self.storageEngineBehaviorFactory =
         StorageEngine.init(
@@ -87,15 +89,17 @@ public final class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// - Parameters:
     ///   - modelRegistration: Register DataStore models.
     ///   - dataStoreConfiguration: Configuration object for DataStore
-    public init(modelRegistration: AmplifyModelRegistration,
-                configuration dataStoreConfiguration: DataStoreConfiguration = .default)
-    {
+    public init(
+        modelRegistration: AmplifyModelRegistration,
+        configuration dataStoreConfiguration: DataStoreConfiguration = .default
+    ) {
         self.modelRegistration = modelRegistration
         self.configuration = InternalDatastoreConfiguration(
             isSyncEnabled: false,
             validAPIPluginKey: "awsAPIPlugin",
             validAuthPluginKey: "awsCognitoAuthPlugin",
-            pluginConfiguration: dataStoreConfiguration)
+            pluginConfiguration: dataStoreConfiguration
+        )
 
         self.storageEngineBehaviorFactory =
         StorageEngine.init(
@@ -112,20 +116,22 @@ public final class AWSDataStorePlugin: DataStoreCategoryPlugin {
     #endif
 
     /// Internal initializer for testing
-    init(modelRegistration: AmplifyModelRegistration,
-         configuration dataStoreConfiguration: DataStoreConfiguration = .testDefault(),
-         storageEngineBehaviorFactory: StorageEngineBehaviorFactory? = nil,
-         dataStorePublisher: ModelSubcriptionBehavior,
-         operationQueue: OperationQueue = OperationQueue(),
-         validAPIPluginKey: String,
-         validAuthPluginKey: String)
-    {
+    init(
+        modelRegistration: AmplifyModelRegistration,
+        configuration dataStoreConfiguration: DataStoreConfiguration = .testDefault(),
+        storageEngineBehaviorFactory: StorageEngineBehaviorFactory? = nil,
+        dataStorePublisher: ModelSubcriptionBehavior,
+        operationQueue: OperationQueue = OperationQueue(),
+        validAPIPluginKey: String,
+        validAuthPluginKey: String
+    ) {
         self.modelRegistration = modelRegistration
         self.configuration = InternalDatastoreConfiguration(
             isSyncEnabled: false,
             validAPIPluginKey: validAPIPluginKey,
             validAuthPluginKey: validAuthPluginKey,
-            pluginConfiguration: dataStoreConfiguration)
+            pluginConfiguration: dataStoreConfiguration
+        )
 
         self.storageEngineBehaviorFactory = storageEngineBehaviorFactory ??
         StorageEngine.init(
@@ -267,8 +273,10 @@ public final class AWSDataStorePlugin: DataStoreCategoryPlugin {
         case .modelSyncedEvent(let modelSyncedEvent):
             log.verbose("Emitting DataStore event: modelSyncedEvent \(modelSyncedEvent)")
             dispatchedModelSyncedEvents[modelSyncedEvent.modelName]?.set(true)
-            let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
-                                                     data: modelSyncedEvent)
+            let modelSyncedEventPayload = HubPayload(
+                eventName: HubPayload.EventName.DataStore.modelSynced,
+                data: modelSyncedEvent
+            )
             Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
         case .syncQueriesReadyEvent:
             log.verbose("[Lifecycle event 4]: syncQueriesReady")

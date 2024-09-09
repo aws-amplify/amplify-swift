@@ -218,18 +218,15 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
                 case .outboxMutationProcessed(let mutationEvent):
                     if mutationEvent.modelName == Blog6.modelName,
                        let model = mutationEvent.element.model as? Blog6,
-                       model.id == blog.id || model.id == blog2.id
-                    {
+                       model.id == blog.id || model.id == blog2.id {
                         processedSoFar += 1
                     } else if mutationEvent.modelName == Post6.modelName,
                               let model = mutationEvent.element.model as? Post6,
-                              model.id == post.id || model.id == post2.id
-                    {
+                              model.id == post.id || model.id == post2.id {
                         processedSoFar += 1
                     } else if mutationEvent.modelName == Comment6.modelName,
                               let model = mutationEvent.element.model as? Comment6,
-                              model.id == commentId1 || model.id == commentId2
-                    {
+                              model.id == commentId1 || model.id == commentId2 {
                         processedSoFar += 1
                     }
 

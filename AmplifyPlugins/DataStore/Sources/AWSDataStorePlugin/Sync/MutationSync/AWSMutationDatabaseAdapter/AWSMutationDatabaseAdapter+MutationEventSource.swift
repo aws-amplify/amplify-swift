@@ -40,8 +40,8 @@ extension AWSMutationDatabaseAdapter: MutationEventSource {
             predicate: nil,
             sort: [sort],
             paginationInput: nil,
-            eagerLoad: true)
-        { result in
+            eagerLoad: true
+        ) { result in
                 switch result {
                 case .failure(let dataStoreError):
                     completion(.failure(dataStoreError))
@@ -54,19 +54,22 @@ extension AWSMutationDatabaseAdapter: MutationEventSource {
                         log.verbose("The head of the MutationEvent queue was already inProcess (most likely interrupted process): \(mutationEvent)")
                         completion(.success(mutationEvent))
                     } else {
-                        self.markInProcess(mutationEvent: mutationEvent,
-                                           storageAdapter: storageAdapter,
-                                           completion: completion)
+                        self.markInProcess(
+                            mutationEvent: mutationEvent,
+                            storageAdapter: storageAdapter,
+                            completion: completion
+                        )
                     }
                 }
 
         }
     }
 
-    func markInProcess(mutationEvent: MutationEvent,
-                       storageAdapter: StorageEngineAdapter,
-                       completion: @escaping DataStoreCallback<MutationEvent>)
-    {
+    func markInProcess(
+        mutationEvent: MutationEvent,
+        storageAdapter: StorageEngineAdapter,
+        completion: @escaping DataStoreCallback<MutationEvent>
+    ) {
         var inProcessEvent = mutationEvent
         inProcessEvent.inProcess = true
         storageAdapter.save(inProcessEvent, condition: nil, eagerLoad: true, completion: completion)

@@ -23,8 +23,10 @@ struct UpdateStatement: SQLStatement {
 
         var conditionStatement: ConditionStatement?
         if let condition {
-            let statement = ConditionStatement(modelSchema: modelSchema,
-                                               predicate: condition)
+            let statement = ConditionStatement(
+                modelSchema: modelSchema,
+                predicate: condition
+            )
             conditionStatement = statement
         }
 

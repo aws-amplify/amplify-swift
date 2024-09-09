@@ -39,8 +39,10 @@ final class AWSDataStorePrimaryKeyPostCommentCompositeKeyTest: AWSDataStorePrima
         try await assertMutationsParentChild(parent: parent, child: child)
 
         // Child should not exists as we've deleted the parent
-        try await assertModelDeleted(modelType: CommentWithCompositeKey.self,
-                                     identifier: .identifier(id: child.id, content: child.content))
+        try await assertModelDeleted(
+            modelType: CommentWithCompositeKey.self,
+            identifier: .identifier(id: child.id, content: child.content)
+        )
     }
 
     /// - Given: a set models with a belongs-to association and composite primary keys

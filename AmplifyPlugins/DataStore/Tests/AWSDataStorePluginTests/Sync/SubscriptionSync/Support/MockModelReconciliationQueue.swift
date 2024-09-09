@@ -23,15 +23,16 @@ class MockModelReconciliationQueue: ModelReconciliationQueue {
         return modelReconciliationQueueSubject.eraseToAnyPublisher()
     }
 
-    init(modelSchema: ModelSchema,
-         storageAdapter: StorageEngineAdapter?,
-         api: APICategoryGraphQLBehavior,
-         reconcileAndSaveQueue: ReconcileAndSaveOperationQueue,
-         modelPredicate: QueryPredicate?,
-         auth: AuthCategoryBehavior?,
-         authModeStrategy: AuthModeStrategy,
-         incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil)
-    {
+    init(
+        modelSchema: ModelSchema,
+        storageAdapter: StorageEngineAdapter?,
+        api: APICategoryGraphQLBehavior,
+        reconcileAndSaveQueue: ReconcileAndSaveOperationQueue,
+        modelPredicate: QueryPredicate?,
+        auth: AuthCategoryBehavior?,
+        authModeStrategy: AuthModeStrategy,
+        incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil
+    ) {
         self.modelReconciliationQueueSubject = PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>()
         self.modelSchema = modelSchema
         MockModelReconciliationQueue.mockModelReconciliationQueues[modelSchema.name] = self

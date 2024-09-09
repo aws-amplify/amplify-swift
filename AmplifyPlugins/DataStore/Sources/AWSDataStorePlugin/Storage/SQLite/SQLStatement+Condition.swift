@@ -18,10 +18,11 @@ typealias SQLPredicate = (String, [Binding?])
 ///   - modelSchema: the model schema of the `Model`
 ///   - predicate: the query predicate
 /// - Returns: a tuple containing the SQL string and the associated values
-private func translateQueryPredicate(from modelSchema: ModelSchema,
-                                     predicate: QueryPredicate,
-                                     namespace: Substring? = nil) -> SQLPredicate
-{
+private func translateQueryPredicate(
+    from modelSchema: ModelSchema,
+    predicate: QueryPredicate,
+    namespace: Substring? = nil
+) -> SQLPredicate {
     var sql: [String] = []
     var bindings: [Binding?] = []
     let indentPrefix = "  "
@@ -94,9 +95,11 @@ struct ConditionStatement: SQLStatement {
     init(modelSchema: ModelSchema, predicate: QueryPredicate, namespace: Substring? = nil) {
         self.modelSchema = modelSchema
 
-        let (sql, variables) = translateQueryPredicate(from: modelSchema,
-                                                       predicate: predicate,
-                                                       namespace: namespace)
+        let (sql, variables) = translateQueryPredicate(
+            from: modelSchema,
+            predicate: predicate,
+            namespace: namespace
+        )
         self.stringValue = sql
         self.variables = variables
     }

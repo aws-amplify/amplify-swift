@@ -198,8 +198,8 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
         let createReceived = expectation(description: "Create notification received")
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -246,8 +246,8 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
         createReceived.expectedFulfillmentCount = 3 // 3 models (1 blog and 2 posts)
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -316,8 +316,8 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
         createReceived.expectedFulfillmentCount = 3 // 3 models (1 blog and 1 post and 1 comment)
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -396,8 +396,8 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
         createReceived.expectedFulfillmentCount = 3 // 3 models (1 blog and 1 post and 1 comment)
         var hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -433,8 +433,8 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
         deleteReceived.expectedFulfillmentCount = 3 // 3 models due to cascade delete behavior
         hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")

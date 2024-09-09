@@ -33,28 +33,32 @@ public struct PhoneCall: Model {
   public var updatedAt: Temporal.DateTime?
   public var phoneCallTranscriptId: String?
 
-  public init(id: String = UUID().uuidString,
-      caller: Person,
-      callee: Person,
-      transcript: Transcript? = nil,
-      phoneCallTranscriptId: String? = nil)
-  {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    caller: Person,
+    callee: Person,
+    transcript: Transcript? = nil,
+    phoneCallTranscriptId: String? = nil
+  ) {
+    self.init(
+      id: id,
       caller: caller,
       callee: callee,
       transcript: transcript,
       createdAt: nil,
       updatedAt: nil,
-      phoneCallTranscriptId: phoneCallTranscriptId)
+      phoneCallTranscriptId: phoneCallTranscriptId
+    )
   }
-  init(id: String = UUID().uuidString,
-      caller: Person,
-      callee: Person,
-      transcript: Transcript? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil,
-      phoneCallTranscriptId: String? = nil)
-  {
+  init(
+    id: String = UUID().uuidString,
+    caller: Person,
+    callee: Person,
+    transcript: Transcript? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil,
+    phoneCallTranscriptId: String? = nil
+  ) {
       self.id = id
       self._caller = LazyReference(caller)
       self._callee = LazyReference(callee)

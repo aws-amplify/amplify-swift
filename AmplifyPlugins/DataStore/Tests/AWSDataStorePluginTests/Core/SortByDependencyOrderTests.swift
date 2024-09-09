@@ -91,8 +91,16 @@ class SortByDependencyOrderTests: XCTestCase {
     /// - Then:
     ///   - the ordered list is deterministically sorted, although not necessarily predictable
     func testSortsDeterministically() {
-        let expectedModelNames = ["Author", "Book", "BookAuthor", "Post", "Comment", "MockUnsynced",
-                                  "UserAccount", "UserProfile"]
+        let expectedModelNames = [
+            "Author",
+            "Book",
+            "BookAuthor",
+            "Post",
+            "Comment",
+            "MockUnsynced",
+            "UserAccount",
+            "UserProfile"
+        ]
 
         for _ in 0 ..< 10 {
             let modelSchemas = modelList.shuffled().map { modelType -> ModelSchema in

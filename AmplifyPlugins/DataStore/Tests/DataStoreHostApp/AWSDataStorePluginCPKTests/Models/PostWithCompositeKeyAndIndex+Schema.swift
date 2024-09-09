@@ -11,8 +11,7 @@ import Foundation
 
 public extension PostWithCompositeKeyAndIndex {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case title
     case comments
@@ -49,9 +48,10 @@ extension PostWithCompositeKeyAndIndex: ModelIdentifiable {
 }
 
 public extension PostWithCompositeKeyAndIndex.IdentifierProtocol {
-  static func identifier(id: String,
-      title: String) -> Self
-  {
+  static func identifier(
+    id: String,
+    title: String
+  ) -> Self {
     .make(fields: [(name: "id", value: id), (name: "title", value: title)])
   }
 }

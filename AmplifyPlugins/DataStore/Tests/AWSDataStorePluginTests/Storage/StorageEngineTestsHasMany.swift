@@ -28,11 +28,13 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
             syncEngine = MockRemoteSyncEngine()
-            storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .testDefault(),
-                                          syncEngine: syncEngine,
-                                          validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+            storageEngine = StorageEngine(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .testDefault(),
+                syncEngine: syncEngine,
+                validAPIPluginKey: validAPIPluginKey,
+                validAuthPluginKey: validAuthPluginKey
+            )
             ModelRegistry.register(modelType: Restaurant.self)
             ModelRegistry.register(modelType: Menu.self)
             ModelRegistry.register(modelType: Dish.self)
@@ -84,8 +86,10 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         }
 
         guard case .success =
-            querySingleModelSynchronous(modelType: Restaurant.self,
-                                        predicate: Restaurant.keys.id == dreamRestaurant.id)
+            querySingleModelSynchronous(
+                modelType: Restaurant.self,
+                predicate: Restaurant.keys.id == dreamRestaurant.id
+            )
         else {
                 XCTFail("Failed to query Restaurant")
                 return
@@ -110,8 +114,10 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
             receivedMutationEvent.fulfill()
             completion(.success(submittedMutationEvent))
         }
-        guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: Restaurant.self,
-                                                                    withId: dreamRestaurant.id)
+        guard case .success = deleteModelSynchronousOrFailOtherwise(
+            modelType: Restaurant.self,
+            withId: dreamRestaurant.id
+        )
         else {
             XCTFail("Failed to delete restaurant")
             return
@@ -175,24 +181,30 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         }
         // Query individually without lazy loading and verify counts.
         guard case .success(let savedRestaurant) =
-            querySingleModelSynchronous(modelType: Restaurant.self,
-                                        predicate: Restaurant.keys.id == restaurant1.id)
+            querySingleModelSynchronous(
+                modelType: Restaurant.self,
+                predicate: Restaurant.keys.id == restaurant1.id
+            )
         else {
                                             XCTFail("Failed to query Restaurant")
                                             return
         }
         XCTAssertEqual(savedRestaurant.id, restaurant1.id)
         guard case .success(let menus) =
-            queryModelSynchronous(modelType: Menu.self,
-                                  predicate: QueryPredicateConstant.all)
+            queryModelSynchronous(
+                modelType: Menu.self,
+                predicate: QueryPredicateConstant.all
+            )
         else {
                                     XCTFail("Failed to query menus")
                                     return
         }
         XCTAssertEqual(menus.count, numberOfMenus)
         guard case .success(let dishes) =
-            queryModelSynchronous(modelType: Dish.self,
-                                  predicate: QueryPredicateConstant.all)
+            queryModelSynchronous(
+                modelType: Dish.self,
+                predicate: QueryPredicateConstant.all
+            )
         else {
                                     XCTFail("Failed to query dishes")
                                     return
@@ -207,9 +219,11 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
             receivedMutationEvent.fulfill()
             completion(.success(submittedMutationEvent))
         }
-        guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: Restaurant.self,
-                                                                    withId: restaurant1.id,
-                                                                    timeout: 100)
+        guard case .success = deleteModelSynchronousOrFailOtherwise(
+            modelType: Restaurant.self,
+            withId: restaurant1.id,
+            timeout: 100
+        )
         else {
                                                                         XCTFail("Failed to delete restaurant")
                                                                         return
@@ -242,8 +256,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         syncEngine.setCallbackOnSubmit{ submittedMutationEvent, completion in
             receivedMutationEvent.fulfill()
             if submittedMutationEvent.modelId == lunchStandardMenu.id ||
-                submittedMutationEvent.modelId == oysters.id
-            {
+                submittedMutationEvent.modelId == oysters.id {
                 expectedFailures.fulfill()
                 completion(.failure(.internalOperation("mockError", "", nil)))
             } else {
@@ -252,8 +265,10 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
             }
         }
 
-        guard case .failure(let error) = deleteModelSynchronousOrFailOtherwise(modelType: Restaurant.self,
-                                                                               withId: restaurant1.id)
+        guard case .failure(let error) = deleteModelSynchronousOrFailOtherwise(
+            modelType: Restaurant.self,
+            withId: restaurant1.id
+        )
         else {
             XCTFail("Deleting should have failed due to our mock")
             return

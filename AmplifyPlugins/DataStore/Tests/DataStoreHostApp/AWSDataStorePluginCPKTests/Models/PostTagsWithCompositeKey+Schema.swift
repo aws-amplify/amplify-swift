@@ -11,8 +11,7 @@ import Foundation
 
 public extension PostTagsWithCompositeKey {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case postWithTagsCompositeKey
     case tagWithCompositeKey

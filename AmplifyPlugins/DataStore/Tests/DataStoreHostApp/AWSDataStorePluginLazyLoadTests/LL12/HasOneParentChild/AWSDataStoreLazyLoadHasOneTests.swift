@@ -121,10 +121,12 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         XCTAssertEqual(queriedParent.hasOneParentChildId, savedChild.id)
 
         // The child can be lazy loaded.
-        assertLazyReference(queriedParent._child,
-                            state: .notLoaded(identifiers: [
-                                .init(name: HasOneChild.keys.id.stringValue, value: child.id)
-                            ]))
+        assertLazyReference(
+            queriedParent._child,
+            state: .notLoaded(identifiers: [
+                .init(name: HasOneChild.keys.id.stringValue, value: child.id)
+            ])
+        )
 
         let newChild = HasOneChild()
         let savedNewChild = try await createAndWaitForSync(newChild)
@@ -162,8 +164,7 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedChild = try? mutationEvent.decodeModel(as: HasOneChild.self),
-                   receivedChild.identifier == child.identifier
-                {
+                   receivedChild.identifier == child.identifier {
                     mutationEventReceived.fulfill()
                 }
             }

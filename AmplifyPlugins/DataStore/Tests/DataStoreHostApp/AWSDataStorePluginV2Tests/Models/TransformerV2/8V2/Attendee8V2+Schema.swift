@@ -11,8 +11,7 @@ import Foundation
 
 public extension Attendee8V2 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case meetings
     case createdAt

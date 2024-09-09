@@ -37,10 +37,10 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
     }
 
     let connectionError: APIError = .networkError(
-            "TEST: Network not available",
-            nil,
-            URLError(.notConnectedToInternet)
-        )
+        "TEST: Network not available",
+        nil,
+        URLError(.notConnectedToInternet)
+    )
 
     override func setUpWithError() throws {
         cancellables = []

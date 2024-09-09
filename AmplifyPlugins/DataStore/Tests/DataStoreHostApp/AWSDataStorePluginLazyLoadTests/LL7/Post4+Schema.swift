@@ -11,8 +11,7 @@ import Foundation
 
 public extension Post4 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case postId
     case title
     case comments
@@ -53,9 +52,10 @@ extension Post4: ModelIdentifiable {
 }
 
 public extension Post4.IdentifierProtocol {
-  static func identifier(postId: String,
-      title: String) -> Self
-  {
+  static func identifier(
+    postId: String,
+    title: String
+  ) -> Self {
     .make(fields: [(name: "postId", value: postId), (name: "title", value: title)])
   }
 }

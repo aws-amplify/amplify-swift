@@ -14,15 +14,16 @@ typealias DisableSubscriptions = () -> Bool
 
 // Used for testing:
 typealias IncomingEventReconciliationQueueFactory =
-    ([ModelSchema],
-    APICategoryGraphQLBehavior,
-    StorageEngineAdapter,
-    [DataStoreSyncExpression],
-    AuthCategoryBehavior?,
-    AuthModeStrategy,
-    ModelReconciliationQueueFactory?,
-    @escaping DisableSubscriptions
-) async -> IncomingEventReconciliationQueue
+    (
+        [ModelSchema],
+        APICategoryGraphQLBehavior,
+        StorageEngineAdapter,
+        [DataStoreSyncExpression],
+        AuthCategoryBehavior?,
+        AuthModeStrategy,
+        ModelReconciliationQueueFactory?,
+        @escaping DisableSubscriptions
+    ) async -> IncomingEventReconciliationQueue
 
 final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
 
@@ -45,14 +46,16 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     }
     private let modelSchemasCount: Int
 
-    init(modelSchemas: [ModelSchema],
-         api: APICategoryGraphQLBehavior,
-         storageAdapter: StorageEngineAdapter,
-         syncExpressions: [DataStoreSyncExpression],
-         auth: AuthCategoryBehavior? = nil,
-         authModeStrategy: AuthModeStrategy,
-         modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil,
-         disableSubscriptions: @escaping () -> Bool = { false }) async {
+    init(
+        modelSchemas: [ModelSchema],
+        api: APICategoryGraphQLBehavior,
+        storageAdapter: StorageEngineAdapter,
+        syncExpressions: [DataStoreSyncExpression],
+        auth: AuthCategoryBehavior? = nil,
+        authModeStrategy: AuthModeStrategy,
+        modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil,
+        disableSubscriptions: @escaping () -> Bool = { false }
+    ) async {
         self.modelSchemasCount = modelSchemas.count
         modelReconciliationQueueSinks.set([:])
         self.eventReconciliationQueueTopic = CurrentValueSubject<IncomingEventReconciliationQueueEvent, DataStoreError>(.idle)
@@ -94,21 +97,25 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                 log.warn("Duplicate model name found: \(modelName), not subscribing")
                 continue
             }
-            let queue = await self.modelReconciliationQueueFactory(modelSchema,
-                                                                   storageAdapter,
-                                                                   api,
-                                                                   reconcileAndSaveQueue,
-                                                                   modelPredicate,
-                                                                   auth,
-                                                                   authModeStrategy,
-                                                                   subscriptionsDisabled ? OperationDisabledIncomingSubscriptionEventPublisher() : nil)
+            let queue = await self.modelReconciliationQueueFactory(
+                modelSchema,
+                storageAdapter,
+                api,
+                reconcileAndSaveQueue,
+                modelPredicate,
+                auth,
+                authModeStrategy,
+                subscriptionsDisabled ? OperationDisabledIncomingSubscriptionEventPublisher() : nil
+            )
 
             reconciliationQueues.with { reconciliationQueues in
                 reconciliationQueues[modelName] = queue
             }
             log.verbose("[InitializeSubscription.5] Sink reconciliationQueues \(modelName) \(reconciliationQueues.get().count)")
-            let modelReconciliationQueueSink = queue.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
-                                                                    receiveValue: onReceiveValue(receiveValue:))
+            let modelReconciliationQueueSink = queue.publisher.sink(
+                receiveCompletion: onReceiveCompletion(completed:),
+                receiveValue: onReceiveValue(receiveValue:)
+            )
             modelReconciliationQueueSinks.with { modelReconciliationQueueSinks in
                 modelReconciliationQueueSinks[modelName] = modelReconciliationQueueSink
             }
@@ -209,14 +216,16 @@ extension AWSIncomingEventReconciliationQueue: DefaultLogger {
 extension AWSIncomingEventReconciliationQueue {
     static let factory: IncomingEventReconciliationQueueFactory = {
         modelSchemas, api, storageAdapter, syncExpressions, auth, authModeStrategy, _, disableSubscriptions in
-        await AWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
-                                                  api: api,
-                                                  storageAdapter: storageAdapter,
-                                                  syncExpressions: syncExpressions,
-                                                  auth: auth,
-                                                  authModeStrategy: authModeStrategy,
-                                                  modelReconciliationQueueFactory: nil,
-                                                  disableSubscriptions: disableSubscriptions)
+        await AWSIncomingEventReconciliationQueue(
+            modelSchemas: modelSchemas,
+            api: api,
+            storageAdapter: storageAdapter,
+            syncExpressions: syncExpressions,
+            auth: auth,
+            authModeStrategy: authModeStrategy,
+            modelReconciliationQueueFactory: nil,
+            disableSubscriptions: disableSubscriptions
+        )
     }
 }
 

@@ -42,8 +42,8 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
         updatedCustomerOrder.email = "testnew@abc.com"
         var hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -77,8 +77,8 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
         let updateReceived = expectation(description: "Update notification received")
         hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -122,8 +122,8 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
         let deleteReceived = expectation(description: "Delete notification received")
         hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")

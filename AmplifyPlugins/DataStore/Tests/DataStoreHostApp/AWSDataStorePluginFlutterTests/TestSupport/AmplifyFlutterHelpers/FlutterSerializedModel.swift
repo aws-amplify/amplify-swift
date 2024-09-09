@@ -90,24 +90,19 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
     public func jsonValue(for key: String, modelSchema: ModelSchema) -> Any?? {
         let field = modelSchema.field(withName: key)
         if case .int = field?.type,
-           case .some(.number(let deserializedValue)) = values[key]
-        {
+           case .some(.number(let deserializedValue)) = values[key] {
             return Int(deserializedValue)
         } else if case .dateTime = field?.type,
-                  case .some(.string(let deserializedValue)) = values[key]
-        {
+                  case .some(.string(let deserializedValue)) = values[key] {
             return FlutterTemporal(iso8601String: deserializedValue)
         } else if case .date = field?.type,
-                  case .some(.string(let deserializedValue)) = values[key]
-        {
+                  case .some(.string(let deserializedValue)) = values[key] {
             return FlutterTemporal(iso8601String: deserializedValue)
         } else if case .time = field?.type,
-                  case .some(.string(let deserializedValue)) = values[key]
-        {
+                  case .some(.string(let deserializedValue)) = values[key] {
             return FlutterTemporal(iso8601String: deserializedValue)
         } else if case .timestamp = field?.type,
-                  case .some(.number(let deserializedValue)) = values[key]
-        {
+                  case .some(.number(let deserializedValue)) = values[key] {
             return NSNumber(value: deserializedValue)
         }
 
@@ -116,24 +111,19 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
 
     private func deserializeValue(value: JSONValue?, fieldType: Codable.Type) -> Any?? {
         if fieldType is Int.Type,
-           case .some(.number(let deserializedValue)) = value
-        {
+           case .some(.number(let deserializedValue)) = value {
             return Int(deserializedValue)
         } else if fieldType is Temporal.DateTime.Type,
-                  case .some(.string(let deserializedValue)) = value
-        {
+                  case .some(.string(let deserializedValue)) = value {
             return deserializedValue
         } else if fieldType is Temporal.Date.Type,
-                  case .some(.string(let deserializedValue)) = value
-        {
+                  case .some(.string(let deserializedValue)) = value {
             return deserializedValue
         } else if fieldType is Temporal.Time.Type,
-                  case .some(.string(let deserializedValue)) = value
-        {
+                  case .some(.string(let deserializedValue)) = value {
             return deserializedValue
         } else if fieldType is Int64.Type,
-                  case .some(.number(let deserializedValue)) = value
-        {
+                  case .some(.number(let deserializedValue)) = value {
             return Int(deserializedValue)
         }
 
@@ -168,8 +158,7 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
 
                 let map = jsonValue(for: key, modelSchema: modelSchema) as! [String: JSONValue]
                 if case .string(let deserializedValue) = map["id"],
-                    case .model(let name) = field!.type
-                {
+                    case .model(let name) = field!.type {
                     result[key] = [
                         "id": deserializedValue,
                         "modelName": name,
@@ -191,23 +180,19 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
                     result[key] = modifiedArray
                 }
             } else if case .dateTime = field?.type,
-                case .some(.string(let deserializedValue)) = values[key]
-            {
+                case .some(.string(let deserializedValue)) = values[key] {
 
                 result[key] = deserializedValue
             } else if case .date = field?.type,
-                case .some(.string(let deserializedValue)) = values[key]
-            {
+                case .some(.string(let deserializedValue)) = values[key] {
 
                 result[key] = deserializedValue
             } else if case .time = field?.type,
-                case .some(.string(let deserializedValue)) = values[key]
-            {
+                case .some(.string(let deserializedValue)) = values[key] {
 
                 result[key] = deserializedValue
             } else if case .timestamp = field?.type,
-                case .some(.number(let deserializedValue)) = values[key]
-            {
+                case .some(.number(let deserializedValue)) = values[key] {
 
                 result[key] = NSNumber(value: Int(deserializedValue) )
             } else {

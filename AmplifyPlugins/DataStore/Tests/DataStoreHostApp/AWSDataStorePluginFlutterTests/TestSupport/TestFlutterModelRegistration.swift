@@ -21,13 +21,13 @@ struct TestFlutterModelRegistration: AmplifyModelRegistration {
         let jsonValue = try resolvedDecoder.decode(JSONValue.self, from: data)
         if case .array(let jsonArray) = jsonValue,
            case .object(let jsonObj) = jsonArray[0],
-           case .string(let id) = jsonObj["id"]
-        {
+           case .string(let id) = jsonObj["id"] {
             let model = FlutterSerializedModel(id: id, map: jsonObj)
             return model
         }
         throw DataStoreError.decodingError(
-            "Error in decoding \(jsonString)", "Please create an issue to amplify-flutter repo.")
+            "Error in decoding \(jsonString)", "Please create an issue to amplify-flutter repo."
+        )
     }
     func registerModels(registry: ModelRegistry.Type) {
         registry.register(modelType: Post.self, modelSchema: Post.schema, jsonDecoder: decoder)

@@ -27,11 +27,13 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
             syncEngine = MockRemoteSyncEngine()
-            storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .testDefault(),
-                                          syncEngine: syncEngine,
-                                          validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+            storageEngine = StorageEngine(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .testDefault(),
+                syncEngine: syncEngine,
+                validAPIPluginKey: validAPIPluginKey,
+                validAuthPluginKey: validAuthPluginKey
+            )
 
             ModelListDecoderRegistry.registerDecoder(DataStoreListDecoder.self)
             ModelProviderRegistry.registerDecoder(DataStoreModelDecoder.self)
@@ -61,9 +63,11 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         case .loaded:
             XCTFail("should be loaded, with `nil` element")
         }
-        guard let queriedComment = try await queryAsync(LazyChildComment4V2.self,
-                                                        byIdentifier: comment.id,
-                                                        eagerLoad: true)
+        guard let queriedComment = try await queryAsync(
+            LazyChildComment4V2.self,
+            byIdentifier: comment.id,
+            eagerLoad: true
+        )
         else {
             XCTFail("Failed to query saved comment")
             return
@@ -82,9 +86,11 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         let savedPost = try await saveAsync(post)
         XCTAssertEqual(savedPost.id, post.id)
 
-        guard let queriedPost = try await queryAsync(LazyParentPost4V2.self,
-                                                     byIdentifier: post.id,
-                                                     eagerLoad: true)
+        guard let queriedPost = try await queryAsync(
+            LazyParentPost4V2.self,
+            byIdentifier: post.id,
+            eagerLoad: true
+        )
         else {
             XCTFail("Failed to query saved post")
             return
@@ -105,8 +111,10 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         try await saveAsync(LazyChildComment4V2(content: "content"))
         try await saveAsync(LazyChildComment4V2(content: "content"))
 
-        let comments = try await queryAsync(LazyChildComment4V2.self,
-                                            eagerLoad: true)
+        let comments = try await queryAsync(
+            LazyChildComment4V2.self,
+            eagerLoad: true
+        )
         XCTAssertEqual(comments.count, 2)
     }
 
@@ -114,8 +122,10 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         try await saveAsync(LazyParentPost4V2(title: "title"))
         try await saveAsync(LazyParentPost4V2(title: "title"))
 
-        let comments = try await queryAsync(LazyParentPost4V2.self,
-                                            eagerLoad: true)
+        let comments = try await queryAsync(
+            LazyParentPost4V2.self,
+            eagerLoad: true
+        )
         XCTAssertEqual(comments.count, 2)
     }
 
@@ -125,8 +135,10 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         var comment = LazyChildComment4V2(content: "content", post: post)
 
         // Model.sqlValues tesitng
-        let sqlValues = comment.sqlValues(for: LazyChildComment4V2.schema.columns,
-                                          modelSchema: LazyChildComment4V2.schema)
+        let sqlValues = comment.sqlValues(
+            for: LazyChildComment4V2.schema.columns,
+            modelSchema: LazyChildComment4V2.schema
+        )
         XCTAssertEqual(sqlValues[0] as? String, comment.id)
         XCTAssertEqual(sqlValues[1] as? String, comment.content)
         XCTAssertNil(sqlValues[2]) // createdAt
@@ -144,24 +156,32 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
 
         // Update
         comment.content = "updatedContent"
-        let updateStatement = UpdateStatement(model: comment,
-                                              modelSchema: LazyChildComment4V2.schema,
-                                              condition: nil)
+        let updateStatement = UpdateStatement(
+            model: comment,
+            modelSchema: LazyChildComment4V2.schema,
+            condition: nil
+        )
         _ = try connection.prepare(updateStatement.stringValue).run(updateStatement.variables)
 
         // Select with eagerLoad true
-        let selectStatement = SelectStatement(from: LazyChildComment4V2.schema,
-                                              predicate: field("id").eq(comment.id),
-                                              sort: nil,
-                                              paginationInput: nil,
-                                              eagerLoad: true)
+        let selectStatement = SelectStatement(
+            from: LazyChildComment4V2.schema,
+            predicate: field("id").eq(comment.id),
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
         let rows = try connection.prepare(selectStatement.stringValue).run(selectStatement.variables)
-        _ = try rows.convertToModelValues(to: LazyChildComment4V2.self,
-                                          withSchema: LazyChildComment4V2.schema,
-                                          using: selectStatement)
-        let comments = try rows.convert(to: LazyChildComment4V2.self,
-                                        withSchema: LazyChildComment4V2.schema,
-                                        using: selectStatement)
+        _ = try rows.convertToModelValues(
+            to: LazyChildComment4V2.self,
+            withSchema: LazyChildComment4V2.schema,
+            using: selectStatement
+        )
+        let comments = try rows.convert(
+            to: LazyChildComment4V2.self,
+            withSchema: LazyChildComment4V2.schema,
+            using: selectStatement
+        )
         XCTAssertEqual(comments.count, 1)
         guard let comment = comments.first else {
             XCTFail("Should retrieve single comment")
@@ -182,20 +202,26 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
 
         // Select with eagerLoad false
-        let selectStatement2 = SelectStatement(from: LazyChildComment4V2.schema,
-                                               predicate: field("id").eq(comment.id),
-                                               sort: nil,
-                                               paginationInput: nil,
-                                               eagerLoad: false)
+        let selectStatement2 = SelectStatement(
+            from: LazyChildComment4V2.schema,
+            predicate: field("id").eq(comment.id),
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: false
+        )
         let rows2 = try connection.prepare(selectStatement2.stringValue).run(selectStatement2.variables)
-        _ = try rows2.convertToModelValues(to: LazyChildComment4V2.self,
-                                           withSchema: LazyChildComment4V2.schema,
-                                           using: selectStatement2,
-                                           eagerLoad: false)
-        let comments2 = try rows2.convert(to: LazyChildComment4V2.self,
-                                          withSchema: LazyChildComment4V2.schema,
-                                          using: selectStatement2,
-                                          eagerLoad: false)
+        _ = try rows2.convertToModelValues(
+            to: LazyChildComment4V2.self,
+            withSchema: LazyChildComment4V2.schema,
+            using: selectStatement2,
+            eagerLoad: false
+        )
+        let comments2 = try rows2.convert(
+            to: LazyChildComment4V2.self,
+            withSchema: LazyChildComment4V2.schema,
+            using: selectStatement2,
+            eagerLoad: false
+        )
         XCTAssertEqual(comments.count, 1)
         guard let comment2 = comments2.first else {
             XCTFail("Should retrieve single comment")
@@ -234,9 +260,11 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
 
         // The query with eagerLoad should load the post
-        guard let queriedCommentEagerLoadedPost = try await queryAsync(LazyChildComment4V2.self,
-                                                                       byIdentifier: comment.id,
-                                                                       eagerLoad: true)
+        guard let queriedCommentEagerLoadedPost = try await queryAsync(
+            LazyChildComment4V2.self,
+            byIdentifier: comment.id,
+            eagerLoad: true
+        )
         else {
             XCTFail("Failed to query saved comment")
             return
@@ -253,9 +281,11 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
 
         // The query with eagerLoad false should create a not loaded post for lazy loading
-        guard let queriedCommentLazyLoadedPost = try await queryAsync(LazyChildComment4V2.self,
-                                                                      byIdentifier: comment.id,
-                                                                      eagerLoad: false)
+        guard let queriedCommentLazyLoadedPost = try await queryAsync(
+            LazyChildComment4V2.self,
+            byIdentifier: comment.id,
+            eagerLoad: false
+        )
         else {
             XCTFail("Failed to query saved comment")
             return
@@ -285,9 +315,11 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         let comment = LazyChildComment4V2(content: "content", post: post)
         try await saveAsync(comment)
 
-        guard let queriedPost = try await queryAsync(LazyParentPost4V2.self,
-                                                     byIdentifier: post.id,
-                                                     eagerLoad: true)
+        guard let queriedPost = try await queryAsync(
+            LazyParentPost4V2.self,
+            byIdentifier: post.id,
+            eagerLoad: true
+        )
         else {
             XCTFail("Failed to query saved post")
             return
@@ -319,8 +351,10 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         try await saveAsync(comment2)
 
         // Query with eagerLoad true
-        var comments = try await queryAsync(LazyChildComment4V2.self,
-                                            eagerLoad: true)
+        var comments = try await queryAsync(
+            LazyChildComment4V2.self,
+            eagerLoad: true
+        )
 
         XCTAssertEqual(comments.count, 2)
         guard let comment1 = comments.first(where: { $0.id == "id1" }) else {
@@ -347,8 +381,10 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
 
         // Query with eagerLoad false
-        comments = try await queryAsync(LazyChildComment4V2.self,
-                                            eagerLoad: false)
+        comments = try await queryAsync(
+            LazyChildComment4V2.self,
+            eagerLoad: false
+        )
 
         XCTAssertEqual(comments.count, 2)
         guard let comment1 = comments.first(where: { $0.id == "id1" }) else {

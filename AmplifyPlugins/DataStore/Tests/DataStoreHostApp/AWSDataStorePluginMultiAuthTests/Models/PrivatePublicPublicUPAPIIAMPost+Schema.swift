@@ -11,8 +11,7 @@ import Foundation
 
 public extension PrivatePublicPublicUPAPIIAMPost {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case name
     case createdAt

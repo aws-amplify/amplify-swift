@@ -17,8 +17,10 @@ extension AWSDataStoreLazyLoadProjectTeam5Tests {
     func testProjectSelectionSets() {
         setUpModelRegistrationOnly(withModels: ProjectTeam5Models())
         continueAfterFailure = true
-        let project = Project(projectId: UUID().uuidString,
-                              name: "name")
+        let project = Project(
+            projectId: UUID().uuidString,
+            name: "name"
+        )
         // Create
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: project, modelSchema: Project.schema)
         let createDocument = """

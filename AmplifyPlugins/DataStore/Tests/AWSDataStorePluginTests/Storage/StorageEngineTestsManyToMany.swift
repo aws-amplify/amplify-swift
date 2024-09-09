@@ -27,11 +27,13 @@ class StorageEngineTestsManyToMany: StorageEngineTestsBase {
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
             syncEngine = MockRemoteSyncEngine()
-            storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .testDefault(),
-                                          syncEngine: syncEngine,
-                                          validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+            storageEngine = StorageEngine(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .testDefault(),
+                syncEngine: syncEngine,
+                validAPIPluginKey: validAPIPluginKey,
+                validAuthPluginKey: validAuthPluginKey
+            )
             ModelRegistry.register(modelType: M2MPost.self)
             ModelRegistry.register(modelType: M2MPostEditor.self)
             ModelRegistry.register(modelType: M2MUser.self)
@@ -74,22 +76,28 @@ class StorageEngineTestsManyToMany: StorageEngineTestsBase {
         }
 
         guard case .success =
-            querySingleModelSynchronous(modelType: M2MPost.self,
-                                        predicate: M2MPost.keys.id == post1.id)
+            querySingleModelSynchronous(
+                modelType: M2MPost.self,
+                predicate: M2MPost.keys.id == post1.id
+            )
         else {
                                             XCTFail("Failed to query M2MPost")
                                             return
         }
         guard case .success =
-            querySingleModelSynchronous(modelType: M2MPostEditor.self,
-                                        predicate: M2MPostEditor.keys.id == postEditors1.id)
+            querySingleModelSynchronous(
+                modelType: M2MPostEditor.self,
+                predicate: M2MPostEditor.keys.id == postEditors1.id
+            )
         else {
                                             XCTFail("Failed to query M2MPostEditor")
                                             return
         }
         guard case .success =
-            querySingleModelSynchronous(modelType: M2MUser.self,
-                                        predicate: M2MUser.keys.id == user1.id)
+            querySingleModelSynchronous(
+                modelType: M2MUser.self,
+                predicate: M2MUser.keys.id == user1.id
+            )
         else {
                                             XCTFail("Failed to query M2MUser")
                                             return
@@ -102,8 +110,10 @@ class StorageEngineTestsManyToMany: StorageEngineTestsBase {
             mutationEvents.fulfill()
             completion(.success(submittedMutationEvent))
         }
-        guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: M2MPost.self,
-                                                                    withId: post1.id)
+        guard case .success = deleteModelSynchronousOrFailOtherwise(
+            modelType: M2MPost.self,
+            withId: post1.id
+        )
         else {
             XCTFail("Failed to delete post1")
             return
@@ -136,22 +146,28 @@ class StorageEngineTestsManyToMany: StorageEngineTestsBase {
         }
 
         guard case .success =
-            querySingleModelSynchronous(modelType: M2MPost.self,
-                                        predicate: M2MPost.keys.id == post1.id)
+            querySingleModelSynchronous(
+                modelType: M2MPost.self,
+                predicate: M2MPost.keys.id == post1.id
+            )
         else {
                                             XCTFail("Failed to query M2MPost")
                                             return
         }
         guard case .success =
-            querySingleModelSynchronous(modelType: M2MPostEditor.self,
-                                        predicate: M2MPostEditor.keys.id == postEditors1.id)
+            querySingleModelSynchronous(
+                modelType: M2MPostEditor.self,
+                predicate: M2MPostEditor.keys.id == postEditors1.id
+            )
         else {
                                             XCTFail("Failed to query M2MPostEditor")
                                             return
         }
         guard case .success =
-            querySingleModelSynchronous(modelType: M2MUser.self,
-                                        predicate: M2MUser.keys.id == user1.id)
+            querySingleModelSynchronous(
+                modelType: M2MUser.self,
+                predicate: M2MUser.keys.id == user1.id
+            )
         else {
                                             XCTFail("Failed to query M2MUser")
                                             return
@@ -164,8 +180,10 @@ class StorageEngineTestsManyToMany: StorageEngineTestsBase {
             mutationEvents.fulfill()
             completion(.success(submittedMutationEvent))
         }
-        guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: M2MUser.self,
-                                                                    withId: user1.id)
+        guard case .success = deleteModelSynchronousOrFailOtherwise(
+            modelType: M2MUser.self,
+            withId: user1.id
+        )
         else {
             XCTFail("Failed to delete post1")
             return

@@ -42,11 +42,13 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator =
-        AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
-                                   authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                   api: apiPlugin,
-                                   reconciliationQueue: reconciliationQueue,
-                                   storageAdapter: storageAdapter)
+        AWSInitialSyncOrchestrator(
+            dataStoreConfiguration: .testDefault(),
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            api: apiPlugin,
+            reconciliationQueue: reconciliationQueue,
+            storageAdapter: storageAdapter
+        )
 
         let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
         let syncQueriesStartedReceived = expectation(description: "syncQueriesStarted received")
@@ -138,11 +140,13 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator =
-        AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
-                                   authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                   api: apiPlugin,
-                                   reconciliationQueue: reconciliationQueue,
-                                   storageAdapter: storageAdapter)
+        AWSInitialSyncOrchestrator(
+            dataStoreConfiguration: .testDefault(),
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            api: apiPlugin,
+            reconciliationQueue: reconciliationQueue,
+            storageAdapter: storageAdapter
+        )
 
         let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
         let syncQueriesStartedReceived = expectation(description: "syncQueriesStarted received")
@@ -246,11 +250,13 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
 
-        let orchestrator = AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
-                                                      authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                                      api: apiPlugin,
-                                                      reconciliationQueue: reconciliationQueue,
-                                                      storageAdapter: storageAdapter)
+        let orchestrator = AWSInitialSyncOrchestrator(
+            dataStoreConfiguration: .testDefault(),
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            api: apiPlugin,
+            reconciliationQueue: reconciliationQueue,
+            storageAdapter: storageAdapter
+        )
         let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         syncStartedReceived.expectedFulfillmentCount = 2
@@ -258,8 +264,9 @@ class InitialSyncOrchestratorTests: XCTestCase {
         finishedReceived.expectedFulfillmentCount = 2
         let sink = orchestrator
             .publisher
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: { value in
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { value in
                     switch value {
                     case .started:
                         syncStartedReceived.fulfill()
@@ -268,7 +275,8 @@ class InitialSyncOrchestratorTests: XCTestCase {
                     default:
                         break
                     }
-                  })
+                  }
+            )
 
         orchestrator.sync { _ in
             syncCallbackReceived.fulfill()
@@ -312,11 +320,13 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator =
-            AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
-                                       authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                       api: apiPlugin,
-                                       reconciliationQueue: reconciliationQueue,
-                                       storageAdapter: storageAdapter)
+            AWSInitialSyncOrchestrator(
+                dataStoreConfiguration: .testDefault(),
+                authModeStrategy: AWSDefaultAuthModeStrategy(),
+                api: apiPlugin,
+                reconciliationQueue: reconciliationQueue,
+                storageAdapter: storageAdapter
+            )
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         syncStartedReceived.expectedFulfillmentCount = 2
@@ -324,8 +334,9 @@ class InitialSyncOrchestratorTests: XCTestCase {
         finishedReceived.expectedFulfillmentCount = 2
         let sink = orchestrator
             .publisher
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: { value in
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { value in
                     switch value {
                     case .started:
                         syncStartedReceived.fulfill()
@@ -334,7 +345,8 @@ class InitialSyncOrchestratorTests: XCTestCase {
                     default:
                         break
                     }
-                  })
+                  }
+            )
 
         orchestrator.sync { _ in }
 
@@ -385,11 +397,13 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator =
-            AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
-                                       authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                       api: apiPlugin,
-                                       reconciliationQueue: reconciliationQueue,
-                                       storageAdapter: storageAdapter)
+            AWSInitialSyncOrchestrator(
+                dataStoreConfiguration: .testDefault(),
+                authModeStrategy: AWSDefaultAuthModeStrategy(),
+                api: apiPlugin,
+                reconciliationQueue: reconciliationQueue,
+                storageAdapter: storageAdapter
+            )
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         syncStartedReceived.expectedFulfillmentCount = 2
@@ -397,8 +411,9 @@ class InitialSyncOrchestratorTests: XCTestCase {
         finishedReceived.expectedFulfillmentCount = 2
         let sink = orchestrator
             .publisher
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: { value in
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { value in
                     switch value {
                     case .started:
                         syncStartedReceived.fulfill()
@@ -407,7 +422,8 @@ class InitialSyncOrchestratorTests: XCTestCase {
                     default:
                         break
                     }
-                  })
+                  }
+            )
 
         orchestrator.sync { _ in }
 
@@ -429,28 +445,36 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator =
-        AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
-                                   authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                   api: apiPlugin,
-                                   reconciliationQueue: reconciliationQueue,
-                                   storageAdapter: storageAdapter)
+        AWSInitialSyncOrchestrator(
+            dataStoreConfiguration: .testDefault(),
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            api: apiPlugin,
+            reconciliationQueue: reconciliationQueue,
+            storageAdapter: storageAdapter
+        )
 
-        let error1 = DataStoreError.api(APIError.httpStatusError(401, HTTPURLResponse(url: URL(string: "https://aws.amazon.com")!,
-                                                                   statusCode: 401,
-                                                                   httpVersion: nil,
-                                                                   headerFields: nil)!))
+        let error1 = DataStoreError.api(APIError.httpStatusError(401, HTTPURLResponse(
+            url: URL(string: "https://aws.amazon.com")!,
+            statusCode: 401,
+            httpVersion: nil,
+            headerFields: nil
+        )!))
         XCTAssertTrue(orchestrator.isUnauthorizedError(DataStoreError.sync("", "", error1)))
 
-        let error2 = DataStoreError.api(APIError.httpStatusError(403, HTTPURLResponse(url: URL(string: "https://aws.amazon.com")!,
-                                                                   statusCode: 403,
-                                                                   httpVersion: nil,
-                                                                   headerFields: nil)!))
+        let error2 = DataStoreError.api(APIError.httpStatusError(403, HTTPURLResponse(
+            url: URL(string: "https://aws.amazon.com")!,
+            statusCode: 403,
+            httpVersion: nil,
+            headerFields: nil
+        )!))
         XCTAssertTrue(orchestrator.isUnauthorizedError(DataStoreError.sync("", "", error2)))
 
-        let error3 = DataStoreError.api(APIError.httpStatusError(404, HTTPURLResponse(url: URL(string: "https://aws.amazon.com")!,
-                                                                   statusCode: 404,
-                                                                   httpVersion: nil,
-                                                                   headerFields: nil)!))
+        let error3 = DataStoreError.api(APIError.httpStatusError(404, HTTPURLResponse(
+            url: URL(string: "https://aws.amazon.com")!,
+            statusCode: 404,
+            httpVersion: nil,
+            headerFields: nil
+        )!))
         XCTAssertFalse(orchestrator.isUnauthorizedError(DataStoreError.sync("", "", error3)))
 
         let error4 = DataStoreError.api(APIError.operationError("Unauthorized error", "", nil))

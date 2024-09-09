@@ -24,10 +24,12 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
         await setup(withModels: PostComment4Models())
 
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            post4CommentsPostId: post.postId,
+            post4CommentsTitle: post.title
+        )
         let savedPost = try await createAndWaitForSync(post)
         let savedComment = try await createAndWaitForSync(comment)
     }
@@ -35,10 +37,12 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
     func testLazyLoad() async throws {
         await setup(withModels: PostComment4Models())
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            post4CommentsPostId: post.postId,
+            post4CommentsTitle: post.title
+        )
         let savedPost = try await createAndWaitForSync(post)
         let savedComment = try await createAndWaitForSync(comment)
         assertComment(savedComment, contains: savedPost)
@@ -63,15 +67,18 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
         XCTAssertNil(comment.post4CommentsTitle)
     }
 
-    func assertPost(_ post: Post,
-                    canLazyLoad comment: Comment) async throws
-    {
+    func assertPost(
+        _ post: Post,
+        canLazyLoad comment: Comment
+    ) async throws {
         guard let comments = post.comments else {
             XCTFail("Missing comments on post")
             return
         }
-        assertList(comments, state: .isNotLoaded(associatedIds: [post.postId, post.title],
-                                                 associatedFields: ["post4CommentsPostId", "post4CommentsTitle"]))
+        assertList(comments, state: .isNotLoaded(
+            associatedIds: [post.postId, post.title],
+            associatedFields: ["post4CommentsPostId", "post4CommentsTitle"]
+        ))
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))
         guard let comment = comments.first else {
@@ -99,10 +106,12 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
     func testUpdateFromQueriedComment() async throws {
         await setup(withModels: PostComment4Models())
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            post4CommentsPostId: post.postId,
+            post4CommentsTitle: post.title
+        )
         let savedPost = try await createAndWaitForSync(post)
         let savedComment = try await createAndWaitForSync(comment)
         let queriedComment = try await query(for: savedComment)
@@ -116,10 +125,12 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
         await setup(withModels: PostComment4Models())
 
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            post4CommentsPostId: post.postId,
+            post4CommentsTitle: post.title
+        )
         _ = try await createAndWaitForSync(post)
         let savedComment = try await createAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
@@ -137,10 +148,12 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
         await setup(withModels: PostComment4Models())
 
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            post4CommentsPostId: post.postId,
+            post4CommentsTitle: post.title
+        )
         _ = try await createAndWaitForSync(post)
         let savedComment = try await createAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
@@ -158,10 +171,12 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
         await setup(withModels: PostComment4Models())
 
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            post4CommentsPostId: post.postId,
+            post4CommentsTitle: post.title
+        )
         let savedPost = try await createAndWaitForSync(post)
         let savedComment = try await createAndWaitForSync(comment)
         try await deleteAndWaitForSync(savedPost)
@@ -177,10 +192,12 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
         await setup(withModels: PostComment4Models())
         try await startAndWaitForReady()
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            post4CommentsPostId: post.postId,
+            post4CommentsTitle: post.title
+        )
         let mutationEventReceived = expectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(Post.self)
         Task {
@@ -188,8 +205,7 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedPost = try? mutationEvent.decodeModel(as: Post.self),
-                   receivedPost.postId == post.postId
-                {
+                   receivedPost.postId == post.postId {
                     let savedComment = try await createAndWaitForSync(comment)
                     try await assertPost(receivedPost, canLazyLoad: savedComment)
                     mutationEventReceived.fulfill()
@@ -213,10 +229,12 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
         try await startAndWaitForReady()
         let post = Post(postId: UUID().uuidString, title: "title")
         let savedPost = try await createAndWaitForSync(post)
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            post4CommentsPostId: post.postId,
+            post4CommentsTitle: post.title
+        )
         let mutationEventReceived = expectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(Comment.self)
         Task {
@@ -224,8 +242,7 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedComment = try? mutationEvent.decodeModel(as: Comment.self),
-                   receivedComment.commentId == comment.commentId
-                {
+                   receivedComment.commentId == comment.commentId {
                     assertComment(receivedComment, contains: savedPost)
                     mutationEventReceived.fulfill()
                 }
@@ -247,10 +264,12 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
         await setup(withModels: PostComment4Models())
         try await startAndWaitForReady()
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            post4CommentsPostId: post.postId,
+            post4CommentsTitle: post.title
+        )
         let snapshotReceived = expectation(description: "Received query snapshot")
         let querySnapshots = Amplify.DataStore.observeQuery(for: Post.self, where: Post.keys.postId == post.postId)
         Task {
@@ -280,10 +299,12 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
 
         let post = Post(postId: UUID().uuidString, title: "title")
         let savedPost = try await createAndWaitForSync(post)
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            post4CommentsPostId: post.postId,
+            post4CommentsTitle: post.title
+        )
         let snapshotReceived = expectation(description: "Received query snapshot")
         let querySnapshots = Amplify.DataStore.observeQuery(for: Comment.self, where: Comment.keys.commentId == comment.commentId)
         Task {

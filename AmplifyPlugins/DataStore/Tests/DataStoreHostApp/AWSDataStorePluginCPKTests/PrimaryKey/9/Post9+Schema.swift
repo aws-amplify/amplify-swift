@@ -11,8 +11,7 @@ import Foundation
 
 public extension Post9 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case postId
     case title
     case comments

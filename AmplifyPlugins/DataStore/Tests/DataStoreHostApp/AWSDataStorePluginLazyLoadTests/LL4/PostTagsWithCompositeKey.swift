@@ -26,22 +26,26 @@ public struct PostTagsWithCompositeKey: Model {
     public var createdAt: Temporal.DateTime?
     public var updatedAt: Temporal.DateTime?
 
-    public init(id: String = UUID().uuidString,
-                postWithTagsCompositeKey: PostWithTagsCompositeKey,
-                tagWithCompositeKey: TagWithCompositeKey)
-    {
-        self.init(id: id,
-                  postWithTagsCompositeKey: postWithTagsCompositeKey,
-                  tagWithCompositeKey: tagWithCompositeKey,
-                  createdAt: nil,
-                  updatedAt: nil)
+    public init(
+        id: String = UUID().uuidString,
+        postWithTagsCompositeKey: PostWithTagsCompositeKey,
+        tagWithCompositeKey: TagWithCompositeKey
+    ) {
+        self.init(
+            id: id,
+            postWithTagsCompositeKey: postWithTagsCompositeKey,
+            tagWithCompositeKey: tagWithCompositeKey,
+            createdAt: nil,
+            updatedAt: nil
+        )
     }
-    init(id: String = UUID().uuidString,
-                  postWithTagsCompositeKey: PostWithTagsCompositeKey,
-                  tagWithCompositeKey: TagWithCompositeKey,
-                  createdAt: Temporal.DateTime? = nil,
-                  updatedAt: Temporal.DateTime? = nil)
-    {
+    init(
+        id: String = UUID().uuidString,
+        postWithTagsCompositeKey: PostWithTagsCompositeKey,
+        tagWithCompositeKey: TagWithCompositeKey,
+        createdAt: Temporal.DateTime? = nil,
+        updatedAt: Temporal.DateTime? = nil
+    ) {
         self.id = id
         self._postWithTagsCompositeKey = LazyReference(postWithTagsCompositeKey)
         self._tagWithCompositeKey = LazyReference(tagWithCompositeKey)

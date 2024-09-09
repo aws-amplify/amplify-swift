@@ -40,13 +40,17 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
-            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
-                                                  dataStoreConfiguration: .testDefault())
-            storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .testDefault(),
-                                          syncEngine: syncEngine,
-                                          validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+            let syncEngine = try RemoteSyncEngine(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .testDefault()
+            )
+            storageEngine = StorageEngine(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .testDefault(),
+                syncEngine: syncEngine,
+                validAPIPluginKey: validAPIPluginKey,
+                validAuthPluginKey: validAuthPluginKey
+            )
         } catch {
             XCTFail(String(describing: error))
             return
@@ -55,11 +59,13 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                 storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                                 dataStorePublisher: dataStorePublisher,
-                                                 validAPIPluginKey: validAPIPluginKey,
-                                                 validAuthPluginKey: validAuthPluginKey)
+        let dataStorePlugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: validAPIPluginKey,
+            validAuthPluginKey: validAuthPluginKey
+        )
 
         let apiConfig = APICategoryConfiguration(plugins: [apiPlugin.key: true])
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [dataStorePlugin.key: true])

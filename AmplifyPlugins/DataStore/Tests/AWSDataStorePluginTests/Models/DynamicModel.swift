@@ -13,9 +13,10 @@ struct DynamicModel: Model, JSONValueHolder {
     public let id: String
     public var values: [String: JSONValue]
 
-    public init(id: String = UUID().uuidString,
-                values: [String: JSONValue])
-    {
+    public init(
+        id: String = UUID().uuidString,
+        values: [String: JSONValue]
+    ) {
         self.id = id
         var valueWIthId = values
         valueWIthId["id"] = .string(id)
@@ -58,24 +59,20 @@ struct DynamicModel: Model, JSONValueHolder {
     public func jsonValue(for key: String, modelSchema: ModelSchema) -> Any?? {
         let field = modelSchema.field(withName: key)
         if case .int = field?.type,
-           case .some(.number(let deserializedValue)) = values[key]
-        {
+           case .some(.number(let deserializedValue)) = values[key] {
             return Int(deserializedValue)
 
         } else if case .dateTime = field?.type,
-                  case .some(.string(let deserializedValue)) = values[key]
-        {
+                  case .some(.string(let deserializedValue)) = values[key] {
 
             return try? Temporal.DateTime(iso8601String: deserializedValue)
 
         } else if case .date = field?.type,
-                  case .some(.string(let deserializedValue)) = values[key]
-        {
+                  case .some(.string(let deserializedValue)) = values[key] {
             return try? Temporal.Date(iso8601String: deserializedValue)
 
         } else if case .time = field?.type,
-                  case .some(.string(let deserializedValue)) = values[key]
-        {
+                  case .some(.string(let deserializedValue)) = values[key] {
             return try? Temporal.Time(iso8601String: deserializedValue)
 
         }

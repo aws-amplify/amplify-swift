@@ -59,10 +59,11 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
 
     /// Setup DataStore with given models
     /// - Parameter models: DataStore models
-    func setup(withModels models: AmplifyModelRegistration,
-               logLevel: LogLevel = .verbose,
-               clearOnTearDown: Bool = false) async
-    {
+    func setup(
+        withModels models: AmplifyModelRegistration,
+        logLevel: LogLevel = .verbose,
+        clearOnTearDown: Bool = false
+    ) async {
         self.clearOnTearDown = clearOnTearDown
         do {
             setupConfig()
@@ -74,13 +75,17 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
                 configuration: .custom(
                     errorHandler: { error in Amplify.Logging.error("DataStore ErrorHandler error: \(error)")},
                     syncMaxRecords: 100,
-                    disableSubscriptions: { false })))
+                    disableSubscriptions: { false }
+                )
+            ))
             #else
             try Amplify.add(plugin: AWSDataStorePlugin(
                 modelRegistration: models,
                 configuration: .custom(
                     errorHandler: { error in Amplify.Logging.error("DataStore ErrorHandler error: \(error)")},
-                    syncMaxRecords: 100)))
+                    syncMaxRecords: 100
+                )
+            ))
             #endif
             try Amplify.add(plugin: AWSAPIPlugin(sessionFactory: AmplifyURLSessionFactory()))
             try Amplify.configure(amplifyConfig)
@@ -91,10 +96,11 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         }
     }
 
-    func setUpDataStoreOnly(withModels models: AmplifyModelRegistration,
-                            logLevel: LogLevel = .verbose,
-                            clearOnTearDown: Bool = false) async
-    {
+    func setUpDataStoreOnly(
+        withModels models: AmplifyModelRegistration,
+        logLevel: LogLevel = .verbose,
+        clearOnTearDown: Bool = false
+    ) async {
         self.clearOnTearDown = clearOnTearDown
         do {
             setupConfig()
@@ -114,9 +120,10 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         }
     }
 
-    func setUpModelRegistrationOnly(withModels models: AmplifyModelRegistration,
-                                    logLevel: LogLevel = .verbose)
-    {
+    func setUpModelRegistrationOnly(
+        withModels models: AmplifyModelRegistration,
+        logLevel: LogLevel = .verbose
+    ) {
         modelsOnly = true
         models.registerModels(registry: ModelRegistry.self)
     }
@@ -257,9 +264,10 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         case loaded(model: M?)
     }
 
-    func assertLazyReference<M: Model>(_ lazyModel: LazyReference<M>,
-                                   state: AssertLazyModelState<M>)
-    {
+    func assertLazyReference<M: Model>(
+        _ lazyModel: LazyReference<M>,
+        state: AssertLazyModelState<M>
+    ) {
         switch state {
         case .notLoaded(let expectedIdentifiers):
             if case .notLoaded(let identifiers) = lazyModel.modelProvider.getState() {
@@ -294,12 +302,18 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         let identifierName = model.schema.primaryKey.sqlName
         let queryPredicate: QueryPredicate = field(identifierName).eq(model.identifier)
 
-        let queriedModels = try await Amplify.DataStore.query(M.self,
-                                                              where: queryPredicate)
-        let metadataId = MutationSyncMetadata.identifier(modelName: model.modelName,
-                                                         modelId: model.identifier)
-        guard let metadata = try await Amplify.DataStore.query(MutationSyncMetadata.self,
-                                                               byId: metadataId)
+        let queriedModels = try await Amplify.DataStore.query(
+            M.self,
+            where: queryPredicate
+        )
+        let metadataId = MutationSyncMetadata.identifier(
+            modelName: model.modelName,
+            modelId: model.identifier
+        )
+        guard let metadata = try await Amplify.DataStore.query(
+            MutationSyncMetadata.self,
+            byId: metadataId
+        )
         else {
             XCTFail("Could not retrieve metadata for model \(model)")
             throw "Could not retrieve metadata for model \(model)"
@@ -312,8 +326,10 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         let identifierName = model.schema.primaryKey.sqlName
         let queryPredicate: QueryPredicate = field(identifierName).eq(model.identifier)
 
-        let queriedModels = try await Amplify.DataStore.query(M.self,
-                                                              where: queryPredicate)
+        let queriedModels = try await Amplify.DataStore.query(
+            M.self,
+            where: queryPredicate
+        )
         if queriedModels.count > 1 {
             XCTFail("Expected to find one model, found \(queriedModels.count). \(queriedModels)")
             throw "Expected to find one model, found \(queriedModels.count). \(queriedModels)"
@@ -333,8 +349,7 @@ enum DataStoreDebugger {
     static func getAdapter() -> SQLiteStorageEngineAdapter? {
         if let dataStorePlugin = tryGetPlugin(),
            let storageEngine = dataStorePlugin.storageEngine as? StorageEngine,
-           let adapter = storageEngine.storageAdapter as? SQLiteStorageEngineAdapter
-        {
+           let adapter = storageEngine.storageAdapter as? SQLiteStorageEngineAdapter {
             return adapter
         }
 

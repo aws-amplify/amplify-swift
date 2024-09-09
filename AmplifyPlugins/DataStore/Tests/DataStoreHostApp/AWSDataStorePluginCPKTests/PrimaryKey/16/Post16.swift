@@ -15,19 +15,23 @@ public struct Post16: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(postId: String,
-      sk: String)
-  {
-    self.init(postId: postId,
+  public init(
+    postId: String,
+    sk: String
+  ) {
+    self.init(
+      postId: postId,
       sk: sk,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(postId: String,
-      sk: String,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    postId: String,
+    sk: String,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.postId = postId
       self.sk = sk
       self.createdAt = createdAt

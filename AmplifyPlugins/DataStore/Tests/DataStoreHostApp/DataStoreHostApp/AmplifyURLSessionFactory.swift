@@ -15,9 +15,11 @@ class AmplifyURLSessionFactory: URLSessionBehaviorFactory {
         configuration.tlsMinimumSupportedProtocolVersion = .TLSv12
         configuration.tlsMaximumSupportedProtocolVersion = .TLSv13
 
-        let session = URLSession(configuration: configuration,
-                                 delegate: urlSessionDelegate,
-                                 delegateQueue: nil)
+        let session = URLSession(
+            configuration: configuration,
+            delegate: urlSessionDelegate,
+            delegateQueue: nil
+        )
         return AmplifyURLSession(session: session)
     }
 

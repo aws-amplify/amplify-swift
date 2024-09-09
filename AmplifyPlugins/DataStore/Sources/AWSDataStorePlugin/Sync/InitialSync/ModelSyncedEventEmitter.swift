@@ -25,8 +25,10 @@ enum IncomingModelSyncedEmitterEvent {
 ///     - Check if it `ModelSyncedEvent` should be emitted, if so, emit it.
 ///     - Then send the mutation event which was used in the check above.
 final class ModelSyncedEventEmitter {
-    private let queue = DispatchQueue(label: "com.amazonaws.ModelSyncedEventEmitterQueue",
-                                      target: DispatchQueue.global())
+    private let queue = DispatchQueue(
+        label: "com.amazonaws.ModelSyncedEventEmitterQueue",
+        target: DispatchQueue.global()
+    )
 
     private var syncOrchestratorSink: AnyCancellable?
     private var reconciliationQueueSink: AnyCancellable?
@@ -50,10 +52,11 @@ final class ModelSyncedEventEmitter {
     /// Used within ModelSyncedEventEmitter instances, not thread-safe, is accessed serially under DispatchQueue.
     var dispatchedModelSyncedEvent: Bool
 
-    init(modelSchema: ModelSchema,
-         initialSyncOrchestrator: InitialSyncOrchestrator?,
-         reconciliationQueue: IncomingEventReconciliationQueue?)
-    {
+    init(
+        modelSchema: ModelSchema,
+        initialSyncOrchestrator: InitialSyncOrchestrator?,
+        reconciliationQueue: IncomingEventReconciliationQueue?
+    ) {
         self.modelSchema = modelSchema
         self.recordsReceived = 0
         self.reconciledReceived = 0
@@ -67,19 +70,23 @@ final class ModelSyncedEventEmitter {
             .publisher
             .receive(on: queue)
             .filter { [weak self] in self?.filterSyncOperationEvent($0) == true }
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: { [weak self] value in
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] value in
                     self?.onReceiveSyncOperationEvent(value: value)
-            })
+            }
+            )
 
         self.reconciliationQueueSink = reconciliationQueue?
             .publisher
             .receive(on: queue)
             .filter { [weak self] in self?.filterReconciliationQueueEvent($0) == true }
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: { [weak self] value in
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] value in
                     self?.onReceiveReconciliationEvent(value: value)
-            })
+            }
+            )
     }
 
     /// Filtering `InitialSyncOperationEvent`s that come from `InitialSyncOperation` of the same ModelType

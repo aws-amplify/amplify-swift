@@ -45,8 +45,10 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     var request: ObserveQueryRequest
     var context = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>()
 
-    private let serialQueue = DispatchQueue(label: "com.amazonaws.AWSDataStoreObseverQueryOperation.serialQueue",
-                                            target: DispatchQueue.global())
+    private let serialQueue = DispatchQueue(
+        label: "com.amazonaws.AWSDataStoreObseverQueryOperation.serialQueue",
+        target: DispatchQueue.global()
+    )
     private let itemsChangedPeriodicPublishTimeInSeconds: DispatchQueue.SchedulerTimeType.Stride = 2
 
     let modelType: M.Type
@@ -74,18 +76,19 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     var dataStoreStatePublisher: AnyPublisher<DataStoreState, DataStoreError>
     var dataStoreStateSink: AnyCancellable?
 
-    init(request: ObserveQueryRequest = .init(options: []),
-         context: InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>> = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>(),
-         modelType: M.Type,
-         modelSchema: ModelSchema,
-         predicate: QueryPredicate?,
-         sortInput: [QuerySortDescriptor]?,
-         storageEngine: StorageEngineBehavior,
-         dataStorePublisher: ModelSubcriptionBehavior,
-         dataStoreConfiguration: DataStoreConfiguration,
-         dispatchedModelSyncedEvent: AtomicValue<Bool>,
-         dataStoreStatePublisher: AnyPublisher<DataStoreState, DataStoreError>)
-    {
+    init(
+        request: ObserveQueryRequest = .init(options: []),
+        context: InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>> = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>(),
+        modelType: M.Type,
+        modelSchema: ModelSchema,
+        predicate: QueryPredicate?,
+        sortInput: [QuerySortDescriptor]?,
+        storageEngine: StorageEngineBehavior,
+        dataStorePublisher: ModelSubcriptionBehavior,
+        dataStoreConfiguration: DataStoreConfiguration,
+        dispatchedModelSyncedEvent: AtomicValue<Bool>,
+        dataStoreStatePublisher: AnyPublisher<DataStoreState, DataStoreError>
+    ) {
         self.request = request
         self.context = context
 
@@ -209,7 +212,8 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
                     fail(error)
                     return
                 }
-            })
+            }
+        )
     }
 
     // MARK: Observe item changes
@@ -243,15 +247,19 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
                         : 1
                     )
                 )
-                .sink(receiveCompletion: onReceiveCompletion(completed:),
-                      receiveValue: onItemsChangeDuringSync(mutationEvents:))
+                .sink(
+                    receiveCompletion: onReceiveCompletion(completed:),
+                    receiveValue: onItemsChangeDuringSync(mutationEvents:)
+                )
 
             itemsChangedSink = dataStorePublisher.publisher
                 .filter { _ in self.dispatchedModelSyncedEvent.get() }
                 .filter(filterByModelName(mutationEvent:))
                 .receive(on: serialQueue)
-                .sink(receiveCompletion: onReceiveCompletion(completed:),
-                      receiveValue: onItemChangeAfterSync(mutationEvent:))
+                .sink(
+                    receiveCompletion: onReceiveCompletion(completed:),
+                    receiveValue: onItemChangeAfterSync(mutationEvent:)
+                )
         }
     }
 
@@ -259,8 +267,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
         modelSyncedEventSink = Amplify.Hub.publisher(for: .dataStore).sink { event in
             if event.eventName == HubPayload.EventName.DataStore.modelSynced,
                let modelSyncedEvent = event.data as? ModelSyncedEvent,
-               modelSyncedEvent.modelName == self.modelSchema.name
-            {
+               modelSyncedEvent.modelName == self.modelSchema.name {
                 self.serialQueue.async {
                     self.sendSnapshot()
                 }

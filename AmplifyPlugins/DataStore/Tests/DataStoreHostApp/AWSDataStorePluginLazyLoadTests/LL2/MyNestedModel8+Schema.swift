@@ -11,8 +11,7 @@ import Foundation
 
 public extension MyNestedModel8 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case nestedName
     case notes

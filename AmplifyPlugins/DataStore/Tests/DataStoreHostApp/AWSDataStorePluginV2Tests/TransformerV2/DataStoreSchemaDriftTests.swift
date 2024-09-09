@@ -60,11 +60,13 @@ class DataStoreSchemaDriftTests: SyncEngineIntegrationV2TestBase {
         input.updateValue("THREE", forKey: "enumValue")
         var variables = [String: Any]()
         variables.updateValue(input, forKey: "input")
-        let requestWithEnumThree = GraphQLRequest(document: request.document,
-                                                  variables: variables,
-                                                  responseType: request.responseType,
-                                                  decodePath: request.decodePath,
-                                                  options: request.options)
+        let requestWithEnumThree = GraphQLRequest(
+            document: request.document,
+            variables: variables,
+            responseType: request.responseType,
+            decodePath: request.decodePath,
+            options: request.options
+        )
         Amplify.API.mutate(request: requestWithEnumThree) { result in
             switch result {
             case .success(let response):

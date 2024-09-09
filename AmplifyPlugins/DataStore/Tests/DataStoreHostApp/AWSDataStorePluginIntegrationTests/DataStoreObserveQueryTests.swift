@@ -61,8 +61,10 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             querySnapshotsCancelled.fulfill()
         }
         let receivedPost = expectation(description: "received Post")
-        try await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()),
-                                         postSyncedExpctation: receivedPost)
+        try await savePostAndWaitForSync(
+            Post(title: "title", content: "content", createdAt: .now()),
+            postSyncedExpctation: receivedPost
+        )
         await fulfillment(of: [snapshotWithIsSynced], timeout: 100)
         task.cancel()
         await fulfillment(of: [querySnapshotsCancelled], timeout: 10)
@@ -175,7 +177,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                     modelPredicate: { Post.keys.createdAt.ge(startTime) }
                 )
             ],
-            disableSubscriptions: { false })
+            disableSubscriptions: { false }
+        )
         #else
         let configuration: DataStoreConfiguration = .custom(
             syncMaxRecords: 100,
@@ -184,7 +187,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                     modelSchema: Post.schema,
                     modelPredicate: { Post.keys.createdAt.ge(startTime) }
                 )
-            ])
+            ]
+        )
         #endif
         await setUp(
             withModels: TestModelRegistration(),
@@ -223,8 +227,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 snapshotWithIsSynced.fulfill()
             } else if snapshotWithIsSyncedFulfilled {
                 if querySnapshot.items.count >= 4
-                   && querySnapshot.items.allSatisfy({ $0.title.contains(randomTitle)})
-                {
+                   && querySnapshot.items.allSatisfy({ $0.title.contains(randomTitle)}) {
                     receivedPostFromObserveQuery.fulfill()
                 }
             }
@@ -315,8 +318,10 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             }
         }.store(in: &cancellables)
         let receivedPost = expectation(description: "received Post")
-        try await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()),
-                                         postSyncedExpctation: receivedPost)
+        try await savePostAndWaitForSync(
+            Post(title: "title", content: "content", createdAt: .now()),
+            postSyncedExpctation: receivedPost
+        )
         await fulfillment(of: [snapshotWithIsSynced], timeout: 30)
         XCTAssertTrue(snapshots.count >= 2)
         XCTAssertFalse(snapshots[0].isSynced)
@@ -360,8 +365,10 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
 
         let newPost = Post(title: "title", content: "content", createdAt: .now())
         let receivedPost = expectation(description: "received Post")
-        try await savePostAndWaitForSync(newPost,
-                                         postSyncedExpctation: receivedPost)
+        try await savePostAndWaitForSync(
+            newPost,
+            postSyncedExpctation: receivedPost
+        )
 
         await fulfillment(of: [snapshotWithIsSynced], timeout: 30)
         XCTAssertTrue(snapshots.count >= 2)
@@ -474,8 +481,10 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
 
         // (6) Delete the model that does not match predicate - should have no snapshot emitted
         let postMatchPredicateNoLongerMatchesExpectation = expectation(description: " received")
-        try await deletePostAndWaitForSync(postMatchPredicateNoLongerMatches,
-                                           postSyncedExpctation: postMatchPredicateNoLongerMatchesExpectation)
+        try await deletePostAndWaitForSync(
+            postMatchPredicateNoLongerMatches,
+            postSyncedExpctation: postMatchPredicateNoLongerMatchesExpectation
+        )
 
         // Save "xyz 3" to force a snapshot to be emitted
         try await savePostAndWaitForSync(Post(title: "xyz 3", content: testId, createdAt: .now()))
@@ -501,9 +510,11 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         var snapshotCount = 0
         let observeQueryReadyForTest = expectation(description: "observeQuery initial query completed")
         let allSnapshotsReceived = expectation(description: "query snapshots received")
-        let sink = Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self,
-                                                     where: Post.keys.content == testId,
-                                                     sort: .ascending(Post.keys.title)))
+        let sink = Amplify.Publisher.create(Amplify.DataStore.observeQuery(
+            for: Post.self,
+            where: Post.keys.content == testId,
+            sort: .ascending(Post.keys.title)
+        ))
             .sink { completed in
                 switch completed {
                 case .finished:

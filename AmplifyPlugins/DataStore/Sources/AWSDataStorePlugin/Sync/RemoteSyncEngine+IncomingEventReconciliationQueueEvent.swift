@@ -47,9 +47,11 @@ extension RemoteSyncEngine {
                 return
             }
             remoteSyncTopicPublisher.send(.subscriptionsActivated)
-            stateMachine.notify(action: .activatedCloudSubscriptions(api,
-                                                                     mutationEventPublisher,
-                                                                     reconciliationQueue))
+            stateMachine.notify(action: .activatedCloudSubscriptions(
+                api,
+                mutationEventPublisher,
+                reconciliationQueue
+            ))
         case .paused:
             remoteSyncTopicPublisher.send(.subscriptionsPaused)
         case .idle, .mutationEventDropped, .mutationEventApplied:

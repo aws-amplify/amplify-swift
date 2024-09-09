@@ -26,10 +26,11 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
         return runner.sequence
     }
 
-    public func observeQuery<M: Model>(for modelType: M.Type,
-                                       where predicate: QueryPredicate?,
-                                       sort sortInput: QuerySortInput?) -> AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<M>>
-    {
+    public func observeQuery<M: Model>(
+        for modelType: M.Type,
+        where predicate: QueryPredicate?,
+        sort sortInput: QuerySortInput?
+    ) -> AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<M>> {
         switch initStorageEngineAndTryStartSync() {
         case .success(let storageEngineBehavior):
             let modelSchema = modelType.schema
@@ -40,16 +41,18 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
                 return Fatal.preconditionFailure("`dispatchedModelSyncedEvent` is expected to exist for \(modelSchema.name)")
             }
             let request = ObserveQueryRequest(options: [])
-            let taskRunner = ObserveQueryTaskRunner(request: request,
-                                                    modelType: modelType,
-                                                    modelSchema: modelType.schema,
-                                                    predicate: predicate,
-                                                    sortInput: sortInput?.asSortDescriptors(),
-                                                    storageEngine: storageEngineBehavior,
-                                                    dataStorePublisher: dataStorePublisher,
-                                                    dataStoreConfiguration: configuration.pluginConfiguration,
-                                                    dispatchedModelSyncedEvent: dispatchedModelSyncedEvent,
-                                                    dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            let taskRunner = ObserveQueryTaskRunner(
+                request: request,
+                modelType: modelType,
+                modelSchema: modelType.schema,
+                predicate: predicate,
+                sortInput: sortInput?.asSortDescriptors(),
+                storageEngine: storageEngineBehavior,
+                dataStorePublisher: dataStorePublisher,
+                dataStoreConfiguration: configuration.pluginConfiguration,
+                dispatchedModelSyncedEvent: dispatchedModelSyncedEvent,
+                dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+            )
             return taskRunner.sequence
         case .failure(let error):
             return Fatal.preconditionFailure("Unable to get storage adapter \(error.localizedDescription)")

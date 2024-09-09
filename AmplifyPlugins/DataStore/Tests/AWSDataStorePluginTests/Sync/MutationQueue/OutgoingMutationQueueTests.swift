@@ -168,15 +168,16 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         apiPlugin.responders[.mutateRequestResponse] = MutateRequestResponder<MutationSync<AnyModel>> { request in
             if let variables = request.variables?["input"] as? [String: Any],
                let postId = variables["id"] as? String,
-               let post = posts.first(where: { $0.id == postId })
-            {
+               let post = posts.first(where: { $0.id == postId }) {
                 try? await Task.sleep(seconds: timeout + 1)
                 let anyModel = try! post.eraseToAnyModel()
-                let remoteSyncMetadata = MutationSyncMetadata(modelId: post.id,
-                                                              modelName: Post.modelName,
-                                                              deleted: false,
-                                                              lastChangedAt: Date().unixSeconds,
-                                                              version: 2)
+                let remoteSyncMetadata = MutationSyncMetadata(
+                    modelId: post.id,
+                    modelName: Post.modelName,
+                    deleted: false,
+                    lastChangedAt: Date().unixSeconds,
+                    version: 2
+                )
                 let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
                 return .success(remoteMutationSync)
             }
@@ -239,9 +240,11 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         }
 
         await tryOrFail {
-            try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
-                                                                    dataStoreConfiguration: .testDefault(),
-                                                                    authModeStrategy: AWSDefaultAuthModeStrategy()))
+            try setUpDataStore(mutationQueue: OutgoingMutationQueue(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .testDefault(),
+                authModeStrategy: AWSDefaultAuthModeStrategy()
+            ))
             try await startAmplify()
         }
 

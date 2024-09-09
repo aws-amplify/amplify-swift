@@ -76,14 +76,16 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         return modelReconciliationQueueSubject.eraseToAnyPublisher()
     }
 
-    init(modelSchema: ModelSchema,
-         storageAdapter: StorageEngineAdapter?,
-         api: APICategoryGraphQLBehavior,
-         reconcileAndSaveQueue: ReconcileAndSaveOperationQueue,
-         modelPredicate: QueryPredicate?,
-         auth: AuthCategoryBehavior?,
-         authModeStrategy: AuthModeStrategy,
-         incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) async {
+    init(
+        modelSchema: ModelSchema,
+        storageAdapter: StorageEngineAdapter?,
+        api: APICategoryGraphQLBehavior,
+        reconcileAndSaveQueue: ReconcileAndSaveOperationQueue,
+        modelPredicate: QueryPredicate?,
+        auth: AuthCategoryBehavior?,
+        authModeStrategy: AuthModeStrategy,
+        incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil
+    ) async {
 
         self.modelSchema = modelSchema
         self.storageAdapter = storageAdapter
@@ -149,9 +151,11 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             return
         }
 
-        let reconcileOp = ReconcileAndLocalSaveOperation(modelSchema: modelSchema,
-                                                         remoteModels: remoteModels,
-                                                         storageAdapter: storageAdapter)
+        let reconcileOp = ReconcileAndLocalSaveOperation(
+            modelSchema: modelSchema,
+            remoteModels: remoteModels,
+            storageAdapter: storageAdapter
+        )
         var reconcileAndLocalSaveOperationSink: AnyCancellable?
         reconcileAndLocalSaveOperationSink = reconcileOp
             .publisher
@@ -202,16 +206,14 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         case .failure(let dataStoreError):
             if case let .api(error, _) = dataStoreError,
                case let APIError.operationError(errorDescription, _, underlyingError) = error,
-               isUnauthorizedError(errorDescription: errorDescription, underlyingError)
-            {
+               isUnauthorizedError(errorDescription: errorDescription, underlyingError) {
                 log.verbose("[InitializeSubscription.3] AWSModelReconciliationQueue determined unauthorized \(modelSchema.name)")
                 modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name, reason: .unauthorized))
                 return
             }
             if case let .api(error, _) = dataStoreError,
                case let APIError.operationError(errorMessage, _, underlyingError) = error,
-               isOperationDisabledError(errorMessage, underlyingError)
-            {
+               isOperationDisabledError(errorMessage, underlyingError) {
                 log.verbose("[InitializeSubscription.3] AWSModelReconciliationQueue determined isOperationDisabledError \(modelSchema.name)")
                 modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name, reason: .operationDisabled))
                 return
@@ -279,8 +281,7 @@ extension AWSModelReconciliationQueue {
         if let responseError = error as? GraphQLResponseError<ResponseType>,
            let graphQLError = graphqlErrors(from: responseError)?.first,
            let errorTypeValue = errorTypeValueFrom(graphQLError: graphQLError),
-           case .unauthorized = AppSyncErrorType(errorTypeValue)
-        {
+           case .unauthorized = AppSyncErrorType(errorTypeValue) {
             return true
         }
         return false
@@ -288,16 +289,14 @@ extension AWSModelReconciliationQueue {
 
     private func isOperationDisabledError(_ errorMessage: String?, _ error: Error?) -> Bool {
         if let errorMessage,
-            case .operationDisabled = AppSyncErrorType(errorMessage)
-        {
+            case .operationDisabled = AppSyncErrorType(errorMessage) {
             return true
         }
 
         if let responseError = error as? GraphQLResponseError<ResponseType>,
            let graphQLError = graphqlErrors(from: responseError)?.first,
            let errorTypeValue = errorTypeValueFrom(graphQLError: graphQLError),
-           case .operationDisabled = AppSyncErrorType(errorTypeValue)
-        {
+           case .operationDisabled = AppSyncErrorType(errorTypeValue) {
             return true
         }
         return false

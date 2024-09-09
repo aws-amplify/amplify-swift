@@ -27,11 +27,13 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
             syncEngine = MockRemoteSyncEngine()
-            storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .testDefault(),
-                                          syncEngine: syncEngine,
-                                          validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+            storageEngine = StorageEngine(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .testDefault(),
+                syncEngine: syncEngine,
+                validAPIPluginKey: validAPIPluginKey,
+                validAuthPluginKey: validAuthPluginKey
+            )
 
             ModelListDecoderRegistry.registerDecoder(DataStoreListDecoder.self)
             ModelProviderRegistry.registerDecoder(DataStoreModelDecoder.self)
@@ -55,7 +57,8 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         let expectedSuccess = expectation(description: "Simulated success on mutation event submitted to sync engine")
         let post = ParentPost4V2(
             id: "postId1",
-            title: "title1")
+            title: "title1"
+        )
 
         syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
             receivedMutationEvent.fulfill()
@@ -79,7 +82,8 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
             try await saveAsync(
                 ParentPost4V2(
                     id: "postId1",
-                    title: "title1"))
+                    title: "title1"
+                ))
             XCTFail("Expected to fail when sync engine is `nil`")
         } catch {
             guard let dataStoreError = error as? DataStoreError else {
@@ -88,7 +92,8 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
             }
             XCTAssertEqual(
                 dataStoreError.errorDescription,
-                "No SyncEngine available to sync mutation event, rollback save.")
+                "No SyncEngine available to sync mutation event, rollback save."
+            )
         }
     }
 
@@ -97,9 +102,11 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         let savedComment = try await saveAsync(comment)
         XCTAssertEqual(savedComment.id, comment.id)
 
-        guard let queriedComment = try await queryAsync(ChildComment4V2.self,
-                                                        byIdentifier: comment.id,
-                                                        eagerLoad: true)
+        guard let queriedComment = try await queryAsync(
+            ChildComment4V2.self,
+            byIdentifier: comment.id,
+            eagerLoad: true
+        )
         else {
             XCTFail("Failed to query saved comment")
             return
@@ -112,9 +119,11 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         let savedPost = try await saveAsync(post)
         XCTAssertEqual(savedPost.id, post.id)
 
-        guard let queriedPost = try await queryAsync(ParentPost4V2.self,
-                                                     byIdentifier: post.id,
-                                                     eagerLoad: true)
+        guard let queriedPost = try await queryAsync(
+            ParentPost4V2.self,
+            byIdentifier: post.id,
+            eagerLoad: true
+        )
         else {
             XCTFail("Failed to query saved post")
             return
@@ -145,8 +154,10 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         var comment = ChildComment4V2(content: "content", post: post)
 
         // Model.sqlValues testing
-        let sqlValues = comment.sqlValues(for: ChildComment4V2.schema.columns,
-                                          modelSchema: ChildComment4V2.schema)
+        let sqlValues = comment.sqlValues(
+            for: ChildComment4V2.schema.columns,
+            modelSchema: ChildComment4V2.schema
+        )
         XCTAssertEqual(sqlValues[0] as? String, comment.id)
         XCTAssertEqual(sqlValues[1] as? String, comment.content)
         XCTAssertNil(sqlValues[2]) // createdAt
@@ -154,8 +165,10 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         XCTAssertEqual(sqlValues[4] as? String, post.id)
 
         // InsertStatement testing
-        let insertStatement = InsertStatement(model: comment,
-                                              modelSchema: ChildComment4V2.schema)
+        let insertStatement = InsertStatement(
+            model: comment,
+            modelSchema: ChildComment4V2.schema
+        )
         XCTAssertEqual(insertStatement.variables[0] as? String, comment.id)
         XCTAssertEqual(insertStatement.variables[1] as? String, comment.content)
         XCTAssertNil(insertStatement.variables[2]) // createdAt
@@ -165,23 +178,29 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
 
         // UpdateStatement testing
         comment.content = "updatedContent"
-        let updateStatement = UpdateStatement(model: comment,
-                                              modelSchema: ChildComment4V2.schema,
-                                              condition: nil)
+        let updateStatement = UpdateStatement(
+            model: comment,
+            modelSchema: ChildComment4V2.schema,
+            condition: nil
+        )
         _ = try connection.prepare(updateStatement.stringValue).run(updateStatement.variables)
 
 
         // Select
-        let selectStatement = SelectStatement(from: ChildComment4V2.schema,
-                                              predicate: field("id").eq(comment.id),
-                                              sort: nil,
-                                              paginationInput: nil,
-                                              eagerLoad: true)
+        let selectStatement = SelectStatement(
+            from: ChildComment4V2.schema,
+            predicate: field("id").eq(comment.id),
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
         let rows = try connection.prepare(selectStatement.stringValue).run(selectStatement.variables)
         print(rows)
-        let result: [ModelValues] = try rows.convertToModelValues(to: ChildComment4V2.self,
-                                                                  withSchema: ChildComment4V2.schema,
-                                                                  using: selectStatement)
+        let result: [ModelValues] = try rows.convertToModelValues(
+            to: ChildComment4V2.self,
+            withSchema: ChildComment4V2.schema,
+            using: selectStatement
+        )
         print(result)
         XCTAssertEqual(result.count, 1)
         // asert content is "updatedContent"
@@ -193,9 +212,11 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         let comment = ChildComment4V2(content: "content", post: post)
         _ = try await saveAsync(comment)
 
-        guard let queriedComment = try await queryAsync(ChildComment4V2.self,
-                                                        byIdentifier: comment.id,
-                                                        eagerLoad: true)
+        guard let queriedComment = try await queryAsync(
+            ChildComment4V2.self,
+            byIdentifier: comment.id,
+            eagerLoad: true
+        )
         else {
             XCTFail("Failed to query saved comment")
             return
@@ -214,9 +235,11 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         let comment = ChildComment4V2(content: "content", post: post)
         _ = try await saveAsync(comment)
 
-        guard let queriedPost = try await queryAsync(ParentPost4V2.self,
-                                                     byIdentifier: post.id,
-                                                     eagerLoad: true)
+        guard let queriedPost = try await queryAsync(
+            ParentPost4V2.self,
+            byIdentifier: post.id,
+            eagerLoad: true
+        )
         else {
             XCTFail("Failed to query saved post")
             return

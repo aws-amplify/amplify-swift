@@ -42,8 +42,10 @@ class ModelSyncMetadataMigration: ModelMigration {
                 log.error("Could not find corresponding ModelField from ModelSyncMetadata for syncPredicate")
                 return false
             }
-            let exists = try columnExists(modelSchema: ModelSyncMetadata.schema,
-                                          field: field)
+            let exists = try columnExists(
+                modelSchema: ModelSyncMetadata.schema,
+                field: field
+            )
             guard !exists else {
                 log.debug("Detected ModelSyncMetadata table has syncPredicate column. No migration needed")
                 return false
@@ -59,7 +61,8 @@ class ModelSyncMetadataMigration: ModelMigration {
             }
             let addColumnStatement = AlterTableAddColumnStatement(
                 modelSchema: ModelSyncMetadata.schema,
-                field: field).stringValue
+                field: field
+            ).stringValue
             try connection.execute(addColumnStatement)
             log.debug("ModelSyncMetadata table altered to add syncPredicate column.")
             return true
@@ -87,8 +90,7 @@ class ModelSyncMetadataMigration: ModelMigration {
                 if column.count >= 2,
                     let columnName = column[1],
                     let columNameString = columnName as? String,
-                    columnToFind == columNameString
-                {
+                    columnToFind == columNameString {
                     columnExists = true
                     break
                 }

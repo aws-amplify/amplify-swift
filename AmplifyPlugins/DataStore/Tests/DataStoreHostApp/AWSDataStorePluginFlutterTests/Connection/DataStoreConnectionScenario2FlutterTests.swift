@@ -37,20 +37,19 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         let project = try Project2Wrapper(name: "project1", team: team.model, teamID: team.idString())
         let syncedTeamReceived = expectation(description: "received team from sync event")
         let syncProjectReceived = expectation(description: "received project from sync event")
-        let hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+        let hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
             if let syncedTeam = mutationEvent.modelId as String?,
-               syncedTeam == team.idString()
-            {
+               syncedTeam == team.idString() {
                 syncedTeamReceived.fulfill()
             } else if let syncedProject = mutationEvent.modelId as String?,
-              syncedProject == project.idString()
-            {
+              syncedProject == project.idString() {
                 syncProjectReceived.fulfill()
             }
         }
@@ -102,17 +101,17 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         try expectedUpdatedProject.setTeam(name: "project1", team: anotherTeam.model, teamID: anotherTeam.idString())
 
         let syncUpdatedProjectReceived = expectation(description: "received updated project from sync path")
-        let hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+        let hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
             if let syncedUpdatedProject = mutationEvent.modelId as String?,
 
-               expectedUpdatedProject.idString() == syncedUpdatedProject
-            {
+               expectedUpdatedProject.idString() == syncedUpdatedProject {
                 syncUpdatedProjectReceived.fulfill()
             }
         }
@@ -367,10 +366,11 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         return result
     }
 
-    func saveProject(teamID: String,
-                     team: TeamWrapper,
-                     plugin: AWSDataStorePlugin) throws -> Project2Wrapper?
-    {
+    func saveProject(
+        teamID: String,
+        team: TeamWrapper,
+        plugin: AWSDataStorePlugin
+    ) throws -> Project2Wrapper? {
         let project = try Project2Wrapper(name: name, team: team.model, teamID: teamID)
         var result: Project2Wrapper?
         let completeInvoked = expectation(description: "request completed")

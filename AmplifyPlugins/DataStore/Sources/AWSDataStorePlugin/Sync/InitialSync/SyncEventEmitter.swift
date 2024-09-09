@@ -21,8 +21,10 @@ enum IncomingSyncEventEmitterEvent {
 /// emit the `syncQueriesReady` and sends back the reconciliation events (`.mutationEventApplied`,
 /// `.mutationEventDropped`) to its subscribers.
 final class SyncEventEmitter {
-    private let queue = DispatchQueue(label: "com.amazonaws.SyncEventEmitter",
-                                      target: DispatchQueue.global())
+    private let queue = DispatchQueue(
+        label: "com.amazonaws.SyncEventEmitter",
+        target: DispatchQueue.global()
+    )
 
     var modelSyncedEventEmitters: [String: ModelSyncedEventEmitter]
     var initialSyncCompleted: AnyCancellable?
@@ -39,9 +41,10 @@ final class SyncEventEmitter {
         syncableModels == modelSyncedReceived
     }
 
-    init(initialSyncOrchestrator: InitialSyncOrchestrator?,
-         reconciliationQueue: IncomingEventReconciliationQueue?)
-    {
+    init(
+        initialSyncOrchestrator: InitialSyncOrchestrator?,
+        reconciliationQueue: IncomingEventReconciliationQueue?
+    ) {
         self.modelSyncedEventEmitters = [String: ModelSyncedEventEmitter]()
         self.syncEventEmitterTopic = PassthroughSubject<IncomingSyncEventEmitterEvent, Never>()
         self.modelSyncedReceived = 0
@@ -51,9 +54,11 @@ final class SyncEventEmitter {
 
         var publishers = [AnyPublisher<IncomingModelSyncedEmitterEvent, Never>]()
         for syncableModelSchema in syncableModelSchemas {
-            let modelSyncedEventEmitter = ModelSyncedEventEmitter(modelSchema: syncableModelSchema,
-                                                                  initialSyncOrchestrator: initialSyncOrchestrator,
-                                                                  reconciliationQueue: reconciliationQueue)
+            let modelSyncedEventEmitter = ModelSyncedEventEmitter(
+                modelSchema: syncableModelSchema,
+                initialSyncOrchestrator: initialSyncOrchestrator,
+                reconciliationQueue: reconciliationQueue
+            )
             modelSyncedEventEmitters[syncableModelSchema.name] = modelSyncedEventEmitter
             publishers.append(modelSyncedEventEmitter.publisher)
         }
@@ -61,10 +66,12 @@ final class SyncEventEmitter {
         self.initialSyncCompleted = Publishers
             .MergeMany(publishers)
             .receive(on: queue)
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: { [weak self] value in
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] value in
                 self?.onReceiveModelSyncedEmitterEvent(value: value)
-            })
+            }
+            )
     }
 
     private func onReceiveModelSyncedEmitterEvent(value: IncomingModelSyncedEmitterEvent) {

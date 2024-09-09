@@ -11,8 +11,7 @@ import Foundation
 
 public extension CompositePKParent {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case customId
     case content
     case children
@@ -58,9 +57,10 @@ extension CompositePKParent: ModelIdentifiable {
 }
 
 public extension CompositePKParent.IdentifierProtocol {
-  static func identifier(customId: String,
-      content: String) -> Self
-  {
+  static func identifier(
+    customId: String,
+    content: String
+  ) -> Self {
     .make(fields: [(name: "customId", value: customId), (name: "content", value: content)])
   }
 }

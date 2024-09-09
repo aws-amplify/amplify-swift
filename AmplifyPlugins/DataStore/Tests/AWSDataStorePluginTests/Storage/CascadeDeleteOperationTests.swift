@@ -28,11 +28,13 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
             syncEngine = MockRemoteSyncEngine()
-            storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .testDefault(),
-                                          syncEngine: syncEngine,
-                                          validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+            storageEngine = StorageEngine(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .testDefault(),
+                syncEngine: syncEngine,
+                validAPIPluginKey: validAPIPluginKey,
+                validAuthPluginKey: validAuthPluginKey
+            )
             ModelRegistry.register(modelType: Restaurant.self)
             ModelRegistry.register(modelType: Menu.self)
             ModelRegistry.register(modelType: Dish.self)
@@ -65,8 +67,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             return
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id
-        guard case .success(let queriedRestaurants) = await queryModelSynchronous(modelType: Restaurant.self,
-                                                                                  predicate: predicate)
+        guard case .success(let queriedRestaurants) = await queryModelSynchronous(
+            modelType: Restaurant.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -74,12 +78,13 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(queriedRestaurants.count, 1)
         let completed = expectation(description: "operation completed")
         let identifier = DefaultModelIdentifier<Restaurant>.makeDefault(id: restaurant.id)
-        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                               syncEngine: nil,
-                                               modelType: Restaurant.self,
-                                               modelSchema: Restaurant.schema,
-                                               withIdentifier: identifier)
-        { result in
+        let operation = CascadeDeleteOperation(
+            storageAdapter: storageAdapter,
+            syncEngine: nil,
+            modelType: Restaurant.self,
+            modelSchema: Restaurant.schema,
+            withIdentifier: identifier
+        ) { result in
             switch result {
             case .success(let restaurant):
                 XCTAssertNotNil(restaurant)
@@ -90,8 +95,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         operation.start()
         await fulfillment(of: [completed], timeout: 1)
-        guard case .success(let queriedRestaurants) = await queryModelSynchronous(modelType: Restaurant.self,
-                                                                                  predicate: predicate)
+        guard case .success(let queriedRestaurants) = await queryModelSynchronous(
+            modelType: Restaurant.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -109,8 +116,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         let predicate: QueryPredicate = ModelCompositePk.keys.id == modelId
             && ModelCompositePk.keys.dob == modelDob
-        guard case .success(let queriedModel) = queryModelSynchronous(modelType: ModelCompositePk.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedModel) = queryModelSynchronous(
+            modelType: ModelCompositePk.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -122,12 +131,13 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
 
         let completed = expectation(description: "operation completed")
         let identifier = ModelCompositePk.IdentifierProtocol.identifier(id: modelId, dob: modelDob)
-        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                               syncEngine: nil,
-                                               modelType: ModelCompositePk.self,
-                                               modelSchema: ModelCompositePk.schema,
-                                               withIdentifier: identifier)
-        { result in
+        let operation = CascadeDeleteOperation(
+            storageAdapter: storageAdapter,
+            syncEngine: nil,
+            modelType: ModelCompositePk.self,
+            modelSchema: ModelCompositePk.schema,
+            withIdentifier: identifier
+        ) { result in
             switch result {
             case .success(let model):
                 XCTAssertNotNil(model)
@@ -138,8 +148,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         operation.start()
         wait(for: [completed], timeout: 1)
-        guard case .success(let queriedModel) = queryModelSynchronous(modelType: ModelCompositePk.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedModel) = queryModelSynchronous(
+            modelType: ModelCompositePk.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -156,8 +168,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id &&
             Restaurant.keys.restaurantName == restaurantName
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedRestaurants) = queryModelSynchronous(
+            modelType: Restaurant.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -166,13 +180,14 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(queriedRestaurants.first!.restaurantName, restaurantName)
         let completed = expectation(description: "operation completed")
         let identifier = DefaultModelIdentifier<Restaurant>.makeDefault(id: restaurant.id)
-        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                               syncEngine: nil,
-                                               modelType: Restaurant.self,
-                                               modelSchema: Restaurant.schema,
-                                               withIdentifier: identifier,
-                                               condition: Restaurant.keys.restaurantName.eq(restaurantName))
-        { result in
+        let operation = CascadeDeleteOperation(
+            storageAdapter: storageAdapter,
+            syncEngine: nil,
+            modelType: Restaurant.self,
+            modelSchema: Restaurant.schema,
+            withIdentifier: identifier,
+            condition: Restaurant.keys.restaurantName.eq(restaurantName)
+        ) { result in
             switch result {
             case .success(let restaurant):
                 XCTAssertNotNil(restaurant)
@@ -183,8 +198,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         operation.start()
         wait(for: [completed], timeout: 1)
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedRestaurants) = queryModelSynchronous(
+            modelType: Restaurant.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -201,8 +218,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id &&
             Restaurant.keys.restaurantName == restaurantName
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedRestaurants) = queryModelSynchronous(
+            modelType: Restaurant.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -211,13 +230,14 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(queriedRestaurants.first!.restaurantName, restaurantName)
         let completed = expectation(description: "operation completed")
         let identifier = DefaultModelIdentifier<Restaurant>.makeDefault(id: restaurant.id)
-        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                               syncEngine: nil,
-                                               modelType: Restaurant.self,
-                                               modelSchema: Restaurant.schema,
-                                               withIdentifier: identifier,
-                                               condition: Restaurant.keys.restaurantName.ne(restaurantName))
-        { result in
+        let operation = CascadeDeleteOperation(
+            storageAdapter: storageAdapter,
+            syncEngine: nil,
+            modelType: Restaurant.self,
+            modelSchema: Restaurant.schema,
+            withIdentifier: identifier,
+            condition: Restaurant.keys.restaurantName.ne(restaurantName)
+        ) { result in
             switch result {
             case .success:
                 XCTFail("Should have been invalid condition error")
@@ -231,8 +251,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         operation.start()
         wait(for: [completed], timeout: 1)
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedRestaurants) = queryModelSynchronous(
+            modelType: Restaurant.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -250,8 +272,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id &&
             Restaurant.keys.restaurantName == restaurantName
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedRestaurants) = queryModelSynchronous(
+            modelType: Restaurant.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -259,12 +283,13 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(queriedRestaurants.count, 1)
         XCTAssertEqual(queriedRestaurants.first!.restaurantName, restaurantName)
         let completed = expectation(description: "operation completed")
-        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                               syncEngine: nil,
-                                               modelType: Restaurant.self,
-                                               modelSchema: Restaurant.schema,
-                                               filter: Restaurant.keys.restaurantName.eq(restaurantName))
-        { result in
+        let operation = CascadeDeleteOperation(
+            storageAdapter: storageAdapter,
+            syncEngine: nil,
+            modelType: Restaurant.self,
+            modelSchema: Restaurant.schema,
+            filter: Restaurant.keys.restaurantName.eq(restaurantName)
+        ) { result in
             switch result {
             case .success(let restaurants):
                 XCTAssertEqual(restaurants.count, 1)
@@ -276,8 +301,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         operation.start()
         wait(for: [completed], timeout: 1)
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedRestaurants) = queryModelSynchronous(
+            modelType: Restaurant.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -294,8 +321,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id &&
             Restaurant.keys.restaurantName == restaurantName
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedRestaurants) = queryModelSynchronous(
+            modelType: Restaurant.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -303,12 +332,13 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(queriedRestaurants.count, 1)
         XCTAssertEqual(queriedRestaurants.first!.restaurantName, restaurantName)
         let completed = expectation(description: "operation completed")
-        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                               syncEngine: nil,
-                                               modelType: Restaurant.self,
-                                               modelSchema: Restaurant.schema,
-                                               filter: Restaurant.keys.restaurantName.ne(restaurantName))
-        { result in
+        let operation = CascadeDeleteOperation(
+            storageAdapter: storageAdapter,
+            syncEngine: nil,
+            modelType: Restaurant.self,
+            modelSchema: Restaurant.schema,
+            filter: Restaurant.keys.restaurantName.ne(restaurantName)
+        ) { result in
             switch result {
             case .success(let restaurants):
                 XCTAssertEqual(restaurants.count, 0)
@@ -319,8 +349,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         operation.start()
         wait(for: [completed], timeout: 1)
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedRestaurants) = queryModelSynchronous(
+            modelType: Restaurant.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -338,8 +370,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             return
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id
-        guard case .success(let queriedRestaurants) = await queryModelSynchronous(modelType: Restaurant.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedRestaurants) = await queryModelSynchronous(
+            modelType: Restaurant.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -366,12 +400,13 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
 
         let completed = expectation(description: "operation completed")
         let identifier = DefaultModelIdentifier<Restaurant>.makeDefault(id: restaurant.id)
-        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                               syncEngine: syncEngine,
-                                               modelType: Restaurant.self,
-                                               modelSchema: Restaurant.schema,
-                                               withIdentifier: identifier)
-        { result in
+        let operation = CascadeDeleteOperation(
+            storageAdapter: storageAdapter,
+            syncEngine: syncEngine,
+            modelType: Restaurant.self,
+            modelSchema: Restaurant.schema,
+            withIdentifier: identifier
+        ) { result in
             switch result {
             case .success(let restaurant):
                 XCTAssertNotNil(restaurant)
@@ -383,8 +418,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         operation.start()
 
         await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 1)
-        guard case .success(let queriedRestaurants) = await queryModelSynchronous(modelType: Restaurant.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedRestaurants) = await queryModelSynchronous(
+            modelType: Restaurant.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -403,8 +440,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         let predicate: QueryPredicate = ModelCompositePk.keys.id == modelId
             && ModelCompositePk.keys.dob == modelDob
-        guard case .success(let queriedModels) = await queryModelSynchronous(modelType: ModelCompositePk.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedModels) = await queryModelSynchronous(
+            modelType: ModelCompositePk.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -431,12 +470,13 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
 
         let completed = expectation(description: "operation completed")
         let identifier = ModelCompositePk.IdentifierProtocol.identifier(id: modelId, dob: modelDob)
-        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                               syncEngine: syncEngine,
-                                               modelType: ModelCompositePk.self,
-                                               modelSchema: ModelCompositePk.schema,
-                                               withIdentifier: identifier)
-        { result in
+        let operation = CascadeDeleteOperation(
+            storageAdapter: storageAdapter,
+            syncEngine: syncEngine,
+            modelType: ModelCompositePk.self,
+            modelSchema: ModelCompositePk.schema,
+            withIdentifier: identifier
+        ) { result in
             switch result {
             case .success(let restaurant):
                 XCTAssertNotNil(restaurant)
@@ -447,8 +487,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         operation.start()
         await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 1)
-        guard case .success(let queriedModels) = await queryModelSynchronous(modelType: ModelCompositePk.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedModels) = await queryModelSynchronous(
+            modelType: ModelCompositePk.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -465,8 +507,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id &&
             Restaurant.keys.restaurantName == restaurantName
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedRestaurants) = queryModelSynchronous(
+            modelType: Restaurant.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -494,13 +538,14 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
 
         let completed = expectation(description: "operation completed")
         let identifier = DefaultModelIdentifier<Restaurant>.makeDefault(id: restaurant.id)
-        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                               syncEngine: syncEngine,
-                                               modelType: Restaurant.self,
-                                               modelSchema: Restaurant.schema,
-                                               withIdentifier: identifier,
-                                               condition: Restaurant.keys.restaurantName.eq(restaurantName))
-        { result in
+        let operation = CascadeDeleteOperation(
+            storageAdapter: storageAdapter,
+            syncEngine: syncEngine,
+            modelType: Restaurant.self,
+            modelSchema: Restaurant.schema,
+            withIdentifier: identifier,
+            condition: Restaurant.keys.restaurantName.eq(restaurantName)
+        ) { result in
             switch result {
             case .success(let restaurant):
                 XCTAssertNotNil(restaurant)
@@ -511,8 +556,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         operation.start()
         wait(for: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedRestaurants) = queryModelSynchronous(
+            modelType: Restaurant.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -529,8 +576,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id &&
             Restaurant.keys.restaurantName == restaurantName
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedRestaurants) = queryModelSynchronous(
+            modelType: Restaurant.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -557,12 +606,13 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
 
         let completed = expectation(description: "operation completed")
-        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                               syncEngine: syncEngine,
-                                               modelType: Restaurant.self,
-                                               modelSchema: Restaurant.schema,
-                                               filter: Restaurant.keys.restaurantName.eq(restaurantName))
-        { result in
+        let operation = CascadeDeleteOperation(
+            storageAdapter: storageAdapter,
+            syncEngine: syncEngine,
+            modelType: Restaurant.self,
+            modelSchema: Restaurant.schema,
+            filter: Restaurant.keys.restaurantName.eq(restaurantName)
+        ) { result in
             switch result {
             case .success(let restaurants):
                 XCTAssertEqual(restaurants.count, 1)
@@ -574,8 +624,10 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         operation.start()
         wait(for: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
-                                                                            predicate: predicate)
+        guard case .success(let queriedRestaurants) = queryModelSynchronous(
+            modelType: Restaurant.self,
+            predicate: predicate
+        )
         else {
             XCTFail("Failed to query")
             return
@@ -592,11 +644,13 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             return
         }
         let identifier = DefaultModelIdentifier<Restaurant>.makeDefault(id: restaurant.id)
-        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                               syncEngine: syncEngine,
-                                               modelType: Restaurant.self,
-                                               modelSchema: Restaurant.schema,
-                                               withIdentifier: identifier) { _ in }
+        let operation = CascadeDeleteOperation(
+            storageAdapter: storageAdapter,
+            syncEngine: syncEngine,
+            modelType: Restaurant.self,
+            modelSchema: Restaurant.schema,
+            withIdentifier: identifier
+        ) { _ in }
 
         let result = await operation.queryAndDeleteTransaction()
         switch result {
@@ -643,12 +697,13 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         let completed = expectation(description: "operation completed")
         let identifier = DefaultModelIdentifier<Restaurant>.makeDefault(id: restaurant.id)
-        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                               syncEngine: syncEngine,
-                                               modelType: Restaurant.self,
-                                               modelSchema: Restaurant.schema,
-                                               withIdentifier: identifier)
-        { result in
+        let operation = CascadeDeleteOperation(
+            storageAdapter: storageAdapter,
+            syncEngine: syncEngine,
+            modelType: Restaurant.self,
+            modelSchema: Restaurant.schema,
+            withIdentifier: identifier
+        ) { result in
             switch result {
             case .success:
                 completed.fulfill()
@@ -683,8 +738,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             receivedMutationEvent.fulfill()
             if submittedMutationEvent.modelId == restaurant.id ||
                 submittedMutationEvent.modelId == lunchStandardMenu.id ||
-                submittedMutationEvent.modelId == oysters.id
-            {
+                submittedMutationEvent.modelId == oysters.id {
                 expectedSuccess.fulfill()
                 completion(.success(submittedMutationEvent))
             } else {
@@ -716,12 +770,13 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
 
         let completed = expectation(description: "operation completed")
         let identifier = PostWithCompositeKey.IdentifierProtocol.identifier(id: post.id, title: post.title)
-        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                               syncEngine: syncEngine,
-                                               modelType: PostWithCompositeKey.self,
-                                               modelSchema: PostWithCompositeKey.schema,
-                                               withIdentifier: identifier)
-        { result in
+        let operation = CascadeDeleteOperation(
+            storageAdapter: storageAdapter,
+            syncEngine: syncEngine,
+            modelType: PostWithCompositeKey.self,
+            modelSchema: PostWithCompositeKey.schema,
+            withIdentifier: identifier
+        ) { result in
             switch result {
             case .success:
                 completed.fulfill()
@@ -754,8 +809,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             submittedEvents.append(submittedMutationEvent)
             receivedMutationEvent.fulfill()
             if submittedMutationEvent.modelId == post.identifier ||
-                submittedMutationEvent.modelId == comment.identifier
-            {
+                submittedMutationEvent.modelId == comment.identifier {
                 expectedSuccess.fulfill()
                 completion(.success(submittedMutationEvent))
             } else {
@@ -787,12 +841,13 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         let completed = expectation(description: "operation completed")
         let identifier = DefaultModelIdentifier<Restaurant>.makeDefault(id: restaurant.id)
-        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                               syncEngine: syncEngine,
-                                               modelType: Restaurant.self,
-                                               modelSchema: Restaurant.schema,
-                                               withIdentifier: identifier)
-        { result in
+        let operation = CascadeDeleteOperation(
+            storageAdapter: storageAdapter,
+            syncEngine: syncEngine,
+            modelType: Restaurant.self,
+            modelSchema: Restaurant.schema,
+            withIdentifier: identifier
+        ) { result in
             switch result {
             case .success:
                 XCTFail("Should have failed")
@@ -826,8 +881,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             submittedEvents.append(submittedMutationEvent)
             receivedMutationEvent.fulfill()
             if submittedMutationEvent.modelId == restaurant.id ||
-                submittedMutationEvent.modelId == oysters.id
-            {
+                submittedMutationEvent.modelId == oysters.id {
                 expectedSuccess.fulfill()
                 completion(.success(submittedMutationEvent))
             } else {

@@ -43,8 +43,10 @@ enum ReconcileAndSaveQueueEvent {
 /// continue to operate.
 class ReconcileAndSaveQueue: ReconcileAndSaveOperationQueue {
 
-    private let serialQueue = DispatchQueue(label: "com.amazonaws.ReconcileAndSaveQueue.serialQueue",
-                                            target: DispatchQueue.global())
+    private let serialQueue = DispatchQueue(
+        label: "com.amazonaws.ReconcileAndSaveQueue.serialQueue",
+        target: DispatchQueue.global()
+    )
     private let reconcileAndSaveQueue: OperationQueue
     private var modelReconcileAndSaveOperations: [String: [UUID: ReconcileAndLocalSaveOperation]]
     private var reconcileAndLocalSaveOperationSinks: AtomicValue<Set<AnyCancellable?>>

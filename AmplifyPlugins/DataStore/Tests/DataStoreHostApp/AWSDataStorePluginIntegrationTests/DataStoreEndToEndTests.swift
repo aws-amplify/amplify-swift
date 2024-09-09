@@ -44,7 +44,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let newPost = Post(
             title: "This is a new post I created",
             content: "Original content from DataStoreEndToEndTests at \(date)",
-            createdAt: date)
+            createdAt: date
+        )
 
         let outboxMutationEnqueued = expectation(description: "received OutboxMutationEnqueuedEvent")
         outboxMutationEnqueued.assertForOverFulfill = false
@@ -127,7 +128,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let newPost = Post(
             title: "This is a new post I created",
             content: "Original content from DataStoreEndToEndTests at \(date)",
-            createdAt: date)
+            createdAt: date
+        )
 
         var updatedPost = newPost
         updatedPost.content = "UPDATED CONTENT from DataStoreEndToEndTests at \(Date())"
@@ -135,8 +137,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let createReceived = expectation(description: "Create notification received")
         var hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -167,8 +169,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let updateReceived = expectation(description: "Update notification received")
         hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -198,8 +200,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let deleteReceived = expectation(description: "Delete notification received")
         hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -241,15 +243,16 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let newPost = Post(
             title: title,
             content: "Original content from DataStoreEndToEndTests at \(date)",
-            createdAt: date)
+            createdAt: date
+        )
         var updatedPost = newPost
             updatedPost.content = "UPDATED CONTENT from DataStoreEndToEndTests at \(Date())"
 
         let createReceived = expectation(description: "Create notification received")
         var hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -279,8 +282,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let updateReceived = expectation(description: "Update notification received")
         hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -325,7 +328,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let newPost = Post(
             title: title,
             content: "Original content from DataStoreEndToEndTests at \(date.iso8601String)",
-            createdAt: date)
+            createdAt: date
+        )
 
         var updatedPost = newPost
         updatedPost.content = "UPDATED CONTENT from DataStoreEndToEndTests at \(Date())"
@@ -551,8 +555,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         var expectedResult = Set<String>()
         let extractPost: (DataStoreHubEvent) -> Post? = {
             if case .outboxMutationProcessed(let mutationEvent) = $0,
-               mutationEvent.modelName == Post.modelName
-            {
+               mutationEvent.modelName == Post.modelName {
                 return mutationEvent.element.model as? Post
             }
             return nil
@@ -666,12 +669,13 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let newPost = Post(
             title: "This is a new post I created",
             content: "Original content from DataStoreEndToEndTests at \(date)",
-            createdAt: date)
+            createdAt: date
+        )
         let createReceived = expectation(description: "Create notification received")
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")

@@ -11,8 +11,7 @@ import Foundation
 
 public extension PostEditor5V2 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case post5V2
     case user5V2

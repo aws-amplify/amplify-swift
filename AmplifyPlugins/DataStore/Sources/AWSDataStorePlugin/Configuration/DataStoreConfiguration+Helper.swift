@@ -41,14 +41,16 @@ public extension DataStoreConfiguration {
         authModeStrategy: AuthModeStrategyType = .default,
         disableSubscriptions: @escaping () -> Bool
     ) -> DataStoreConfiguration {
-        return DataStoreConfiguration(errorHandler: errorHandler,
-                                      conflictHandler: conflictHandler,
-                                      syncInterval: syncInterval,
-                                      syncMaxRecords: syncMaxRecords,
-                                      syncPageSize: syncPageSize,
-                                      syncExpressions: syncExpressions,
-                                      authModeStrategy: authModeStrategy,
-                                      disableSubscriptions: disableSubscriptions)
+        return DataStoreConfiguration(
+            errorHandler: errorHandler,
+            conflictHandler: conflictHandler,
+            syncInterval: syncInterval,
+            syncMaxRecords: syncMaxRecords,
+            syncPageSize: syncPageSize,
+            syncExpressions: syncExpressions,
+            authModeStrategy: authModeStrategy,
+            disableSubscriptions: disableSubscriptions
+        )
     }
     #else
     /// Creates a custom configuration. The only required property is `conflictHandler`.
@@ -74,13 +76,15 @@ public extension DataStoreConfiguration {
         syncExpressions: [DataStoreSyncExpression] = [],
         authModeStrategy: AuthModeStrategyType = .default
     ) -> DataStoreConfiguration {
-        return DataStoreConfiguration(errorHandler: errorHandler,
-                                      conflictHandler: conflictHandler,
-                                      syncInterval: syncInterval,
-                                      syncMaxRecords: syncMaxRecords,
-                                      syncPageSize: syncPageSize,
-                                      syncExpressions: syncExpressions,
-                                      authModeStrategy: authModeStrategy)
+        return DataStoreConfiguration(
+            errorHandler: errorHandler,
+            conflictHandler: conflictHandler,
+            syncInterval: syncInterval,
+            syncMaxRecords: syncMaxRecords,
+            syncPageSize: syncPageSize,
+            syncExpressions: syncExpressions,
+            authModeStrategy: authModeStrategy
+        )
     }
     #endif
 

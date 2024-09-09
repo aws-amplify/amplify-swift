@@ -17,8 +17,7 @@ enum DataStoreInternal {
         if #available(iOS 13.0, *) {
             if let dataStorePlugin = tryGetPlugin(),
                let storageEngine = dataStorePlugin.storageEngine as? StorageEngine,
-               let syncEngine = storageEngine.syncEngine
-            {
+               let syncEngine = storageEngine.syncEngine {
                 return syncEngine
             }
         }
@@ -29,8 +28,7 @@ enum DataStoreInternal {
     static func getAdapter() -> SQLiteStorageEngineAdapter? {
         if let dataStorePlugin = tryGetPlugin(),
            let storageEngine = dataStorePlugin.storageEngine as? StorageEngine,
-           let adapter = storageEngine.storageAdapter as? SQLiteStorageEngineAdapter
-        {
+           let adapter = storageEngine.storageAdapter as? SQLiteStorageEngineAdapter {
             return adapter
         }
         return nil

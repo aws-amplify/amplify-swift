@@ -106,12 +106,16 @@ class StateMachineTests: XCTestCase {
             }
         }
 
-        await fulfillment(of: [receivedOneOnSubscribe,
-                               receivedTwoAfterSubscribe,
-                               receivedThreeAfterSubscribe,
-                               receivedOneAfterSubscribe],
-                          timeout: 1,
-                          enforceOrder: true)
+        await fulfillment(
+            of: [
+                receivedOneOnSubscribe,
+                receivedTwoAfterSubscribe,
+                receivedThreeAfterSubscribe,
+                receivedOneAfterSubscribe
+            ],
+            timeout: 1,
+            enforceOrder: true
+        )
 
         listener.cancel()
     }

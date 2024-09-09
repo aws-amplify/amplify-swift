@@ -17,11 +17,13 @@ protocol InitialSyncOrchestrator {
 
 // For testing
 typealias InitialSyncOrchestratorFactory =
-    (DataStoreConfiguration,
-     AuthModeStrategy,
-     APICategoryGraphQLBehavior?,
-    IncomingEventReconciliationQueue?,
-    StorageEngineAdapter?) -> InitialSyncOrchestrator
+    (
+        DataStoreConfiguration,
+        AuthModeStrategy,
+        APICategoryGraphQLBehavior?,
+        IncomingEventReconciliationQueue?,
+        StorageEngineAdapter?
+    ) -> InitialSyncOrchestrator
 
 final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     typealias SyncOperationResult = Result<Void, DataStoreError>
@@ -42,20 +44,23 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     // Future optimization: can perform sync on each root in parallel, since we know they won't have any
     // interdependencies
     let syncOperationQueue: OperationQueue
-    private let concurrencyQueue = DispatchQueue(label: "com.amazonaws.InitialSyncOrchestrator.concurrencyQueue",
-                                                 target: DispatchQueue.global())
+    private let concurrencyQueue = DispatchQueue(
+        label: "com.amazonaws.InitialSyncOrchestrator.concurrencyQueue",
+        target: DispatchQueue.global()
+    )
 
     private let initialSyncOrchestratorTopic: PassthroughSubject<InitialSyncOperationEvent, DataStoreError>
     var publisher: AnyPublisher<InitialSyncOperationEvent, DataStoreError> {
         return initialSyncOrchestratorTopic.eraseToAnyPublisher()
     }
 
-    init(dataStoreConfiguration: DataStoreConfiguration,
-         authModeStrategy: AuthModeStrategy,
-         api: APICategoryGraphQLBehavior?,
-         reconciliationQueue: IncomingEventReconciliationQueue?,
-         storageAdapter: StorageEngineAdapter?)
-    {
+    init(
+        dataStoreConfiguration: DataStoreConfiguration,
+        authModeStrategy: AuthModeStrategy,
+        api: APICategoryGraphQLBehavior?,
+        reconciliationQueue: IncomingEventReconciliationQueue?,
+        storageAdapter: StorageEngineAdapter?
+    ) {
         self.initialSyncOperationSinks = [:]
         self.dataStoreConfiguration = dataStoreConfiguration
         self.authModeStrategy = authModeStrategy
@@ -103,19 +108,25 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
     /// Enqueues sync operations for models and downstream dependencies
     private func enqueueSyncOperation(for modelSchema: ModelSchema) {
-        let initialSyncForModel = InitialSyncOperation(modelSchema: modelSchema,
-                                                       api: api,
-                                                       reconciliationQueue: reconciliationQueue,
-                                                       storageAdapter: storageAdapter,
-                                                       dataStoreConfiguration: dataStoreConfiguration,
-                                                       authModeStrategy: authModeStrategy)
+        let initialSyncForModel = InitialSyncOperation(
+            modelSchema: modelSchema,
+            api: api,
+            reconciliationQueue: reconciliationQueue,
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: dataStoreConfiguration,
+            authModeStrategy: authModeStrategy
+        )
 
         initialSyncOperationSinks[modelSchema.name] = initialSyncForModel
             .publisher
             .receive(on: concurrencyQueue)
-            .sink(receiveCompletion: { result in self.onReceiveCompletion(modelSchema: modelSchema,
-                                                                          result: result) },
-                  receiveValue: onReceiveValue(_:))
+            .sink(
+                receiveCompletion: { result in self.onReceiveCompletion(
+                    modelSchema: modelSchema,
+                    result: result
+                ) },
+                receiveValue: onReceiveValue(_:)
+            )
 
         syncOperationQueue.addOperation(initialSyncForModel)
     }
@@ -129,7 +140,8 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
             let syncError = DataStoreError.sync(
                 "An error occurred syncing \(modelSchema.name)",
                 "",
-                dataStoreError)
+                dataStoreError
+            )
             syncErrors.append(syncError)
         }
 
@@ -171,8 +183,10 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
     private func dispatchSyncQueriesStarted(for modelNames: [String]) {
         let syncQueriesStartedEvent = SyncQueriesStartedEvent(models: modelNames)
-        let syncQueriesStartedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesStarted,
-                                                        data: syncQueriesStartedEvent)
+        let syncQueriesStartedEventPayload = HubPayload(
+            eventName: HubPayload.EventName.DataStore.syncQueriesStarted,
+            data: syncQueriesStartedEvent
+        )
         log.verbose("[Lifecycle event 2]: syncQueriesStarted")
         Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesStartedEventPayload)
     }
@@ -234,8 +248,7 @@ extension AWSInitialSyncOrchestrator {
         if case let .api(amplifyError, _) = datastoreError,
            let apiError = amplifyError as? APIError,
            case .operationError(_, _, let underlyingError) = apiError,
-           (underlyingError as? AuthError) != nil
-        {
+           (underlyingError as? AuthError) != nil {
             return true
         }
 
@@ -245,25 +258,23 @@ extension AWSInitialSyncOrchestrator {
            let responseError = apiError as? GraphQLResponseError<ResponseType>,
            let graphQLError = graphqlErrors(from: responseError)?.first,
            let errorTypeValue = errorTypeValueFrom(graphQLError: graphQLError),
-           case .unauthorized = AppSyncErrorType(errorTypeValue)
-        {
+           case .unauthorized = AppSyncErrorType(errorTypeValue) {
             return true
         }
 
         // Check is API error is of unauthorized type
         if case let .api(amplifyError, _) = datastoreError,
-            let apiError = amplifyError as? APIError
-        {
+            let apiError = amplifyError as? APIError {
             if case .operationError(let errorDescription, _, _) = apiError,
-               errorDescription.range(of: "Unauthorized",
-                                      options: .caseInsensitive) != nil
-            {
+               errorDescription.range(
+                   of: "Unauthorized",
+                   options: .caseInsensitive
+               ) != nil {
                 return true
             }
 
             if case .httpStatusError(let statusCode, _) = apiError,
-               statusCode == 401 || statusCode == 403
-            {
+               statusCode == 401 || statusCode == 403 {
                 return true
             }
         }
@@ -280,8 +291,7 @@ extension AWSInitialSyncOrchestrator {
 
         if case let .api(amplifyError, _) = datastoreError,
            let apiError = amplifyError as? APIError,
-           case .networkError = apiError
-        {
+           case .networkError = apiError {
             return true
         }
 
@@ -297,8 +307,7 @@ extension AWSInitialSyncOrchestrator {
 
         if case let .api(amplifyError, _) = datastoreError,
            let apiError = amplifyError as? APIError,
-           case let .networkError(_, _, underlyingError) = apiError
-        {
+           case let .networkError(_, _, underlyingError) = apiError {
             return underlyingError
         }
 

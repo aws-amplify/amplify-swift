@@ -53,11 +53,13 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                 return .failure(.unknown("", "", APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
             } else if numberOfTimesEntered == 1, let anyModel = try? model.eraseToAnyModel() {
                 expectSecondCallToAPIMutate.fulfill()
-                let remoteSyncMetadata = MutationSyncMetadata(modelId: model.id,
-                                                              modelName: model.modelName,
-                                                              deleted: false,
-                                                              lastChangedAt: Date().unixSeconds,
-                                                              version: 2)
+                let remoteSyncMetadata = MutationSyncMetadata(
+                    modelId: model.id,
+                    modelName: model.modelName,
+                    deleted: false,
+                    lastChangedAt: Date().unixSeconds,
+                    version: 2
+                )
                 return .success(MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata))
             } else {
                 XCTFail("This should not be called more than once")
@@ -117,11 +119,13 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                 return .failure(.unknown("", "", APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
             } else if numberOfTimesEntered == 1, let anyModel = try? model.eraseToAnyModel() {
                 expectSecondCallToAPIMutate.fulfill()
-                let remoteSyncMetadata = MutationSyncMetadata(modelId: model.id,
-                                                              modelName: model.modelName,
-                                                              deleted: false,
-                                                              lastChangedAt: Date().unixSeconds,
-                                                              version: 2)
+                let remoteSyncMetadata = MutationSyncMetadata(
+                    modelId: model.id,
+                    modelName: model.modelName,
+                    deleted: false,
+                    lastChangedAt: Date().unixSeconds,
+                    version: 2
+                )
                 let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
                 return .success(remoteMutationSync)
             } else {
@@ -234,10 +238,12 @@ class SyncMutationToCloudOperationTests: XCTestCase {
             currentAttemptNumber: 1,
             completion: { _ in }
         )
-        let response = HTTPURLResponse(url: URL(string: "http://localhost")!,
-                                       statusCode: 401,
-                                       httpVersion: nil,
-                                       headerFields: nil)!
+        let response = HTTPURLResponse(
+            url: URL(string: "http://localhost")!,
+            statusCode: 401,
+            httpVersion: nil,
+            headerFields: nil
+        )!
         let error = APIError.httpStatusError(401, response)
         let advice = operation.getRetryAdviceIfRetryable(error: error)
         XCTAssertTrue(advice.shouldRetry)
@@ -254,10 +260,12 @@ class SyncMutationToCloudOperationTests: XCTestCase {
 
         let expectCalllToApiMutateNTimesAndFail = expectation(description: "Call API.mutate \(expectedNumberOfTimesEntered) times and then fail")
 
-        let response = HTTPURLResponse(url: URL(string: "http://localhost")!,
-                                       statusCode: 401,
-                                       httpVersion: nil,
-                                       headerFields: nil)!
+        let response = HTTPURLResponse(
+            url: URL(string: "http://localhost")!,
+            statusCode: 401,
+            httpVersion: nil,
+            headerFields: nil
+        )!
         let error = APIError.httpStatusError(401, response)
 
         let operation = await SyncMutationToCloudOperation(
@@ -389,18 +397,20 @@ public class MockMultiAuthModeStrategy: AuthModeStrategy {
     public weak var authDelegate: AuthModeStrategyDelegate?
     public required init() {}
 
-    public func authTypesFor(schema: ModelSchema,
-                             operation: ModelOperation) -> AWSAuthorizationTypeIterator
-    {
+    public func authTypesFor(
+        schema: ModelSchema,
+        operation: ModelOperation
+    ) -> AWSAuthorizationTypeIterator {
         return AWSAuthorizationTypeIterator(withValues: [
             .designated(.amazonCognitoUserPools),
             .designated(.apiKey)
         ])
     }
 
-    public func authTypesFor(schema: ModelSchema,
-                             operations: [ModelOperation]) -> AWSAuthorizationTypeIterator
-    {
+    public func authTypesFor(
+        schema: ModelSchema,
+        operations: [ModelOperation]
+    ) -> AWSAuthorizationTypeIterator {
         return AWSAuthorizationTypeIterator(withValues: [
             .designated(.amazonCognitoUserPools),
             .designated(.apiKey)
@@ -413,11 +423,13 @@ extension SyncMutationToCloudOperationTests {
         await Amplify.reset()
 
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                 storageEngineBehaviorFactory: MockStorageEngineBehavior.mockStorageEngineBehaviorFactory,
-                                                 dataStorePublisher: dataStorePublisher,
-                                                 validAPIPluginKey: "MockAPICategoryPlugin",
-                                                 validAuthPluginKey: "MockAuthCategoryPlugin")
+        let dataStorePlugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: MockStorageEngineBehavior.mockStorageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
 
         try Amplify.add(plugin: dataStorePlugin)
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [

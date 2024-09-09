@@ -66,15 +66,16 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     /// Initializes the CloudSyncEngine with the specified storageAdapter as the provider for persistence of
     /// MutationEvents, sync metadata, and conflict resolution metadata. Immediately initializes the incoming mutation
     /// queue so it can begin accepting incoming mutations from DataStore.
-    convenience init(storageAdapter: StorageEngineAdapter,
-                     dataStoreConfiguration: DataStoreConfiguration,
-                     outgoingMutationQueue: OutgoingMutationQueueBehavior? = nil,
-                     initialSyncOrchestratorFactory: InitialSyncOrchestratorFactory? = nil,
-                     reconciliationQueueFactory: IncomingEventReconciliationQueueFactory? = nil,
-                     stateMachine: StateMachine<State, Action>? = nil,
-                     networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
-                     requestRetryablePolicy: RequestRetryablePolicy? = nil) throws
-    {
+    convenience init(
+        storageAdapter: StorageEngineAdapter,
+        dataStoreConfiguration: DataStoreConfiguration,
+        outgoingMutationQueue: OutgoingMutationQueueBehavior? = nil,
+        initialSyncOrchestratorFactory: InitialSyncOrchestratorFactory? = nil,
+        reconciliationQueueFactory: IncomingEventReconciliationQueueFactory? = nil,
+        stateMachine: StateMachine<State, Action>? = nil,
+        networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
+        requestRetryablePolicy: RequestRetryablePolicy? = nil
+    ) throws {
 
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
@@ -83,9 +84,11 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         let resolvedAuthStrategy: AuthModeStrategy = dataStoreConfiguration.authModeStrategyType.resolveStrategy()
 
         let outgoingMutationQueue = outgoingMutationQueue ??
-            OutgoingMutationQueue(storageAdapter: storageAdapter,
-                                  dataStoreConfiguration: dataStoreConfiguration,
-                                  authModeStrategy: resolvedAuthStrategy)
+            OutgoingMutationQueue(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: dataStoreConfiguration,
+                authModeStrategy: resolvedAuthStrategy
+            )
         // swiftlint:disable line_length
         let reconciliationQueueFactory = reconciliationQueueFactory ??
         AWSIncomingEventReconciliationQueue.init(modelSchemas:api:storageAdapter:syncExpressions:auth:authModeStrategy:modelReconciliationQueueFactory:disableSubscriptions:)
@@ -94,36 +97,41 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             AWSInitialSyncOrchestrator.init(dataStoreConfiguration:authModeStrategy:api:reconciliationQueue:storageAdapter:)
 
         let resolver = RemoteSyncEngine.Resolver.resolve(currentState:action:)
-        let stateMachine = stateMachine ?? StateMachine(initialState: .notStarted,
-                                                        resolver: resolver)
+        let stateMachine = stateMachine ?? StateMachine(
+            initialState: .notStarted,
+            resolver: resolver
+        )
 
         let requestRetryablePolicy = requestRetryablePolicy ?? RequestRetryablePolicy()
 
-        self.init(storageAdapter: storageAdapter,
-                  dataStoreConfiguration: dataStoreConfiguration,
-                  authModeStrategy: resolvedAuthStrategy,
-                  outgoingMutationQueue: outgoingMutationQueue,
-                  mutationEventIngester: mutationDatabaseAdapter,
-                  mutationEventPublisher: awsMutationEventPublisher,
-                  initialSyncOrchestratorFactory: initialSyncOrchestratorFactory,
-                  reconciliationQueueFactory: reconciliationQueueFactory,
-                  stateMachine: stateMachine,
-                  networkReachabilityPublisher: networkReachabilityPublisher,
-                  requestRetryablePolicy: requestRetryablePolicy)
+        self.init(
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: dataStoreConfiguration,
+            authModeStrategy: resolvedAuthStrategy,
+            outgoingMutationQueue: outgoingMutationQueue,
+            mutationEventIngester: mutationDatabaseAdapter,
+            mutationEventPublisher: awsMutationEventPublisher,
+            initialSyncOrchestratorFactory: initialSyncOrchestratorFactory,
+            reconciliationQueueFactory: reconciliationQueueFactory,
+            stateMachine: stateMachine,
+            networkReachabilityPublisher: networkReachabilityPublisher,
+            requestRetryablePolicy: requestRetryablePolicy
+        )
     }
 
-    init(storageAdapter: StorageEngineAdapter,
-         dataStoreConfiguration: DataStoreConfiguration,
-         authModeStrategy: AuthModeStrategy,
-         outgoingMutationQueue: OutgoingMutationQueueBehavior,
-         mutationEventIngester: MutationEventIngester,
-         mutationEventPublisher: MutationEventPublisher,
-         initialSyncOrchestratorFactory: @escaping InitialSyncOrchestratorFactory,
-         reconciliationQueueFactory: @escaping IncomingEventReconciliationQueueFactory,
-         stateMachine: StateMachine<State, Action>,
-         networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?,
-         requestRetryablePolicy: RequestRetryablePolicy)
-    {
+    init(
+        storageAdapter: StorageEngineAdapter,
+        dataStoreConfiguration: DataStoreConfiguration,
+        authModeStrategy: AuthModeStrategy,
+        outgoingMutationQueue: OutgoingMutationQueueBehavior,
+        mutationEventIngester: MutationEventIngester,
+        mutationEventPublisher: MutationEventPublisher,
+        initialSyncOrchestratorFactory: @escaping InitialSyncOrchestratorFactory,
+        reconciliationQueueFactory: @escaping IncomingEventReconciliationQueueFactory,
+        stateMachine: StateMachine<State, Action>,
+        networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?,
+        requestRetryablePolicy: RequestRetryablePolicy
+    ) {
         self.storageAdapter = storageAdapter
         self.dataStoreConfiguration = dataStoreConfiguration
         self.authModeStrategy = authModeStrategy
@@ -175,9 +183,11 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         case .activatingCloudSubscriptions:
             activateCloudSubscriptions()
         case .activatingMutationQueue(let api, let mutationEventPublisher, let reconciliationQueue):
-            startMutationQueue(api: api,
-                               mutationEventPublisher: mutationEventPublisher,
-                               reconciliationQueue: reconciliationQueue)
+            startMutationQueue(
+                api: api,
+                mutationEventPublisher: mutationEventPublisher,
+                reconciliationQueue: reconciliationQueue
+            )
         case .notifyingSyncStarted:
             notifySyncStarted()
 
@@ -209,8 +219,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         self.auth = auth
 
         if networkReachabilityPublisher == nil,
-            let reachability = api as? APICategoryReachabilityBehavior
-        {
+            let reachability = api as? APICategoryReachabilityBehavior {
             do {
                 networkReachabilityPublisher = try reachability.reachabilityPublisher()
             } catch {
@@ -283,19 +292,22 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         }
     }
 
-    private func initializeSubscriptions(api: APICategoryGraphQLBehavior,
-                                         storageAdapter: StorageEngineAdapter) async
-    {
+    private func initializeSubscriptions(
+        api: APICategoryGraphQLBehavior,
+        storageAdapter: StorageEngineAdapter
+    ) async {
         log.debug("[InitializeSubscription] \(#function)")
         let syncableModelSchemas = ModelRegistry.modelSchemas.filter(\.isSyncable)
-        reconciliationQueue = await reconciliationQueueFactory(syncableModelSchemas,
-                                                               api,
-                                                               storageAdapter,
-                                                               dataStoreConfiguration.syncExpressions,
-                                                               auth,
-                                                               authModeStrategy,
-                                                               nil,
-                                                               dataStoreConfiguration.disableSubscriptions)
+        reconciliationQueue = await reconciliationQueueFactory(
+            syncableModelSchemas,
+            api,
+            storageAdapter,
+            dataStoreConfiguration.syncExpressions,
+            auth,
+            authModeStrategy,
+            nil,
+            dataStoreConfiguration.disableSubscriptions
+        )
         reconciliationQueueSink = reconciliationQueue?
             .publisher
             .sink(
@@ -307,17 +319,21 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private func performInitialSync() {
         log.debug("[InitializeSubscription.6] \(#function)")
 
-        let initialSyncOrchestrator = initialSyncOrchestratorFactory(dataStoreConfiguration,
-                                                                     authModeStrategy,
-                                                                     api,
-                                                                     reconciliationQueue,
-                                                                     storageAdapter)
+        let initialSyncOrchestrator = initialSyncOrchestratorFactory(
+            dataStoreConfiguration,
+            authModeStrategy,
+            api,
+            reconciliationQueue,
+            storageAdapter
+        )
 
         // Hold a reference so we can `reset` while initial sync is in process
         self.initialSyncOrchestrator = initialSyncOrchestrator
 
-        syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
-                                            reconciliationQueue: reconciliationQueue)
+        syncEventEmitter = SyncEventEmitter(
+            initialSyncOrchestrator: initialSyncOrchestrator,
+            reconciliationQueue: reconciliationQueue
+        )
 
         syncEventEmitterSink = syncEventEmitter?
             .publisher
@@ -367,14 +383,17 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         reconciliationQueue.start()
     }
 
-    private func startMutationQueue(api: APICategoryGraphQLBehavior,
-                                    mutationEventPublisher: MutationEventPublisher,
-                                    reconciliationQueue: IncomingEventReconciliationQueue?)
-    {
+    private func startMutationQueue(
+        api: APICategoryGraphQLBehavior,
+        mutationEventPublisher: MutationEventPublisher,
+        reconciliationQueue: IncomingEventReconciliationQueue?
+    ) {
         log.debug(#function)
-        outgoingMutationQueue.startSyncingToCloud(api: api,
-                                                  mutationEventPublisher: mutationEventPublisher,
-                                                  reconciliationQueue: reconciliationQueue)
+        outgoingMutationQueue.startSyncingToCloud(
+            api: api,
+            mutationEventPublisher: mutationEventPublisher,
+            reconciliationQueue: reconciliationQueue
+        )
 
         remoteSyncTopicPublisher.send(.mutationQueueStarted)
         stateMachine.notify(action: .activatedMutationQueue)
@@ -401,8 +420,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private func notifySyncStarted() {
         resetCurrentAttemptNumber()
         log.verbose("[Lifecycle event 5]: syncStarted")
-        Amplify.Hub.dispatch(to: .dataStore,
-                             payload: HubPayload(eventName: HubPayload.EventName.DataStore.syncStarted))
+        Amplify.Hub.dispatch(
+            to: .dataStore,
+            payload: HubPayload(eventName: HubPayload.EventName.DataStore.syncStarted)
+        )
 
         remoteSyncTopicPublisher.send(.syncStarted)
         stateMachine.notify(action: .notifiedSyncStarted)
@@ -410,8 +431,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     private func onReceiveNetworkStatus(networkStatus: ReachabilityUpdate) {
         let networkStatusEvent = NetworkStatusEvent(active: networkStatus.isOnline)
-        let networkStatusEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.networkStatus,
-                                                   data: networkStatusEvent)
+        let networkStatusEventPayload = HubPayload(
+            eventName: HubPayload.EventName.DataStore.networkStatus,
+            data: networkStatusEvent
+        )
         Amplify.Hub.dispatch(to: .dataStore, payload: networkStatusEventPayload)
     }
 

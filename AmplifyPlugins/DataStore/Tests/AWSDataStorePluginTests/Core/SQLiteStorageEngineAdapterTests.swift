@@ -367,10 +367,11 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             switch insertResult {
             case .success:
                 saveExpectation.fulfill()
-                self.storageAdapter.delete(untypedModelType: Post.self,
-                                           modelSchema: Post.schema,
-                                           withIdentifier: post.identifier(schema: Post.schema))
-                {
+                self.storageAdapter.delete(
+                    untypedModelType: Post.self,
+                    modelSchema: Post.schema,
+                    withIdentifier: post.identifier(schema: Post.schema)
+                ) {
                     switch $0 {
                     case .success:
                         deleteExpectation.fulfill()
@@ -402,11 +403,12 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                 saveExpectation.fulfill()
                 let postKeys = Post.keys
                 let predicate = postKeys.createdAt.gt(dateTestStart)
-                self.storageAdapter.delete(Post.self,
-                                           modelSchema: Post.schema,
-                                           withIdentifier: post.identifier(schema: Post.schema),
-                                           condition: predicate)
-                { result in
+                self.storageAdapter.delete(
+                    Post.self,
+                    modelSchema: Post.schema,
+                    withIdentifier: post.identifier(schema: Post.schema),
+                    condition: predicate
+                ) { result in
                     switch result {
                     case .success:
                         deleteExpectation.fulfill()
@@ -438,11 +440,12 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                 saveExpectation.fulfill()
                 let postKeys = Post.keys
                 let predicate = postKeys.createdAt.lt(dateTestStart)
-                self.storageAdapter.delete(Post.self,
-                                           modelSchema: Post.schema,
-                                           withIdentifier: post.identifier(schema: Post.schema),
-                                           condition: predicate)
-                { result in
+                self.storageAdapter.delete(
+                    Post.self,
+                    modelSchema: Post.schema,
+                    withIdentifier: post.identifier(schema: Post.schema),
+                    condition: predicate
+                ) { result in
                     switch result {
                     case .success:
                         deleteCompleteExpectation.fulfill()
@@ -513,10 +516,11 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                     postsAdded.append(post.id)
                     if counter == maxCount - 1 {
                         saveExpectation.fulfill()
-                        self.storageAdapter.delete(Post.self,
-                                                   modelSchema: Post.schema,
-                                                   filter: QueryPredicateConstant.all)
-                        { result in
+                        self.storageAdapter.delete(
+                            Post.self,
+                            modelSchema: Post.schema,
+                            filter: QueryPredicateConstant.all
+                        ) { result in
                             switch result {
                             case .success:
                                 deleteExpectation.fulfill()
@@ -570,10 +574,12 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         }
 
         do {
-            _ = try SQLiteStorageEngineAdapter.clearIfNewVersion(version: newVersion,
-                                                             dbFilePath: URL(string: "dbFilePath")!,
-                                                             userDefaults: userDefaults,
-                                                             fileManager: mockFileManager)
+            _ = try SQLiteStorageEngineAdapter.clearIfNewVersion(
+                version: newVersion,
+                dbFilePath: URL(string: "dbFilePath")!,
+                userDefaults: userDefaults,
+                fileManager: mockFileManager
+            )
         } catch {
             XCTFail("Test failed due to \(error)")
         }
@@ -597,10 +603,12 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         }
 
         do {
-            _ = try SQLiteStorageEngineAdapter.clearIfNewVersion(version: newVersion,
-                                                             dbFilePath: URL(string: "dbFilePath")!,
-                                                             userDefaults: userDefaults,
-                                                             fileManager: mockFileManager)
+            _ = try SQLiteStorageEngineAdapter.clearIfNewVersion(
+                version: newVersion,
+                dbFilePath: URL(string: "dbFilePath")!,
+                userDefaults: userDefaults,
+                fileManager: mockFileManager
+            )
         } catch {
             XCTFail("Test failed due to \(error)")
         }
@@ -624,10 +632,12 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         }
 
         do {
-            _ = try SQLiteStorageEngineAdapter.clearIfNewVersion(version: newVersion,
-                                                             dbFilePath: URL(string: "dbFilePath")!,
-                                                             userDefaults: userDefaults,
-                                                             fileManager: mockFileManager)
+            _ = try SQLiteStorageEngineAdapter.clearIfNewVersion(
+                version: newVersion,
+                dbFilePath: URL(string: "dbFilePath")!,
+                userDefaults: userDefaults,
+                fileManager: mockFileManager
+            )
         } catch {
             XCTFail("Test failed due to \(error)")
         }
@@ -649,10 +659,12 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         mockFileManager.fileExists = true
 
         do {
-            _ = try SQLiteStorageEngineAdapter.clearIfNewVersion(version: newVersion,
-                                                             dbFilePath: URL(string: "dbFilePath")!,
-                                                             userDefaults: userDefaults,
-                                                             fileManager: mockFileManager)
+            _ = try SQLiteStorageEngineAdapter.clearIfNewVersion(
+                version: newVersion,
+                dbFilePath: URL(string: "dbFilePath")!,
+                userDefaults: userDefaults,
+                fileManager: mockFileManager
+            )
         } catch {
             guard let dataStoreError = error as? DataStoreError, case .invalidDatabase = dataStoreError else {
                 XCTFail("Expected DataStoreErrorF")
@@ -677,11 +689,13 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         let querySuccess = expectation(description: "query for metadata success")
         let modelId = UUID().uuidString
         let modelName = "modelName"
-        let metadata = MutationSyncMetadata(modelId: modelId,
-                                            modelName: modelName,
-                                            deleted: false,
-                                            lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                            version: 1)
+        let metadata = MutationSyncMetadata(
+            modelId: modelId,
+            modelName: modelName,
+            deleted: false,
+            lastChangedAt: Int64(Date().timeIntervalSince1970),
+            version: 1
+        )
 
         storageAdapter.save(metadata) { result in
             switch result {
@@ -701,16 +715,20 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
 
     func testQueryMutationSyncMetadataForModelIds() {
         let modelName = "modelName"
-        let metadata1 = MutationSyncMetadata(modelId: UUID().uuidString,
-                                             modelName: modelName,
-                                             deleted: false,
-                                             lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                             version: 1)
-        let metadata2 = MutationSyncMetadata(modelId: UUID().uuidString,
-                                             modelName: modelName,
-                                             deleted: false,
-                                             lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                             version: 1)
+        let metadata1 = MutationSyncMetadata(
+            modelId: UUID().uuidString,
+            modelName: modelName,
+            deleted: false,
+            lastChangedAt: Int64(Date().timeIntervalSince1970),
+            version: 1
+        )
+        let metadata2 = MutationSyncMetadata(
+            modelId: UUID().uuidString,
+            modelName: modelName,
+            deleted: false,
+            lastChangedAt: Int64(Date().timeIntervalSince1970),
+            version: 1
+        )
 
         let saveMetadata1 = expectation(description: "save metadata1 success")
         storageAdapter.save(metadata1) { result in
@@ -748,18 +766,22 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     }
 
     func testShouldIgnoreConstraintViolationError() {
-        let constraintViolationError = Result.error(message: "Foreign Key Constraint Violation",
-                                                    code: SQLITE_CONSTRAINT,
-                                                    statement: nil)
+        let constraintViolationError = Result.error(
+            message: "Foreign Key Constraint Violation",
+            code: SQLITE_CONSTRAINT,
+            statement: nil
+        )
         let dataStoreError = DataStoreError.invalidOperation(causedBy: constraintViolationError)
 
         XCTAssertTrue(storageAdapter.shouldIgnoreError(error: dataStoreError))
     }
 
     func testShouldIgnoreErrorFalse() {
-        let constraintViolationError = Result.error(message: "",
-                                                    code: SQLITE_BUSY,
-                                                    statement: nil)
+        let constraintViolationError = Result.error(
+            message: "",
+            code: SQLITE_BUSY,
+            statement: nil
+        )
         let dataStoreError = DataStoreError.invalidOperation(causedBy: constraintViolationError)
 
         XCTAssertFalse(storageAdapter.shouldIgnoreError(error: dataStoreError))

@@ -21,7 +21,8 @@ extension AWSDataStoreLazyLoadCompositePKTests {
             childId: UUID().uuidString,
             content: "content",
             compositePKParentChildrenSansBelongsToCustomId: parent.customId,
-            compositePKParentChildrenSansBelongsToContent: parent.content)
+            compositePKParentChildrenSansBelongsToContent: parent.content
+        )
     }
 
     func testSaveChildSansBelongsTo() async throws {
@@ -75,11 +76,16 @@ extension AWSDataStoreLazyLoadCompositePKTests {
 
         // query parent and load the children
         let queriedParent = try await query(for: savedParent)
-        assertList(queriedParent.childrenSansBelongsTo!, state: .isNotLoaded(associatedIds: [queriedParent.customId,
-                                                                                             queriedParent.content],
-                                                                             associatedFields: [
-                                                                                "compositePKParentChildrenSansBelongsToCustomId",
-                                                                                "compositePKParentChildrenSansBelongsToContent"]))
+        assertList(queriedParent.childrenSansBelongsTo!, state: .isNotLoaded(
+            associatedIds: [
+                queriedParent.customId,
+                queriedParent.content
+            ],
+            associatedFields: [
+                "compositePKParentChildrenSansBelongsToCustomId",
+                "compositePKParentChildrenSansBelongsToContent"
+            ]
+        ))
         try await queriedParent.childrenSansBelongsTo?.fetch()
         assertList(queriedParent.childrenSansBelongsTo!, state: .isLoaded(count: 1))
 

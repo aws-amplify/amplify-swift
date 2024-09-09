@@ -140,17 +140,17 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
 
         let post = Post4V2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
-        let hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+        let hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let syncedPost = try? mutationEvent.decodeModel() as? Post4V2,
-               syncedPost.id == post.id
-            {
+               syncedPost.id == post.id {
                 createReceived.fulfill()
             }
         }
@@ -172,17 +172,17 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
 
         var post = Post4V2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
-        var hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+        var hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let syncedPost = try? mutationEvent.decodeModel() as? Post4V2,
-               syncedPost.id == post.id
-            {
+               syncedPost.id == post.id {
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
                     XCTAssertEqual(mutationEvent.version, 1)
                     createReceived.fulfill()
@@ -198,17 +198,17 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
 
         let updatedTitle = "updatedTitle"
         let updateReceived = expectation(description: "received updated post from sync event")
-        hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+        hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let syncedPost = try? mutationEvent.decodeModel() as? Post4V2,
-               syncedPost.id == post.id
-            {
+               syncedPost.id == post.id {
                 if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
                     XCTAssertEqual(syncedPost.title, updatedTitle)
                     XCTAssertEqual(mutationEvent.version, 2)
@@ -233,17 +233,17 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
         let post = Post4V2(title: "title")
 
         let createReceived = expectation(description: "received post from sync event")
-        var hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+        var hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let syncedPost = try? mutationEvent.decodeModel() as? Post4V2,
-               syncedPost == post
-            {
+               syncedPost == post {
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
                     XCTAssertEqual(mutationEvent.version, 1)
                     createReceived.fulfill()
@@ -258,17 +258,17 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
         await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let deleteReceived = expectation(description: "received deleted post from sync event")
-        hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+        hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let syncedPost = try? mutationEvent.decodeModel() as? Post4V2,
-               syncedPost == post
-            {
+               syncedPost == post {
                 if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
                     XCTAssertEqual(mutationEvent.version, 2)
                     deleteReceived.fulfill()
@@ -293,24 +293,23 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
 
         let createReceived = expectation(description: "received created from sync event")
         createReceived.expectedFulfillmentCount = 2 // 1 post and 1 comment
-        var hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+        var hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let syncedPost = try? mutationEvent.decodeModel() as? Post4V2,
-               syncedPost == post
-            {
+               syncedPost == post {
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
                     XCTAssertEqual(mutationEvent.version, 1)
                     createReceived.fulfill()
                 }
             } else if let syncedComment = try? mutationEvent.decodeModel() as? Comment4V2,
-                      syncedComment.id == comment.id
-            {
+                      syncedComment.id == comment.id {
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
                     XCTAssertEqual(mutationEvent.version, 1)
                     createReceived.fulfill()
@@ -327,24 +326,23 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
 
         let deleteReceived = expectation(description: "received deleted from sync event")
         deleteReceived.expectedFulfillmentCount = 2 // 1 post and 1 comment
-        hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+        hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
 
             if let syncedPost = try? mutationEvent.decodeModel() as? Post4V2,
-               syncedPost == post
-            {
+               syncedPost == post {
                 if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
                     XCTAssertEqual(mutationEvent.version, 2)
                     deleteReceived.fulfill()
                 }
             } else if let syncedComment = try? mutationEvent.decodeModel() as? Comment4V2,
-                      syncedComment.id == comment.id
-            {
+                      syncedComment.id == comment.id {
                 if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
                     XCTAssertEqual(mutationEvent.version, 2)
                     deleteReceived.fulfill()
@@ -361,9 +359,10 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
 }
 
 extension Post4V2: Equatable {
-    public static func == (lhs: Post4V2,
-                           rhs: Post4V2) -> Bool
-    {
+    public static func == (
+        lhs: Post4V2,
+        rhs: Post4V2
+    ) -> Bool {
         return lhs.id == rhs.id
             && lhs.title == rhs.title
     }

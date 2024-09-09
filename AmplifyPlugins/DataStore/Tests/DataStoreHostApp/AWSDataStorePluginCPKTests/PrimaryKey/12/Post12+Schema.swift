@@ -11,8 +11,7 @@ import Foundation
 
 public extension Post12 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case postId
     case sk
     case createdAt
@@ -47,9 +46,10 @@ extension Post12: ModelIdentifiable {
 }
 
 public extension Post12.IdentifierProtocol {
-  static func identifier(postId: String,
-      sk: Double) -> Self
-  {
+  static func identifier(
+    postId: String,
+    sk: Double
+  ) -> Self {
     .make(fields: [(name: "postId", value: postId), (name: "sk", value: sk)])
   }
 }

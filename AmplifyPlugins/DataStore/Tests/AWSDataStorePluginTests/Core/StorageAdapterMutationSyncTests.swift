@@ -29,11 +29,13 @@ class StorageAdapterMutationSyncTests: BaseDataStoreTests {
 
         // then create sync metadata for them
         let syncMetadataList = posts.map {
-            MutationSyncMetadata(modelId: $0.id,
-                                 modelName: Post.modelName,
-                                 deleted: false,
-                                 lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                 version: 1)
+            MutationSyncMetadata(
+                modelId: $0.id,
+                modelName: Post.modelName,
+                deleted: false,
+                lastChangedAt: Int64(Date().timeIntervalSince1970),
+                version: 1
+            )
         }
         populateData(syncMetadataList)
 

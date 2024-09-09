@@ -41,10 +41,12 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
 
         var posts = [Post]()
         for index in 0 ..< concurrencyLimit {
-            let post = Post(title: "title \(index)",
-                            status: .active,
-                            content: "content \(index)",
-                            createdAt: .now())
+            let post = Post(
+                title: "title \(index)",
+                status: .active,
+                content: "content \(index)",
+                createdAt: .now()
+            )
             posts.append(post)
         }
 
@@ -61,8 +63,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                     }
 
                     if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
-                       mutationEvent.version == 1
-                    {
+                       mutationEvent.version == 1 {
                         postsSyncedToCloud.fulfill()
                     }
                 }
@@ -179,12 +180,10 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                     }
 
                     if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
-                       mutationEvent.version == 1
-                    {
+                       mutationEvent.version == 1 {
                         postsDeletedLocally.fulfill()
                     } else if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
-                              mutationEvent.version == 2
-                    {
+                              mutationEvent.version == 2 {
                         postsDeletedFromCloud.fulfill()
                     }
                 }
@@ -208,10 +207,12 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
     func saveAndSyncPosts(concurrencyLimit: Int) async -> [Post] {
         var posts = [Post]()
         for index in 0 ..< concurrencyLimit {
-            let post = Post(title: "title \(index)",
-                            status: .active,
-                            content: "content \(index)",
-                            createdAt: .now())
+            let post = Post(
+                title: "title \(index)",
+                status: .active,
+                content: "content \(index)",
+                createdAt: .now()
+            )
             posts.append(post)
         }
 
@@ -228,8 +229,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                     }
 
                     if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
-                       mutationEvent.version == 1
-                    {
+                       mutationEvent.version == 1 {
                         postsSyncedToCloud.fulfill()
                     }
                 }

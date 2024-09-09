@@ -45,7 +45,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -98,7 +99,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: dispatchedModelSyncedEvent,
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -126,15 +128,24 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         await fulfillment(of: [firstSnapshot], timeout: 5)
 
         dispatchedModelSyncedEvent.set(true)
-        let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
-                                                 data: ModelSyncedEvent(modelName: Post.modelName, isFullSync: true,
-                                                                        isDeltaSync: false, added: 0, updated: 0,
-                                                                        deleted: 0))
+        let modelSyncedEventPayload = HubPayload(
+            eventName: HubPayload.EventName.DataStore.modelSynced,
+            data: ModelSyncedEvent(
+                modelName: Post.modelName,
+                isFullSync: true,
+                isDeltaSync: false,
+                added: 0,
+                updated: 0,
+                deleted: 0
+            )
+        )
         Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
         await fulfillment(of: [secondSnapshot], timeout: 10)
 
-        let modelSyncedEventNotMatch = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
-                                                  data: ModelSyncedEvent.Builder().modelName)
+        let modelSyncedEventNotMatch = HubPayload(
+            eventName: HubPayload.EventName.DataStore.modelSynced,
+            data: ModelSyncedEvent.Builder().modelName
+        )
         Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventNotMatch)
         await fulfillment(of: [thirdSnapshot], timeout: 10)
     }
@@ -159,10 +170,13 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
-        let post = Post(title: "model1",
-                        content: "content1",
-                        createdAt: .now())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
+        let post = Post(
+            title: "model1",
+            content: "content1",
+            createdAt: .now()
+        )
         storageEngine.responders[.query] = QueryResponder<Post>(callback: { _ in
             return .success([post, Post(title: "model1", content: "content1", createdAt: .now())])
         })
@@ -206,7 +220,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -262,7 +277,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -322,7 +338,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -371,7 +388,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -411,7 +429,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -457,7 +476,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -499,10 +519,13 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
-        let post = Post(title: "model1",
-                        content: "content1",
-                        createdAt: .now())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
+        let post = Post(
+            title: "model1",
+            content: "content1",
+            createdAt: .now()
+        )
         storageEngine.responders[.query] = QueryResponder<Post>(callback: { _ in
             return .success([post, Post(title: "model1", content: "content1", createdAt: .now())])
         })
@@ -558,7 +581,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: true),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
 
         let snapshots = taskRunner.sequence
         Task {
@@ -609,11 +633,15 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
     // MARK: - Helpers
 
     func createPost(id: String = UUID().uuidString, title: String? = nil) throws -> MutationEvent {
-        try MutationEvent(model: Post(id: id,
-                                      title: title ?? "model1",
-                                      content: "content1",
-                                      createdAt: .now()),
-                          modelSchema: Post.schema,
-                          mutationType: MutationEvent.MutationType.create)
+        try MutationEvent(
+            model: Post(
+                id: id,
+                title: title ?? "model1",
+                content: "content1",
+                createdAt: .now()
+            ),
+            modelSchema: Post.schema,
+            mutationType: MutationEvent.MutationType.create
+        )
     }
 }

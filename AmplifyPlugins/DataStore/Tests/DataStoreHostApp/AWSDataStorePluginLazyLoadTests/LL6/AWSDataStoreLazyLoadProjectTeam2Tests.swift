@@ -29,8 +29,10 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
 
     func testSaveProject() async throws {
         await setup(withModels: ProjectTeam2Models())
-        let project = Project(projectId: UUID().uuidString,
-                              name: "name")
+        let project = Project(
+            projectId: UUID().uuidString,
+            name: "name"
+        )
         let savedProject = try await createAndWaitForSync(project)
         try await assertModelExists(savedProject)
         assertProjectDoesNotContainTeam(savedProject)
@@ -42,28 +44,34 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
         let savedTeam = try await createAndWaitForSync(team)
 
         // Project initializer variation #1 (pass both team reference and fields in)
-        let project = Project(projectId: UUID().uuidString,
-                              name: "name",
-                              team: team,
-                              project2TeamTeamId: team.teamId,
-                              project2TeamName: team.name)
+        let project = Project(
+            projectId: UUID().uuidString,
+            name: "name",
+            team: team,
+            project2TeamTeamId: team.teamId,
+            project2TeamName: team.name
+        )
         let savedProject = try await createAndWaitForSync(project)
         let queriedProject = try await query(for: savedProject)
         assertProject(queriedProject, hasTeam: savedTeam)
 
         // Project initializer variation #2 (pass only team reference)
-        let project2 = Project(projectId: UUID().uuidString,
-                               name: "name",
-                               team: team)
+        let project2 = Project(
+            projectId: UUID().uuidString,
+            name: "name",
+            team: team
+        )
         let savedProject2 = try await createAndWaitForSync(project2)
         let queriedProject2 = try await query(for: savedProject2)
         assertProjectDoesNotContainTeam(queriedProject2)
 
         // Project initializer variation #3 (pass fields in)
-        let project3 = Project(projectId: UUID().uuidString,
-                               name: "name",
-                               project2TeamTeamId: team.teamId,
-                               project2TeamName: team.name)
+        let project3 = Project(
+            projectId: UUID().uuidString,
+            name: "name",
+            project2TeamTeamId: team.teamId,
+            project2TeamName: team.name
+        )
         let savedProject3 = try await createAndWaitForSync(project3)
         let queriedProject3 = try await query(for: savedProject3)
         assertProject(queriedProject3, hasTeam: savedTeam)
@@ -194,8 +202,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedProject = try? mutationEvent.decodeModel(as: Project.self),
-                   receivedProject.projectId == project.projectId
-                {
+                   receivedProject.projectId == project.projectId {
                     assertProject(receivedProject, hasTeam: savedTeam)
                     mutationEventReceived.fulfill()
                 }
@@ -224,8 +231,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedTeam = try? mutationEvent.decodeModel(as: Team.self),
-                   receivedTeam.teamId == team.teamId
-                {
+                   receivedTeam.teamId == team.teamId {
 
                     mutationEventReceived.fulfill()
                 }
@@ -313,10 +319,12 @@ extension AWSDataStoreLazyLoadProjectTeam2Tests {
     }
 
     func initializeProjectWithTeam(_ team: Team) -> Project {
-        return Project(projectId: UUID().uuidString,
-                       name: "name",
-                       team: team,
-                       project2TeamTeamId: team.teamId,
-                       project2TeamName: team.name)
+        return Project(
+            projectId: UUID().uuidString,
+            name: "name",
+            team: team,
+            project2TeamTeamId: team.teamId,
+            project2TeamName: team.name
+        )
     }
 }

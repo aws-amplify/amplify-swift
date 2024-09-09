@@ -21,8 +21,10 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
     func testSaveAndImmediatelyUpdate() async throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        let newPost = try PostWrapper(title: "MyPost",
-                          content: "This is my post.")
+        let newPost = try PostWrapper(
+            title: "MyPost",
+            content: "This is my post."
+        )
 
         let updatedPost = newPost
         try updatedPost.updateRating(rating: 5)
@@ -34,8 +36,8 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Can't cast payload as mutation event")
                 return
@@ -137,18 +139,20 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
     func testSaveAndImmediatelyDelete() async throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        let newPost = try PostWrapper(title: "MyPost",
-                          content: "This is my post.",
-                          createdAt: Temporal.DateTime.now().iso8601String,
-                          rating: 3)
+        let newPost = try PostWrapper(
+            title: "MyPost",
+            content: "This is my post.",
+            createdAt: Temporal.DateTime.now().iso8601String,
+            rating: 3
+        )
 
         let saveSyncReceived = expectation(description: "Received create mutation event on subscription for Post")
         let deleteSyncReceived = expectation(description: "Received delete mutation event on subscription for Post")
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Can't cast payload as mutation event")
                 return
@@ -244,10 +248,12 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
 
-        let newPost = try PostWrapper(title: "MyPost",
-                          content: "This is my post.",
-                          createdAt: Temporal.DateTime.now().iso8601String,
-                          rating: 3)
+        let newPost = try PostWrapper(
+            title: "MyPost",
+            content: "This is my post.",
+            createdAt: Temporal.DateTime.now().iso8601String,
+            rating: 3
+        )
 
         var updatedPost = newPost
         try updatedPost.updateRating(rating: 5)
@@ -260,8 +266,8 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived)
-        { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Can't cast payload as mutation event")
                 return

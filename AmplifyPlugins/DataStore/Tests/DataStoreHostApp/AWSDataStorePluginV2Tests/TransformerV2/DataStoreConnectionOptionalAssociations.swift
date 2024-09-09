@@ -319,13 +319,17 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         if let blog {
             blogToSave = blog
         } else {
-            let nestedModel = MyNestedModel8(id: UUID().uuidString,
-                                             nestedName: "nestedName",
-                                             notes: ["notes1", "notes2"])
-            let customModel = MyCustomModel8(id: UUID().uuidString,
-                                             name: "name",
-                                             desc: "desc",
-                                             children: [nestedModel])
+            let nestedModel = MyNestedModel8(
+                id: UUID().uuidString,
+                nestedName: "nestedName",
+                notes: ["notes1", "notes2"]
+            )
+            let customModel = MyCustomModel8(
+                id: UUID().uuidString,
+                name: "name",
+                desc: "desc",
+                children: [nestedModel]
+            )
             blogToSave = Blog8(name: "name", customs: [customModel], notes: ["notes1", "notes2"])
         }
 

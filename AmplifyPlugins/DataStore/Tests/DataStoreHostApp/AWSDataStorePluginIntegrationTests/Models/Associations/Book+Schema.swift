@@ -25,9 +25,11 @@ public extension Book {
 
         model.fields(
             .id(),
-            .hasMany(book.authors,
-                     ofType: BookAuthor.self,
-                     associatedWith: BookAuthor.keys.author)
+            .hasMany(
+                book.authors,
+                ofType: BookAuthor.self,
+                associatedWith: BookAuthor.keys.author
+            )
         )
     }
 

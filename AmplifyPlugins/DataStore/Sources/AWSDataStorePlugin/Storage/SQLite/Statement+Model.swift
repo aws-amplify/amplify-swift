@@ -39,10 +39,12 @@ protocol StatementModelConvertible {
     ///   - modelSchema - the schema for `Model`
     ///   - statement - the query executed that generated this result
     /// - Returns: an array of `Model` of the specified type
-    func convert<M: Model>(to modelType: M.Type,
-                           withSchema modelSchema: ModelSchema,
-                           using statement: SelectStatement,
-                           eagerLoad: Bool) throws -> [M]
+    func convert<M: Model>(
+        to modelType: M.Type,
+        withSchema modelSchema: ModelSchema,
+        using statement: SelectStatement,
+        eagerLoad: Bool
+    ) throws -> [M]
 
 }
 
@@ -53,25 +55,29 @@ extension Statement: StatementModelConvertible {
         Amplify.Logging.logger(forCategory: .dataStore)
     }
 
-    func convert<M: Model>(to modelType: M.Type,
-                           withSchema modelSchema: ModelSchema,
-                           using statement: SelectStatement,
-                           eagerLoad: Bool = true) throws -> [M]
-    {
-        let elements: [ModelValues] = try convertToModelValues(to: modelType,
-                                                                    withSchema: modelSchema,
-                                                                    using: statement,
-                                                                    eagerLoad: eagerLoad)
+    func convert<M: Model>(
+        to modelType: M.Type,
+        withSchema modelSchema: ModelSchema,
+        using statement: SelectStatement,
+        eagerLoad: Bool = true
+    ) throws -> [M] {
+        let elements: [ModelValues] = try convertToModelValues(
+            to: modelType,
+            withSchema: modelSchema,
+            using: statement,
+            eagerLoad: eagerLoad
+        )
         let values: ModelValues = ["elements": elements]
         let result: StatementResult<M> = try StatementResult.from(dictionary: values)
         return result.elements
     }
 
-    func convertToModelValues(to modelType: (some Model).Type,
-                                        withSchema modelSchema: ModelSchema,
-                                        using statement: SelectStatement,
-                                        eagerLoad: Bool = true) throws -> [ModelValues]
-    {
+    func convertToModelValues(
+        to modelType: (some Model).Type,
+        withSchema modelSchema: ModelSchema,
+        using statement: SelectStatement,
+        eagerLoad: Bool = true
+    ) throws -> [ModelValues] {
         var elements: [ModelValues] = []
 
         // parse each row of the result
@@ -152,7 +158,8 @@ extension Statement: StatementModelConvertible {
                 withSchema: modelSchema,
                 using: statement,
                 eagerLoad: eagerLoad,
-                path: path + [field.name])
+                path: path + [field.name]
+            )
 
         default:
             let value = getValue(from: element, by: path + [field.name])
@@ -174,8 +181,7 @@ extension Statement: StatementModelConvertible {
 
     private func convertCollection(field: ModelField, schema: ModelSchema, from element: Element, path: [String]) -> Any? {
         if field.isArray && field.hasAssociation,
-           case let .some(.hasMany(associatedFieldName: associatedFieldName, associatedFieldNames: associatedFieldNames)) = field.association
-        {
+           case let .some(.hasMany(associatedFieldName: associatedFieldName, associatedFieldNames: associatedFieldNames)) = field.association {
             // Construct the lazy list based on the field reference name and `@@primarykey` or primary key field of the parent
             if associatedFieldNames.count <= 1, let associatedFieldName {
                 let primaryKeyName = schema.primaryKey.isCompositeKey
@@ -184,8 +190,10 @@ extension Statement: StatementModelConvertible {
                 let primaryKeyValue = primaryKeyName.flatMap { getValue(from: element, by: path + [$0]) }
 
                 return primaryKeyValue.map {
-                    DataStoreListDecoder.lazyInit(associatedIds: [String(describing: $0)],
-                                                  associatedWith: [associatedFieldName])
+                    DataStoreListDecoder.lazyInit(
+                        associatedIds: [String(describing: $0)],
+                        associatedWith: [associatedFieldName]
+                    )
                 }
             } else {
                 // If `targetNames` is > 1, then this is a uni-directional has-many, thus no reference field on the child
@@ -195,8 +203,10 @@ extension Statement: StatementModelConvertible {
                     .map { getValue(from: element, by: path + [$0]) }
                     .compactMap { $0 }
                     .map { String(describing: $0) }
-                return DataStoreListDecoder.lazyInit(associatedIds: primaryKeyValues,
-                                                     associatedWith: associatedFieldNames)
+                return DataStoreListDecoder.lazyInit(
+                    associatedIds: primaryKeyValues,
+                    associatedWith: associatedFieldNames
+                )
             }
 
         }
@@ -226,8 +236,7 @@ extension Statement: StatementModelConvertible {
         ]
 
         if schema.primaryKey.isCompositeKey,
-           let compositeKey = getValue(from: element, by: path + [ModelIdentifierFormat.Custom.sqlColumnName])
-        {
+           let compositeKey = getValue(from: element, by: path + [ModelIdentifierFormat.Custom.sqlColumnName]) {
             metadata.updateValue(String(describing: compositeKey), forKey: ModelIdentifierFormat.Custom.sqlColumnName)
         }
 

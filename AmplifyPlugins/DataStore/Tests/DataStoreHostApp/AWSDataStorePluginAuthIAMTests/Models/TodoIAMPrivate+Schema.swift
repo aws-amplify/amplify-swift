@@ -11,8 +11,7 @@ import Foundation
 
 public extension TodoIAMPrivate {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case title
     case createdAt
@@ -26,7 +25,7 @@ public extension TodoIAMPrivate {
     let todoIAMPrivate = TodoIAMPrivate.keys
 
     model.authRules = [
-        rule(allow: .private, provider: .iam, operations: [.create, .update, .delete, .read])
+      rule(allow: .private, provider: .iam, operations: [.create, .update, .delete, .read])
     ]
 
     model.pluralName = "TodoIAMPrivates"

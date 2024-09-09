@@ -11,8 +11,7 @@ import Foundation
 
 public extension Comment4 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case commentId
     case content
     case createdAt
@@ -51,9 +50,10 @@ extension Comment4: ModelIdentifiable {
 }
 
 public extension Comment4.IdentifierProtocol {
-  static func identifier(commentId: String,
-      content: String) -> Self
-  {
+  static func identifier(
+    commentId: String,
+    content: String
+  ) -> Self {
     .make(fields: [(name: "commentId", value: commentId), (name: "content", value: content)])
   }
 }

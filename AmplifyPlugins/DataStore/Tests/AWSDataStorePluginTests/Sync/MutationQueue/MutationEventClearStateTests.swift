@@ -29,10 +29,12 @@ class MutationEventClearStateTests: XCTestCase {
 
         let queryResponder = QueryModelTypePredicateResponder<MutationEvent> { _, _ in
                 queryExpectation.fulfill()
-                var mutationEvent = MutationEvent(modelId: "1111-22",
-                                                  modelName: "Post",
-                                                  json: "{}",
-                                                  mutationType: .create)
+                var mutationEvent = MutationEvent(
+                    modelId: "1111-22",
+                    modelName: "Post",
+                    json: "{}",
+                    mutationType: .create
+                )
                 mutationEvent.inProcess = true
                 return .success([mutationEvent])
         }

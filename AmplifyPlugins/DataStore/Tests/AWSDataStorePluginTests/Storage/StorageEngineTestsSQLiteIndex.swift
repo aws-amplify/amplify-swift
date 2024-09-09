@@ -33,11 +33,13 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
             syncEngine = MockRemoteSyncEngine()
-            storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .testDefault(),
-                                          syncEngine: syncEngine,
-                                          validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+            storageEngine = StorageEngine(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .testDefault(),
+                syncEngine: syncEngine,
+                validAPIPluginKey: validAPIPluginKey,
+                validAuthPluginKey: validAuthPluginKey
+            )
 
             ModelRegistry.register(modelType: CustomerSecondaryIndexV2.self)
             ModelRegistry.register(modelType: CustomerMultipleSecondaryIndexV2.self)
@@ -85,7 +87,8 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                     phoneNumber: randomNumericString(length: 10),
                     accountRepresentativeID: randomCapitalCharacterString(length: 10),
                     createdAt: Temporal.DateTime.now(),
-                    updatedAt: Temporal.DateTime.now())
+                    updatedAt: Temporal.DateTime.now()
+                )
 
                 guard case .success = saveModelSynchronous(model: customer, storageEngine: storageEngine) else {
                           XCTFail("Failed to save customer \(customer)")
@@ -102,7 +105,8 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                 phoneNumber: phoneNumber,
                 accountRepresentativeID: accountRepresentativeID,
                 createdAt: Temporal.DateTime.now(),
-                updatedAt: Temporal.DateTime.now())
+                updatedAt: Temporal.DateTime.now()
+            )
 
             guard case .success = saveModelSynchronous(model: uniqueCustomer, storageEngine: storageEngine) else {
                 XCTFail("Failed to save customer \(uniqueCustomer)")
@@ -113,9 +117,11 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
 
             let startTimeQuery1 = CFAbsoluteTimeGetCurrent()
             startMeasuring()
-            guard case .success = queryModelSynchronous(modelType: CustomerSecondaryIndexV2.self,
-                                                        predicate: predicate,
-                                                        storageEngine: storageEngine)
+            guard case .success = queryModelSynchronous(
+                modelType: CustomerSecondaryIndexV2.self,
+                predicate: predicate,
+                storageEngine: storageEngine
+            )
             else {
                 XCTFail("Failed to query customer")
                 return
@@ -162,7 +168,8 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                     age: Int.random(in: 1 ..< 100),
                     accountRepresentativeID: randomCapitalCharacterString(length: 10),
                     createdAt: Temporal.DateTime.now(),
-                    updatedAt: Temporal.DateTime.now())
+                    updatedAt: Temporal.DateTime.now()
+                )
 
                 guard case .success = saveModelSynchronous(model: customer, storageEngine: storageEngine) else {
                           XCTFail("Failed to save customer \(customer)")
@@ -180,7 +187,8 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                 age: 30,
                 accountRepresentativeID: accountRepresentativeID,
                 createdAt: Temporal.DateTime.now(),
-                updatedAt: Temporal.DateTime.now())
+                updatedAt: Temporal.DateTime.now()
+            )
 
             guard case .success = saveModelSynchronous(model: uniqueCustomer, storageEngine: storageEngine) else {
                 XCTFail("Failed to save customer \(uniqueCustomer)")
@@ -192,9 +200,11 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
 
             let startTimeQuery1 = CFAbsoluteTimeGetCurrent()
             startMeasuring()
-            guard case .success = queryModelSynchronous(modelType: CustomerMultipleSecondaryIndexV2.self,
-                                                        predicate: predicate,
-                                                        storageEngine: storageEngine)
+            guard case .success = queryModelSynchronous(
+                modelType: CustomerMultipleSecondaryIndexV2.self,
+                predicate: predicate,
+                storageEngine: storageEngine
+            )
             else {
                 XCTFail("Failed to query customer")
                 return
@@ -241,7 +251,8 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                     age: Int.random(in: 1 ..< 100),
                     accountRepresentativeID: randomCapitalCharacterString(length: 10),
                     createdAt: Temporal.DateTime.now(),
-                    updatedAt: Temporal.DateTime.now())
+                    updatedAt: Temporal.DateTime.now()
+                )
 
                 guard case .success = saveModelSynchronous(model: customer, storageEngine: storageEngine) else {
                         XCTFail("Failed to save customer \(customer)")
@@ -260,7 +271,8 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                 age: age,
                 accountRepresentativeID: accountRepresentativeID,
                 createdAt: Temporal.DateTime.now(),
-                updatedAt: Temporal.DateTime.now())
+                updatedAt: Temporal.DateTime.now()
+            )
 
             guard case .success = saveModelSynchronous(model: uniqueCustomer, storageEngine: storageEngine) else {
                 XCTFail("Failed to save customer \(uniqueCustomer)")
@@ -274,9 +286,11 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
             let startTimeQuery1 = CFAbsoluteTimeGetCurrent()
             startMeasuring()
             guard case .success =
-                    queryModelSynchronous(modelType: CustomerMultipleSecondaryIndexV2.self,
-                                          predicate: predicate,
-                                          storageEngine: storageEngine)
+                    queryModelSynchronous(
+                        modelType: CustomerMultipleSecondaryIndexV2.self,
+                        predicate: predicate,
+                        storageEngine: storageEngine
+                    )
             else {
                     XCTFail("Failed to query customer")
                     return
@@ -332,10 +346,11 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
         return saveResult
     }
 
-    func queryModelSynchronous<M: Model>(modelType: M.Type,
-                                         predicate: QueryPredicate,
-                                         storageEngine: StorageEngine) -> DataStoreResult<[M]>
-    {
+    func queryModelSynchronous<M: Model>(
+        modelType: M.Type,
+        predicate: QueryPredicate,
+        storageEngine: StorageEngine
+    ) -> DataStoreResult<[M]> {
         let queryFinished = expectation(description: "Query Finished")
         var result: DataStoreResult<[M]>?
 

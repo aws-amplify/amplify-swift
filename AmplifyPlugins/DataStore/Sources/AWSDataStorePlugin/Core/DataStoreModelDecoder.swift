@@ -17,9 +17,10 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
         let identifiers: [LazyReferenceIdentifier]
         let source: String
 
-        init(identifiers: [LazyReferenceIdentifier],
-             source: String = ModelProviderRegistry.DecoderSource.dataStore)
-        {
+        init(
+            identifiers: [LazyReferenceIdentifier],
+            source: String = ModelProviderRegistry.DecoderSource.dataStore
+        ) {
             self.identifiers = identifiers
             self.source = source
         }

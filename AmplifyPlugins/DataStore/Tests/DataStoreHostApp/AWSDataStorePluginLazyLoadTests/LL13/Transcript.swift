@@ -22,25 +22,29 @@ public struct Transcript: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      text: String,
-      language: String? = nil,
-      phoneCall: PhoneCall? = nil)
-  {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    text: String,
+    language: String? = nil,
+    phoneCall: PhoneCall? = nil
+  ) {
+    self.init(
+      id: id,
       text: text,
       language: language,
       phoneCall: phoneCall,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(id: String = UUID().uuidString,
-      text: String,
-      language: String? = nil,
-      phoneCall: PhoneCall? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    id: String = UUID().uuidString,
+    text: String,
+    language: String? = nil,
+    phoneCall: PhoneCall? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.text = text
       self.language = language

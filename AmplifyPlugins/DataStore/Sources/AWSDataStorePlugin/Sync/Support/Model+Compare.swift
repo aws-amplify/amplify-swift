@@ -134,8 +134,7 @@ extension ModelSchema {
             case .embedded, .embeddedCollection:
                 do {
                     if let encodable1 = value1 as? Encodable,
-                       let encodable2 = value2 as? Encodable
-                    {
+                       let encodable2 = value2 as? Encodable {
                         let json1 = try SQLiteModelValueConverter.toJSON(encodable1)
                         let json2 = try SQLiteModelValueConverter.toJSON(encodable2)
                         if !compare(json1, json2) {

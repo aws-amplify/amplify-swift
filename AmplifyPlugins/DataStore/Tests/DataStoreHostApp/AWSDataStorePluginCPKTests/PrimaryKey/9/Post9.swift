@@ -16,22 +16,26 @@ public struct Post9: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(postId: String,
-      title: String? = nil,
-      comments: List<Comment9>? = [])
-  {
-    self.init(postId: postId,
+  public init(
+    postId: String,
+    title: String? = nil,
+    comments: List<Comment9>? = []
+  ) {
+    self.init(
+      postId: postId,
       title: title,
       comments: comments,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(postId: String,
-      title: String? = nil,
-      comments: List<Comment9>? = [],
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    postId: String,
+    title: String? = nil,
+    comments: List<Comment9>? = [],
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.postId = postId
       self.title = title
       self.comments = comments

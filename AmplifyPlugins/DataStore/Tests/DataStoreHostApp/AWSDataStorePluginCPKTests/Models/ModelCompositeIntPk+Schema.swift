@@ -11,8 +11,7 @@ import Foundation
 
 public extension ModelCompositeIntPk {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case serial
     case createdAt
@@ -47,9 +46,10 @@ extension ModelCompositeIntPk: ModelIdentifiable {
 }
 
 public extension ModelCompositeIntPk.IdentifierProtocol {
-  static func identifier(id: String,
-      serial: Int) -> Self
-  {
+  static func identifier(
+    id: String,
+    serial: Int
+  ) -> Self {
     .make(fields: [(name: "id", value: id), (name: "serial", value: serial)])
   }
 }

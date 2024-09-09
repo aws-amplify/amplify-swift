@@ -11,8 +11,7 @@ import Foundation
 
 public extension ImplicitChild {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case childId
     case content
     case parent
@@ -52,9 +51,10 @@ extension ImplicitChild: ModelIdentifiable {
 }
 
 public extension ImplicitChild.IdentifierProtocol {
-  static func identifier(childId: String,
-      content: String) -> Self
-  {
+  static func identifier(
+    childId: String,
+    content: String
+  ) -> Self {
     .make(fields: [(name: "childId", value: childId), (name: "content", value: content)])
   }
 }

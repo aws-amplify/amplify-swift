@@ -47,12 +47,14 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
     private let taskQueue: TaskQueue<Void>
     private let modelName: ModelName
 
-    init(modelSchema: ModelSchema,
-         api: APICategoryGraphQLBehavior,
-         modelPredicate: QueryPredicate?,
-         auth: AuthCategoryBehavior?,
-         authModeStrategy: AuthModeStrategy,
-         awsAuthService: AWSAuthServiceBehavior? = nil) async {
+    init(
+        modelSchema: ModelSchema,
+        api: APICategoryGraphQLBehavior,
+        modelPredicate: QueryPredicate?,
+        auth: AuthCategoryBehavior?,
+        authModeStrategy: AuthModeStrategy,
+        awsAuthService: AWSAuthServiceBehavior? = nil
+    ) async {
         self.onCreateConnected = false
         self.onUpdateConnected = false
         self.onDeleteConnected = false
@@ -206,35 +208,40 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         }
     }
 
-    static func makeAPIRequest(for modelSchema: ModelSchema,
-                               subscriptionType: GraphQLSubscriptionType,
-                               api: APICategoryGraphQLBehavior,
-                               auth: AuthCategoryBehavior?,
-                               authType: AWSAuthorizationType?,
-                               awsAuthService: AWSAuthServiceBehavior) async -> GraphQLRequest<Payload>
-    {
+    static func makeAPIRequest(
+        for modelSchema: ModelSchema,
+        subscriptionType: GraphQLSubscriptionType,
+        api: APICategoryGraphQLBehavior,
+        auth: AuthCategoryBehavior?,
+        authType: AWSAuthorizationType?,
+        awsAuthService: AWSAuthServiceBehavior
+    ) async -> GraphQLRequest<Payload> {
         let request = if modelSchema.hasAuthenticationRules,
             let _ = auth,
             let tokenString = try? await awsAuthService.getUserPoolAccessToken(),
-            case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString)
-        {
-            GraphQLRequest<Payload>.subscription(to: modelSchema,
-                                                           subscriptionType: subscriptionType,
-                                                           claims: claims,
-                                                           authType: authType)
+            case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
+            GraphQLRequest<Payload>.subscription(
+                to: modelSchema,
+                subscriptionType: subscriptionType,
+                claims: claims,
+                authType: authType
+            )
         } else if modelSchema.hasAuthenticationRules,
             let oidcAuthProvider = hasOIDCAuthProviderAvailable(api: api),
             let tokenString = try? await oidcAuthProvider.getLatestAuthToken(),
-            case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString)
-        {
-            GraphQLRequest<Payload>.subscription(to: modelSchema,
-                                                           subscriptionType: subscriptionType,
-                                                           claims: claims,
-                                                           authType: authType)
+            case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
+            GraphQLRequest<Payload>.subscription(
+                to: modelSchema,
+                subscriptionType: subscriptionType,
+                claims: claims,
+                authType: authType
+            )
         } else {
-            GraphQLRequest<Payload>.subscription(to: modelSchema,
-                                                           subscriptionType: subscriptionType,
-                                                           authType: authType)
+            GraphQLRequest<Payload>.subscription(
+                to: modelSchema,
+                subscriptionType: subscriptionType,
+                authType: authType
+            )
         }
 
         return request
@@ -242,8 +249,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
     static func hasOIDCAuthProviderAvailable(api: APICategoryGraphQLBehavior) -> AmplifyOIDCAuthProvider? {
         if let apiPlugin = api as? APICategoryAuthProviderFactoryBehavior,
-            let oidcAuthProvider = apiPlugin.apiAuthProviderFactory().oidcAuthProvider()
-        {
+            let oidcAuthProvider = apiPlugin.apiAuthProviderFactory().oidcAuthProvider() {
             return oidcAuthProvider
         }
         return nil

@@ -11,8 +11,7 @@ import Foundation
 
 public extension ChildSansBelongsTo {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case childId
     case content
     case compositePKParentChildrenSansBelongsToCustomId
@@ -55,9 +54,10 @@ extension ChildSansBelongsTo: ModelIdentifiable {
 }
 
 public extension ChildSansBelongsTo.IdentifierProtocol {
-  static func identifier(childId: String,
-      content: String) -> Self
-  {
+  static func identifier(
+    childId: String,
+    content: String
+  ) -> Self {
     .make(fields: [(name: "childId", value: childId), (name: "content", value: content)])
   }
 }

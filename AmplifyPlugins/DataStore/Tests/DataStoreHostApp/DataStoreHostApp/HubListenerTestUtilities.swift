@@ -17,12 +17,13 @@ enum HubListenerTestUtilities {
     /// - Parameter plugin: the plugin on which the listener will be checked
     /// - Parameter timeout: the maximum length of time to wait for the listener to be registered
     /// - Throws: if the plugin cannot be cast to `AWSHubPlugin`
-    static func waitForListener(with token: UnsubscribeToken,
-                                plugin: HubCategoryPlugin? = nil,
-                                timeout: TimeInterval,
-                                file: StaticString = #file,
-                                line: UInt = #line) async throws -> Bool
-    {
+    static func waitForListener(
+        with token: UnsubscribeToken,
+        plugin: HubCategoryPlugin? = nil,
+        timeout: TimeInterval,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) async throws -> Bool {
 
         let plugin = try plugin ?? Amplify.Hub.getPlugin(for: AWSHubPlugin.key)
 

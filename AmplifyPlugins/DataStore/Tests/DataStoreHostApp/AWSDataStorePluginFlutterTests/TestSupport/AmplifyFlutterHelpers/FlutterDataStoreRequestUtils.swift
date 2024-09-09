@@ -14,8 +14,10 @@ public class FlutterDataStoreRequestUtils {
         guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonDict) else {
             throw DataStoreError.decodingError("Unable to deserialize json data", "Check the model structure.")
         }
-        guard let jsonValue = try? JSONDecoder().decode([String: JSONValue].self,
-                                                        from: jsonData)
+        guard let jsonValue = try? JSONDecoder().decode(
+            [String: JSONValue].self,
+            from: jsonData
+        )
         else {
             throw DataStoreError.decodingError("Unable to decode json value", "Check the model structure.")
         }

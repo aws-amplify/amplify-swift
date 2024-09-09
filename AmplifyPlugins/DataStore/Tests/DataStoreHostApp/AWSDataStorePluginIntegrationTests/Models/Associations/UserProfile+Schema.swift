@@ -25,9 +25,11 @@ public extension UserProfile {
 
         model.fields(
             .id(),
-            .belongsTo(profile.account,
-                       ofType: UserAccount.self,
-                       associatedWith: UserAccount.keys.profile)
+            .belongsTo(
+                profile.account,
+                ofType: UserAccount.self,
+                associatedWith: UserAccount.keys.profile
+            )
         )
     }
 

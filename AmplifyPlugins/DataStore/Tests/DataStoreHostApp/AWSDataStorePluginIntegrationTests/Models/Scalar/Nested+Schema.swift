@@ -11,8 +11,7 @@ import Foundation
 
 public extension Nested {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case valueOne
     case valueTwo
   }

@@ -107,9 +107,11 @@ extension StorageEngine {
             guard schema.isSyncable  else {
                 return false
             }
-            return requiresAuthPlugin(apiPlugin,
-                                      authRules: schema.authRules,
-                                      authModeStrategy: authModeStrategy)
+            return requiresAuthPlugin(
+                apiPlugin,
+                authRules: schema.authRules,
+                authModeStrategy: authModeStrategy
+            )
         }
 
         return modelsRequireAuthPlugin
@@ -131,8 +133,7 @@ extension StorageEngine {
             // we do not have enough information to know which provider to use to make the determination.
             if authRules.count == 1,
                let singleAuthRule = authRules.first,
-               let ruleRequireAuthPlugin = singleAuthRule.requiresAuthPlugin
-            {
+               let ruleRequireAuthPlugin = singleAuthRule.requiresAuthPlugin {
                 return ruleRequireAuthPlugin
             }
         case .multiAuth:

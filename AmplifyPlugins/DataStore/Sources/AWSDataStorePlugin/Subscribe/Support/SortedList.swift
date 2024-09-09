@@ -82,8 +82,7 @@ class SortedList<ModelType: Model> {
         if modelIds.contains(identifier.stringValue),
            let index = sortedModels.firstIndex(where: {
                $0.identifier(schema: $0.schema).stringValue == identifier.stringValue
-           })
-        {
+           }) {
             sortedModels.remove(at: index)
             modelIds.remove(identifier.stringValue)
             return true
@@ -96,8 +95,7 @@ class SortedList<ModelType: Model> {
     func appendOrReplace(_ model: ModelType) {
         let identifier = model.identifier(schema: modelSchema)
         if modelIds.contains(identifier.stringValue),
-           let index = sortedModels.firstIndex(where: { $0.identifier(schema: $0.schema).stringValue == identifier.stringValue })
-        {
+           let index = sortedModels.firstIndex(where: { $0.identifier(schema: $0.schema).stringValue == identifier.stringValue }) {
             sortedModels[index] = model
         } else {
             sortedModels.append(model)

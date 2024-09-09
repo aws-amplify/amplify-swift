@@ -17,25 +17,29 @@ public struct Person: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      name: String,
-      callerOf: List<PhoneCall> = [],
-      calleeOf: List<PhoneCall> = [])
-  {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    name: String,
+    callerOf: List<PhoneCall> = [],
+    calleeOf: List<PhoneCall> = []
+  ) {
+    self.init(
+      id: id,
       name: name,
       callerOf: callerOf,
       calleeOf: calleeOf,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(id: String = UUID().uuidString,
-      name: String,
-      callerOf: List<PhoneCall> = [],
-      calleeOf: List<PhoneCall> = [],
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    id: String = UUID().uuidString,
+    name: String,
+    callerOf: List<PhoneCall> = [],
+    calleeOf: List<PhoneCall> = [],
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.name = name
       self.callerOf = callerOf

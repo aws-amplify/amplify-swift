@@ -50,8 +50,7 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
             return (value as? EnumPersistable)?.rawValue
         case .model:
             if let modelInstance = (value as? Model),
-               let modelSchema = ModelRegistry.modelSchema(from: modelInstance.modelName)
-            {
+               let modelSchema = ModelRegistry.modelSchema(from: modelInstance.modelName) {
                 return modelInstance.identifier(schema: modelSchema).stringValue
             }
             return nil

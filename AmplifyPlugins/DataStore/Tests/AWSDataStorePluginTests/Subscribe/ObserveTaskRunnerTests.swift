@@ -37,11 +37,13 @@ final class ObserveTaskRunnerTests: XCTestCase {
             }
         }
         await fulfillment(of: [started], timeout: 10.0)
-        var mutationEvent = MutationEvent(id: "id",
-                                          modelId: "id",
-                                          modelName: "name",
-                                          json: "json",
-                                          mutationType: .create)
+        var mutationEvent = MutationEvent(
+            id: "id",
+            modelId: "id",
+            modelName: "name",
+            json: "json",
+            mutationType: .create
+        )
         dataStorePublisher.send(input: mutationEvent)
         dataStorePublisher.send(input: mutationEvent)
         dataStorePublisher.send(input: mutationEvent)
@@ -50,11 +52,13 @@ final class ObserveTaskRunnerTests: XCTestCase {
         await fulfillment(of: [mutationEventReceived], timeout: 1.0)
 
         task.cancel()
-        mutationEvent = MutationEvent(id: "id2",
-                                      modelId: "id",
-                                      modelName: "name",
-                                      json: "json",
-                                      mutationType: .create)
+        mutationEvent = MutationEvent(
+            id: "id2",
+            modelId: "id",
+            modelName: "name",
+            json: "json",
+            mutationType: .create
+        )
         dataStorePublisher.send(input: mutationEvent)
         await fulfillment(of: [mutationEventReceivedAfterCancel], timeout: 1.0)
     }

@@ -11,8 +11,7 @@ import Foundation
 
 public extension Comment7 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case commentId
     case content
     case post
@@ -50,9 +49,10 @@ extension Comment7: ModelIdentifiable {
 }
 
 public extension Comment7.IdentifierProtocol {
-  static func identifier(commentId: String,
-      content: String) -> Self
-  {
+  static func identifier(
+    commentId: String,
+    content: String
+  ) -> Self {
     .make(fields: [(name: "commentId", value: commentId), (name: "content", value: content)])
   }
 }

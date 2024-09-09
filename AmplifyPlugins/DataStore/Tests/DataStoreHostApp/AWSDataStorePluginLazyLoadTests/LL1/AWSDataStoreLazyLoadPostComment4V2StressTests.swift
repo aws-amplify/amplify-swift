@@ -136,14 +136,16 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
     func assertQueryComment(_ savedComment: Comment, post: Post) async throws {
         guard try await (Amplify.DataStore.query(
             Comment.self,
-            byIdentifier: savedComment.identifier)) != nil
+            byIdentifier: savedComment.identifier
+        )) != nil
         else {
             Amplify.Logging.info("[\(AWSDataStoreLazyLoadPostComment4V2Tests.loggingContext)] Comment \(savedComment.id) is not persisted in local DB")
 
             let result = try await Amplify.API.query(
                 request: .get(
                     Comment.self,
-                    byIdentifier: savedComment.id))
+                    byIdentifier: savedComment.id
+                ))
             switch result {
             case .success(let comment):
                 guard let comment else {
@@ -159,7 +161,8 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
         let result = try await Amplify.API.query(
             request: .get(
                 Comment.self,
-                byIdentifier: savedComment.id))
+                byIdentifier: savedComment.id
+            ))
         switch result {
         case .success(let comment):
             guard let comment else {
@@ -171,7 +174,9 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
                 state: .notLoaded(
                     identifiers: [.init(
                         name: "id",
-                        value: post.identifier)]))
+                        value: post.identifier
+                    )])
+            )
         case .failure(let error):
             XCTFail("Failed to query, error \(error)")
         }
@@ -180,13 +185,15 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
     func assertQueryPost(_ savedPost: Post) async throws {
         guard try await (Amplify.DataStore.query(
             Post.self,
-            byIdentifier: savedPost.identifier)) != nil
+            byIdentifier: savedPost.identifier
+        )) != nil
         else {
             Amplify.Logging.info("[\(AWSDataStoreLazyLoadPostComment4V2Tests.loggingContext)] Post \(savedPost.id) is not persisted in local DB")
             let result = try await Amplify.API.query(
                 request: .get(
                     Post.self,
-                    byIdentifier: savedPost.id))
+                    byIdentifier: savedPost.id
+                ))
             switch result {
             case .success(let post):
                 guard let post else {
@@ -201,7 +208,8 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
         let result = try await Amplify.API.query(
             request: .get(
                 Post.self,
-                byIdentifier: savedPost.id))
+                byIdentifier: savedPost.id
+            ))
         switch result {
         case .success(let post):
             guard post != nil else {
@@ -223,13 +231,15 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
                     request: .deleteMutation(
                         of: savedComment,
                         modelSchema: Comment.schema,
-                        version: 1))
+                        version: 1
+                    ))
 
                 _ = try await Amplify.API.mutate(
                     request: .deleteMutation(
                         of: savedPost,
                         modelSchema: Post.schema,
-                        version: 1))
+                        version: 1
+                    ))
             } catch {
                 // Some models that fail to save don't need to be deleted,
                 // swallowing the error to continue deleting others

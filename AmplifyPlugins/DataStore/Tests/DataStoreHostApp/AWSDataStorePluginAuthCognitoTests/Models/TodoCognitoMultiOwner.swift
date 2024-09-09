@@ -18,28 +18,32 @@ public struct TodoCognitoMultiOwner: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      title: String,
-      content: String? = nil,
-      owner: String? = nil,
-      editors: [String?]? = nil)
-  {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    title: String,
+    content: String? = nil,
+    owner: String? = nil,
+    editors: [String?]? = nil
+  ) {
+    self.init(
+      id: id,
       title: title,
       content: content,
       owner: owner,
       editors: editors,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(id: String = UUID().uuidString,
-      title: String,
-      content: String? = nil,
-      owner: String? = nil,
-      editors: [String?]? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    id: String = UUID().uuidString,
+    title: String,
+    content: String? = nil,
+    owner: String? = nil,
+    editors: [String?]? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.title = title
       self.content = content

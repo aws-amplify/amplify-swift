@@ -63,9 +63,10 @@ final class ModelSyncMetadataMigrationTests: XCTestCase {
             public let id: String
             public var lastSync: Int?
 
-            public init(id: String,
-                        lastSync: Int?)
-            {
+            public init(
+                id: String,
+                lastSync: Int?
+            ) {
                 self.id = id
                 self.lastSync = lastSync
             }

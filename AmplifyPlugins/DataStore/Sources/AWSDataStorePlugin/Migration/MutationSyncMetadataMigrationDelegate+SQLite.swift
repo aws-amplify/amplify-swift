@@ -124,8 +124,10 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
             throw DataStoreError.nilStorageAdapter()
         }
 
-        return try storageAdapter.renameStore(from: MutationSyncMetadataMigration.MutationSyncMetadataCopy.schema,
-                                              toModelSchema: MutationSyncMetadata.schema)
+        return try storageAdapter.renameStore(
+            from: MutationSyncMetadataMigration.MutationSyncMetadataCopy.schema,
+            toModelSchema: MutationSyncMetadata.schema
+        )
     }
 }
 

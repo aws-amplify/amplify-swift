@@ -62,13 +62,14 @@ final class InitialSyncOperation: AsynchronousOperation {
         return initialSyncOperationTopic.eraseToAnyPublisher()
     }
 
-    init(modelSchema: ModelSchema,
-         api: APICategoryGraphQLBehavior?,
-         reconciliationQueue: IncomingEventReconciliationQueue?,
-         storageAdapter: StorageEngineAdapter?,
-         dataStoreConfiguration: DataStoreConfiguration,
-         authModeStrategy: AuthModeStrategy)
-    {
+    init(
+        modelSchema: ModelSchema,
+        api: APICategoryGraphQLBehavior?,
+        reconciliationQueue: IncomingEventReconciliationQueue?,
+        storageAdapter: StorageEngineAdapter?,
+        dataStoreConfiguration: DataStoreConfiguration,
+        authModeStrategy: AuthModeStrategy
+    ) {
         self.modelSchema = modelSchema
         self.api = api
         self.reconciliationQueue = reconciliationQueue
@@ -263,9 +264,11 @@ final class InitialSyncOperation: AsynchronousOperation {
             return
         }
 
-        let syncMetadata = ModelSyncMetadata(id: modelSchema.name,
-                                             lastSync: lastSyncTime,
-                                             syncPredicate: syncPredicateString)
+        let syncMetadata = ModelSyncMetadata(
+            id: modelSchema.name,
+            lastSync: lastSyncTime,
+            syncPredicate: syncPredicateString
+        )
         storageAdapter.save(syncMetadata, condition: nil, eagerLoad: true) { result in
             switch result {
             case .failure(let dataStoreError):
@@ -279,8 +282,7 @@ final class InitialSyncOperation: AsynchronousOperation {
     private func isAuthSignedOutError(apiError: APIError) -> Bool {
         if case let .operationError(_, _, underlyingError) = apiError,
             let authError = underlyingError as? AuthError,
-            case .signedOut = authError
-        {
+            case .signedOut = authError {
             return true
         }
 

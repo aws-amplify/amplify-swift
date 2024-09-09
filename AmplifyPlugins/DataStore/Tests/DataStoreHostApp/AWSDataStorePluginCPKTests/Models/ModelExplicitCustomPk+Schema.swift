@@ -11,8 +11,7 @@ import Foundation
 
 public extension ModelExplicitCustomPk {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case userId
     case name
     case createdAt

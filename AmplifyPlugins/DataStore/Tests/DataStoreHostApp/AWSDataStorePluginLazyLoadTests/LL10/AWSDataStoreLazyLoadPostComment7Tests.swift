@@ -44,11 +44,14 @@ final class AWSDataStoreLazyLoadPostComment7Tests: AWSDataStoreLazyLoadBaseTest 
         try await assertPost(queriedPost, canLazyLoad: savedComment)
     }
 
-    func assertComment(_ comment: Comment,
-                       hasEagerLoaded post: Post) async throws
-    {
-        assertLazyReference(comment._post,
-                        state: .loaded(model: post))
+    func assertComment(
+        _ comment: Comment,
+        hasEagerLoaded post: Post
+    ) async throws {
+        assertLazyReference(
+            comment._post,
+            state: .loaded(model: post)
+        )
 
         guard let loadedPost = try await comment.post else {
             XCTFail("Failed to retrieve the post from the comment")
@@ -66,44 +69,54 @@ final class AWSDataStoreLazyLoadPostComment7Tests: AWSDataStoreLazyLoadBaseTest 
         try await assertPost(loadedPost, canLazyLoad: comment)
     }
 
-    func assertComment(_ comment: Comment,
-                       canLazyLoad post: Post) async throws
-    {
-        assertLazyReference(comment._post,
-                            state: .notLoaded(identifiers: [
-                                .init(name: Post7.keys.postId.stringValue, value: post.postId),
-                                .init(name: Post7.keys.title.stringValue, value: post.title)
-                            ]))
+    func assertComment(
+        _ comment: Comment,
+        canLazyLoad post: Post
+    ) async throws {
+        assertLazyReference(
+            comment._post,
+            state: .notLoaded(identifiers: [
+                .init(name: Post7.keys.postId.stringValue, value: post.postId),
+                .init(name: Post7.keys.title.stringValue, value: post.title)
+            ])
+        )
         guard let loadedPost = try await comment.post else {
             XCTFail("Failed to load the post from the comment")
             return
         }
         XCTAssertEqual(loadedPost.postId, post.postId)
-        assertLazyReference(comment._post,
-                        state: .loaded(model: post))
+        assertLazyReference(
+            comment._post,
+            state: .loaded(model: post)
+        )
         try await assertPost(loadedPost, canLazyLoad: comment)
     }
 
-    func assertPost(_ post: Post,
-                    canLazyLoad comment: Comment) async throws
-    {
+    func assertPost(
+        _ post: Post,
+        canLazyLoad comment: Comment
+    ) async throws {
         guard let comments = post.comments else {
             XCTFail("Missing comments on post")
             return
         }
-        assertList(comments, state: .isNotLoaded(associatedIds: [post.identifier],
-                                                 associatedFields: ["post"]))
+        assertList(comments, state: .isNotLoaded(
+            associatedIds: [post.identifier],
+            associatedFields: ["post"]
+        ))
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))
         guard let comment = comments.first else {
             XCTFail("Missing lazy loaded comment from post")
             return
         }
-        assertLazyReference(comment._post,
-                        state: .notLoaded(identifiers: [
-                            .init(name: Post7.keys.postId.stringValue, value: post.postId),
-                            .init(name: Post7.keys.title.stringValue, value: post.title)
-                        ]))
+        assertLazyReference(
+            comment._post,
+            state: .notLoaded(identifiers: [
+                .init(name: Post7.keys.postId.stringValue, value: post.postId),
+                .init(name: Post7.keys.title.stringValue, value: post.title)
+            ])
+        )
     }
 
     func testSaveWithoutPost() async throws {
@@ -111,8 +124,10 @@ final class AWSDataStoreLazyLoadPostComment7Tests: AWSDataStoreLazyLoadBaseTest 
         let comment = Comment(commentId: UUID().uuidString, content: "content")
         let savedComment = try await createAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
-        assertLazyReference(queriedComment._post,
-                        state: .notLoaded(identifiers: nil))
+        assertLazyReference(
+            queriedComment._post,
+            state: .notLoaded(identifiers: nil)
+        )
         let post = Post(postId: UUID().uuidString, title: "title")
         let savedPost = try await createAndWaitForSync(post)
         queriedComment.setPost(savedPost)
@@ -128,11 +143,13 @@ final class AWSDataStoreLazyLoadPostComment7Tests: AWSDataStoreLazyLoadBaseTest 
         let savedPost = try await createAndWaitForSync(post)
         let savedComment = try await createAndWaitForSync(comment)
         let queriedComment = try await query(for: savedComment)
-        assertLazyReference(queriedComment._post,
-                        state: .notLoaded(identifiers: [
-                            .init(name: Post.keys.postId.stringValue, value: post.postId),
-                            .init(name: Post.keys.title.stringValue, value: post.title)
-                        ]))
+        assertLazyReference(
+            queriedComment._post,
+            state: .notLoaded(identifiers: [
+                .init(name: Post.keys.postId.stringValue, value: post.postId),
+                .init(name: Post.keys.title.stringValue, value: post.title)
+            ])
+        )
         let savedQueriedComment = try await updateAndWaitForSync(queriedComment)
         let queriedComment2 = try await query(for: savedQueriedComment)
         try await assertComment(queriedComment2, canLazyLoad: savedPost)
@@ -146,11 +163,13 @@ final class AWSDataStoreLazyLoadPostComment7Tests: AWSDataStoreLazyLoadBaseTest 
         _ = try await createAndWaitForSync(post)
         let savedComment = try await createAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
-        assertLazyReference(queriedComment._post,
-                        state: .notLoaded(identifiers: [
-                            .init(name: Post.keys.postId.stringValue, value: post.postId),
-                            .init(name: Post.keys.title.stringValue, value: post.title)
-                        ]))
+        assertLazyReference(
+            queriedComment._post,
+            state: .notLoaded(identifiers: [
+                .init(name: Post.keys.postId.stringValue, value: post.postId),
+                .init(name: Post.keys.title.stringValue, value: post.title)
+            ])
+        )
 
         let newPost = Post(postId: UUID().uuidString, title: "title")
         _ = try await createAndWaitForSync(newPost)
@@ -168,17 +187,21 @@ final class AWSDataStoreLazyLoadPostComment7Tests: AWSDataStoreLazyLoadBaseTest 
         _ = try await createAndWaitForSync(post)
         let savedComment = try await createAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
-        assertLazyReference(queriedComment._post,
-                        state: .notLoaded(identifiers: [
-                            .init(name: Post.keys.postId.stringValue, value: post.postId),
-                            .init(name: Post.keys.title.stringValue, value: post.title)
-                        ]))
+        assertLazyReference(
+            queriedComment._post,
+            state: .notLoaded(identifiers: [
+                .init(name: Post.keys.postId.stringValue, value: post.postId),
+                .init(name: Post.keys.title.stringValue, value: post.title)
+            ])
+        )
 
         queriedComment.setPost(nil)
         let saveCommentRemovePost = try await updateAndWaitForSync(queriedComment)
         let queriedCommentNoPost = try await query(for: saveCommentRemovePost)
-        assertLazyReference(queriedCommentNoPost._post,
-                        state: .notLoaded(identifiers: nil))
+        assertLazyReference(
+            queriedCommentNoPost._post,
+            state: .notLoaded(identifiers: nil)
+        )
     }
 
     func testDelete() async throws {
@@ -205,8 +228,7 @@ final class AWSDataStoreLazyLoadPostComment7Tests: AWSDataStoreLazyLoadBaseTest 
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedPost = try? mutationEvent.decodeModel(as: Post.self),
-                   receivedPost.postId == post.postId
-                {
+                   receivedPost.postId == post.postId {
 
                     try await createAndWaitForSync(comment)
                     guard let comments = receivedPost.comments else {
@@ -249,8 +271,7 @@ final class AWSDataStoreLazyLoadPostComment7Tests: AWSDataStoreLazyLoadBaseTest 
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedComment = try? mutationEvent.decodeModel(as: Comment.self),
-                   receivedComment.commentId == comment.commentId
-                {
+                   receivedComment.commentId == comment.commentId {
                     try await assertComment(receivedComment, canLazyLoad: savedPost)
                     mutationEventReceived.fulfill()
                 }

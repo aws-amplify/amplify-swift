@@ -38,10 +38,11 @@ public extension Article {
             .field(article.content, is: .required, ofType: .string),
             .field(article.createdAt, is: .required, ofType: .dateTime),
             .field(article.owner, is: .optional, ofType: .string),
-            .field(article.authorNotes,
-                   is: .optional,
-                   ofType: .string,
-                   authRules: [rule(allow: .owner, ownerField: "owner", operations: [.update])]
+            .field(
+                article.authorNotes,
+                is: .optional,
+                ofType: .string,
+                authRules: [rule(allow: .owner, ownerField: "owner", operations: [.update])]
             )
         )
     }

@@ -19,19 +19,22 @@ final class MutationEventClearState {
         let fields = MutationEvent.keys
         let predicate = fields.inProcess == true
         let sort = QuerySortDescriptor(fieldName: fields.createdAt.stringValue, order: .ascending)
-        storageAdapter.query(MutationEvent.self,
-                             predicate: predicate,
-                             sort: [sort],
-                             paginationInput: nil,
-                             eagerLoad: true)
-        { result in
+        storageAdapter.query(
+            MutationEvent.self,
+            predicate: predicate,
+            sort: [sort],
+            paginationInput: nil,
+            eagerLoad: true
+        ) { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     log.error("Failed on clearStateOutgoingMutations: \(dataStoreError)")
                                 case .success(let mutationEvents):
                                     if !mutationEvents.isEmpty {
-                                        updateMutationsState(mutationEvents: mutationEvents,
-                                                             completion: completion)
+                                        updateMutationsState(
+                                            mutationEvents: mutationEvents,
+                                            completion: completion
+                                        )
                                     } else {
                                         completion()
                                     }

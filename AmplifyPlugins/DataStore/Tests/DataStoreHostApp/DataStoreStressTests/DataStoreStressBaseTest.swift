@@ -61,9 +61,10 @@ class DataStoreStressBaseTest: XCTestCase {
         let eventReceived = expectation(description: "DataStore \(eventName) event")
 
         var token: UnsubscribeToken!
-        token = Amplify.Hub.listen(to: .dataStore,
-                                   eventName: eventName)
-        { _ in
+        token = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: eventName
+        ) { _ in
             eventReceived.fulfill()
             Amplify.Hub.removeListener(token)
         }

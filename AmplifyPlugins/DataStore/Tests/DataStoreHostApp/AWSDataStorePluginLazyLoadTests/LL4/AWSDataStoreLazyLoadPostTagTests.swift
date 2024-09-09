@@ -52,28 +52,34 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         try await assertPostTag(queriedPostTag, canLazyLoadTag: savedTag, canLazyLoadPost: savedPost)
     }
 
-    func assertPost(_ post: Post,
-                    canLazyLoad postTag: PostTag) async throws
-    {
+    func assertPost(
+        _ post: Post,
+        canLazyLoad postTag: PostTag
+    ) async throws {
         guard let postTags = post.tags else {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedIds: [post.identifier],
-                                                 associatedFields: ["postWithTagsCompositeKey"]))
+        assertList(postTags, state: .isNotLoaded(
+            associatedIds: [post.identifier],
+            associatedFields: ["postWithTagsCompositeKey"]
+        ))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 1))
     }
 
-    func assertTag(_ tag: Tag,
-                   canLazyLoad postTag: PostTag) async throws
-    {
+    func assertTag(
+        _ tag: Tag,
+        canLazyLoad postTag: PostTag
+    ) async throws {
         guard let postTags = tag.posts else {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedIds: [tag.identifier],
-                                                 associatedFields: ["tagWithCompositeKey"]))
+        assertList(postTags, state: .isNotLoaded(
+            associatedIds: [tag.identifier],
+            associatedFields: ["tagWithCompositeKey"]
+        ))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 1))
     }
@@ -84,13 +90,15 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
             state: .notLoaded(identifiers: [
                 .init(name: Tag.keys.id.stringValue, value: tag.id),
                 .init(name: Tag.keys.name.stringValue, value: tag.name)
-            ]))
+            ])
+        )
         assertLazyReference(
             postTag._postWithTagsCompositeKey,
             state: .notLoaded(identifiers: [
                 .init(name: Post.keys.postId.stringValue, value: post.postId),
                 .init(name: Post.keys.title.stringValue, value: post.title)
-            ]))
+            ])
+        )
         let loadedTag = try await postTag.tagWithCompositeKey
         assertLazyReference(postTag._tagWithCompositeKey, state: .loaded(model: loadedTag))
         try await assertTag(loadedTag, canLazyLoad: postTag)
@@ -146,8 +154,10 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedIds: [post.identifier],
-                                                 associatedFields: ["postWithTagsCompositeKey"]))
+        assertList(postTags, state: .isNotLoaded(
+            associatedIds: [post.identifier],
+            associatedFields: ["postWithTagsCompositeKey"]
+        ))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 0))
     }
@@ -157,8 +167,10 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedIds: [tag.identifier],
-                                                 associatedFields: ["tagWithCompositeKey"]))
+        assertList(postTags, state: .isNotLoaded(
+            associatedIds: [tag.identifier],
+            associatedFields: ["tagWithCompositeKey"]
+        ))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 0))
     }
@@ -222,8 +234,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedPost = try? mutationEvent.decodeModel(as: Post.self),
-                   receivedPost.postId == post.postId
-                {
+                   receivedPost.postId == post.postId {
 
                     guard let tags = receivedPost.tags else {
                         XCTFail("Lazy List does not exist")
@@ -263,8 +274,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedTag = try? mutationEvent.decodeModel(as: Tag.self),
-                   receivedTag.id == tag.id
-                {
+                   receivedTag.id == tag.id {
                     guard let posts = receivedTag.posts else {
                         XCTFail("Lazy List does not exist")
                         return
@@ -310,8 +320,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedPostTag = try? mutationEvent.decodeModel(as: PostTag.self),
-                   receivedPostTag.id == postTag.id
-                {
+                   receivedPostTag.id == postTag.id {
 
                     try await assertPostTag(receivedPostTag, canLazyLoadTag: tag, canLazyLoadPost: post)
                     mutationEventReceived.fulfill()

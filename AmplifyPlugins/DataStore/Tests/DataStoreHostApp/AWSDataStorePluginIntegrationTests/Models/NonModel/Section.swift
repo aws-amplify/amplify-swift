@@ -24,7 +24,9 @@ public extension Section {
 
     static let schema = defineSchema { embedded in
         let section = Section.keys
-        embedded.fields(.field(section.name, is: .required, ofType: .string),
-                       .field(section.number, is: .required, ofType: .double))
+        embedded.fields(
+            .field(section.name, is: .required, ofType: .string),
+            .field(section.number, is: .required, ofType: .double)
+        )
     }
 }

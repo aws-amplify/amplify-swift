@@ -11,8 +11,7 @@ import Foundation
 
 public extension User5 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case username
     case posts

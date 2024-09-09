@@ -42,7 +42,8 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             storageAdapter: storageAdapter,
             syncExpressions: [],
             authModeStrategy: AWSDefaultAuthModeStrategy(),
-            modelReconciliationQueueFactory: modelReconciliationQueueFactory)
+            modelReconciliationQueueFactory: modelReconciliationQueueFactory
+        )
     }
 
     // This test case attempts to hit a race condition, and may be required to execute multiple times

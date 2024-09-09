@@ -62,25 +62,31 @@ extension APICategoryDependencyTests {
         storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
         try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
-        let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
-                                              dataStoreConfiguration: .testDefault())
+        let syncEngine = try RemoteSyncEngine(
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .testDefault()
+        )
         let validAPIPluginKey = "MockAPICategoryPlugin"
         let validAuthPluginKey = "MockAuthCategoryPlugin"
-        let storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .testDefault(),
-                                          syncEngine: syncEngine,
-                                          validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+        let storageEngine = StorageEngine(
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .testDefault(),
+            syncEngine: syncEngine,
+            validAPIPluginKey: validAPIPluginKey,
+            validAuthPluginKey: validAuthPluginKey
+        )
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
             return storageEngine
         }
 
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                 storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                                 dataStorePublisher: dataStorePublisher,
-                                                 validAPIPluginKey: validAPIPluginKey,
-                                                 validAuthPluginKey: validAuthPluginKey)
+        let dataStorePlugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: validAPIPluginKey,
+            validAuthPluginKey: validAuthPluginKey
+        )
         try Amplify.add(plugin: dataStorePlugin)
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [

@@ -29,15 +29,17 @@ class SQLModelValueConverterTests: BaseDataStoreTests {
         let nonModelExample = ExampleNonModelType(someString: "string", someEnum: .foo)
 
         // example model
-        let example = ExampleWithEveryType(id: testId,
-                                           stringField: "string",
-                                           intField: 20,
-                                           doubleField: 6.5,
-                                           boolField: true,
-                                           dateField: testDate,
-                                           enumField: .bar,
-                                           nonModelField: nonModelExample,
-                                           arrayOfStringsField: ["foo", "bar"])
+        let example = ExampleWithEveryType(
+            id: testId,
+            stringField: "string",
+            intField: 20,
+            doubleField: 6.5,
+            boolField: true,
+            dateField: testDate,
+            enumField: .bar,
+            nonModelField: nonModelExample,
+            arrayOfStringsField: ["foo", "bar"]
+        )
         return example
     }
 

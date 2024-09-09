@@ -12,9 +12,10 @@ public struct Row: Model {
     public let id: String
     public var group: Group
 
-    public init(id: String = UUID().uuidString,
-                group: Group)
-    {
+    public init(
+        id: String = UUID().uuidString,
+        group: Group
+    ) {
         self.id = id
         self.group = group
     }
