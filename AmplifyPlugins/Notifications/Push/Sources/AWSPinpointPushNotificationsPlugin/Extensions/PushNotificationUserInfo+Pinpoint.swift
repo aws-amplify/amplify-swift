@@ -35,8 +35,7 @@ extension PushNotification.UserInfo {
 
     var deeplinkUrl: URL? {
         if let urlString = root?[Constants.Keys.deeplink] as? String,
-           let deeplinkUrl = URL(string: urlString)
-        {
+           let deeplinkUrl = URL(string: urlString) {
             return deeplinkUrl
         }
         return nil

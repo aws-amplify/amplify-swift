@@ -178,7 +178,7 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
         let pinpointConfiguration = JSONValue(
             dictionaryLiteral:
                 (AWSPinpointPluginConfiguration.appIdConfigKey, appId),
-                (AWSPinpointPluginConfiguration.regionConfigKey, region)
+            (AWSPinpointPluginConfiguration.regionConfigKey, region)
         )
 
         return pinpointConfiguration
@@ -188,6 +188,7 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
         .init(notifications: .init(
             awsRegion: testRegion,
             amazonPinpointAppId: testAppId,
-            channels: [.apns]))
+            channels: [.apns]
+        ))
     }
 }

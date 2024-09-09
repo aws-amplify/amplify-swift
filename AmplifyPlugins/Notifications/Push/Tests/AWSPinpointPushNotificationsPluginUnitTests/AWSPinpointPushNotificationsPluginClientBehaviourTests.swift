@@ -15,8 +15,10 @@ import XCTest
 class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNotificationsPluginTestBase {
     override func setUp() async throws {
         try await super.setUp()
-        plugin.configure(pinpoint: mockPinpoint,
-                         remoteNotificationsHelper: mockRemoteNotifications)
+        plugin.configure(
+            pinpoint: mockPinpoint,
+            remoteNotificationsHelper: mockRemoteNotifications
+        )
     }
 
     // MARK: - Identify User tests
@@ -254,9 +256,11 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
             case "notification":
                 return UNNotification(coder: self) as Any
             case "request":
-                return UNNotificationRequest(identifier: "identifier",
-                                             content: UNNotificationContent(coder: self)!,
-                                             trigger: nil)
+                return UNNotificationRequest(
+                    identifier: "identifier",
+                    content: UNNotificationContent(coder: self)!,
+                    trigger: nil
+                )
             case "userInfo":
                 return userInfo
             default:

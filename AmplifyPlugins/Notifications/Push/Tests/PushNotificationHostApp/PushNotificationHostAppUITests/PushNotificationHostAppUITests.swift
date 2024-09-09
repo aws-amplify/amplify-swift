@@ -77,8 +77,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
         let firstAlert = firstAlertElement()
         if !firstAlert.waitForExistence(timeout: timeout) ||
-            !anyElementContains(text: "Identified User", scope: firstAlert).waitForExistence(timeout: timeout)
-        {
+            !anyElementContains(text: "Identified User", scope: firstAlert).waitForExistence(timeout: timeout) {
             XCTFail("Failed to identify user")
         }
     }
@@ -102,8 +101,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
         let firstAlert = firstAlertElement()
         if !firstAlert.waitForExistence(timeout: timeout) ||
-            !anyElementContains(text: "Registered Device", scope: firstAlert).waitForExistence(timeout: timeout)
-        {
+            !anyElementContains(text: "Registered Device", scope: firstAlert).waitForExistence(timeout: timeout) {
             XCTFail("Failed to register device")
         }
     }

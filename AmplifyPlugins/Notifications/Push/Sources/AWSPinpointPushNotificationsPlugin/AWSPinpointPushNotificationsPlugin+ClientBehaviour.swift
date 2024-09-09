@@ -25,16 +25,20 @@ public extension AWSPinpointPushNotificationsPlugin {
         if let userProfile {
             currentEndpointProfile.addUserProfile(userProfile)
         }
-        try await pinpoint.updateEndpoint(with: currentEndpointProfile,
-                                          source: .pushNotifications)
+        try await pinpoint.updateEndpoint(
+            with: currentEndpointProfile,
+            source: .pushNotifications
+        )
     }
 
     func registerDevice(apnsToken: Data) async throws {
         var currentEndpointProfile = await pinpoint.currentEndpointProfile()
         currentEndpointProfile.setAPNsToken(apnsToken)
         do {
-            try await pinpoint.updateEndpoint(with: currentEndpointProfile,
-                                              source: .pushNotifications)
+            try await pinpoint.updateEndpoint(
+                with: currentEndpointProfile,
+                source: .pushNotifications
+            )
         } catch {
             throw error.pushNotificationsError
         }
@@ -67,10 +71,11 @@ public extension AWSPinpointPushNotificationsPlugin {
         pinpoint.pinpointClient
     }
 
-    private func recordNotification(_ userInfo: [String: Any],
-                                    applicationState: ApplicationState,
-                                    action: PushNotification.Action) async
-    {
+    private func recordNotification(
+        _ userInfo: [String: Any],
+        applicationState: ApplicationState,
+        action: PushNotification.Action
+    ) async {
         let userInfo: PushNotification.UserInfo = Dictionary(uniqueKeysWithValues: userInfo.map {($0, $1)})
         await recordNotification(
             userInfo,
@@ -79,10 +84,11 @@ public extension AWSPinpointPushNotificationsPlugin {
         )
     }
 
-    private func recordNotification(_ userInfo: PushNotification.UserInfo,
-                                    applicationState: ApplicationState,
-                                    action: PushNotification.Action) async
-    {
+    private func recordNotification(
+        _ userInfo: PushNotification.UserInfo,
+        applicationState: ApplicationState,
+        action: PushNotification.Action
+    ) async {
         // Retrieve the payload from the notification
         guard let payload = userInfo.payload else {
             log.error(
@@ -101,8 +107,10 @@ public extension AWSPinpointPushNotificationsPlugin {
 
         // Add application state
         let applicationStateAttribute = applicationState.pinpointAttribute
-        pushNotificationEvent.addAttribute(applicationStateAttribute.value,
-                                           forKey: applicationStateAttribute.key)
+        pushNotificationEvent.addAttribute(
+            applicationStateAttribute.value,
+            forKey: applicationStateAttribute.key
+        )
 
         // Set global remote attributes
         await pinpoint.setRemoteGlobalAttributes(payload.attributes)

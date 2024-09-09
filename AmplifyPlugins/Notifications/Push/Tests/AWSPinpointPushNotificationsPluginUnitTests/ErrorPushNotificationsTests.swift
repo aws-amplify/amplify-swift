@@ -81,7 +81,8 @@ extension ErrorPushNotificationsTests {
     /// Then: A .unknown error is returned
     func testPushNotificationError_withUnknownAWSHTTPServiceError_shouldReturnUnknownError() {
         let error = UnknownAWSHTTPServiceError(
-            httpResponse: .init(body: .empty, statusCode: .accepted), message: "UnknownAWSHTTPServiceError", requestID: nil, typeName: nil)
+            httpResponse: .init(body: .empty, statusCode: .accepted), message: "UnknownAWSHTTPServiceError", requestID: nil, typeName: nil
+        )
         let pushNotificationsError = error.pushNotificationsError
         switch pushNotificationsError {
         case .unknown(let errorDescription, let underlyingError):
