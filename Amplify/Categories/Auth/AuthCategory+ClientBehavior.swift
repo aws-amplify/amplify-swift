@@ -88,8 +88,8 @@ extension AuthCategory: AuthCategoryBehavior {
     }
 
     public func confirmResetPassword(
-        for username: String, with newPassword: String,
-
+        for username: String,
+        with newPassword: String,
         confirmationCode: String,
         options: AuthConfirmResetPasswordRequest.Options? = nil
     ) async throws {
