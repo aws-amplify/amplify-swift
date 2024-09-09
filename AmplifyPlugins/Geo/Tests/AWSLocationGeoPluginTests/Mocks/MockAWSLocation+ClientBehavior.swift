@@ -11,10 +11,13 @@ import Foundation
 
 public extension MockAWSLocation {
 
-    func searchPlaceIndex(forText: SearchPlaceIndexForTextInput,
-                                 completionHandler: ((SearchPlaceIndexForTextOutput?,
-                                                      Error?) -> Void)?)
-    {
+    func searchPlaceIndex(
+        forText: SearchPlaceIndexForTextInput,
+        completionHandler: ((
+            SearchPlaceIndexForTextOutput?,
+            Error?
+        ) -> Void)?
+    ) {
         searchPlaceIndexForTextCalled += 1
         searchPlaceIndexForTextRequest = forText
         if let completionHandler {
@@ -22,10 +25,13 @@ public extension MockAWSLocation {
         }
     }
 
-    func searchPlaceIndex(forPosition: SearchPlaceIndexForPositionInput,
-                                 completionHandler: ((SearchPlaceIndexForPositionOutput?,
-                                                      Error?) -> Void)?)
-    {
+    func searchPlaceIndex(
+        forPosition: SearchPlaceIndexForPositionInput,
+        completionHandler: ((
+            SearchPlaceIndexForPositionOutput?,
+            Error?
+        ) -> Void)?
+    ) {
         searchPlaceIndexForPositionCalled += 1
         searchPlaceIndexForPositionRequest = forPosition
         if let completionHandler {

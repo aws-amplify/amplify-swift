@@ -49,9 +49,11 @@ public extension AWSLocationGeoPlugin {
         let location = LocationClient(config: serviceConfiguration)
         let locationService = AWSLocationAdapter(location: location)
 
-        configure(locationService: locationService,
-                  authService: authService,
-                  pluginConfig: configuration)
+        configure(
+            locationService: locationService,
+            authService: authService,
+            pluginConfig: configuration
+        )
     }
 
     // MARK: - Internal
@@ -64,10 +66,11 @@ public extension AWSLocationGeoPlugin {
     ///   - locationService: The location service object.
     ///   - authService: The authentication service object.
     ///   - pluginConfig: The configuration for the plugin.
-    internal func configure(locationService: AWSLocationBehavior,
-                   authService: AWSAuthServiceBehavior,
-                   pluginConfig: AWSLocationGeoPluginConfiguration)
-    {
+    internal func configure(
+        locationService: AWSLocationBehavior,
+        authService: AWSAuthServiceBehavior,
+        pluginConfig: AWSLocationGeoPluginConfiguration
+    ) {
         self.locationService = locationService
         self.authService = authService
         self.pluginConfig = pluginConfig

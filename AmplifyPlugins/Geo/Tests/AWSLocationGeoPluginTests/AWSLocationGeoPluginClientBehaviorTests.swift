@@ -54,8 +54,10 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
             _ = try await geoPlugin.search(for: searchText, options: options)
             var request = SearchPlaceIndexForTextInput()
             request.text = searchText
-            request.biasPosition = [coordinates.longitude,
-                                    coordinates.latitude]
+            request.biasPosition = [
+                coordinates.longitude,
+                coordinates.latitude
+            ]
             request.filterCountries = options.countries?.map(\.code)
             request.maxResults = options.maxResults ?? 0
             request.indexName = (options.pluginOptions as? AWSLocationGeoPluginSearchOptions)?.searchIndex
@@ -100,8 +102,10 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         do {
             _ = try await geoPlugin.search(for: coordinates, options: nil)
             var request = SearchPlaceIndexForPositionInput()
-            request.position = [coordinates.longitude,
-                                coordinates.latitude]
+            request.position = [
+                coordinates.longitude,
+                coordinates.latitude
+            ]
             mockLocation.verifySearchPlaceIndexForPosition(request)
         } catch {
             XCTFail("Failed with error: \(error)")
@@ -124,8 +128,10 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         do {
             _ = try await geoPlugin.search(for: coordinates, options: options)
             var request = SearchPlaceIndexForPositionInput()
-            request.position = [coordinates.longitude,
-                                coordinates.latitude]
+            request.position = [
+                coordinates.longitude,
+                coordinates.latitude
+            ]
             request.maxResults = options.maxResults ?? 0
             request.indexName = (options.pluginOptions as? AWSLocationGeoPluginSearchOptions)?.searchIndex
             mockLocation.verifySearchPlaceIndexForPosition(request)
