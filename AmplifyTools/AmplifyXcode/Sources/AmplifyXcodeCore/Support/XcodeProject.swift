@@ -81,10 +81,11 @@ struct XcodeProject {
 
 // MARK: Add files
 extension XcodeProject {
-    func add(files: [XcodeProjectFile],
-             toGroup group: String,
-             inTarget target: XcodeProjectTarget) throws
-    {
+    func add(
+        files: [XcodeProjectFile],
+        toGroup group: String,
+        inTarget target: XcodeProjectTarget
+    ) throws {
         guard let mainProject = project.mainProject() else {
             throw XcodeProjectError.noPbxProjFound
         }

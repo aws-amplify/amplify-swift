@@ -26,12 +26,16 @@ public extension BookAuthor {
 
         model.fields(
             .id(),
-            .belongsTo(bookAuthor.book,
-                     ofType: Book.self,
-                     associatedWith: Book.keys.authors),
-            .belongsTo(bookAuthor.author,
-                     ofType: Author.self,
-                     associatedWith: Author.keys.books)
+            .belongsTo(
+                bookAuthor.book,
+                ofType: Book.self,
+                associatedWith: Book.keys.authors
+            ),
+            .belongsTo(
+                bookAuthor.author,
+                ofType: Author.self,
+                associatedWith: Author.keys.books
+            )
         )
     }
 

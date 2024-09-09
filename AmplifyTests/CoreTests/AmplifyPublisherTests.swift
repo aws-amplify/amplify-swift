@@ -274,10 +274,11 @@ class AmplifyPublisherTests: XCTestCase {
         sink.cancel()
     }
 
-    private func send<Element>(input: [Element],
-                               sequence: AmplifyAsyncSequence<Element>,
-                               finish: Bool = true)
-    {
+    private func send<Element>(
+        input: [Element],
+        sequence: AmplifyAsyncSequence<Element>,
+        finish: Bool = true
+    ) {
         for value in input {
             sequence.send(value)
         }
@@ -286,10 +287,11 @@ class AmplifyPublisherTests: XCTestCase {
         }
     }
 
-    private func send<Element>(input: [Element],
-                               throwingSequence: AmplifyAsyncThrowingSequence<Element>,
-                               finish: Bool = true)
-    {
+    private func send<Element>(
+        input: [Element],
+        throwingSequence: AmplifyAsyncThrowingSequence<Element>,
+        finish: Bool = true
+    ) {
         for value in input {
             throwingSequence.send(value)
         }

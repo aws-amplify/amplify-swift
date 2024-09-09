@@ -106,9 +106,11 @@ class ModelIdentifierTests: XCTestCase {
     }
 
     func testModelIdentifierCompositePredicate() {
-        let model = ModelCompositePk(id: "id",
-                                     dob: Temporal.DateTime.now(),
-                                     name: "name")
+        let model = ModelCompositePk(
+            id: "id",
+            dob: Temporal.DateTime.now(),
+            name: "name"
+        )
 
         let identifier = model.identifier(schema: ModelCompositePk.schema)
 

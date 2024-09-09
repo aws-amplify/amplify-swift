@@ -9,9 +9,10 @@ import Foundation
 import PathKit
 
 enum CommandImportModelsTasks {
-    static func projectHasGeneratedModels(environment: AmplifyCommandEnvironment,
-                                          args: CommandImportModels.TaskArgs) -> AmplifyCommandTaskResult
-    {
+    static func projectHasGeneratedModels(
+        environment: AmplifyCommandEnvironment,
+        args: CommandImportModels.TaskArgs
+    ) -> AmplifyCommandTaskResult {
         let modelsPath = environment.path(for: args.generatedModelsPath)
         guard environment.directoryExists(atPath: modelsPath) else {
             do {
@@ -21,7 +22,8 @@ enum CommandImportModelsTasks {
                     AmplifyCommandError(
                         .folderNotFound,
                         errorDescription: "Unable to create a new folder for models at path: \(modelsPath)",
-                        recoverySuggestion: "Run amplify codegen models."))
+                        recoverySuggestion: "Run amplify codegen models."
+                    ))
             }
 
             return .success("Amplify models folder created at \(modelsPath)")
@@ -30,9 +32,10 @@ enum CommandImportModelsTasks {
         return .success("Amplify models folder found at \(modelsPath)")
     }
 
-    static func addGeneratedModelsToProject(environment: AmplifyCommandEnvironment,
-                                            args: CommandImportModels.TaskArgs) -> AmplifyCommandTaskResult
-    {
+    static func addGeneratedModelsToProject(
+        environment: AmplifyCommandEnvironment,
+        args: CommandImportModels.TaskArgs
+    ) -> AmplifyCommandTaskResult {
         let models = environment.glob(pattern: "\(args.generatedModelsPath)/*.swift").map {
             environment.createXcodeFile(withPath: $0, ofType: .source)
         }
@@ -42,7 +45,8 @@ enum CommandImportModelsTasks {
                 projectPath: environment.basePath,
                 files: models,
                 toGroup: args.modelsGroup,
-                inTarget: .primary)
+                inTarget: .primary
+            )
 
             let addedModels = models.map { Path($0.path).lastComponent }
             return .success("Successfully added models \(addedModels) to '\(args.modelsGroup)' group.")

@@ -16,10 +16,11 @@ public protocol CommandExecutable where Self: CommandEnvironmentProvider {
 
 /// Provides a default implementation for an executable command
 public extension CommandExecutable {
-    private func exec<TaskArgs>(_ task: AmplifyCommandTaskExecutor<TaskArgs>,
-                                args: TaskArgs,
-                                prevResults: inout [AmplifyCommandTaskResult]) -> Bool
-    {
+    private func exec<TaskArgs>(
+        _ task: AmplifyCommandTaskExecutor<TaskArgs>,
+        args: TaskArgs,
+        prevResults: inout [AmplifyCommandTaskResult]
+    ) -> Bool {
         let output = task(environment, args)
         switch output {
         case .failure:

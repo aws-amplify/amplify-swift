@@ -11,8 +11,7 @@ import Foundation
 
 public extension Meeting8V2 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case title
     case attendees

@@ -10,10 +10,11 @@ import XCTest
 
 @testable import CwlPreconditionTesting
 
-public func XCTAssertThrowFatalError(_ expression: @escaping () -> Void,
-                                     file: StaticString = #file,
-                                     line: UInt = #line) throws
-{
+public func XCTAssertThrowFatalError(
+    _ expression: @escaping () -> Void,
+    file: StaticString = #file,
+    line: UInt = #line
+) throws {
 #if (os(iOS) || os(macOS)) && (arch(arm64) || arch(x86_64))
     var reached = false
     let exception = catchBadInstruction {
@@ -27,10 +28,11 @@ public func XCTAssertThrowFatalError(_ expression: @escaping () -> Void,
 #endif
 }
 
-public func XCTAssertNoThrowFatalError(_ expression: @escaping () -> Void,
-                                       file: StaticString = #file,
-                                       line: UInt = #line) throws
-{
+public func XCTAssertNoThrowFatalError(
+    _ expression: @escaping () -> Void,
+    file: StaticString = #file,
+    line: UInt = #line
+) throws {
 #if (os(iOS) || os(macOS)) && (arch(arm64) || arch(x86_64))
     var reached = false
     let exception = catchBadInstruction {

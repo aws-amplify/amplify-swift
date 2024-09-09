@@ -22,7 +22,7 @@ extension Option where Value: ExpressibleByArgument {
             parsing: .next,
             completion: nil,
             help: ArgumentHelp(help)
-          )
+        )
         let type = String(describing: Value.self)
         parameters.insert(.option(name: name, type: type, help: help))
     }
@@ -33,7 +33,7 @@ extension Option where Value: ExpressibleByArgument {
             parsing: .next,
             help: ArgumentHelp(help),
             completion: nil
-          )
+        )
         let type = String(describing: Value.self)
         parameters.insert(.option(name: name, type: type, help: help))
     }

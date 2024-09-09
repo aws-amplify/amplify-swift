@@ -80,9 +80,11 @@ class ModelFieldAssociationTests: XCTestCase {
 
     func testModelFieldWithBelongsToAssociation() {
         let belongsTo = ModelAssociation.belongsTo(associatedWith: nil, targetNames: ["commentPostId"])
-        let field = ModelField.init(name: "post",
-                                    type: .model(type: Post.self),
-                                    association: belongsTo)
+        let field = ModelField.init(
+            name: "post",
+            type: .model(type: Post.self),
+            association: belongsTo
+        )
 
         XCTAssertEqual("Post", field.associatedModelName)
         XCTAssertTrue(field.hasAssociation)
@@ -91,10 +93,12 @@ class ModelFieldAssociationTests: XCTestCase {
 
     func testModelFieldWithHasManyAssociation() {
         let hasMany = ModelAssociation.hasMany(associatedWith: Comment.keys.post)
-        let field = ModelField.init(name: "comments",
-                                    type: .collection(of: Comment.self),
-                                    isArray: true,
-                                    association: hasMany)
+        let field = ModelField.init(
+            name: "comments",
+            type: .collection(of: Comment.self),
+            isArray: true,
+            association: hasMany
+        )
 
         XCTAssertEqual("Comment", field.associatedModelName)
         XCTAssertTrue(field.hasAssociation)
@@ -104,9 +108,11 @@ class ModelFieldAssociationTests: XCTestCase {
 
     func testModelFieldWithHasOneAssociation() {
         let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post, targetNames: ["postID"])
-        let field = ModelField.init(name: "comment",
-                                    type: .model(type: Comment.self),
-                                    association: hasOne)
+        let field = ModelField.init(
+            name: "comment",
+            type: .model(type: Comment.self),
+            association: hasOne
+        )
 
         XCTAssertEqual("Comment", field.associatedModelName)
         XCTAssertTrue(field.hasAssociation)

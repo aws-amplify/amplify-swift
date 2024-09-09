@@ -28,9 +28,11 @@ public extension Color {
 
     static let schema = defineSchema { embedded in
         let color = Color.keys
-        embedded.fields(.field(color.name, is: .required, ofType: .string),
-                       .field(color.red, is: .required, ofType: .int),
-                       .field(color.green, is: .required, ofType: .int),
-                       .field(color.blue, is: .required, ofType: .int))
+        embedded.fields(
+            .field(color.name, is: .required, ofType: .string),
+            .field(color.red, is: .required, ofType: .int),
+            .field(color.green, is: .required, ofType: .int),
+            .field(color.blue, is: .required, ofType: .int)
+        )
     }
 }

@@ -46,13 +46,14 @@ public struct Todo: Model {
     public var section: Section?
     public var stickies: [String]?
 
-    public init(id: String = UUID().uuidString,
-                name: String,
-                description: String? = nil,
-                categories: [Category]? = [],
-                section: Section? = nil,
-                stickies: [String]? = [])
-    {
+    public init(
+        id: String = UUID().uuidString,
+        name: String,
+        description: String? = nil,
+        categories: [Category]? = [],
+        section: Section? = nil,
+        stickies: [String]? = []
+    ) {
         self.id = id
         self.name = name
         self.description = description

@@ -14,10 +14,11 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    func signIn(username: String,
-                password: String,
-                options: AuthSignInRequest.Options?) async throws -> AuthSignInResult
-    {
+    func signIn(
+        username: String,
+        password: String,
+        options: AuthSignInRequest.Options?
+    ) async throws -> AuthSignInResult {
         fatalError()
     }
 
@@ -25,10 +26,11 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    public func confirmSignUp(for username: String,
-                              confirmationCode: String,
-                              options: AuthConfirmSignUpRequest.Options? = nil) async throws -> AuthSignUpResult
-    {
+    public func confirmSignUp(
+        for username: String,
+        confirmationCode: String,
+        options: AuthConfirmSignUpRequest.Options? = nil
+    ) async throws -> AuthSignUpResult {
         fatalError()
     }
 
@@ -36,31 +38,35 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
             fatalError()
     }
 
-    public func signIn(username: String? = nil,
-                       password: String? = nil,
-                       options: AuthSignInRequest.Options? = nil) async throws -> AuthSignInResult
-    {
+    public func signIn(
+        username: String? = nil,
+        password: String? = nil,
+        options: AuthSignInRequest.Options? = nil
+    ) async throws -> AuthSignInResult {
         fatalError()
     }
 
 #if os(iOS) || os(macOS)
-    public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
-                                options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult
-    {
+    public func signInWithWebUI(
+        presentationAnchor: AuthUIPresentationAnchor? = nil,
+        options: AuthWebUISignInRequest.Options? = nil
+    ) async throws -> AuthSignInResult {
         fatalError()
     }
 
-    public func signInWithWebUI(for authProvider: AuthProvider,
-                                presentationAnchor: AuthUIPresentationAnchor? = nil,
-                                options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult
-    {
+    public func signInWithWebUI(
+        for authProvider: AuthProvider,
+        presentationAnchor: AuthUIPresentationAnchor? = nil,
+        options: AuthWebUISignInRequest.Options? = nil
+    ) async throws -> AuthSignInResult {
         fatalError()
     }
 #endif
 
-    public func confirmSignIn(challengeResponse: String,
-                              options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult
-    {
+    public func confirmSignIn(
+        challengeResponse: String,
+        options: AuthConfirmSignInRequest.Options? = nil
+    ) async throws -> AuthSignInResult {
         fatalError()
     }
 
@@ -80,11 +86,12 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    public func confirmResetPassword(for username: String,
-                                     with newPassword: String,
-                                     confirmationCode: String,
-                                     options: AuthConfirmResetPasswordRequest.Options? = nil) async throws
-    {
+    public func confirmResetPassword(
+        for username: String,
+        with newPassword: String,
+        confirmationCode: String,
+        options: AuthConfirmResetPasswordRequest.Options? = nil
+    ) async throws {
             fatalError()
     }
 
@@ -101,14 +108,14 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
     }
 
     public func resendConfirmationCode(forUserAttributeKey userAttributeKey: AuthUserAttributeKey, options: AuthAttributeResendConfirmationCodeRequest.Options? = nil)
-        async throws -> AuthCodeDeliveryDetails
-    {
+        async throws -> AuthCodeDeliveryDetails {
             fatalError()
     }
 
     public func sendVerificationCode(
         forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
-        options: AuthSendUserAttributeVerificationCodeRequest.Options? = nil)
+        options: AuthSendUserAttributeVerificationCodeRequest.Options? = nil
+    )
     async throws -> AuthCodeDeliveryDetails {
         fatalError()
     }
@@ -124,17 +131,19 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    public func confirm(userAttribute: AuthUserAttributeKey,
-                        confirmationCode: String,
-                        options: AuthConfirmUserAttributeRequest.Options? = nil) async throws
-    {
+    public func confirm(
+        userAttribute: AuthUserAttributeKey,
+        confirmationCode: String,
+        options: AuthConfirmUserAttributeRequest.Options? = nil
+    ) async throws {
             fatalError()
     }
 
-    public func update(oldPassword: String,
-                       to newPassword: String,
-                       options: AuthChangePasswordRequest.Options? = nil) async throws
-    {
+    public func update(
+        oldPassword: String,
+        to newPassword: String,
+        options: AuthChangePasswordRequest.Options? = nil
+    ) async throws {
         notify("changePassword")
 
     }

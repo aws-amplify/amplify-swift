@@ -11,8 +11,7 @@ import Foundation
 
 public extension ModelCompositePkBelongsTo {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case dob
     case owner
@@ -34,17 +33,20 @@ public extension ModelCompositePkBelongsTo {
     )
 
     model.fields(
-        .field(modelCompositePkBelongsTo.id, is: .required, ofType: .string),
-        .field(modelCompositePkBelongsTo.dob, is: .required, ofType: .dateTime),
-        .field(modelCompositePkBelongsTo.name, is: .optional, ofType: .string),
-        .belongsTo(modelCompositePkBelongsTo.owner, is: .optional,
-                   ofType: ModelCompositePkWithAssociation.self,
-                   targetNames: [
-                    "modelCompositePkWithAssociationOtherModelsId",
-                    "modelCompositePkWithAssociationOtherModelsDob"
-                   ]),
-        .field(modelCompositePkBelongsTo.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
-        .field(modelCompositePkBelongsTo.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
+      .field(modelCompositePkBelongsTo.id, is: .required, ofType: .string),
+      .field(modelCompositePkBelongsTo.dob, is: .required, ofType: .dateTime),
+      .field(modelCompositePkBelongsTo.name, is: .optional, ofType: .string),
+      .belongsTo(
+        modelCompositePkBelongsTo.owner,
+        is: .optional,
+        ofType: ModelCompositePkWithAssociation.self,
+        targetNames: [
+          "modelCompositePkWithAssociationOtherModelsId",
+          "modelCompositePkWithAssociationOtherModelsDob"
+        ]
+      ),
+      .field(modelCompositePkBelongsTo.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
+      .field(modelCompositePkBelongsTo.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
 }

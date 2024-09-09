@@ -57,10 +57,14 @@ class AmplifyInProcessReportingOperationChainedTests: XCTestCase {
         mockOp1.main()
         mockOp2.main()
 
-        await fulfillment(of: [receivedValue,
-                               receivedFailure,
-                               receivedFinished],
-                          timeout: 0.05)
+        await fulfillment(
+            of: [
+                receivedValue,
+                receivedFailure,
+                receivedFinished
+            ],
+            timeout: 0.05
+        )
         sink.cancel()
     }
 
@@ -112,10 +116,14 @@ class AmplifyInProcessReportingOperationChainedTests: XCTestCase {
         mockOp1.main()
         mockOp2.main()
 
-        await fulfillment(of: [receivedValue,
-                               receivedFailure,
-                               receivedFinished],
-                          timeout: 0.05)
+        await fulfillment(
+            of: [
+                receivedValue,
+                receivedFailure,
+                receivedFinished
+            ],
+            timeout: 0.05
+        )
         sink.cancel()
     }
 
@@ -162,10 +170,14 @@ class AmplifyInProcessReportingOperationChainedTests: XCTestCase {
         mockOp1.main()
         mockOp2.main()
 
-        await fulfillment(of: [receivedValue,
-                               receivedFailure,
-                               receivedFinished],
-                          timeout: 0.05)
+        await fulfillment(
+            of: [
+                receivedValue,
+                receivedFailure,
+                receivedFinished
+            ],
+            timeout: 0.05
+        )
         sink.cancel()
     }
 

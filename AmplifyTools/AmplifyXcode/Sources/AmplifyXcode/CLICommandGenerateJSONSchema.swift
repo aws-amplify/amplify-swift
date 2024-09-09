@@ -23,9 +23,11 @@ private struct CLISchema: Encodable {
                 continue
             }
             _ = command.init()
-            commands.append(AnyCLICommandEncodable(name: command.commandName,
-                                                   abstract: command.abstract,
-                                                   parameters: command.parameters))
+            commands.append(AnyCLICommandEncodable(
+                name: command.commandName,
+                abstract: command.abstract,
+                parameters: command.parameters
+            ))
         }
     }
 }
@@ -47,8 +49,10 @@ struct CLICommandGenerateJSONSchema: ParsableCommand, CommandExecutable, CLIComm
     func run() throws {
         let schema = try JSONEncoder().encode(CLISchema())
         let schemaFileName = "amplify-xcode.json"
-        let fullPath = try environment.createFile(atPath: schemaFileName,
-                                                  content: String(data: schema, encoding: .utf8)!)
+        let fullPath = try environment.createFile(
+            atPath: schemaFileName,
+            content: String(data: schema, encoding: .utf8)!
+        )
         print("Schema generated at: \(fullPath)")
     }
 }

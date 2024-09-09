@@ -25,10 +25,12 @@ public extension UserAccount {
 
         model.fields(
             .id(),
-            .hasOne(account.profile,
-                    is: .optional,
-                    ofType: UserProfile.self,
-                    associatedWith: UserProfile.CodingKeys.account)
+            .hasOne(
+                account.profile,
+                is: .optional,
+                ofType: UserProfile.self,
+                associatedWith: UserProfile.CodingKeys.account
+            )
         )
     }
 

@@ -35,7 +35,8 @@ public struct QPredGen: Model {
   public var myDateTime: Temporal.DateTime?
   public var myTime: Temporal.Time?
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       name: String,
       myBool: Bool? = nil,
       myDouble: Double? = nil,
@@ -43,8 +44,8 @@ public struct QPredGen: Model {
       myString: String? = nil,
       myDate: Temporal.Date? = nil,
       myDateTime: Temporal.DateTime? = nil,
-      myTime: Temporal.Time? = nil)
-  {
+      myTime: Temporal.Time? = nil
+  ) {
       self.id = id
       self.name = name
       self.myBool = myBool

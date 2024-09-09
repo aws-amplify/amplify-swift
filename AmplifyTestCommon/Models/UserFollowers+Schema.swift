@@ -11,8 +11,7 @@ import Foundation
 
 public extension UserFollowers {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case user
     case followersUser

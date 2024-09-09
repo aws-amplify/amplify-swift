@@ -31,10 +31,11 @@ public struct DeprecatedTodo: Model {
   public var description: String?
   public var note: Note?
 
-  public init(id: String = UUID().uuidString,
-      description: String? = nil,
-      note: Note? = nil)
-  {
+  public init(
+    id: String = UUID().uuidString,
+    description: String? = nil,
+    note: Note? = nil
+  ) {
       self.id = id
       self.description = description
       self.note = note
@@ -43,8 +44,7 @@ public struct DeprecatedTodo: Model {
 
 public extension DeprecatedTodo {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case description
     case note

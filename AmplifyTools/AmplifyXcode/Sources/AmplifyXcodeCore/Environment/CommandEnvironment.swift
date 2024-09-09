@@ -60,7 +60,8 @@ public extension CommandEnvironment {
                 .folderNotFound,
                 errorDescription: "Folder \(fullPath) not found",
                 recoverySuggestion: nil,
-                error: nil)
+                error: nil
+            )
         }
         do {
             let content = try fileManager.contentsOfDirectory(atPath: fullPath)
@@ -91,7 +92,8 @@ public extension CommandEnvironment {
                 .xcodeProject,
                 errorDescription: "Unable to find an Xcode project (i.e. `xcodeproj` file) in directory: \(path)",
                 recoverySuggestion: "Please create a new Xcode project or import one at \(path).",
-                error: XcodeProjectError.notFound(path: path))
+                error: XcodeProjectError.notFound(path: path)
+            )
         }
         let projectName = xcodeProjFiles[0]
 
@@ -106,17 +108,19 @@ public extension CommandEnvironment {
         projectPath path: String,
         files: [XcodeProjectFile],
         toGroup group: String,
-        inTarget target: XcodeProjectTarget) throws
-    {
+        inTarget target: XcodeProjectTarget
+    ) throws {
         do {
             let xcodeProject = try loadFirstXcodeProject(fromDirectory: path)
             try xcodeProject.add(files: files, toGroup: group, inTarget: target)
             try xcodeProject.synchronize()
         } catch {
             if case let XcodeProjectError.targetNotFound(name: targetName) = error {
-                throw AmplifyCommandError(.xcodeProject,
-                                          errorDescription: "Target \(targetName) not found",
-                                          recoverySuggestion: "Manually add Amplify files to your Xcode project.")
+                throw AmplifyCommandError(
+                    .xcodeProject,
+                    errorDescription: "Target \(targetName) not found",
+                    recoverySuggestion: "Manually add Amplify files to your Xcode project."
+                )
             }
             throw AmplifyCommandError(.xcodeProject, error: error)
         }

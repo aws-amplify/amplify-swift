@@ -11,8 +11,7 @@ import Foundation
 
 public extension ModelCompositePk {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case dob
     case name
@@ -33,11 +32,11 @@ public extension ModelCompositePk {
     )
 
     model.fields(
-        .field(modelCompositePk.id, is: .required, ofType: .string),
-        .field(modelCompositePk.dob, is: .required, ofType: .dateTime),
-        .field(modelCompositePk.name, is: .optional, ofType: .string),
-        .field(modelCompositePk.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
-        .field(modelCompositePk.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
+      .field(modelCompositePk.id, is: .required, ofType: .string),
+      .field(modelCompositePk.dob, is: .required, ofType: .dateTime),
+      .field(modelCompositePk.name, is: .optional, ofType: .string),
+      .field(modelCompositePk.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
+      .field(modelCompositePk.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
 }

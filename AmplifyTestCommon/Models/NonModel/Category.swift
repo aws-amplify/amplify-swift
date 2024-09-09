@@ -25,7 +25,9 @@ public extension Category {
 
     static let schema = defineSchema { embedded in
         let category = Category.keys
-        embedded.fields(.field(category.name, is: .required, ofType: .string),
-                       .field(category.color, is: .required, ofType: .embedded(type: Color.self)))
+        embedded.fields(
+            .field(category.name, is: .required, ofType: .string),
+            .field(category.color, is: .required, ofType: .embedded(type: Color.self))
+        )
     }
 }

@@ -11,8 +11,7 @@ import Foundation
 
 public extension Post8 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case name
     case randomId

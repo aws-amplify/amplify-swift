@@ -16,8 +16,10 @@ public extension FileManager {
 
     func resolveHomeDirectoryIn(path: String) -> String {
         if let first = path.first, first == "~" {
-            return path.replacingCharacters(in: ...path.startIndex,
-                                            with: FileManager.default.homeDirectoryForCurrentUser.path)
+            return path.replacingCharacters(
+                in: ...path.startIndex,
+                with: FileManager.default.homeDirectoryForCurrentUser.path
+            )
         }
         return path
     }

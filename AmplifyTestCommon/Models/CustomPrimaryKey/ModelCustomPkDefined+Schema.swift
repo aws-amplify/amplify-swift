@@ -11,8 +11,7 @@ import Foundation
 
 public extension ModelCustomPkDefined {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case dob
     case name

@@ -76,10 +76,12 @@ public class FastOperation: AmplifyOperation<FastOperationRequest, FastOperation
 #endif
 
     public init(request: FastOperationRequest, resultListener: FastOperationResultListener? = nil) {
-        super.init(categoryType: .storage,
-                   eventName: "FastOperation",
-                   request: request,
-                   resultListener: resultListener)
+        super.init(
+            categoryType: .storage,
+            eventName: "FastOperation",
+            request: request,
+            resultListener: resultListener
+        )
     }
 
     override public func main() {

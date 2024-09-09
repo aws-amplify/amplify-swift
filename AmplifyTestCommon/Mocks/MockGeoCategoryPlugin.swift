@@ -42,22 +42,25 @@ class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
     }
 
     private func createMapStyle() -> Geo.MapStyle {
-        Geo.MapStyle(mapName: "MapName",
-                 style: "MapStyle",
-                 styleURL: URL(string: "http://MapStyleURL")!)
+        Geo.MapStyle(
+            mapName: "MapName",
+            style: "MapStyle",
+            styleURL: URL(string: "http://MapStyleURL")!
+        )
     }
 
     private func createPlace() -> Geo.Place {
-        Geo.Place(coordinates: Geo.Coordinates(latitude: 0, longitude: 0),
-                  label: "Place Label",
-                  addressNumber: nil,
-                  street: nil,
-                  municipality: nil,
-                  neighborhood: nil,
-                  region: nil,
-                  subRegion: nil,
-                  postalCode: nil,
-                  country: nil
+        Geo.Place(
+            coordinates: Geo.Coordinates(latitude: 0, longitude: 0),
+            label: "Place Label",
+            addressNumber: nil,
+            street: nil,
+            municipality: nil,
+            neighborhood: nil,
+            region: nil,
+            subRegion: nil,
+            postalCode: nil,
+            country: nil
         )
     }
 }

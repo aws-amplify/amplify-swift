@@ -68,12 +68,16 @@ class DefaultLoggingPluginTests: XCTestCase {
         verboseMessageIncorrectlyEvaluated.isInverted = true
         Amplify.Logging.verbose("verbose \(verboseMessageIncorrectlyEvaluated.fulfill())")
 
-        await fulfillment(of: [errorMessageCorrectlyEvaluated,
-                               warnMessageIncorrectlyEvaluated,
-                               infoMessageIncorrectlyEvaluated,
-                               debugMessageIncorrectlyEvaluated,
-                               verboseMessageIncorrectlyEvaluated],
-                          timeout: 0.1)
+        await fulfillment(
+            of: [
+                errorMessageCorrectlyEvaluated,
+                warnMessageIncorrectlyEvaluated,
+                infoMessageIncorrectlyEvaluated,
+                debugMessageIncorrectlyEvaluated,
+                verboseMessageIncorrectlyEvaluated
+            ],
+            timeout: 0.1
+        )
     }
 
     /// - Given: default configuration
@@ -102,11 +106,15 @@ class DefaultLoggingPluginTests: XCTestCase {
         infoMessageIncorrectlyEvaluatedAgain.isInverted = true
         Amplify.Logging.info("info \(infoMessageIncorrectlyEvaluatedAgain.fulfill())")
 
-        await fulfillment(of: [warnMessageCorrectlyEvaluated,
-                               infoMessageIncorrectlyEvaluated,
-                               warnMessageIncorrectlyEvaluated,
-                               infoMessageIncorrectlyEvaluatedAgain],
-                          timeout: 0.1)
+        await fulfillment(
+            of: [
+                warnMessageCorrectlyEvaluated,
+                infoMessageIncorrectlyEvaluated,
+                warnMessageIncorrectlyEvaluated,
+                infoMessageIncorrectlyEvaluatedAgain
+            ],
+            timeout: 0.1
+        )
     }
 
     /// Although we can't assert it, the messages in the console log are expected to have different "category" tags
@@ -150,10 +158,14 @@ class DefaultLoggingPluginTests: XCTestCase {
         logger1.info("logger1 \(logger1MessageCorrectlyEvaluated.fulfill())")
         logger2.info("logger2 \(logger2MessageIncorrectlyEvaluated.fulfill())")
 
-        await fulfillment(of: [logger1MessageCorrectlyEvaluated,
-                               logger2MessageIncorrectlyEvaluated,
-                               globalMessageCorrectlyEvaluated],
-                          timeout: 0.1)
+        await fulfillment(
+            of: [
+                logger1MessageCorrectlyEvaluated,
+                logger2MessageIncorrectlyEvaluated,
+                globalMessageCorrectlyEvaluated
+            ],
+            timeout: 0.1
+        )
     }
 
     /// - Given: default configuration

@@ -44,13 +44,14 @@ class ListTests: XCTestCase {
         var nextPage: List<Element>?
         var state: ModelListProviderState<Element>?
 
-        public init(elements: [Element] = [Element](),
-                    error: CoreError? = nil,
-                    errorOnLoad: CoreError? = nil,
-                    errorOnNextPage: CoreError? = nil,
-                    nextPage: List<Element>? = nil,
-                    state: ModelListProviderState<Element>? = nil)
-        {
+        public init(
+            elements: [Element] = [Element](),
+            error: CoreError? = nil,
+            errorOnLoad: CoreError? = nil,
+            errorOnNextPage: CoreError? = nil,
+            nextPage: List<Element>? = nil,
+            state: ModelListProviderState<Element>? = nil
+        ) {
             self.elements = elements
             self.error = error
             self.errorOnLoad = errorOnLoad

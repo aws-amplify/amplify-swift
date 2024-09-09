@@ -53,13 +53,17 @@ class AmplifyInProcessReportingOperationCombineTests: XCTestCase {
         let operation = makeOperation(using: responder)
         operation.main()
 
-        await fulfillment(of: [receivedResultValue,
-                               receivedResultFailure,
-                               receivedResultFinished,
-                               receivedInProcessValue,
-                               receivedInProcessFailure,
-                               receivedInProcessFinished],
-                          timeout: 0.05)
+        await fulfillment(
+            of: [
+                receivedResultValue,
+                receivedResultFailure,
+                receivedResultFinished,
+                receivedInProcessValue,
+                receivedInProcessFailure,
+                receivedInProcessFinished
+            ],
+            timeout: 0.05
+        )
     }
 
     func testResultPublisherFails() async {
@@ -75,13 +79,17 @@ class AmplifyInProcessReportingOperationCombineTests: XCTestCase {
         let operation = makeOperation(using: responder)
         operation.main()
 
-        await fulfillment(of: [receivedResultValue,
-                               receivedResultFailure,
-                               receivedResultFinished,
-                               receivedInProcessValue,
-                               receivedInProcessFailure,
-                               receivedInProcessFinished],
-                          timeout: 0.05)
+        await fulfillment(
+            of: [
+                receivedResultValue,
+                receivedResultFailure,
+                receivedResultFinished,
+                receivedInProcessValue,
+                receivedInProcessFailure,
+                receivedInProcessFinished
+            ],
+            timeout: 0.05
+        )
     }
 
     func testResultPublisherCancels() async {
@@ -99,13 +107,17 @@ class AmplifyInProcessReportingOperationCombineTests: XCTestCase {
         let operation = makeOperation(using: responder)
         operation.cancel()
 
-        await fulfillment(of: [receivedResultValue,
-                               receivedResultFailure,
-                               receivedResultFinished,
-                               receivedInProcessValue,
-                               receivedInProcessFailure,
-                               receivedInProcessFinished],
-                          timeout: 0.05)
+        await fulfillment(
+            of: [
+                receivedResultValue,
+                receivedResultFailure,
+                receivedResultFinished,
+                receivedInProcessValue,
+                receivedInProcessFailure,
+                receivedInProcessFinished
+            ],
+            timeout: 0.05
+        )
     }
 
     func makeOperation(

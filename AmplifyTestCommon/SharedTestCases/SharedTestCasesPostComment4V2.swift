@@ -51,22 +51,26 @@ public struct LazyParentPost4V2: Model {
     public var createdAt: Temporal.DateTime?
     public var updatedAt: Temporal.DateTime?
 
-    public init(id: String = UUID().uuidString,
-                title: String,
-                comments: List<LazyChildComment4V2>? = [])
-    {
-        self.init(id: id,
-                  title: title,
-                  comments: comments,
-                  createdAt: nil,
-                  updatedAt: nil)
+    public init(
+        id: String = UUID().uuidString,
+        title: String,
+        comments: List<LazyChildComment4V2>? = []
+    ) {
+        self.init(
+            id: id,
+            title: title,
+            comments: comments,
+            createdAt: nil,
+            updatedAt: nil
+        )
     }
-    init(id: String = UUID().uuidString,
-                  title: String,
-                  comments: List<LazyChildComment4V2>? = [],
-                  createdAt: Temporal.DateTime? = nil,
-                  updatedAt: Temporal.DateTime? = nil)
-    {
+    init(
+        id: String = UUID().uuidString,
+        title: String,
+        comments: List<LazyChildComment4V2>? = [],
+        createdAt: Temporal.DateTime? = nil,
+        updatedAt: Temporal.DateTime? = nil
+    ) {
         self.id = id
         self.title = title
         self.comments = comments
@@ -118,22 +122,26 @@ public struct LazyChildComment4V2: Model {
     public var createdAt: Temporal.DateTime?
     public var updatedAt: Temporal.DateTime?
 
-    public init(id: String = UUID().uuidString,
-                content: String,
-                post: LazyParentPost4V2? = nil)
-    {
-        self.init(id: id,
-                  content: content,
-                  post: post,
-                  createdAt: nil,
-                  updatedAt: nil)
+    public init(
+        id: String = UUID().uuidString,
+        content: String,
+        post: LazyParentPost4V2? = nil
+    ) {
+        self.init(
+            id: id,
+            content: content,
+            post: post,
+            createdAt: nil,
+            updatedAt: nil
+        )
     }
-    init(id: String = UUID().uuidString,
-                  content: String,
-                  post: LazyParentPost4V2? = nil,
-                  createdAt: Temporal.DateTime? = nil,
-                  updatedAt: Temporal.DateTime? = nil)
-    {
+    init(
+        id: String = UUID().uuidString,
+        content: String,
+        post: LazyParentPost4V2? = nil,
+        createdAt: Temporal.DateTime? = nil,
+        updatedAt: Temporal.DateTime? = nil
+    ) {
         self.id = id
         self.content = content
         self._post = LazyReference(post)
@@ -209,22 +217,26 @@ public struct ParentPost4V2: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       title: String,
-      comments: List<ChildComment4V2>? = [])
-  {
-    self.init(id: id,
-      title: title,
-      comments: comments,
-      createdAt: nil,
-      updatedAt: nil)
+      comments: List<ChildComment4V2>? = []
+  ) {
+    self.init(
+        id: id,
+        title: title,
+        comments: comments,
+        createdAt: nil,
+        updatedAt: nil
+    )
   }
-  init(id: String = UUID().uuidString,
+  init(
+      id: String = UUID().uuidString,
       title: String,
       comments: List<ChildComment4V2>? = [],
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+      updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.title = title
       self.comments = comments
@@ -234,8 +246,7 @@ public struct ParentPost4V2: Model {
 }
 public extension ParentPost4V2 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case title
     case comments
@@ -250,17 +261,17 @@ public extension ParentPost4V2 {
     let post4V2 = Post4V2.keys
 
     model.authRules = [
-      rule(allow: .public, operations: [.create, .update, .delete, .read])
+        rule(allow: .public, operations: [.create, .update, .delete, .read])
     ]
 
     model.pluralName = "ParentPost4V2s"
 
     model.fields(
-      .id(),
-      .field(post4V2.title, is: .required, ofType: .string),
-      .hasMany(post4V2.comments, is: .optional, ofType: ChildComment4V2.self, associatedWith: ChildComment4V2.keys.post),
-      .field(post4V2.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
-      .field(post4V2.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
+        .id(),
+        .field(post4V2.title, is: .required, ofType: .string),
+        .hasMany(post4V2.comments, is: .optional, ofType: ChildComment4V2.self, associatedWith: ChildComment4V2.keys.post),
+        .field(post4V2.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
+        .field(post4V2.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
 }
@@ -272,22 +283,26 @@ public struct ChildComment4V2: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       content: String,
-      post: ParentPost4V2? = nil)
-  {
-    self.init(id: id,
-      content: content,
-      post: post,
-      createdAt: nil,
-      updatedAt: nil)
+      post: ParentPost4V2? = nil
+  ) {
+    self.init(
+        id: id,
+        content: content,
+        post: post,
+        createdAt: nil,
+        updatedAt: nil
+    )
   }
-  init(id: String = UUID().uuidString,
+  init(
+      id: String = UUID().uuidString,
       content: String,
       post: ParentPost4V2? = nil,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+      updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.content = content
       self.post = post
@@ -298,8 +313,7 @@ public struct ChildComment4V2: Model {
 
 public extension ChildComment4V2 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case content
     case post
@@ -314,7 +328,7 @@ public extension ChildComment4V2 {
     let comment4V2 = Comment4V2.keys
 
     model.authRules = [
-      rule(allow: .public, operations: [.create, .update, .delete, .read])
+        rule(allow: .public, operations: [.create, .update, .delete, .read])
     ]
 
     model.pluralName = "ChildComment4V2s"
@@ -324,11 +338,11 @@ public extension ChildComment4V2 {
     )
 
     model.fields(
-      .id(),
-      .field(comment4V2.content, is: .required, ofType: .string),
-      .belongsTo(comment4V2.post, is: .optional, ofType: ParentPost4V2.self, targetName: "postID"),
-      .field(comment4V2.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
-      .field(comment4V2.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
+        .id(),
+        .field(comment4V2.content, is: .required, ofType: .string),
+        .belongsTo(comment4V2.post, is: .optional, ofType: ParentPost4V2.self, targetName: "postID"),
+        .field(comment4V2.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
+        .field(comment4V2.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
 }

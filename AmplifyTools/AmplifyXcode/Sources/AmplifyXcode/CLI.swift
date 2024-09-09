@@ -22,5 +22,6 @@ struct AmplifyXcode: ParsableCommand {
             CLICommandImportConfig.self,
             CLICommandImportModels.self,
             CLICommandGenerateJSONSchema.self
-        ])
+        ]
+    )
 }

@@ -38,9 +38,10 @@ extension XcodeProj {
 
 // MARK: Add files to project
 extension XcodeProj {
-    func targets(named targetName: String,
-                 ofType productType: PBXProductType) -> [PBXTarget]
-    {
+    func targets(
+        named targetName: String,
+        ofType productType: PBXProductType
+    ) -> [PBXTarget] {
         pbxproj.targets(named: targetName).filter { $0.productType == productType }
     }
 

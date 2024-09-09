@@ -51,9 +51,10 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         try Amplify.add(plugin: plugin)
         try Amplify.configure(createAmplifyConfig())
 
-        XCTAssertThrowsError(try Amplify.add(plugin: plugin),
-                             "configure() an already configured plugin should throw")
-        { error in
+        XCTAssertThrowsError(
+            try Amplify.add(plugin: plugin),
+            "configure() an already configured plugin should throw"
+        ) { error in
             guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                 XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                 return
@@ -67,9 +68,10 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         let categoryConfig = createCategoryConfig()
         try Amplify.Notifications.Push.configure(using: categoryConfig)
 
-        XCTAssertThrowsError(try Amplify.Notifications.Push.configure(using: categoryConfig),
-                             "configure() an already configured plugin should throw")
-        { error in
+        XCTAssertThrowsError(
+            try Amplify.Notifications.Push.configure(using: categoryConfig),
+            "configure() an already configured plugin should throw"
+        ) { error in
             guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                 XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                 return
@@ -206,9 +208,10 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(createAmplifyConfig())
 
         await Amplify.reset()
-        XCTAssertThrowsError(try Amplify.Notifications.Push.getPlugin(for: "MockPushNotificationsCategoryPlugin"),
-                             "Getting a plugin after reset() should throw")
-        { error in
+        XCTAssertThrowsError(
+            try Amplify.Notifications.Push.getPlugin(for: "MockPushNotificationsCategoryPlugin"),
+            "Getting a plugin after reset() should throw"
+        ) { error in
             guard case PushNotificationsError.configuration = error else {
                 XCTFail("Expected PushNotificationsError.configuration error")
                 return

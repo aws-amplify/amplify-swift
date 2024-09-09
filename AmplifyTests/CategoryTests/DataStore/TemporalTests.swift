@@ -35,7 +35,8 @@ class TemporalTests: XCTestCase {
             XCTAssertEqual(datetime.iso8601FormattedString(format: .long, timeZone: .utc), "2020-01-20T08:00:00Z")
             XCTAssertEqual(
                 datetime.iso8601FormattedString(format: .full, timeZone: pst),
-                "2020-01-20T00:00:00.000-08:00")
+                "2020-01-20T00:00:00.000-08:00"
+            )
             XCTAssertEqual(datetime.iso8601FormattedString(format: .full, timeZone: .utc), "2020-01-20T08:00:00.000Z")
         } catch {
             XCTFail(error.localizedDescription)
@@ -105,7 +106,8 @@ class TemporalTests: XCTestCase {
             XCTAssertEqual(datetime.iso8601FormattedString(format: .long, timeZone: .utc), "2020-01-20T08:00:00Z")
             XCTAssertEqual(
                 datetime.iso8601FormattedString(format: .full, timeZone: pst),
-                "2020-01-20T00:00:00.000-08:00")
+                "2020-01-20T00:00:00.000-08:00"
+            )
             XCTAssertEqual(datetime.iso8601FormattedString(format: .full, timeZone: .utc), "2020-01-20T08:00:00.000Z")
         } catch {
             XCTFail(error.localizedDescription)
@@ -125,28 +127,36 @@ class TemporalTests: XCTestCase {
             XCTAssertEqual(datetime.iso8601String, "2020-01-20T08:00:00.000Z")
             XCTAssertEqual(
                 datetime.iso8601FormattedString(format: .short, timeZone: pst),
-                "2020-01-20T00:00")
+                "2020-01-20T00:00"
+            )
             XCTAssertEqual(
                 datetime.iso8601FormattedString(format: .short, timeZone: .utc),
-                "2020-01-20T08:00")
+                "2020-01-20T08:00"
+            )
             XCTAssertEqual(
                 datetime.iso8601FormattedString(format: .medium, timeZone: pst),
-                "2020-01-20T00:00:00")
+                "2020-01-20T00:00:00"
+            )
             XCTAssertEqual(
                 datetime.iso8601FormattedString(format: .medium, timeZone: .utc),
-                "2020-01-20T08:00:00")
+                "2020-01-20T08:00:00"
+            )
             XCTAssertEqual(
                 datetime.iso8601FormattedString(format: .long, timeZone: pst),
-                "2020-01-20T00:00:00-08:00")
+                "2020-01-20T00:00:00-08:00"
+            )
             XCTAssertEqual(
                 datetime.iso8601FormattedString(format: .long, timeZone: .utc),
-                "2020-01-20T08:00:00Z")
+                "2020-01-20T08:00:00Z"
+            )
             XCTAssertEqual(
                 datetime.iso8601FormattedString(format: .full, timeZone: pst),
-                "2020-01-20T00:00:00.000-08:00")
+                "2020-01-20T00:00:00.000-08:00"
+            )
             XCTAssertEqual(
                 datetime.iso8601FormattedString(format: .full, timeZone: .utc),
-                "2020-01-20T08:00:00.000Z")
+                "2020-01-20T08:00:00.000Z"
+            )
         } catch {
             XCTFail(error.localizedDescription)
         }
@@ -171,7 +181,8 @@ class TemporalTests: XCTestCase {
             XCTAssertEqual(datetime.iso8601FormattedString(format: .long, timeZone: .utc), "2020-01-20T08:00:00Z")
             XCTAssertEqual(
                 datetime.iso8601FormattedString(format: .full, timeZone: pst),
-                "2020-01-20T00:00:00.180-08:00")
+                "2020-01-20T00:00:00.180-08:00"
+            )
             XCTAssertEqual(datetime.iso8601FormattedString(format: .full, timeZone: .utc), "2020-01-20T08:00:00.180Z")
         } catch {
             XCTFail(error.localizedDescription)
@@ -197,7 +208,8 @@ class TemporalTests: XCTestCase {
             XCTAssertEqual(datetime.iso8601FormattedString(format: .long, timeZone: .utc), "2020-01-20T16:00:00Z")
             XCTAssertEqual(
                 datetime.iso8601FormattedString(format: .full, timeZone: pst),
-                "2020-01-20T08:00:00.180-08:00")
+                "2020-01-20T08:00:00.180-08:00"
+            )
             XCTAssertEqual(datetime.iso8601FormattedString(format: .full, timeZone: .utc), "2020-01-20T16:00:00.180Z")
         } catch {
             XCTFail(error.localizedDescription)

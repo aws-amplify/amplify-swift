@@ -19,10 +19,11 @@ public struct Comment4: Model {
         }
     }
 
-    public init(id: String = UUID().uuidString,
-                content: String,
-                post: Post4? = nil)
-    {
+    public init(
+        id: String = UUID().uuidString,
+        content: String,
+        post: Post4? = nil
+    ) {
         self.id = id
         self.content = content
         self._post = LazyReference(post)

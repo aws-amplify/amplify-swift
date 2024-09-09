@@ -12,8 +12,7 @@ import Foundation
 
 public extension RecordCover {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case artist
     case createdAt
@@ -30,10 +29,10 @@ public extension RecordCover {
     model.syncPluralName = "RecordCovers"
 
     model.fields(
-        .id(),
-        .field(recordCover.artist, is: .required, ofType: .string),
-        .field(recordCover.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
-        .field(recordCover.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
-        )
+      .id(),
+      .field(recordCover.artist, is: .required, ofType: .string),
+      .field(recordCover.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
+      .field(recordCover.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
+    )
     }
 }

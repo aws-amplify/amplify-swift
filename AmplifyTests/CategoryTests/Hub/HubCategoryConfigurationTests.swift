@@ -98,9 +98,10 @@ class HubCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         await Amplify.reset()
-        XCTAssertThrowsError(try Amplify.Hub.getPlugin(for: "MockHubCategoryPlugin"),
-                             "Getting a plugin after reset() should throw")
-        { error in
+        XCTAssertThrowsError(
+            try Amplify.Hub.getPlugin(for: "MockHubCategoryPlugin"),
+            "Getting a plugin after reset() should throw"
+        ) { error in
                                 guard case HubError.configuration = error else {
                                     XCTFail("Expected PluginError.noSuchPlugin")
                                     return
@@ -262,9 +263,10 @@ class HubCategoryConfigurationTests: XCTestCase {
         )
 
         try Amplify.Hub.configure(using: categoryConfig)
-        XCTAssertThrowsError(try Amplify.Hub.configure(using: categoryConfig),
-                             "configure() an already configured plugin should throw")
-        { error in
+        XCTAssertThrowsError(
+            try Amplify.Hub.configure(using: categoryConfig),
+            "configure() an already configured plugin should throw"
+        ) { error in
                                 guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                                     XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                                     return
