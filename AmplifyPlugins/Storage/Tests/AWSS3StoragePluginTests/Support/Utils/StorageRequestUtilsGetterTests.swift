@@ -21,49 +21,61 @@ class StorageRequestUtilsGetterTests: XCTestCase {
 
     func testGetAccessLevelPrefixWithPublic() {
         let expected = guestAccessLevel.serviceAccessPrefix + "/"
-        let result = StorageRequestUtils.getAccessLevelPrefix(accessLevel: guestAccessLevel,
-                                                              identityId: testIdentityId,
-                                                              targetIdentityId: nil)
+        let result = StorageRequestUtils.getAccessLevelPrefix(
+            accessLevel: guestAccessLevel,
+            identityId: testIdentityId,
+            targetIdentityId: nil
+        )
         XCTAssertEqual(result, expected)
     }
 
     func testGetAccessLevelPrefixWithProtected() {
         let expected = protectedAccessLevel.serviceAccessPrefix + "/" + testIdentityId + "/"
-        let result = StorageRequestUtils.getAccessLevelPrefix(accessLevel: protectedAccessLevel,
-                                                              identityId: testIdentityId,
-                                                              targetIdentityId: nil)
+        let result = StorageRequestUtils.getAccessLevelPrefix(
+            accessLevel: protectedAccessLevel,
+            identityId: testIdentityId,
+            targetIdentityId: nil
+        )
         XCTAssertEqual(result, expected)
     }
 
     func testGetAccessLevelPrefixWithPrivate() {
         let expected = privateAccessLevel.serviceAccessPrefix + "/" + testIdentityId + "/"
-        let result = StorageRequestUtils.getAccessLevelPrefix(accessLevel: privateAccessLevel,
-                                                              identityId: testIdentityId,
-                                                              targetIdentityId: nil)
+        let result = StorageRequestUtils.getAccessLevelPrefix(
+            accessLevel: privateAccessLevel,
+            identityId: testIdentityId,
+            targetIdentityId: nil
+        )
         XCTAssertEqual(result, expected)
     }
 
     func testGetAccessLevelPrefixWithPublicAndTargetIdentityId() {
         let expected = guestAccessLevel.serviceAccessPrefix + "/"
-        let result = StorageRequestUtils.getAccessLevelPrefix(accessLevel: guestAccessLevel,
-                                                              identityId: testIdentityId,
-                                                              targetIdentityId: testTargetIdentityId)
+        let result = StorageRequestUtils.getAccessLevelPrefix(
+            accessLevel: guestAccessLevel,
+            identityId: testIdentityId,
+            targetIdentityId: testTargetIdentityId
+        )
         XCTAssertEqual(result, expected)
     }
 
     func testGetAccessLevelPrefixWithProtectedAndTargetIdentityId() {
         let expected = protectedAccessLevel.serviceAccessPrefix + "/" + testTargetIdentityId + "/"
-        let result = StorageRequestUtils.getAccessLevelPrefix(accessLevel: protectedAccessLevel,
-                                                              identityId: testIdentityId,
-                                                              targetIdentityId: testTargetIdentityId)
+        let result = StorageRequestUtils.getAccessLevelPrefix(
+            accessLevel: protectedAccessLevel,
+            identityId: testIdentityId,
+            targetIdentityId: testTargetIdentityId
+        )
         XCTAssertEqual(result, expected)
     }
 
     func testGetAccessLevelPrefixWithPrivateAndTargetIdentityId() {
         let expected = privateAccessLevel.serviceAccessPrefix + "/" + testTargetIdentityId + "/"
-        let result = StorageRequestUtils.getAccessLevelPrefix(accessLevel: privateAccessLevel,
-                                                              identityId: testIdentityId,
-                                                              targetIdentityId: testTargetIdentityId)
+        let result = StorageRequestUtils.getAccessLevelPrefix(
+            accessLevel: privateAccessLevel,
+            identityId: testIdentityId,
+            targetIdentityId: testTargetIdentityId
+        )
         XCTAssertEqual(result, expected)
     }
 
@@ -81,9 +93,10 @@ class StorageRequestUtilsGetterTests: XCTestCase {
     func testGetSizeForMissingFileReturnsError() {
         let fileURL = URL(fileURLWithPath: "path")
 
-        XCTAssertThrowsError(try StorageRequestUtils.getSize(fileURL),
-                             "GetSize for missing file should throw")
-        { error in
+        XCTAssertThrowsError(
+            try StorageRequestUtils.getSize(fileURL),
+            "GetSize for missing file should throw"
+        ) { error in
             guard case StorageError.localFileNotFound = error else {
                 XCTFail("Expected StorageError.StorageError")
                 return

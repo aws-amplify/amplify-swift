@@ -18,9 +18,10 @@ class AWSS3StoragePluginConfigurationTests: XCTestCase {
     }
 
     struct MockPrefixResolver: AWSS3PluginPrefixResolver {
-        func resolvePrefix(for accessLevel: StorageAccessLevel,
-                           targetIdentityId: String?) async throws -> String
-        {
+        func resolvePrefix(
+            for accessLevel: StorageAccessLevel,
+            targetIdentityId: String?
+        ) async throws -> String {
             ""
         }
     }

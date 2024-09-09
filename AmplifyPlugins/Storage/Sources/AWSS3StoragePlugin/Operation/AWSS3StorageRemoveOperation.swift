@@ -24,20 +24,23 @@ class AWSS3StorageRemoveOperation: AmplifyOperation<
     let storageService: AWSS3StorageServiceBehavior
     let authService: AWSAuthServiceBehavior
 
-    init(_ request: StorageRemoveRequest,
-         storageConfiguration: AWSS3StoragePluginConfiguration,
-         storageService: AWSS3StorageServiceBehavior,
-         authService: AWSAuthServiceBehavior,
-         resultListener: ResultListener? = nil)
-    {
+    init(
+        _ request: StorageRemoveRequest,
+        storageConfiguration: AWSS3StoragePluginConfiguration,
+        storageService: AWSS3StorageServiceBehavior,
+        authService: AWSAuthServiceBehavior,
+        resultListener: ResultListener? = nil
+    ) {
 
         self.storageConfiguration = storageConfiguration
         self.storageService = storageService
         self.authService = authService
-        super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.remove,
-                   request: request,
-                   resultListener: resultListener)
+        super.init(
+            categoryType: .storage,
+            eventName: HubPayload.EventName.Storage.remove,
+            request: request,
+            resultListener: resultListener
+        )
     }
 
     /// Perform the task to remove item.

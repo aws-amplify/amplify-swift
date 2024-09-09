@@ -11,10 +11,11 @@ import Foundation
 extension StorageRequestUtils {
     // MARK: Getter methods
 
-    static func getAccessLevelPrefix(accessLevel: StorageAccessLevel,
-                                     identityId: String,
-                                     targetIdentityId: String?) -> String
-    {
+    static func getAccessLevelPrefix(
+        accessLevel: StorageAccessLevel,
+        identityId: String,
+        targetIdentityId: String?
+    ) -> String {
 
         let targetIdentityId = targetIdentityId ?? identityId
 

@@ -15,8 +15,10 @@ import Foundation
 @available(*, deprecated)
 public protocol AWSS3PluginPrefixResolver {
     /// - Tag: AWSS3PluginPrefixResolver.resolvePrefix
-    func resolvePrefix(for accessLevel: StorageAccessLevel,
-                       targetIdentityId: String?) async throws -> String
+    func resolvePrefix(
+        for accessLevel: StorageAccessLevel,
+        targetIdentityId: String?
+    ) async throws -> String
 }
 
 /// Convenience resolver. Resolves the provided key as-is, with no manipulation
@@ -24,9 +26,10 @@ public protocol AWSS3PluginPrefixResolver {
 /// - Tag: PassThroughPrefixResolver
 @available(*, deprecated)
 public struct PassThroughPrefixResolver: AWSS3PluginPrefixResolver {
-    public func resolvePrefix(for accessLevel: StorageAccessLevel,
-                              targetIdentityId: String?) async throws -> String
-    {
+    public func resolvePrefix(
+        for accessLevel: StorageAccessLevel,
+        targetIdentityId: String?
+    ) async throws -> String {
         ""
     }
 }
@@ -45,14 +48,17 @@ struct StorageAccessLevelAwarePrefixResolver {
 }
 
 extension StorageAccessLevelAwarePrefixResolver: AWSS3PluginPrefixResolver {
-    func resolvePrefix(for accessLevel: StorageAccessLevel,
-                       targetIdentityId: String?) async throws -> String
-    {
+    func resolvePrefix(
+        for accessLevel: StorageAccessLevel,
+        targetIdentityId: String?
+    ) async throws -> String {
         do {
             let identityId = try await authService.getIdentityID()
-            let prefix = StorageRequestUtils.getAccessLevelPrefix(accessLevel: accessLevel,
-                                                                  identityId: identityId,
-                                                                  targetIdentityId: targetIdentityId)
+            let prefix = StorageRequestUtils.getAccessLevelPrefix(
+                accessLevel: accessLevel,
+                identityId: identityId,
+                targetIdentityId: targetIdentityId
+            )
             return prefix
         } catch {
             guard let authError = error as? AuthError else {

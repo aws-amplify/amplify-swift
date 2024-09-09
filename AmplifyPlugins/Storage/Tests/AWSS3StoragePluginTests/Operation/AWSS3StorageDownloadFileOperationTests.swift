@@ -22,16 +22,19 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
     )
 
     func testDownloadFileOperationValidationError() async {
-        let request = StorageDownloadFileRequest(key: "",
-                                                 local: testURL,
-                                                 options: StorageDownloadFileRequest.Options())
+        let request = StorageDownloadFileRequest(
+            key: "",
+            local: testURL,
+            options: StorageDownloadFileRequest.Options()
+        )
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageDownloadFileOperation(request,
-                                                          storageConfiguration: testStorageConfiguration,
-                                                          storageService: mockStorageService,
-                                                          authService: mockAuthService,
-                                                          progressListener: nil)
-        { result in
+        let operation = AWSS3StorageDownloadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: nil
+        ) { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -51,16 +54,19 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
 
     func testDownloadFileOperationGetIdentityIdError() async throws {
         mockAuthService.getIdentityIdError = AuthError.service("", "", "")
-        let request = StorageDownloadFileRequest(key: testKey,
-                                                 local: testURL,
-                                                 options: StorageDownloadFileRequest.Options())
+        let request = StorageDownloadFileRequest(
+            key: testKey,
+            local: testURL,
+            options: StorageDownloadFileRequest.Options()
+        )
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageDownloadFileOperation(request,
-                                                          storageConfiguration: testStorageConfiguration,
-                                                          storageService: mockStorageService,
-                                                          authService: mockAuthService,
-                                                          progressListener: nil)
-        { result in
+        let operation = AWSS3StorageDownloadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: nil
+        ) { result in
             switch result {
             case .failure(let error):
                 guard case .authError = error else {
@@ -84,11 +90,14 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completed(nil)]
+            StorageEvent.completed(nil)
+        ]
         let url = URL(fileURLWithPath: "path")
-        let request = StorageDownloadFileRequest(key: testKey,
-                                                 local: testURL,
-                                                 options: StorageDownloadFileRequest.Options())
+        let request = StorageDownloadFileRequest(
+            key: testKey,
+            local: testURL,
+            options: StorageDownloadFileRequest.Options()
+        )
         let expectedServiceKey = StorageAccessLevel.guest.serviceAccessPrefix + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
@@ -106,7 +115,8 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
             case .failure(let error):
                 XCTFail("Unexpected error on operation: \(error)")
             }
-        })
+        }
+        )
 
         operation.start()
 
@@ -120,11 +130,14 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.failed(StorageError.service("", ""))]
+            StorageEvent.failed(StorageError.service("", ""))
+        ]
         let url = URL(fileURLWithPath: "path")
-        let request = StorageDownloadFileRequest(key: testKey,
-                                                 local: testURL,
-                                                 options: StorageDownloadFileRequest.Options())
+        let request = StorageDownloadFileRequest(
+            key: testKey,
+            local: testURL,
+            options: StorageDownloadFileRequest.Options()
+        )
         let expectedServiceKey = StorageAccessLevel.guest.serviceAccessPrefix + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let failedInvoked = expectation(description: "failed was invoked on operation")
@@ -142,7 +155,8 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
             case .success:
                 XCTFail("Unexpected event invoked on operation")
             }
-        })
+        }
+        )
 
         operation.start()
 
@@ -156,13 +170,18 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completed(nil)]
+            StorageEvent.completed(nil)
+        ]
         let url = URL(fileURLWithPath: "path")
-        let options = StorageDownloadFileRequest.Options(accessLevel: .protected,
-                                                         targetIdentityId: testTargetIdentityId)
-        let request = StorageDownloadFileRequest(key: testKey,
-                                                 local: testURL,
-                                                 options: options)
+        let options = StorageDownloadFileRequest.Options(
+            accessLevel: .protected,
+            targetIdentityId: testTargetIdentityId
+        )
+        let request = StorageDownloadFileRequest(
+            key: testKey,
+            local: testURL,
+            options: options
+        )
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testTargetIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
@@ -180,7 +199,8 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
             case .failure(let error):
                 XCTFail("Unexpected error on operation: \(error)")
             }
-        })
+        }
+        )
 
         operation.start()
 
@@ -194,17 +214,20 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
     /// Then: The operation will fail with a validation error
     func testDownloadFileOperationStringStoragePathValidationError() async {
         let path = StringStoragePath(resolve: { _ in return "/my/path" })
-        let request = StorageDownloadFileRequest(path: path,
-                                                 local: testURL,
-                                                 options: StorageDownloadFileRequest.Options())
+        let request = StorageDownloadFileRequest(
+            path: path,
+            local: testURL,
+            options: StorageDownloadFileRequest.Options()
+        )
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageDownloadFileOperation(request,
-                                                          storageConfiguration: testStorageConfiguration,
-                                                          storageService: mockStorageService,
-                                                          authService: mockAuthService,
-                                                          progressListener: nil)
-        { result in
+        let operation = AWSS3StorageDownloadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: nil
+        ) { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -227,17 +250,20 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
     /// Then: The operation will fail with a validation error
     func testDownloadFileOperationEmptyStoragePathValidationError() async {
         let path = StringStoragePath(resolve: { _ in return " " })
-        let request = StorageDownloadFileRequest(path: path,
-                                                 local: testURL,
-                                                 options: StorageDownloadFileRequest.Options())
+        let request = StorageDownloadFileRequest(
+            path: path,
+            local: testURL,
+            options: StorageDownloadFileRequest.Options()
+        )
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageDownloadFileOperation(request,
-                                                          storageConfiguration: testStorageConfiguration,
-                                                          storageService: mockStorageService,
-                                                          authService: mockAuthService,
-                                                          progressListener: nil)
-        { result in
+        let operation = AWSS3StorageDownloadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: nil
+        ) { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -260,17 +286,20 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
     /// Then: The operation will fail with a validation error
     func testDownloadFileOperationIdentityIDStoragePathValidationError() async {
         let path = IdentityIDStoragePath(resolve: { _ in return "/my/path" })
-        let request = StorageDownloadFileRequest(path: path,
-                                                 local: testURL,
-                                                 options: StorageDownloadFileRequest.Options())
+        let request = StorageDownloadFileRequest(
+            path: path,
+            local: testURL,
+            options: StorageDownloadFileRequest.Options()
+        )
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageDownloadFileOperation(request,
-                                                          storageConfiguration: testStorageConfiguration,
-                                                          storageService: mockStorageService,
-                                                          authService: mockAuthService,
-                                                          progressListener: nil)
-        { result in
+        let operation = AWSS3StorageDownloadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: nil
+        ) { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -293,17 +322,20 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
     /// Then: The operation will fail with a validation error
     func testDownloadFileOperationCustomStoragePathValidationError() async {
         let path = InvalidCustomStoragePath(resolve: { _ in return "my/path" })
-        let request = StorageDownloadFileRequest(path: path,
-                                                 local: testURL,
-                                                 options: StorageDownloadFileRequest.Options())
+        let request = StorageDownloadFileRequest(
+            path: path,
+            local: testURL,
+            options: StorageDownloadFileRequest.Options()
+        )
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageDownloadFileOperation(request,
-                                                          storageConfiguration: testStorageConfiguration,
-                                                          storageService: mockStorageService,
-                                                          authService: mockAuthService,
-                                                          progressListener: nil)
-        { result in
+        let operation = AWSS3StorageDownloadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: nil
+        ) { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -330,11 +362,14 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completed(nil)]
+            StorageEvent.completed(nil)
+        ]
         let url = URL(fileURLWithPath: "path")
-        let request = StorageDownloadFileRequest(path: path,
-                                                 local: testURL,
-                                                 options: StorageDownloadFileRequest.Options())
+        let request = StorageDownloadFileRequest(
+            path: path,
+            local: testURL,
+            options: StorageDownloadFileRequest.Options()
+        )
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageDownloadFileOperation(
@@ -351,7 +386,8 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
             case .failure(let error):
                 XCTFail("Unexpected error on operation: \(error)")
             }
-        })
+        }
+        )
 
         operation.start()
 
@@ -370,11 +406,14 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completed(nil)]
+            StorageEvent.completed(nil)
+        ]
         let url = URL(fileURLWithPath: "path")
-        let request = StorageDownloadFileRequest(path: path,
-                                                 local: testURL,
-                                                 options: StorageDownloadFileRequest.Options())
+        let request = StorageDownloadFileRequest(
+            path: path,
+            local: testURL,
+            options: StorageDownloadFileRequest.Options()
+        )
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageDownloadFileOperation(
@@ -391,7 +430,8 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
             case .failure(let error):
                 XCTFail("Unexpected error on operation: \(error)")
             }
-        })
+        }
+        )
 
         operation.start()
 

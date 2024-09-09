@@ -153,9 +153,11 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         let registerFirstUserComplete = expectation(description: "register firt user completed")
         Task {
             do {
-                try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user1,
-                                                      password: AWSS3StoragePluginTestBase.password,
-                                                      email: AWSS3StoragePluginTestBase.email1)
+                try await AuthSignInHelper.signUpUser(
+                    username: AWSS3StoragePluginTestBase.user1,
+                    password: AWSS3StoragePluginTestBase.password,
+                    email: AWSS3StoragePluginTestBase.email1
+                )
                 Self.isFirstUserSignedUp = true
                 registerFirstUserComplete.fulfill()
             } catch {
@@ -167,9 +169,11 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         let registerSecondUserComplete = expectation(description: "register second user completed")
         Task {
             do {
-                try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user2,
-                                                      password: AWSS3StoragePluginTestBase.password,
-                                                      email: AWSS3StoragePluginTestBase.email2)
+                try await AuthSignInHelper.signUpUser(
+                    username: AWSS3StoragePluginTestBase.user2,
+                    password: AWSS3StoragePluginTestBase.password,
+                    email: AWSS3StoragePluginTestBase.email2
+                )
                 Self.isSecondUserSignedUp = true
                 registerSecondUserComplete.fulfill()
             } catch {
@@ -178,8 +182,10 @@ class AWSS3StoragePluginTestBase: XCTestCase {
             }
         }
 
-        await fulfillment(of: [registerFirstUserComplete, registerSecondUserComplete],
-                                  timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(
+            of: [registerFirstUserComplete, registerSecondUserComplete],
+            timeout: TestCommonConstants.networkTimeout
+        )
     }
 
     func getURL(key: String, options: StorageGetURLRequest.Options? = nil) async -> URL? {

@@ -12,12 +12,13 @@ import Foundation
 
 extension AWSS3StorageService {
 
-    func getPreSignedURL(serviceKey: String,
-                         signingOperation: AWSS3SigningOperation,
-                         metadata: [String: String]?,
-                         accelerate: Bool?,
-                         expires: Int) async throws -> URL
-    {
+    func getPreSignedURL(
+        serviceKey: String,
+        signingOperation: AWSS3SigningOperation,
+        metadata: [String: String]?,
+        accelerate: Bool?,
+        expires: Int
+    ) async throws -> URL {
         return try await preSignedURLBuilder.getPreSignedURL(
             key: serviceKey,
             signingOperation: signingOperation,

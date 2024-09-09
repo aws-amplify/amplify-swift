@@ -57,38 +57,42 @@ class DefaultStorageTransferDatabase {
         // TODO: observe application state changes to trigger call to prepareForBackground
     }
 
-    func recover(urlSession: StorageURLSession = URLSession.shared,
-                 completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void)
-    {
+    func recover(
+        urlSession: StorageURLSession = URLSession.shared,
+        completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void
+    ) {
         queue.async { [weak self] in
             guard let self else { fatalError("self cannot be weak") }
             loadTasksAndLinkSessions(urlSession: urlSession, completionHandler: completionHandler)
         }
     }
 
-    func linkTasksWithSessions(persistableTransferTasks: [TransferID: StoragePersistableTransferTask],
-                               sessionTasks: StorageSessionTasks) -> StorageTransferTaskPairs
-    {
+    func linkTasksWithSessions(
+        persistableTransferTasks: [TransferID: StoragePersistableTransferTask],
+        sessionTasks: StorageSessionTasks
+    ) -> StorageTransferTaskPairs {
         let transferTasks: [StorageTransferTask] = persistableTransferTasks.reduce(into: []) { tasks, pair in
             // match sessionTask to persistableTransferTask with taskIdentifier
             let persistableTransferTask = pair.value
             if let taskIdentifier = persistableTransferTask.taskIdentifier,
                let transferType = defaultTransferType(persistableTransferTask: persistableTransferTask),
-               let sessionTask = sessionTasks.first(where: { $0.taskIdentifier == taskIdentifier})
-            {
-                let transferTask = StorageTransferTask(persistableTransferTask: persistableTransferTask,
-                                                       transferType: transferType,
-                                                       sessionTask: sessionTask,
-                                                       storageTransferDatabase: self,
-                                                       logger: logger)
+               let sessionTask = sessionTasks.first(where: { $0.taskIdentifier == taskIdentifier}) {
+                let transferTask = StorageTransferTask(
+                    persistableTransferTask: persistableTransferTask,
+                    transferType: transferType,
+                    sessionTask: sessionTask,
+                    storageTransferDatabase: self,
+                    logger: logger
+                )
                 tasks.append(transferTask)
             } else if persistableTransferTask.transferTypeRawValue == StorageTransferType.RawValues.multiPartUpload.rawValue,
-                      let transferType = defaultTransferType(persistableTransferTask: persistableTransferTask)
-            {
-                let transferTask = StorageTransferTask(persistableTransferTask: persistableTransferTask,
-                                                       transferType: transferType,
-                                                       storageTransferDatabase: self,
-                                                       logger: logger)
+                      let transferType = defaultTransferType(persistableTransferTask: persistableTransferTask) {
+                let transferTask = StorageTransferTask(
+                    persistableTransferTask: persistableTransferTask,
+                    transferType: transferType,
+                    storageTransferDatabase: self,
+                    logger: logger
+                )
                 tasks.append(transferTask)
             }
         }
@@ -149,9 +153,10 @@ class DefaultStorageTransferDatabase {
         return persistableTransferTasks
     }
 
-    private func loadTasksAndLinkSessions(urlSession: StorageURLSession = URLSession.shared,
-                                          completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void)
-    {
+    private func loadTasksAndLinkSessions(
+        urlSession: StorageURLSession = URLSession.shared,
+        completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void
+    ) {
         dispatchPrecondition(condition: .notOnQueue(.main))
         dispatchPrecondition(condition: .onQueue(queue))
 
@@ -342,10 +347,11 @@ extension DefaultStorageTransferDatabase: StorageTransferDatabase {
         return transferType
     }
 
-    func attachEventHandlers(onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler?,
-                             onDownload: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler?,
-                             onMultipartUpload: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler?)
-    {
+    func attachEventHandlers(
+        onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler?,
+        onDownload: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler?,
+        onMultipartUpload: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler?
+    ) {
         queue.async { [weak self] in
             guard let self else { fatalError("self cannot be weak") }
             uploadEventHandler = onUpload

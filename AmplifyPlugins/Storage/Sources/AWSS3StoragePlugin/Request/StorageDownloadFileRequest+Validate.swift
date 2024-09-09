@@ -16,9 +16,10 @@ extension StorageDownloadFileRequest {
             // at during execution of request operation where the path is resolved
             return nil
         }
-        if let error = StorageRequestUtils.validateTargetIdentityId(options.targetIdentityId,
-                                                                    accessLevel: options.accessLevel)
-        {
+        if let error = StorageRequestUtils.validateTargetIdentityId(
+            options.targetIdentityId,
+            accessLevel: options.accessLevel
+        ) {
             return error
         }
 

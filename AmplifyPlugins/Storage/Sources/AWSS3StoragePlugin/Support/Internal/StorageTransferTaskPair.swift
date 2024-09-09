@@ -13,16 +13,16 @@ struct StorageTransferTaskPair {
     let transferTask: StorageTransferTask
     let multipartUpload: StorageMultipartUpload?
 
-    init(transferTask: StorageTransferTask,
-         multipartUploads: [StorageMultipartUpload])
-    {
+    init(
+        transferTask: StorageTransferTask,
+        multipartUploads: [StorageMultipartUpload]
+    ) {
         self.transferTask = transferTask
 
         if let uploadId = transferTask.uploadId,
             let multipartUpload = multipartUploads.first(where: {
                 $0.uploadId == uploadId
-            })
-        {
+            }) {
             self.multipartUpload = multipartUpload
         } else {
             self.multipartUpload = nil

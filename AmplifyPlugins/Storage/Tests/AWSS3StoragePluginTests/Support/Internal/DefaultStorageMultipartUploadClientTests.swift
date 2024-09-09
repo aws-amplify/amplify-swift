@@ -155,7 +155,8 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
                 uploadFile: .init(
                     fileURL: FileManager.default.temporaryDirectory.appendingPathComponent("noFile.txt"),
                     temporaryFileCreated: false,
-                    size: 1_024),
+                    size: 1_024
+                ),
                 partSize: .default,
                 parts: [
                     .pending(bytes: 10),

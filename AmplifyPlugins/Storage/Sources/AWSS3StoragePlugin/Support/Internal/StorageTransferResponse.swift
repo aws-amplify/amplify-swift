@@ -32,14 +32,18 @@ class StorageTransferResponse {
                 // 400 range: Client Error
                 let description = errorDescription(forStatusCode: statusCode)
                 if [401, 403].contains(statusCode) {
-                    error = .accessDenied(description,
-                                          "Make sure the user has access to the key before trying to download/upload it.",
-                                          self.error)
+                    error = .accessDenied(
+                        description,
+                        "Make sure the user has access to the key before trying to download/upload it.",
+                        self.error
+                    )
                 } else if statusCode == 404 {
-                    error = .keyNotFound(transferTask.key,
-                                         description,
-                                         "Make sure the key exists before trying to download it.",
-                                         self.error)
+                    error = .keyNotFound(
+                        transferTask.key,
+                        description,
+                        "Make sure the key exists before trying to download it.",
+                        self.error
+                    )
                 } else {
                     error = .httpStatusError(statusCode, "Client error", self.error)
                 }
@@ -77,8 +81,7 @@ class StorageTransferResponse {
             // If we didn't get any more info from the server, error is retriable
             result = true
         } else if let responseText = transferTask.responseText,
-            ["RequestTimeout", "ExpiredToken", "TokenRefreshRequired"].contains(responseText)
-        {
+            ["RequestTimeout", "ExpiredToken", "TokenRefreshRequired"].contains(responseText) {
             result = true
         } else {
             result = false

@@ -51,9 +51,11 @@ struct StoragePersistableTransferTask: Codable {
             return nil
         }
 
-        let uploadFile = UploadFile(fileURL: multipartUpload.fileURL,
-                                    temporaryFileCreated: multipartUpload.temporaryFileCreated,
-                                    size: multipartUpload.size)
+        let uploadFile = UploadFile(
+            fileURL: multipartUpload.fileURL,
+            temporaryFileCreated: multipartUpload.temporaryFileCreated,
+            size: multipartUpload.size
+        )
         return uploadFile
     }
 
@@ -68,15 +70,13 @@ struct StoragePersistableTransferTask: Codable {
         self.location = task.location
 
         if case .multiPartUpload = task.transferType,
-           let multipartUpload = task.multipartUpload
-        {
+           let multipartUpload = task.multipartUpload {
             self.multipartUpload = StoragePersistableMultipartUpload(multipartUpload: multipartUpload)
             self.subTask = nil
         } else if case .multiPartUploadPart = task.transferType,
                   let uploadId = task.uploadId,
                   let partNumber = task.partNumber,
-                  let part = task.uploadPart
-        {
+                  let part = task.uploadPart {
             self.multipartUpload = nil
             self.subTask = StoragePersistableSubTask(uploadId: uploadId, partNumber: partNumber, part: part)
         } else {

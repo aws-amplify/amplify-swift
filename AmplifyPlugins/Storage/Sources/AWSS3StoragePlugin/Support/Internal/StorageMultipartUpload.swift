@@ -313,10 +313,11 @@ enum StorageMultipartUpload {
         self = .failed(uploadId: uploadId, parts: parts, error: error)
     }
 
-    private mutating func createParts(uploadFile: UploadFile,
-                                      uploadId: UploadID,
-                                      logger: Logger = storageLogger) throws
-    {
+    private mutating func createParts(
+        uploadFile: UploadFile,
+        uploadId: UploadID,
+        logger: Logger = storageLogger
+    ) throws {
         let partSize = try StorageUploadPartSize(fileSize: uploadFile.size)
         let parts = try StorageUploadParts(fileSize: uploadFile.size, partSize: partSize, logger: logger)
         self = .parts(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)

@@ -24,7 +24,8 @@ extension MockAWSS3PreSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior {
         signingOperation: AWSS3SigningOperation,
         metadata: [String: String]?,
         accelerate: Bool?,
-        expires: Int64?) async throws -> URL {
+        expires: Int64?
+    ) async throws -> URL {
             interactions.append("\(#function) \(key) \(signingOperation) \(String(describing: metadata)) \(String(describing: expires))")
             return try await getPreSignedURLHandler(key, signingOperation, expires)
         }

@@ -52,8 +52,7 @@ class StorageUploadPartSizeTests: XCTestCase {
         let partSize = try assertNoThrow(StorageUploadPartSize(fileSize: fileSize))
         XCTAssertNotNil(partSize)
         if let partSize,
-           let parts = try? StorageUploadParts(fileSize: fileSize, partSize: partSize)
-        {
+           let parts = try? StorageUploadParts(fileSize: fileSize, partSize: partSize) {
             print("Part Size: \(partSize.size)")
             print("Parts Count: \(parts.count)")
             XCTAssertGreaterThan(partSize.size, minimumPartSize)
@@ -67,8 +66,7 @@ class StorageUploadPartSizeTests: XCTestCase {
         let partSize = try assertNoThrow(StorageUploadPartSize(fileSize: fileSize))
         XCTAssertNotNil(partSize)
         if let partSize,
-           let parts = try? StorageUploadParts(fileSize: fileSize, partSize: partSize)
-        {
+           let parts = try? StorageUploadParts(fileSize: fileSize, partSize: partSize) {
             print("Part Size: \(partSize.size)")
             print("Parts Count: \(parts.count)")
             print("Max Part Size: \(maximumPartSize)")
@@ -86,8 +84,7 @@ class StorageUploadPartSizeTests: XCTestCase {
         let partSize = try assertNoThrow(StorageUploadPartSize(fileSize: fileSize))
         XCTAssertNotNil(partSize)
         if let partSize,
-           let parts = try? StorageUploadParts(fileSize: fileSize, partSize: partSize)
-        {
+           let parts = try? StorageUploadParts(fileSize: fileSize, partSize: partSize) {
             print("     Part Size: \(partSize.size)")
             print("   Parts Count: \(parts.count)")
             print(" Min Part Size: \(minimumPartSize)")
@@ -104,11 +101,12 @@ class StorageUploadPartSizeTests: XCTestCase {
         _ expression: @autoclosure () throws -> T,
         _ message: @autoclosure () -> String = "",
         file: StaticString = #filePath,
-        line: UInt = #line) -> T?
-    {
+        line: UInt = #line
+    ) -> T? {
         var result: T?
         XCTAssertNoThrow(
-            try { result = try expression() }(), message(), file: file, line: line)
+            try { result = try expression() }(), message(), file: file, line: line
+        )
         return result
     }
 

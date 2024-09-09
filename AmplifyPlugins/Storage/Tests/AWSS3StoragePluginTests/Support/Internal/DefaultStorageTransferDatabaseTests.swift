@@ -150,7 +150,8 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
                 ),
                 .completed(
                     bytes: Bytes.megabytes(6).bytes,
-                    eTag: "eTag"),
+                    eTag: "eTag"
+                ),
 
                 .pending(bytes: Bytes.megabytes(6).bytes)
             ]

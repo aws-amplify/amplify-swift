@@ -23,7 +23,8 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
         let bucket = JSONValue.init(stringLiteral: testBucket)
         let region = JSONValue.init(stringLiteral: testRegion)
         let storagePluginConfig = JSONValue.init(
-            dictionaryLiteral: (PluginConstants.bucket, bucket), (PluginConstants.region, region))
+            dictionaryLiteral: (PluginConstants.bucket, bucket), (PluginConstants.region, region)
+        )
 
         do {
             try storagePlugin.configure(using: storagePluginConfig)
@@ -36,10 +37,12 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
         let bucket = JSONValue.init(stringLiteral: testBucket)
         let region = JSONValue.init(stringLiteral: testRegion)
         let accessLevel = JSONValue.init(stringLiteral: defaultAccessLevel.rawValue)
-        let storagePluginConfig = JSONValue.init(dictionaryLiteral:
+        let storagePluginConfig = JSONValue.init(
+            dictionaryLiteral:
             (PluginConstants.bucket, bucket),
             (PluginConstants.region, region),
-            (PluginConstants.defaultAccessLevel, accessLevel))
+            (PluginConstants.defaultAccessLevel, accessLevel)
+        )
 
         do {
             try storagePlugin.configure(using: storagePluginConfig)
@@ -115,7 +118,8 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
         let region = JSONValue.init(stringLiteral: testRegion)
 
         let storagePluginConfig = JSONValue.init(
-            dictionaryLiteral: (PluginConstants.bucket, ""), (PluginConstants.region, region))
+            dictionaryLiteral: (PluginConstants.bucket, ""), (PluginConstants.region, region)
+        )
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
             guard case let StorageError.configuration(_, _, underlyingError) = error else {
@@ -141,7 +145,8 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
         let bucket = JSONValue.init(integerLiteral: 1)
         let region = JSONValue.init(stringLiteral: testRegion)
         let storagePluginConfig = JSONValue.init(
-            dictionaryLiteral: (PluginConstants.bucket, bucket), (PluginConstants.region, region))
+            dictionaryLiteral: (PluginConstants.bucket, bucket), (PluginConstants.region, region)
+        )
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
             guard case let StorageError.configuration(_, _, underlyingError) = error else {
@@ -193,7 +198,8 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
         let bucket = JSONValue.init(stringLiteral: testBucket)
         let region = JSONValue.init(stringLiteral: "")
         let storagePluginConfig = JSONValue.init(
-            dictionaryLiteral: (PluginConstants.bucket, bucket), (PluginConstants.region, region))
+            dictionaryLiteral: (PluginConstants.bucket, bucket), (PluginConstants.region, region)
+        )
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
             guard case let StorageError.configuration(_, _, underlyingError) = error else {
@@ -219,7 +225,8 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
         let bucket = JSONValue.init(stringLiteral: testBucket)
         let region = JSONValue.init(integerLiteral: 1)
         let storagePluginConfig = JSONValue.init(
-            dictionaryLiteral: (PluginConstants.bucket, bucket), (PluginConstants.region, region))
+            dictionaryLiteral: (PluginConstants.bucket, bucket), (PluginConstants.region, region)
+        )
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
             guard case let StorageError.configuration(_, _, underlyingError) = error else {
@@ -248,7 +255,8 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
         let bucket = JSONValue.init(stringLiteral: testBucket)
         let region = JSONValue.init(stringLiteral: "invalidRegionType")
         let storagePluginConfig = JSONValue.init(
-            dictionaryLiteral: (PluginConstants.bucket, bucket), (PluginConstants.region, region))
+            dictionaryLiteral: (PluginConstants.bucket, bucket), (PluginConstants.region, region)
+        )
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
             guard case let StorageError.configuration(_, _, underlyingError) = error else {
@@ -274,10 +282,12 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
         let bucket = JSONValue.init(stringLiteral: testBucket)
         let region = JSONValue.init(stringLiteral: testRegion)
         let accessLevel = JSONValue.init(stringLiteral: "invalidAccessLevel")
-        let storagePluginConfig = JSONValue.init(dictionaryLiteral:
+        let storagePluginConfig = JSONValue.init(
+            dictionaryLiteral:
             (PluginConstants.bucket, bucket),
             (PluginConstants.region, region),
-            (PluginConstants.defaultAccessLevel, accessLevel))
+            (PluginConstants.defaultAccessLevel, accessLevel)
+        )
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
             guard case let StorageError.configuration(_, _, underlyingError) = error else {
@@ -295,8 +305,10 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
                 return
             }
 
-            XCTAssertEqual(amplifyError.errorDescription,
-                           PluginErrorConstants.invalidDefaultAccessLevel.errorDescription)
+            XCTAssertEqual(
+                amplifyError.errorDescription,
+                PluginErrorConstants.invalidDefaultAccessLevel.errorDescription
+            )
         }
     }
 
@@ -304,10 +316,12 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
         let bucket = JSONValue.init(stringLiteral: testBucket)
         let region = JSONValue.init(stringLiteral: testRegion)
         let accessLevel = JSONValue.init(integerLiteral: 1)
-        let storagePluginConfig = JSONValue.init(dictionaryLiteral:
+        let storagePluginConfig = JSONValue.init(
+            dictionaryLiteral:
             (PluginConstants.bucket, bucket),
             (PluginConstants.region, region),
-            (PluginConstants.defaultAccessLevel, accessLevel))
+            (PluginConstants.defaultAccessLevel, accessLevel)
+        )
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
             guard case let StorageError.configuration(_, _, underlyingError) = error else {
@@ -325,8 +339,10 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
                 return
             }
 
-            XCTAssertEqual(amplifyError.errorDescription,
-                           PluginErrorConstants.invalidDefaultAccessLevel.errorDescription)
+            XCTAssertEqual(
+                amplifyError.errorDescription,
+                PluginErrorConstants.invalidDefaultAccessLevel.errorDescription
+            )
         }
     }
 
@@ -335,10 +351,12 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
         let bucket = JSONValue.init(stringLiteral: testBucket)
         let region = JSONValue.init(stringLiteral: testRegion)
         let accessLevel = JSONValue.init(stringLiteral: "")
-        let storagePluginConfig = JSONValue.init(dictionaryLiteral:
+        let storagePluginConfig = JSONValue.init(
+            dictionaryLiteral:
             (PluginConstants.bucket, bucket),
             (PluginConstants.region, region),
-            (PluginConstants.defaultAccessLevel, accessLevel))
+            (PluginConstants.defaultAccessLevel, accessLevel)
+        )
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
             guard case let StorageError.configuration(_, _, underlyingError) = error else {
@@ -356,8 +374,10 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
                 return
             }
 
-            XCTAssertEqual(amplifyError.errorDescription,
-                           PluginErrorConstants.invalidDefaultAccessLevel.errorDescription)
+            XCTAssertEqual(
+                amplifyError.errorDescription,
+                PluginErrorConstants.invalidDefaultAccessLevel.errorDescription
+            )
         }
     }
 }

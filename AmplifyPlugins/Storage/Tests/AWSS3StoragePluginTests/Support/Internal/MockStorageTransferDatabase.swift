@@ -11,9 +11,11 @@ import Foundation
 
 class MockStorageTransferDatabase: StorageTransferDatabase {
 
-    private let queue = DispatchQueue(label: "com.amazon.aws.amplify.storage-tests",
-                                      qos: .background,
-                                      target: .global())
+    private let queue = DispatchQueue(
+        label: "com.amazon.aws.amplify.storage-tests",
+        qos: .background,
+        target: .global()
+    )
     private var tasks: [TransferID: StorageTransferTask] = [:]
 
     private var uploadEventHandler: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler?
@@ -46,9 +48,10 @@ class MockStorageTransferDatabase: StorageTransferDatabase {
         completion?()
     }
 
-    func recover(urlSession: StorageURLSession,
-                 completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void)
-    {
+    func recover(
+        urlSession: StorageURLSession,
+        completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void
+    ) {
         // do nothing
     }
 
@@ -80,10 +83,11 @@ class MockStorageTransferDatabase: StorageTransferDatabase {
     }
 
     // swiftlint:disable line_length
-    func attachEventHandlers(onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler? = nil,
-                             onDownload: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler? = nil,
-                             onMultipartUpload: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler? = nil)
-    {
+    func attachEventHandlers(
+        onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler? = nil,
+        onDownload: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler? = nil,
+        onMultipartUpload: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler? = nil
+    ) {
         queue.async { [weak self] in
             guard let self else { fatalError("self cannot be weak") }
             uploadEventHandler = onUpload

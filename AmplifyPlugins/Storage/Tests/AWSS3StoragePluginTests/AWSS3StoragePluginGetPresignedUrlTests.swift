@@ -32,10 +32,12 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
         testData = Data(UUID().uuidString.utf8)
         queue = OperationQueue()
         systemUnderTest = AWSS3StoragePlugin()
-        systemUnderTest.configure(storageService: storageService,
-                                  authService: authService,
-                                  defaultAccessLevel: defaultAccessLevel,
-                                  queue: queue)
+        systemUnderTest.configure(
+            storageService: storageService,
+            authService: authService,
+            defaultAccessLevel: defaultAccessLevel,
+            queue: queue
+        )
         let url = try XCTUnwrap(testURL)
         storageService.getPreSignedURLHandler = { _, _, _ in
             return url

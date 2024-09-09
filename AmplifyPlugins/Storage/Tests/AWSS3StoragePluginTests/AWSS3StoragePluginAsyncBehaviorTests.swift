@@ -31,10 +31,12 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase {
         testURL = URL(fileURLWithPath: NSTemporaryDirectory().appendingPathComponent(UUID().uuidString))
         testData = Data(UUID().uuidString.utf8)
         queue = OperationQueue()
-        storagePlugin.configure(storageService: storageService,
-                                authService: authService,
-                                defaultAccessLevel: defaultAccessLevel,
-                                queue: queue)
+        storagePlugin.configure(
+            storageService: storageService,
+            authService: authService,
+            defaultAccessLevel: defaultAccessLevel,
+            queue: queue
+        )
     }
 
     override func tearDownWithError() throws {
@@ -60,9 +62,11 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase {
     func testPluginDownloadFileAsync() async throws {
         storageService.storageServiceDownloadEvents = [.completed(nil)]
 
-        let task = storagePlugin.downloadFile(key: testKey,
-                                              local: testURL,
-                                              options: nil)
+        let task = storagePlugin.downloadFile(
+            key: testKey,
+            local: testURL,
+            options: nil
+        )
         _ = try await task.value
         XCTAssertEqual(1, storageService.downloadCalled)
     }
@@ -70,9 +74,11 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase {
     func testPluginUploadDataAsync() async throws {
         storageService.storageServiceUploadEvents = [.completedVoid]
         let input = try XCTUnwrap(testKey)
-        let task = storagePlugin.uploadData(key: input,
-                                            data: testData,
-                                            options: nil)
+        let task = storagePlugin.uploadData(
+            key: input,
+            data: testData,
+            options: nil
+        )
         let output = try await task.value
         XCTAssertEqual(input, output)
         XCTAssertEqual(1, storageService.uploadCalled)
@@ -86,9 +92,11 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase {
             FileSystem.default.removeFileIfExists(fileURL: fileURL)
         }
 
-        let task = storagePlugin.uploadFile(key: key,
-                                            local: fileURL,
-                                            options: nil)
+        let task = storagePlugin.uploadFile(
+            key: key,
+            local: fileURL,
+            options: nil
+        )
         let output = try await task.value
         XCTAssertEqual(key, output)
         XCTAssertEqual(1, storageService.uploadCalled)

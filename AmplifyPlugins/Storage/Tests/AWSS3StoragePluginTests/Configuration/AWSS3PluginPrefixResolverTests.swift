@@ -29,9 +29,13 @@ struct PrefixTestData {
     let file: StaticString
     let line: UInt
 
-    init(_ accessLevel: StorageAccessLevel, _ targetIdentityId: String?, _ expectedPrefix: String,
-         file: StaticString = #filePath, line: UInt = #line)
-    {
+    init(
+        _ accessLevel: StorageAccessLevel,
+        _ targetIdentityId: String?,
+        _ expectedPrefix: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
         self.accessLevel = accessLevel
         self.targetIdentityId = targetIdentityId
         self.expectedPrefix = expectedPrefix

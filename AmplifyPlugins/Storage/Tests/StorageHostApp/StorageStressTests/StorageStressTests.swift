@@ -130,9 +130,11 @@ final class StorageStressTests: XCTestCase {
         for _ in 1 ... concurrencyLimit {
             Task {
                 let key = UUID().uuidString
-                let uploadKey = try await Amplify.Storage.uploadData(key: key,
-                                                                     data: smallDataObjectForStressTest,
-                                                                     options: nil).value
+                let uploadKey = try await Amplify.Storage.uploadData(
+                    key: key,
+                    data: smallDataObjectForStressTest,
+                    options: nil
+                ).value
                 XCTAssertEqual(uploadKey, key)
                 uploadExpectation.fulfill()
 
@@ -187,9 +189,11 @@ final class StorageStressTests: XCTestCase {
         let registerFirstUserComplete = expectation(description: "register firt user completed")
         Task {
             do {
-                try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user1,
-                                                      password: AWSS3StoragePluginTestBase.password,
-                                                      email: AWSS3StoragePluginTestBase.email1)
+                try await AuthSignInHelper.signUpUser(
+                    username: AWSS3StoragePluginTestBase.user1,
+                    password: AWSS3StoragePluginTestBase.password,
+                    email: AWSS3StoragePluginTestBase.email1
+                )
                 Self.isFirstUserSignedUp = true
                 registerFirstUserComplete.fulfill()
             } catch {
@@ -201,9 +205,11 @@ final class StorageStressTests: XCTestCase {
         let registerSecondUserComplete = expectation(description: "register second user completed")
         Task {
             do {
-                try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user2,
-                                                      password: AWSS3StoragePluginTestBase.password,
-                                                      email: AWSS3StoragePluginTestBase.email2)
+                try await AuthSignInHelper.signUpUser(
+                    username: AWSS3StoragePluginTestBase.user2,
+                    password: AWSS3StoragePluginTestBase.password,
+                    email: AWSS3StoragePluginTestBase.email2
+                )
                 Self.isSecondUserSignedUp = true
                 registerSecondUserComplete.fulfill()
             } catch {
@@ -212,8 +218,10 @@ final class StorageStressTests: XCTestCase {
             }
         }
 
-        await fulfillment(of: [registerFirstUserComplete, registerSecondUserComplete],
-                                  timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(
+            of: [registerFirstUserComplete, registerSecondUserComplete],
+            timeout: TestCommonConstants.networkTimeout
+        )
     }
 
     func getURL(key: String, options: StorageGetURLRequest.Options? = nil) async -> URL? {

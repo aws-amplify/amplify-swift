@@ -31,8 +31,9 @@ class AWSS3StorageServiceTests: XCTestCase {
         task.uploadId = "uploadId"
         task.sessionTask = MockStorageSessionTask(taskIdentifier: 1)
         database.recoverResult = .success([
-            .init(transferTask: task,
-                  multipartUploads: [
+            .init(
+                transferTask: task,
+                multipartUploads: [
                     .created(
                         uploadId: "uploadId",
                         uploadFile: UploadFile(
@@ -41,8 +42,8 @@ class AWSS3StorageServiceTests: XCTestCase {
                             size: UInt64(Bytes.megabytes(12).bytes)
                         )
                     )
-                  ]
-                 )
+                ]
+            )
         ])
         service = try AWSS3StorageService(
             authService: authService,
@@ -422,9 +423,10 @@ private class StorageTransferDatabaseMock: StorageTransferDatabase {
 
     var recoverCount = 0
     var recoverResult: Result<StorageTransferTaskPairs, Error> =  .failure(StorageError.unknown("Result not set", nil))
-    func recover(urlSession: StorageURLSession,
-                 completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void)
-    {
+    func recover(
+        urlSession: StorageURLSession,
+        completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void
+    ) {
         recoverCount += 1
         completionHandler(recoverResult)
     }

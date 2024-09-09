@@ -22,11 +22,12 @@ struct StorageConfiguration {
 
     static let `default`: StorageConfiguration = .init()
 
-    init(sessionIdentifier: String = Defaults.sessionIdentifier,
-         sharedContainerIdentifier: String = Defaults.sharedContainerIdentifier,
-         allowsCellularAccess: Bool = Defaults.allowsCellularAccess,
-         timeoutIntervalForResource: TimeInterval = Defaults.timeoutIntervalForResource)
-    {
+    init(
+        sessionIdentifier: String = Defaults.sessionIdentifier,
+        sharedContainerIdentifier: String = Defaults.sharedContainerIdentifier,
+        allowsCellularAccess: Bool = Defaults.allowsCellularAccess,
+        timeoutIntervalForResource: TimeInterval = Defaults.timeoutIntervalForResource
+    ) {
         self.sessionIdentifier = sessionIdentifier
         self.sharedContainerIdentifier = sharedContainerIdentifier
         self.allowsCellularAccess = allowsCellularAccess

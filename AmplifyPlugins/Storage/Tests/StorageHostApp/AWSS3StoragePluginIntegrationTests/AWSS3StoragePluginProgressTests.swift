@@ -38,7 +38,8 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
         progressReceived.assertForOverFulfill = false
         let uploadOperation = Amplify.Storage.uploadData(
             key: key,
-            data: .testDataOfSize(.bytes(100)))
+            data: .testDataOfSize(.bytes(100))
+        )
 
         uploadOperation.resultPublisher
             .sink(receiveCompletion: { completion in

@@ -58,7 +58,8 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
                 return uniqueStringPath
             },
             data: data,
-            options: nil).value
+            options: nil
+        ).value
 
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
@@ -92,7 +93,8 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
                 return uniqueStringPath
             },
             data: data,
-            options: nil).value
+            options: nil
+        ).value
 
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 

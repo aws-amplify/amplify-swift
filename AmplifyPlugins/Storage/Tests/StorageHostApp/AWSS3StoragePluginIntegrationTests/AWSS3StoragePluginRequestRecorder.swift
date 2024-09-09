@@ -19,8 +19,7 @@ class AWSS3StoragePluginRequestRecorder {
 }
 
 extension AWSS3StoragePluginRequestRecorder: HttpClientEngineProxy {
-    func send(request: SdkHttpRequest) async throws -> HttpResponse
-   {
+    func send(request: SdkHttpRequest) async throws -> HttpResponse {
         guard let target  else {
             throw ClientError.unknownError("HttpClientEngine is not set")
         }

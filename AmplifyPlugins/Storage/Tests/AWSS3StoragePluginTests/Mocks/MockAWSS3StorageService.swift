@@ -86,7 +86,8 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
         signingOperation: AWSS3SigningOperation,
         metadata: [String: String]?,
         accelerate: Bool?,
-        expires: Int) async throws -> URL {
+        expires: Int
+    ) async throws -> URL {
             interactions.append("\(#function) \(serviceKey) \(signingOperation) \(String(describing: metadata)) \(expires)")
             return try await getPreSignedURLHandler(serviceKey, signingOperation, expires)
         }
@@ -98,13 +99,14 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
         try await validateObjectExistenceHandler(serviceKey)
     }
 
-    public func upload(serviceKey: String,
-                       uploadSource: UploadSource,
-                       contentType: String?,
-                       metadata: [String: String]?,
-                       accelerate: Bool?,
-                       onEvent: @escaping StorageServiceUploadEventHandler)
-    {
+    public func upload(
+        serviceKey: String,
+        uploadSource: UploadSource,
+        contentType: String?,
+        metadata: [String: String]?,
+        accelerate: Bool?,
+        onEvent: @escaping StorageServiceUploadEventHandler
+    ) {
         interactions.append(#function)
         uploadCalled += 1
 
@@ -118,13 +120,14 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
         }
     }
 
-    public func multiPartUpload(serviceKey: String,
-                                uploadSource: UploadSource,
-                                contentType: String?,
-                                metadata: [String: String]?,
-                                accelerate: Bool?,
-                                onEvent: @escaping StorageServiceMultiPartUploadEventHandler)
-    {
+    public func multiPartUpload(
+        serviceKey: String,
+        uploadSource: UploadSource,
+        contentType: String?,
+        metadata: [String: String]?,
+        accelerate: Bool?,
+        onEvent: @escaping StorageServiceMultiPartUploadEventHandler
+    ) {
         interactions.append(#function)
         multiPartUploadCalled += 1
 
@@ -174,12 +177,13 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
         XCTAssertEqual(downloadFileURL, fileURL)
     }
 
-    public func verifyUpload(serviceKey: String,
-                             key: String,
-                             uploadSource: UploadSource,
-                             contentType: String?,
-                             metadata: [String: String]?)
-    {
+    public func verifyUpload(
+        serviceKey: String,
+        key: String,
+        uploadSource: UploadSource,
+        contentType: String?,
+        metadata: [String: String]?
+    ) {
         XCTAssertEqual(uploadCalled, 1)
         XCTAssertEqual(uploadServiceKey, serviceKey)
         if let uploadUploadSource {
@@ -199,12 +203,13 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
         XCTAssertEqual(uploadMetadata, metadata)
     }
 
-    public func verifyMultiPartUpload(serviceKey: String,
-                                      key: String,
-                                      uploadSource: UploadSource,
-                                      contentType: String?,
-                                      metadata: [String: String]?)
-    {
+    public func verifyMultiPartUpload(
+        serviceKey: String,
+        key: String,
+        uploadSource: UploadSource,
+        contentType: String?,
+        metadata: [String: String]?
+    ) {
         XCTAssertEqual(multiPartUploadCalled, 1)
 
         XCTAssertEqual(multiPartUploadServiceKey, serviceKey)

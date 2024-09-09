@@ -37,10 +37,12 @@ enum AWSS3PluginOptions {
             return nil
         }
         guard let boolValue = value as? Bool else {
-            throw StorageError.validation(CodingKeys.useAccelerateEndpoint.rawValue,
-                                          "Expecting boolean value for key \(CodingKeys.useAccelerateEndpoint.rawValue)",
-                                          "Ensure the value associated with \(CodingKeys.useAccelerateEndpoint.rawValue) is a boolean",
-                                          nil)
+            throw StorageError.validation(
+                CodingKeys.useAccelerateEndpoint.rawValue,
+                "Expecting boolean value for key \(CodingKeys.useAccelerateEndpoint.rawValue)",
+                "Ensure the value associated with \(CodingKeys.useAccelerateEndpoint.rawValue) is a boolean",
+                nil
+            )
         }
         return boolValue
     }

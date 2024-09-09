@@ -24,8 +24,7 @@ public struct AWSS3StoragePluginConfiguration {
     /// - Tag: AWSS3StoragePluginConfiguration.prefixResolverFunc
     @available(*, deprecated, message: "Use `StoragePath` instead")
     public static func prefixResolver(
-        _ prefixResolver: AWSS3PluginPrefixResolver) -> AWSS3StoragePluginConfiguration
-    {
+        _ prefixResolver: AWSS3PluginPrefixResolver) -> AWSS3StoragePluginConfiguration {
         .init(prefixResolver: prefixResolver)
     }
 }

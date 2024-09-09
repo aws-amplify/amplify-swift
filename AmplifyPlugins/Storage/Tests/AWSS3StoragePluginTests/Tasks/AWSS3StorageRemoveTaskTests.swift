@@ -27,11 +27,13 @@ class AWSS3StorageRemoveTaskTests: XCTestCase {
         }
 
         let request = StorageRemoveRequest(
-            path: StringStoragePath.fromString("path"), options: .init())
+            path: StringStoragePath.fromString("path"), options: .init()
+        )
         let task = AWSS3StorageRemoveTask(
             request,
             storageConfiguration: AWSS3StoragePluginConfiguration(),
-            storageBehaviour: serviceMock)
+            storageBehaviour: serviceMock
+        )
         let value = try await task.value
         XCTAssertEqual(value, "path")
     }
@@ -47,11 +49,13 @@ class AWSS3StorageRemoveTaskTests: XCTestCase {
         }
 
         let request = StorageRemoveRequest(
-            path: StringStoragePath.fromString("path"), options: .init())
+            path: StringStoragePath.fromString("path"), options: .init()
+        )
         let task = AWSS3StorageRemoveTask(
             request,
             storageConfiguration: AWSS3StoragePluginConfiguration(),
-            storageBehaviour: serviceMock)
+            storageBehaviour: serviceMock
+        )
         do {
             _ = try await task.value
             XCTFail("Task should throw an exception")
@@ -62,8 +66,10 @@ class AWSS3StorageRemoveTaskTests: XCTestCase {
                 XCTFail("Should throw a Storage service error, instead threw \(error)")
                 return
             }
-            XCTAssertTrue(underlyingError is AWSS3.NoSuchKey,
-                          "Underlying error should be NoSuchKey, instead got \(String(describing: underlyingError))")
+            XCTAssertTrue(
+                underlyingError is AWSS3.NoSuchKey,
+                "Underlying error should be NoSuchKey, instead got \(String(describing: underlyingError))"
+            )
         }
     }
 
@@ -74,11 +80,13 @@ class AWSS3StorageRemoveTaskTests: XCTestCase {
         let serviceMock = MockAWSS3StorageService()
 
         let request = StorageRemoveRequest(
-            path: StringStoragePath.fromString("/path"), options: .init())
+            path: StringStoragePath.fromString("/path"), options: .init()
+        )
         let task = AWSS3StorageRemoveTask(
             request,
             storageConfiguration: AWSS3StoragePluginConfiguration(),
-            storageBehaviour: serviceMock)
+            storageBehaviour: serviceMock
+        )
         do {
             _ = try await task.value
             XCTFail("Task should throw an exception")
@@ -101,11 +109,13 @@ class AWSS3StorageRemoveTaskTests: XCTestCase {
         let serviceMock = MockAWSS3StorageService()
 
         let request = StorageRemoveRequest(
-            path: StringStoragePath.fromString(" "), options: .init())
+            path: StringStoragePath.fromString(" "), options: .init()
+        )
         let task = AWSS3StorageRemoveTask(
             request,
             storageConfiguration: AWSS3StoragePluginConfiguration(),
-            storageBehaviour: serviceMock)
+            storageBehaviour: serviceMock
+        )
         do {
             _ = try await task.value
             XCTFail("Task should throw an exception")

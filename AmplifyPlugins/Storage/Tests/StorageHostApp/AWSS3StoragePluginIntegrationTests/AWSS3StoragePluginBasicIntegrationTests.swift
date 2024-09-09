@@ -130,9 +130,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     func testUploadLargeData() async throws {
         let key = UUID().uuidString
 
-        let uploadKey = try await Amplify.Storage.uploadData(key: key,
-                                                             data: AWSS3StoragePluginTestBase.largeDataObject,
-                                                             options: nil).value
+        let uploadKey = try await Amplify.Storage.uploadData(
+            key: key,
+            data: AWSS3StoragePluginTestBase.largeDataObject,
+            options: nil
+        ).value
         XCTAssertEqual(uploadKey, key)
 
         try await Amplify.Storage.remove(key: key)
@@ -153,9 +155,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
 
-        FileManager.default.createFile(atPath: filePath,
-                                       contents: AWSS3StoragePluginTestBase.largeDataObject,
-                                       attributes: nil)
+        FileManager.default.createFile(
+            atPath: filePath,
+            contents: AWSS3StoragePluginTestBase.largeDataObject,
+            attributes: nil
+        )
 
         _ = try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
         _ = try await Amplify.Storage.remove(key: key)
@@ -275,9 +279,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let key = UUID().uuidString
         let expectedMD5Hex = "\"\(key.md5())\""
         try await uploadData(key: key, dataString: key)
-        let options = StorageListRequest.Options(accessLevel: .guest,
-                                                 targetIdentityId: nil,
-                                                 path: key)
+        let options = StorageListRequest.Options(
+            accessLevel: .guest,
+            targetIdentityId: nil,
+            path: key
+        )
         let result = try await Amplify.Storage.list(options: options)
         let items = try XCTUnwrap(result.items)
 
@@ -356,9 +362,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully with empty list of keys returned
     func testListEmpty() async throws {
         let key = UUID().uuidString
-        let options = StorageListRequest.Options(accessLevel: .guest,
-                                                 targetIdentityId: nil,
-                                                 path: key)
+        let options = StorageListRequest.Options(
+            accessLevel: .guest,
+            targetIdentityId: nil,
+            path: key
+        )
         let result = try await Amplify.Storage.list(options: options)
 
         XCTAssertNotNil(result)
@@ -384,9 +392,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             keys.append(key)
             try await uploadData(key: key, dataString: key)
         }
-        let options = StorageListRequest.Options(accessLevel: .guest,
-                                                 targetIdentityId: nil,
-                                                 path: folder)
+        let options = StorageListRequest.Options(
+            accessLevel: .guest,
+            targetIdentityId: nil,
+            path: folder
+        )
         let result = try await Amplify.Storage.list(options: options)
         let items = result.items
 
@@ -420,9 +430,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             try await uploadData(key: key, dataString: key)
         }
 
-        let options = StorageListRequest.Options(accessLevel: .guest,
-                                                 targetIdentityId: nil,
-                                                 path: key1)
+        let options = StorageListRequest.Options(
+            accessLevel: .guest,
+            targetIdentityId: nil,
+            path: key1
+        )
         let result = try await Amplify.Storage.list(options: options)
         let items = result.items
 

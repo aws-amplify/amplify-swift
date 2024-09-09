@@ -30,22 +30,25 @@ class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
     /// Serial queue for synchronizing access to `storageTaskReference`.
     private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
-    init(_ request: StorageUploadFileRequest,
-         storageConfiguration: AWSS3StoragePluginConfiguration,
-         storageService: AWSS3StorageServiceBehavior,
-         authService: AWSAuthServiceBehavior,
-         progressListener: InProcessListener? = nil,
-         resultListener: ResultListener? = nil)
-    {
+    init(
+        _ request: StorageUploadFileRequest,
+        storageConfiguration: AWSS3StoragePluginConfiguration,
+        storageService: AWSS3StorageServiceBehavior,
+        authService: AWSAuthServiceBehavior,
+        progressListener: InProcessListener? = nil,
+        resultListener: ResultListener? = nil
+    ) {
 
         self.storageConfiguration = storageConfiguration
         self.storageService = storageService
         self.authService = authService
-        super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.uploadFile,
-                   request: request,
-                   inProcessListener: progressListener,
-                   resultListener: resultListener)
+        super.init(
+            categoryType: .storage,
+            eventName: HubPayload.EventName.Storage.uploadFile,
+            request: request,
+            inProcessListener: progressListener,
+            resultListener: resultListener
+        )
     }
 
     /// Pauses operation.
@@ -89,8 +92,10 @@ class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
         // failed silently on access denied.
         if FileManager.default.fileExists(atPath: request.local.path) {
             guard FileManager.default.isReadableFile(atPath: request.local.path) else {
-                dispatch(StorageError.accessDenied("Access to local file denied: \(request.local.path)",
-                                                   "Please ensure that \(request.local) is readable"))
+                dispatch(StorageError.accessDenied(
+                    "Access to local file denied: \(request.local.path)",
+                    "Please ensure that \(request.local) is readable"
+                ))
                 finish()
                 return
             }
@@ -154,8 +159,7 @@ class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
     }
 
     private func onServiceEvent(
-        event: StorageEvent<StorageTaskReference, Progress, Void, StorageError>)
-    {
+        event: StorageEvent<StorageTaskReference, Progress, Void, StorageError>) {
         switch event {
         case .initiated(let reference):
             storageTaskActionQueue.async {

@@ -18,10 +18,11 @@ class AWSS3StorageListObjectsTask: StorageListObjectsTask, DefaultLogger {
     let storageConfiguration: AWSS3StoragePluginConfiguration
     let storageBehaviour: AWSS3StorageServiceBehavior
 
-    init(_ request: StorageListRequest,
-         storageConfiguration: AWSS3StoragePluginConfiguration,
-         storageBehaviour: AWSS3StorageServiceBehavior)
-    {
+    init(
+        _ request: StorageListRequest,
+        storageConfiguration: AWSS3StoragePluginConfiguration,
+        storageBehaviour: AWSS3StorageServiceBehavior
+    ) {
         self.request = request
         self.storageConfiguration = storageConfiguration
         self.storageBehaviour = storageBehaviour
@@ -40,14 +41,17 @@ class AWSS3StorageListObjectsTask: StorageListObjectsTask, DefaultLogger {
             throw StorageError.validation(
                 "path",
                 "`path` is required for listing objects",
-                "Make sure that a valid `path` is passed for removing an object")
+                "Make sure that a valid `path` is passed for removing an object"
+            )
         }
-        let input = ListObjectsV2Input(bucket: storageBehaviour.bucket,
-                                       continuationToken: request.options.nextToken,
-                                       delimiter: request.options.subpathStrategy.delimiter,
-                                       maxKeys: Int(request.options.pageSize),
-                                       prefix: path,
-                                       startAfter: nil)
+        let input = ListObjectsV2Input(
+            bucket: storageBehaviour.bucket,
+            continuationToken: request.options.nextToken,
+            delimiter: request.options.subpathStrategy.delimiter,
+            maxKeys: Int(request.options.pageSize),
+            prefix: path,
+            startAfter: nil
+        )
         do {
             let response = try await storageBehaviour.client.listObjectsV2(input: input)
             let contents: S3BucketContents = response.contents ?? []
@@ -73,7 +77,8 @@ class AWSS3StorageListObjectsTask: StorageListObjectsTask, DefaultLogger {
             throw StorageError.service(
                 "Service error occurred.",
                 "Please inspect the underlying error for more details.",
-                error)
+                error
+            )
         }
     }
 }

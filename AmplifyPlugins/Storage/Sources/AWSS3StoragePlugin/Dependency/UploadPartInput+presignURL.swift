@@ -28,7 +28,8 @@ extension UploadPartInput {
             .build()
         var operation = ClientRuntime.OperationStack<UploadPartInput, UploadPartOutput>(id: "uploadPart")
         operation.initializeStep.intercept(
-            position: .after, middleware: ClientRuntime.URLPathMiddleware<UploadPartInput, UploadPartOutput>(UploadPartInput.urlPathProvider(_:)))
+            position: .after, middleware: ClientRuntime.URLPathMiddleware<UploadPartInput, UploadPartOutput>(UploadPartInput.urlPathProvider(_:))
+        )
         operation.initializeStep.intercept(position: .after, middleware: ClientRuntime.URLHostMiddleware<UploadPartInput, UploadPartOutput>())
         operation.buildStep.intercept(
             position: .before,
@@ -38,25 +39,32 @@ extension UploadPartInput {
             )
         )
         operation.serializeStep.intercept(
-            position: .after, middleware: ClientRuntime.QueryItemMiddleware<UploadPartInput, UploadPartOutput>(UploadPartInput.queryItemProvider(_:)))
+            position: .after, middleware: ClientRuntime.QueryItemMiddleware<UploadPartInput, UploadPartOutput>(UploadPartInput.queryItemProvider(_:))
+        )
         operation.finalizeStep.intercept(
             position: .after,
             middleware: ClientRuntime.RetryMiddleware<ClientRuntime.DefaultRetryStrategy, AWSClientRuntime.AWSRetryErrorInfoProvider, UploadPartOutput>(
-                options: config.retryStrategyOptions))
+                options: config.retryStrategyOptions)
+        )
         let sigv4Config = AWSClientRuntime.SigV4Config(
             signatureType: .requestQueryParams,
             useDoubleURIEncode: false,
             expiration: expiration,
             unsignedBody: true,
-            signingAlgorithm: .sigv4)
+            signingAlgorithm: .sigv4
+        )
         operation.finalizeStep.intercept(
-            position: .before, middleware: AWSClientRuntime.SigV4Middleware<UploadPartOutput>(config: sigv4Config))
+            position: .before, middleware: AWSClientRuntime.SigV4Middleware<UploadPartOutput>(config: sigv4Config)
+        )
         operation.deserializeStep.intercept(
-            position: .after, middleware: ClientRuntime.LoggerMiddleware<UploadPartOutput>(clientLogMode: config.clientLogMode))
+            position: .after, middleware: ClientRuntime.LoggerMiddleware<UploadPartOutput>(clientLogMode: config.clientLogMode)
+        )
         operation.deserializeStep.intercept(
-            position: .after, middleware: AWSClientRuntime.AWSS3ErrorWith200StatusXMLMiddleware<UploadPartOutput>())
+            position: .after, middleware: AWSClientRuntime.AWSS3ErrorWith200StatusXMLMiddleware<UploadPartOutput>()
+        )
         let presignedRequestBuilder = try await operation.presignedRequest(
-            context: context, input: input, output: UploadPartOutput(), next: ClientRuntime.NoopHandler())
+            context: context, input: input, output: UploadPartOutput(), next: ClientRuntime.NoopHandler()
+        )
          guard let builtRequest = presignedRequestBuilder?.build(), let presignedURL = builtRequest.endpoint.url else {
              return nil
          }

@@ -62,7 +62,8 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
                 return uniqueStringPath + "test1"
             },
             data: data,
-            options: nil).value
+            options: nil
+        ).value
 
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
@@ -76,7 +77,8 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
                 return uniqueStringPath + "test2"
             },
             data: data,
-            options: nil).value
+            options: nil
+        ).value
 
         let secondListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
@@ -107,7 +109,8 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
                 return uniqueStringPath + "test1"
             },
             data: data,
-            options: nil).value
+            options: nil
+        ).value
 
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
@@ -121,7 +124,8 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
                 return uniqueStringPath + "test2"
             },
             data: data,
-            options: nil).value
+            options: nil
+        ).value
 
         let secondListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 

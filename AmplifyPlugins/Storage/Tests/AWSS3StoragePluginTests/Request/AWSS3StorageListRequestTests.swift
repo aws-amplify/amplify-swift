@@ -16,10 +16,12 @@ class StorageListRequestTests: XCTestCase {
     let testPluginOptions: Any? = [:]
 
     func testValidateSuccess() {
-        let options = StorageListRequest.Options(accessLevel: .protected,
-                                                 targetIdentityId: testTargetIdentityId,
-                                                 path: testPath,
-                                                 pluginOptions: testPluginOptions)
+        let options = StorageListRequest.Options(
+            accessLevel: .protected,
+            targetIdentityId: testTargetIdentityId,
+            path: testPath,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageListRequest(options: options)
 
         let storageErrorOptional = request.validate()
@@ -45,10 +47,12 @@ class StorageListRequestTests: XCTestCase {
     }
 
     func testValidateEmptyTargetIdentityIdError() {
-        let options = StorageListRequest.Options(accessLevel: .protected,
-                                                 targetIdentityId: "",
-                                                 path: testPath,
-                                                 pluginOptions: testPluginOptions)
+        let options = StorageListRequest.Options(
+            accessLevel: .protected,
+            targetIdentityId: "",
+            path: testPath,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageListRequest(options: options)
 
         let storageErrorOptional = request.validate()
@@ -69,10 +73,12 @@ class StorageListRequestTests: XCTestCase {
     }
 
     func testValidateTargetIdentityIdWithPrivateAccessLevelError() {
-        let options = StorageListRequest.Options(accessLevel: .private,
-                                                 targetIdentityId: testTargetIdentityId,
-                                                 path: testPath,
-                                                 pluginOptions: testPluginOptions)
+        let options = StorageListRequest.Options(
+            accessLevel: .private,
+            targetIdentityId: testTargetIdentityId,
+            path: testPath,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageListRequest(options: options)
 
         let storageErrorOptional = request.validate()
@@ -93,10 +99,12 @@ class StorageListRequestTests: XCTestCase {
     }
 
     func testValidateEmptyPathError() {
-        let options = StorageListRequest.Options(accessLevel: .protected,
-                                                 targetIdentityId: testTargetIdentityId,
-                                                 path: "",
-                                                 pluginOptions: testPluginOptions)
+        let options = StorageListRequest.Options(
+            accessLevel: .protected,
+            targetIdentityId: testTargetIdentityId,
+            path: "",
+            pluginOptions: testPluginOptions
+        )
         let request = StorageListRequest(options: options)
 
         let storageErrorOptional = request.validate()

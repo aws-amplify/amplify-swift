@@ -10,13 +10,14 @@ import Foundation
 
 extension AWSS3StorageService {
 
-    func multiPartUpload(serviceKey: String,
-                         uploadSource: UploadSource,
-                         contentType: String?,
-                         metadata: [String: String]?,
-                         accelerate: Bool?,
-                         onEvent: @escaping StorageServiceMultiPartUploadEventHandler)
-    {
+    func multiPartUpload(
+        serviceKey: String,
+        uploadSource: UploadSource,
+        contentType: String?,
+        metadata: [String: String]?,
+        accelerate: Bool?,
+        onEvent: @escaping StorageServiceMultiPartUploadEventHandler
+    ) {
         let fail: (Error) -> Void = { error in
             let storageError = StorageError(error: error)
             onEvent(.failed(storageError))
@@ -30,17 +31,21 @@ extension AWSS3StorageService {
         // Get file using upload source
         guard let uploadFile = try attempt(uploadSource.getFile(), fail: fail) else { return }
 
-        let client = DefaultStorageMultipartUploadClient(serviceProxy: self,
-                                                         bucket: bucket,
-                                                         key: serviceKey,
-                                                         uploadFile: uploadFile,
-                                                         metadata: metadata)
-        let multipartUploadSession = StorageMultipartUploadSession(client: client,
-                                                                   bucket: bucket,
-                                                                   key: serviceKey,
-                                                                   contentType: contentType,
-                                                                   requestHeaders: requestHeaders,
-                                                                   onEvent: onEvent)
+        let client = DefaultStorageMultipartUploadClient(
+            serviceProxy: self,
+            bucket: bucket,
+            key: serviceKey,
+            uploadFile: uploadFile,
+            metadata: metadata
+        )
+        let multipartUploadSession = StorageMultipartUploadSession(
+            client: client,
+            bucket: bucket,
+            key: serviceKey,
+            contentType: contentType,
+            requestHeaders: requestHeaders,
+            onEvent: onEvent
+        )
 
         register(multipartUploadSession: multipartUploadSession)
 

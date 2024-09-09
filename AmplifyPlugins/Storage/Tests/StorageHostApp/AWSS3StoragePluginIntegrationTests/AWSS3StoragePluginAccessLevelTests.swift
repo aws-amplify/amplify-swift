@@ -23,8 +23,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     /// Then: Operation completes successfully with no items since there are no keys at that location.
     func testListFromProtectedForUnauthenticatedUser() async throws {
         let key = UUID().uuidString
-        let options = StorageListRequest.Options(accessLevel: .protected,
-                                                 path: key)
+        let options = StorageListRequest.Options(
+            accessLevel: .protected,
+            path: key
+        )
         let items = try await Amplify.Storage.list(options: options).items
         XCTAssertEqual(items.count, 0)
     }
@@ -35,8 +37,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     func testListFromPrivateForUnauthenticatedUserForReturnAccessDenied() async throws {
         do {
             let key = UUID().uuidString
-            let options = StorageListRequest.Options(accessLevel: .private,
-                                                     path: key)
+            let options = StorageListRequest.Options(
+                accessLevel: .private,
+                path: key
+            )
             _ = try await Amplify.Storage.list(options: options).items
             XCTFail("Expecting failure")
         } catch StorageError.accessDenied(let description, _, _) {
@@ -124,8 +128,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             XCTAssertEqual(key, uploadKey)
 
             logger.debug("List [\(accessLevel)]")
-            let listOptions = StorageListRequest.Options(accessLevel: accessLevel,
-                                                         path: key)
+            let listOptions = StorageListRequest.Options(
+                accessLevel: accessLevel,
+                path: key
+            )
             let keys = try await Amplify.Storage.list(options: listOptions).items
             XCTAssertEqual(keys.count, 1)
 
@@ -185,8 +191,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                     _ = try await Amplify.Storage.uploadData(key: testRun.key, data: Data(testRun.key.utf8), options: options).value
 
                     logger.debug("Getting list as user1")
-                    let listOptions1 = StorageListRequest.Options(accessLevel: testRun.accessLevel,
-                                                                 path: testRun.key)
+                    let listOptions1 = StorageListRequest.Options(
+                        accessLevel: testRun.accessLevel,
+                        path: testRun.key
+                    )
                     let keys1 = try await Amplify.Storage.list(options: listOptions1).items.filter {
                         $0.key == testRun.key
                     }
@@ -211,9 +219,11 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                         // check for Access Denied error
                         do {
                             logger.debug("Getting list as user2")
-                            let listOptions2 = StorageListRequest.Options(accessLevel: testRun.accessLevel,
-                                                                          targetIdentityId: user1IdentityId,
-                                                                          path: testRun.key)
+                            let listOptions2 = StorageListRequest.Options(
+                                accessLevel: testRun.accessLevel,
+                                targetIdentityId: user1IdentityId,
+                                path: testRun.key
+                            )
                             try await Amplify.Storage.list(options: listOptions2)
                             XCTFail("Expecting validation error")
                         } catch StorageError.validation(_, let errorDescription, _, _) {
@@ -233,17 +243,21 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                         await remove(key: testRun.key, accessLevel: testRun.accessLevel)
                     } else {
                         logger.debug("Getting list as user2: \(testRun.accessLevel)")
-                        let listOptions2 = StorageListRequest.Options(accessLevel: testRun.accessLevel,
-                                                                      targetIdentityId: targetIdentityId,
-                                                                      path: testRun.key)
+                        let listOptions2 = StorageListRequest.Options(
+                            accessLevel: testRun.accessLevel,
+                            targetIdentityId: targetIdentityId,
+                            path: testRun.key
+                        )
                         let keys2 = try await Amplify.Storage.list(options: listOptions2).items.filter {
                             $0.key == testRun.key
                         }
                         XCTAssertEqual(keys2.count, 1)
 
                         logger.debug("Downloading as user2")
-                        let downloadDataOptions = StorageDownloadDataRequest.Options(accessLevel: testRun.accessLevel,
-                                                                                     targetIdentityId: targetIdentityId)
+                        let downloadDataOptions = StorageDownloadDataRequest.Options(
+                            accessLevel: testRun.accessLevel,
+                            targetIdentityId: targetIdentityId
+                        )
                         let data = try await Amplify.Storage.downloadData(key: testRun.key, options: downloadDataOptions).value
                         XCTAssertNotNil(data)
 

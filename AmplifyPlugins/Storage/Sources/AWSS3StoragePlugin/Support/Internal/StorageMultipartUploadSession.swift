@@ -44,24 +44,27 @@ class StorageMultipartUploadSession {
 
     private let transferTask: StorageTransferTask
 
-    init(client: StorageMultipartUploadClient,
-         bucket: String,
-         key: String,
-         contentType: String? = nil,
-         requestHeaders: RequestHeaders? = nil,
-         onEvent: @escaping AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler,
-         behavior: StorageMultipartUploadBehavior = .progressive,
-         fileSystem: FileSystem = .default,
-         logger: Logger = storageLogger)
-    {
+    init(
+        client: StorageMultipartUploadClient,
+        bucket: String,
+        key: String,
+        contentType: String? = nil,
+        requestHeaders: RequestHeaders? = nil,
+        onEvent: @escaping AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler,
+        behavior: StorageMultipartUploadBehavior = .progressive,
+        fileSystem: FileSystem = .default,
+        logger: Logger = storageLogger
+    ) {
         self.client = client
 
         let transferType: StorageTransferType = .multiPartUpload(onEvent: onEvent)
-        let transferTask = StorageTransferTask(transferType: transferType,
-                                               bucket: bucket,
-                                               key: key,
-                                               contentType: contentType,
-                                               requestHeaders: requestHeaders)
+        let transferTask = StorageTransferTask(
+            transferType: transferType,
+            bucket: bucket,
+            key: key,
+            contentType: contentType,
+            requestHeaders: requestHeaders
+        )
         self.transferTask = transferTask
         self.onEvent = onEvent
 
@@ -78,13 +81,14 @@ class StorageMultipartUploadSession {
         logger.info("Concurrency Limit is \(concurrentLimit) [based on active processors]")
     }
 
-    init?(client: StorageMultipartUploadClient,
-          transferTask: StorageTransferTask,
-          multipartUpload: StorageMultipartUpload,
-          behavior: StorageMultipartUploadBehavior = .progressive,
-          fileSystem: FileSystem = .default,
-          logger: Logger = storageLogger)
-    {
+    init?(
+        client: StorageMultipartUploadClient,
+        transferTask: StorageTransferTask,
+        multipartUpload: StorageMultipartUpload,
+        behavior: StorageMultipartUploadBehavior = .progressive,
+        fileSystem: FileSystem = .default,
+        logger: Logger = storageLogger
+    ) {
         guard case let .multiPartUpload(onEvent) = transferTask.transferType else {
             return nil
         }

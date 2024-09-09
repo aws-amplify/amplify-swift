@@ -130,9 +130,11 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
     func testUploadLargeData() async throws {
         let key = "public/" + UUID().uuidString
 
-        let uploadKey = try await Amplify.Storage.uploadData(path: .fromString(key),
-                                                             data: AWSS3StoragePluginTestBase.largeDataObject,
-                                                             options: nil).value
+        let uploadKey = try await Amplify.Storage.uploadData(
+            path: .fromString(key),
+            data: AWSS3StoragePluginTestBase.largeDataObject,
+            options: nil
+        ).value
         XCTAssertEqual(uploadKey, key)
 
         try await Amplify.Storage.remove(path: .fromString(key))
@@ -153,9 +155,11 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
 
-        FileManager.default.createFile(atPath: filePath,
-                                       contents: AWSS3StoragePluginTestBase.largeDataObject,
-                                       attributes: nil)
+        FileManager.default.createFile(
+            atPath: filePath,
+            contents: AWSS3StoragePluginTestBase.largeDataObject,
+            attributes: nil
+        )
 
         _ = try await Amplify.Storage.uploadFile(path: .fromString("public/\(key)"), local: fileURL, options: nil).value
         _ = try await Amplify.Storage.remove(path: .fromString("public/\(key)"))

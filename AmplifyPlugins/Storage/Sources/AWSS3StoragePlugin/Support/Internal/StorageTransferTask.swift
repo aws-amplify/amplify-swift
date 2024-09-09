@@ -99,16 +99,17 @@ class StorageTransferTask {
         return text
     }
 
-    init(transferID: String = UUID().uuidString,
-         transferType: StorageTransferType,
-         bucket: String,
-         key: String,
-         location: URL? = nil,
-         contentType: String? = nil,
-         requestHeaders: [String: String]? = nil,
-         storageTransferDatabase: StorageTransferDatabase = .default,
-         logger: Logger = storageLogger)
-    {
+    init(
+        transferID: String = UUID().uuidString,
+        transferType: StorageTransferType,
+        bucket: String,
+        key: String,
+        location: URL? = nil,
+        contentType: String? = nil,
+        requestHeaders: [String: String]? = nil,
+        storageTransferDatabase: StorageTransferDatabase = .default,
+        logger: Logger = storageLogger
+    ) {
         self.transferID = transferID
         self.transferType = transferType
         self.bucket = bucket
@@ -122,12 +123,13 @@ class StorageTransferTask {
         storageTransferDatabase.insertTransferRequest(task: self)
     }
 
-    init(persistableTransferTask: StoragePersistableTransferTask,
-         transferType: StorageTransferType,
-         sessionTask: StorageSessionTask? = nil,
-         storageTransferDatabase: StorageTransferDatabase = .default,
-         logger: Logger = storageLogger)
-    {
+    init(
+        persistableTransferTask: StoragePersistableTransferTask,
+        transferType: StorageTransferType,
+        sessionTask: StorageSessionTask? = nil,
+        storageTransferDatabase: StorageTransferDatabase = .default,
+        logger: Logger = storageLogger
+    ) {
 
         // swiftlint:disable line_length
         guard let rawValue = StorageTransferType.RawValues(rawValue: persistableTransferTask.transferTypeRawValue) else {
@@ -149,8 +151,7 @@ class StorageTransferTask {
         // set multiPartUpload with default value which can resume upload process
         if rawValue == .multiPartUpload,
            let uploadId = persistableTransferTask.uploadId,
-           let uploadFile = persistableTransferTask.uploadFile
-        {
+           let uploadFile = persistableTransferTask.uploadFile {
             let multipartUpload = StorageMultipartUpload.created(uploadId: uploadId, uploadFile: uploadFile)
             self.uploadId = persistableTransferTask.uploadId
             self.multipartUpload = multipartUpload

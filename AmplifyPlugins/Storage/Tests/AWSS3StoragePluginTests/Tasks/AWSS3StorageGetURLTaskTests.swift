@@ -31,10 +31,12 @@ class AWSS3StorageGetURLTaskTests: XCTestCase {
         }
 
         let request = StorageGetURLRequest(
-            path: StringStoragePath.fromString(somePath), options: .init())
+            path: StringStoragePath.fromString(somePath), options: .init()
+        )
         let task = AWSS3StorageGetURLTask(
             request,
-            storageBehaviour: serviceMock)
+            storageBehaviour: serviceMock
+        )
         let value = try await task.value
         XCTAssertEqual(value, tempURL)
     }
@@ -51,10 +53,12 @@ class AWSS3StorageGetURLTaskTests: XCTestCase {
         }
 
         let request = StorageGetURLRequest(
-            path: StringStoragePath.fromString(somePath), options: .init())
+            path: StringStoragePath.fromString(somePath), options: .init()
+        )
         let task = AWSS3StorageGetURLTask(
             request,
-            storageBehaviour: serviceMock)
+            storageBehaviour: serviceMock
+        )
         do {
             _ = try await task.value
             XCTFail("Task should throw an exception")
@@ -65,8 +69,10 @@ class AWSS3StorageGetURLTaskTests: XCTestCase {
                 XCTFail("Should throw a Storage service error, instead threw \(error)")
                 return
             }
-            XCTAssertTrue(underlyingError is AWSS3.NotFound,
-                          "Underlying error should be NoSuchKey, instead got \(String(describing: underlyingError))")
+            XCTAssertTrue(
+                underlyingError is AWSS3.NotFound,
+                "Underlying error should be NoSuchKey, instead got \(String(describing: underlyingError))"
+            )
         }
     }
 
@@ -84,10 +90,12 @@ class AWSS3StorageGetURLTaskTests: XCTestCase {
         }
 
         let request = StorageGetURLRequest(
-            path: StringStoragePath.fromString(somePath), options: .init())
+            path: StringStoragePath.fromString(somePath), options: .init()
+        )
         let task = AWSS3StorageGetURLTask(
             request,
-            storageBehaviour: serviceMock)
+            storageBehaviour: serviceMock
+        )
         do {
             _ = try await task.value
             XCTFail("Task should throw an exception")
@@ -117,10 +125,12 @@ class AWSS3StorageGetURLTaskTests: XCTestCase {
         }
 
         let request = StorageGetURLRequest(
-            path: StringStoragePath.fromString(emptyPath), options: .init())
+            path: StringStoragePath.fromString(emptyPath), options: .init()
+        )
         let task = AWSS3StorageGetURLTask(
             request,
-            storageBehaviour: serviceMock)
+            storageBehaviour: serviceMock
+        )
         do {
             _ = try await task.value
             XCTFail("Task should throw an exception")

@@ -15,7 +15,8 @@ class AWSS3StoragePluginAmplifyOutputsConfigurationTests: AWSS3StoragePluginTest
         do {
             let config = AmplifyOutputsData(storage: .init(
                 awsRegion: testRegion,
-                bucketName: testBucket))
+                bucketName: testBucket
+            ))
             try storagePlugin.configure(using: config)
         } catch {
             XCTFail("Failed to configure storage plugin")
@@ -37,7 +38,8 @@ class AWSS3StoragePluginAmplifyOutputsConfigurationTests: AWSS3StoragePluginTest
     func testConfigureThrowsForEmptyBucketValue() {
         let config = AmplifyOutputsData(storage: .init(
             awsRegion: testRegion,
-            bucketName: ""))
+            bucketName: ""
+        ))
         XCTAssertThrowsError(try storagePlugin.configure(using: config)) { error in
             guard case let StorageError.configuration(_, _, underlyingError) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
@@ -61,7 +63,8 @@ class AWSS3StoragePluginAmplifyOutputsConfigurationTests: AWSS3StoragePluginTest
     func testConfigureThrowsForEmptyRegionValue() {
         let config = AmplifyOutputsData(storage: .init(
             awsRegion: "",
-            bucketName: testBucket))
+            bucketName: testBucket
+        ))
         XCTAssertThrowsError(try storagePlugin.configure(using: config)) { error in
             guard case let StorageError.configuration(_, _, underlyingError) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
@@ -88,7 +91,8 @@ class AWSS3StoragePluginAmplifyOutputsConfigurationTests: AWSS3StoragePluginTest
         try XCTSkipIf(!isValidationRegionConfig, "Skipping until region validation is enabled")
         let config = AmplifyOutputsData(storage: .init(
             awsRegion: "invalidRegionType",
-            bucketName: testBucket))
+            bucketName: testBucket
+        ))
 
         XCTAssertThrowsError(try storagePlugin.configure(using: config)) { error in
             guard case let StorageError.configuration(_, _, underlyingError) = error else {

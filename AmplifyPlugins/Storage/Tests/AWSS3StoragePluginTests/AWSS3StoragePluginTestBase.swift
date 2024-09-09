@@ -33,9 +33,11 @@ class AWSS3StoragePluginTests: XCTestCase {
         authService = MockAWSAuthService()
         queue = MockOperationQueue()
 
-        storagePlugin.configure(storageService: storageService,
-                                authService: authService,
-                                defaultAccessLevel: defaultAccessLevel,
-                                queue: queue)
+        storagePlugin.configure(
+            storageService: storageService,
+            authService: authService,
+            defaultAccessLevel: defaultAccessLevel,
+            queue: queue
+        )
     }
 }

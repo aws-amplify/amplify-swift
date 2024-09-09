@@ -13,12 +13,14 @@ import Foundation
 
 extension AWSS3StorageService {
 
-    func list(prefix: String,
-              options: StorageListRequest.Options) async throws -> StorageListResult
-    {
-        if let error = StorageRequestUtils.validateTargetIdentityId(options.targetIdentityId,
-                                                                    accessLevel: options.accessLevel)
-        {
+    func list(
+        prefix: String,
+        options: StorageListRequest.Options
+    ) async throws -> StorageListResult {
+        if let error = StorageRequestUtils.validateTargetIdentityId(
+            options.targetIdentityId,
+            accessLevel: options.accessLevel
+        ) {
             throw error
         }
         if let error = StorageRequestUtils.validatePath(options.path) {
@@ -30,12 +32,14 @@ extension AWSS3StorageService {
         } else {
             prefix
         }
-        let input = ListObjectsV2Input(bucket: bucket,
-                                       continuationToken: options.nextToken,
-                                       delimiter: options.subpathStrategy.delimiter,
-                                       maxKeys: Int(options.pageSize),
-                                       prefix: finalPrefix,
-                                       startAfter: nil)
+        let input = ListObjectsV2Input(
+            bucket: bucket,
+            continuationToken: options.nextToken,
+            delimiter: options.subpathStrategy.delimiter,
+            maxKeys: Int(options.pageSize),
+            prefix: finalPrefix,
+            startAfter: nil
+        )
         do {
             let response = try await client.listObjectsV2(input: input)
             let contents: S3BucketContents = response.contents ?? []

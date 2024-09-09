@@ -30,22 +30,25 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
     /// Serial queue for synchronizing access to `storageTaskReference`.
     private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
-    init(_ request: StorageUploadDataRequest,
-         storageConfiguration: AWSS3StoragePluginConfiguration,
-         storageService: AWSS3StorageServiceBehavior,
-         authService: AWSAuthServiceBehavior,
-         progressListener: InProcessListener? = nil,
-         resultListener: ResultListener? = nil)
-    {
+    init(
+        _ request: StorageUploadDataRequest,
+        storageConfiguration: AWSS3StoragePluginConfiguration,
+        storageService: AWSS3StorageServiceBehavior,
+        authService: AWSAuthServiceBehavior,
+        progressListener: InProcessListener? = nil,
+        resultListener: ResultListener? = nil
+    ) {
 
         self.storageConfiguration = storageConfiguration
         self.storageService = storageService
         self.authService = authService
-        super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.uploadData,
-                   request: request,
-                   inProcessListener: progressListener,
-                   resultListener: resultListener)
+        super.init(
+            categoryType: .storage,
+            eventName: HubPayload.EventName.Storage.uploadData,
+            request: request,
+            inProcessListener: progressListener,
+            resultListener: resultListener
+        )
     }
 
     /// Pauses operation.
@@ -131,8 +134,7 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
     }
 
     private func onServiceEvent(
-        event: StorageEvent<StorageTaskReference, Progress, Void, StorageError>)
-    {
+        event: StorageEvent<StorageTaskReference, Progress, Void, StorageError>) {
         switch event {
         case .initiated(let reference):
             storageTaskActionQueue.async {
