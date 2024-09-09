@@ -24,7 +24,9 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
         let data = Data(key.utf8)
         let uniqueStringPath = "public/\(key)"
 
-        _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath), data: data, options: nil).value
+        await wait {
+            _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath), data: data, options: nil).value
+        }
 
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
@@ -52,13 +54,15 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
         // Sign in
         _ = try await Amplify.Auth.signIn(username: Self.user1, password: Self.password)
 
-        _ = try await Amplify.Storage.uploadData(
-            path: .fromIdentityID({ identityId in
-                uniqueStringPath = "protected/\(identityId)/\(key)"
-                return uniqueStringPath
-            }),
-            data: data,
-            options: nil).value
+        await wait {
+            _ = try await Amplify.Storage.uploadData(
+                path: .fromIdentityID({ identityId in
+                    uniqueStringPath = "protected/\(identityId)/\(key)"
+                    return uniqueStringPath
+                }),
+                data: data,
+                options: nil).value
+        }
 
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
@@ -86,13 +90,15 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
         // Sign in
         _ = try await Amplify.Auth.signIn(username: Self.user1, password: Self.password)
 
-        _ = try await Amplify.Storage.uploadData(
-            path: .fromIdentityID({ identityId in
-                uniqueStringPath = "private/\(identityId)/\(key)"
-                return uniqueStringPath
-            }),
-            data: data,
-            options: nil).value
+        await wait {
+            _ = try await Amplify.Storage.uploadData(
+                path: .fromIdentityID({ identityId in
+                    uniqueStringPath = "private/\(identityId)/\(key)"
+                    return uniqueStringPath
+                }),
+                data: data,
+                options: nil).value
+        }
 
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 

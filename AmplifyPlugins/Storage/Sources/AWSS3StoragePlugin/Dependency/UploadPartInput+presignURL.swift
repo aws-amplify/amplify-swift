@@ -40,6 +40,7 @@ extension UploadPartInput {
             .withRegion(value: config.region)
             .withSigningName(value: "s3")
             .withSigningRegion(value: config.signingRegion)
+            .withUnsignedPayloadTrait(value: true)
             .build()
         let builder = ClientRuntime.OrchestratorBuilder<UploadPartInput, UploadPartOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
         config.interceptorProviders.forEach { provider in
@@ -62,6 +63,7 @@ extension UploadPartInput {
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<UploadPartOutput>())
         builder.interceptors.add(AWSClientRuntime.AWSS3ErrorWith200StatusXMLMiddleware<UploadPartInput, UploadPartOutput>())
         builder.interceptors.add(AWSClientRuntime.FlexibleChecksumsRequestMiddleware<UploadPartInput, UploadPartOutput>(checksumAlgorithm: input.checksumAlgorithm?.rawValue))
+        builder.serialize(UploadPartPresignedMiddleware())
         var metricsAttributes = Smithy.Attributes()
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "S3")
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "UploadPart")
@@ -76,33 +78,34 @@ extension UploadPartInput {
             .build()
         return try await op.presignRequest(input: input).endpoint.url
     }
-
-    static func urlPathProvider(_ value: UploadPartInput) -> Swift.String? {
-        guard let key = value.key else {
-            return nil
-        }
-        return "/\(key.urlPercentEncoding(encodeForwardSlash: false))"
-    }
-
  }
 
-extension UploadPartInput {
+struct UploadPartPresignedMiddleware: Smithy.RequestMessageSerializer {
+    typealias InputType = UploadPartInput
+    typealias RequestType = SmithyHTTPAPI.HTTPRequest
 
-    static func queryItemProvider(_ value: UploadPartInput) throws -> [URIQueryItem] {
-        var items = [URIQueryItem]()
-        items.append(URIQueryItem(name: "x-id", value: "UploadPart"))
-        guard let partNumber = value.partNumber else {
-            let message = "Creating a URL Query Item failed. partNumber is required and must not be nil."
-            throw ClientError.unknownError(message)
+    let id: Swift.String = "UploadPartPresignedMiddleware"
+
+    func apply(input: InputType, builder: SmithyHTTPAPI.HTTPRequestBuilder, attributes: Smithy.Context) throws {
+        builder.withQueryItem(.init(
+            name: "x-id",
+            value: "UploadPart")
+        )
+
+        guard let partNumber = input.partNumber else {
+            throw ClientError.invalidValue("partNumber is required and must not be nil.")
         }
-        let partNumberQueryItem = URIQueryItem(name: "partNumber".urlPercentEncoding(), value: Swift.String(partNumber).urlPercentEncoding())
-        items.append(partNumberQueryItem)
-        guard let uploadId = value.uploadId else {
-            let message = "Creating a URL Query Item failed. uploadId is required and must not be nil."
-            throw ClientError.unknownError(message)
+        builder.withQueryItem(.init(
+            name: "partNumber".urlPercentEncoding(),
+            value: Swift.String(partNumber).urlPercentEncoding())
+        )
+
+        guard let uploadId = input.uploadId else {
+            throw ClientError.invalidValue("uploadId is required and must not be nil.")
         }
-        let uploadIdQueryItem = URIQueryItem(name: "uploadId".urlPercentEncoding(), value: Swift.String(uploadId).urlPercentEncoding())
-        items.append(uploadIdQueryItem)
-        return items
+        builder.withQueryItem(.init(
+            name: "uploadId".urlPercentEncoding(),
+            value: Swift.String(uploadId).urlPercentEncoding())
+        )
     }
 }

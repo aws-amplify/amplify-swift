@@ -142,7 +142,9 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
             key: key,
             data: .testDataOfSize(.bytes(256))
         )
-        _ = try await task.value
+        await wait {
+            _ = try await task.value
+        }
         let progress = await task.progress
         for await current in progress {
             XCTFail("Not expecting a current progress value but got: \(current)")

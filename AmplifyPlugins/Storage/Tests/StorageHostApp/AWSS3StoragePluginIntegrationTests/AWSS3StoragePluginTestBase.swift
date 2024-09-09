@@ -218,6 +218,20 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         }
     }
 
+    func wait(timeout: TimeInterval = 10, closure: @escaping () async throws -> ()) async {
+        let expectation = expectation(description: "Tasks completed")
+        Task {
+            defer { expectation.fulfill() }
+            do {
+                try await closure()
+            } catch {
+                XCTFail("Unexpected error: \(error)")
+            }
+        }
+
+        await fulfillment(of: [expectation], timeout: timeout)
+    }
+
     private func invalidateCurrentSession() {
         Self.logger.debug("Invalidating URLSession")
         guard let plugin = try? Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin else {

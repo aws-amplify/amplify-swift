@@ -70,8 +70,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         do {
             logger.debug("Upload [\(accessLevel)]")
             let uploadDataOptions = StorageUploadDataRequest.Options(accessLevel: accessLevel)
-            let uploadKey = try await Amplify.Storage.uploadData(key: key, data: dataInput, options: uploadDataOptions).value
-            XCTAssertEqual(key, uploadKey)
+            await wait {
+                let uploadKey = try await Amplify.Storage.uploadData(key: key, data: dataInput, options: uploadDataOptions).value
+                XCTAssertEqual(key, uploadKey)
+            }
 
             logger.debug("Remove [\(accessLevel)]")
             let removeOptions = StorageRemoveRequest.Options(accessLevel: accessLevel)
@@ -120,8 +122,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             let dataInput = Data(UUID().uuidString.utf8)
             logger.debug("Upload [\(accessLevel)]")
             let uploadDataOptions = StorageUploadDataRequest.Options(accessLevel: accessLevel)
-            let uploadKey = try await Amplify.Storage.uploadData(key: key, data: dataInput, options: uploadDataOptions).value
-            XCTAssertEqual(key, uploadKey)
+            await wait {
+                let uploadKey = try await Amplify.Storage.uploadData(key: key, data: dataInput, options: uploadDataOptions).value
+                XCTAssertEqual(key, uploadKey)
+            }
 
             logger.debug("List [\(accessLevel)]")
             let listOptions = StorageListRequest.Options(accessLevel: accessLevel,
@@ -182,7 +186,9 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
                     logger.debug("Uploading as user1 with \(testRun.accessLevel) access level")
                     let options = StorageUploadDataRequest.Options(accessLevel: testRun.accessLevel)
-                    _ = try await Amplify.Storage.uploadData(key: testRun.key, data: Data(testRun.key.utf8), options: options).value
+                    await wait {
+                        _ = try await Amplify.Storage.uploadData(key: testRun.key, data: Data(testRun.key.utf8), options: options).value
+                    }
 
                     logger.debug("Getting list as user1")
                     let listOptions1 = StorageListRequest.Options(accessLevel: testRun.accessLevel,
