@@ -78,8 +78,10 @@ class GraphQLListQueryTests: XCTestCase {
         }
 
         // Test filter for a valid JSON format
-        let filterJSON = try? JSONSerialization.data(withJSONObject: filter,
-                                                     options: .prettyPrinted)
+        let filterJSON = try? JSONSerialization.data(
+            withJSONObject: filter,
+            options: .prettyPrinted
+        )
         XCTAssertNotNil(filterJSON)
 
         let expectedFilterJSON = """
@@ -119,8 +121,10 @@ class GraphQLListQueryTests: XCTestCase {
         let comment4 = Comment4.keys
         let predicate = comment4.id == "comment4Id" && comment4.post == "post4Id"
 
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment4.schema,
-                                                               operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: Comment4.schema,
+            operationType: .query
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         documentBuilder.add(decorator: PaginationDecorator())
         documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: Comment4.schema)))
@@ -153,8 +157,10 @@ class GraphQLListQueryTests: XCTestCase {
         }
 
         // Test filter for a valid JSON format
-        let filterJSON = try? JSONSerialization.data(withJSONObject: filter,
-                                                     options: .prettyPrinted)
+        let filterJSON = try? JSONSerialization.data(
+            withJSONObject: filter,
+            options: .prettyPrinted
+        )
         XCTAssertNotNil(filterJSON)
 
         let expectedFilterJSON = """

@@ -33,12 +33,14 @@ extension AWSPluginsCore.AWSCredentials {
                 accessKey: tempCredentials.accessKeyId,
                 secret: tempCredentials.secretAccessKey,
                 expirationTimeout: tempCredentials.expiration,
-                sessionToken: tempCredentials.sessionToken)
+                sessionToken: tempCredentials.sessionToken
+            )
         } else {
             return AWSClientRuntime.AWSCredentials(
                 accessKey: accessKeyId,
                 secret: secretAccessKey,
-                expirationTimeout: Date())
+                expirationTimeout: Date()
+            )
         }
 
     }

@@ -264,9 +264,11 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try GraphQLFilterConverter.toJSON(predicate,
-                                                       modelSchema: Comment4.schema,
-                                                       options: [.prettyPrinted])
+        let result = try GraphQLFilterConverter.toJSON(
+            predicate,
+            modelSchema: Comment4.schema,
+            options: [.prettyPrinted]
+        )
         XCTAssertEqual(result, expected)
     }
 
@@ -290,9 +292,11 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try GraphQLFilterConverter.toJSON(predicate,
-                                                       modelSchema: Project2.schema,
-                                                       options: [.prettyPrinted])
+        let result = try GraphQLFilterConverter.toJSON(
+            predicate,
+            modelSchema: Project2.schema,
+            options: [.prettyPrinted]
+        )
         XCTAssertEqual(result, expected)
     }
 

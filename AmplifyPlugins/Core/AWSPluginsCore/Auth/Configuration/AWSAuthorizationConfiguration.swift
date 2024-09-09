@@ -20,18 +20,18 @@ public enum AWSAuthorizationConfiguration {
 // MARK: - AWSAuthorizationConfiguration factory
 extension AWSAuthorizationConfiguration {
     private static func awsIAMAuthorizationConfiguration(region: String?)
-        throws -> AWSAuthorizationConfiguration
-    {
+        throws -> AWSAuthorizationConfiguration {
             guard let region else {
-                throw PluginError.pluginConfigurationError("Region is not set for IAM",
-                                                           "Set the region")
+                throw PluginError.pluginConfigurationError(
+                    "Region is not set for IAM",
+                    "Set the region"
+                )
             }
             return .awsIAM(AWSIAMConfiguration(region: region))
     }
 
     private static func apiKeyAuthorizationConfiguration(apiKey: String?)
-        throws -> AWSAuthorizationConfiguration
-    {
+        throws -> AWSAuthorizationConfiguration {
 
             guard let apiKey else {
                 throw PluginError.pluginConfigurationError(
@@ -55,10 +55,11 @@ extension AWSAuthorizationConfiguration {
     /// - Throws: if the region is not valid and `authType` is `iam`
     ///           or if `apiKey` is not valid and `authType` is `apiKey`
     /// - Returns: an `AWSAuthorizationConfiguration` according to the provided `authType`
-    public static func makeConfiguration(authType: AWSAuthorizationType,
-                                         region: String?,
-                                         apiKey: String?) throws -> AWSAuthorizationConfiguration
-    {
+    public static func makeConfiguration(
+        authType: AWSAuthorizationType,
+        region: String?,
+        apiKey: String?
+    ) throws -> AWSAuthorizationConfiguration {
         switch authType {
         case .none:
             return .none

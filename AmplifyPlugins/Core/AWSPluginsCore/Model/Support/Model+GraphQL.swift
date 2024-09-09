@@ -20,8 +20,10 @@ extension Model {
     private func fieldsForMutation(_ modelSchema: ModelSchema) -> [(ModelField, Any?)] {
         modelSchema.sortedFields.compactMap { field in
             guard !field.isReadOnly,
-                  let fieldValue = getFieldValue(for: field.name,
-                                                 modelSchema: modelSchema)
+                  let fieldValue = getFieldValue(
+                      for: field.name,
+                      modelSchema: modelSchema
+                  )
             else {
                 return nil
             }
@@ -87,10 +89,12 @@ extension Model {
                 input[name] = (value as? EnumPersistable)?.rawValue
             case .model(let associateModelName):
                 // get the associated model target names and their values
-                let associatedModelIds = associatedModelIdentifierFields(fromModelValue: value,
-                                                                         field: modelField,
-                                                                         associatedModelName: associateModelName,
-                                                                         mutationType: mutationType)
+                let associatedModelIds = associatedModelIdentifierFields(
+                    fromModelValue: value,
+                    field: modelField,
+                    associatedModelName: associateModelName,
+                    mutationType: mutationType
+                )
                 for (fieldName, fieldValue) in associatedModelIds {
                     input.updateValue(fieldValue, forKey: fieldName)
                 }
@@ -114,9 +118,10 @@ extension Model {
     /// Retrieve the custom primary key's value used for the GraphQL input.
     /// Only a subset of data types are applicable as custom indexes such as
     /// `date`, `dateTime`, `time`, `enum`, `string`, `double`, and `int`.
-    func graphQLInputForPrimaryKey(modelFieldName: ModelFieldName,
-                                   modelSchema: ModelSchema) -> String?
-    {
+    func graphQLInputForPrimaryKey(
+        modelFieldName: ModelFieldName,
+        modelSchema: ModelSchema
+    ) -> String? {
 
         guard let modelField = modelSchema.field(withName: modelFieldName) else {
             return nil
@@ -159,11 +164,12 @@ extension Model {
     ///   - modelSchema: model schema
     /// - Returns: an array of key-value pairs where `key` is the field name
     ///            and `value` its value in the associated model
-    private func associatedModelIdentifierFields(fromModelValue value: Any,
-                                                 field: ModelField,
-                                                 associatedModelName: String,
-                                                 mutationType: GraphQLMutationType) -> [(String, Persistable?)]
-    {
+    private func associatedModelIdentifierFields(
+        fromModelValue value: Any,
+        field: ModelField,
+        associatedModelName: String,
+        mutationType: GraphQLMutationType
+    ) -> [(String, Persistable?)] {
         guard let associateModelSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
             preconditionFailure("Associated model \(associatedModelName) not found.")
         }
@@ -197,8 +203,7 @@ extension Model {
         if let modelValue = value as? Model {
             return modelValue.identifier(schema: modelSchema).values
         } else if let optionalModel = value as? Model?,
-                  let modelValue = optionalModel
-        {
+                  let modelValue = optionalModel {
             return modelValue.identifier(schema: modelSchema).values
         } else if let lazyModel = value as? (any _LazyReferenceValue) {
             switch lazyModel._state {
@@ -234,8 +239,7 @@ extension Model {
         if case let .belongsTo(_, targetNames) = modelField.association, !targetNames.isEmpty {
             return targetNames
         } else if case let .hasOne(_, _, targetNames) = modelField.association,
-                  !targetNames.isEmpty
-        {
+                  !targetNames.isEmpty {
             return targetNames
         }
 

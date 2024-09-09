@@ -13,9 +13,13 @@ public protocol ModelBasedGraphQLDocumentDecorator {
     @available(*, deprecated, message: """
     Decorating using Model.Type is deprecated, instead use modelSchema method.
     """)
-    func decorate(_ document: SingleDirectiveGraphQLDocument,
-                  modelType: Model.Type) -> SingleDirectiveGraphQLDocument
+    func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelType: Model.Type
+    ) -> SingleDirectiveGraphQLDocument
 
-    func decorate(_ document: SingleDirectiveGraphQLDocument,
-                  modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument
+    func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelSchema: ModelSchema
+    ) -> SingleDirectiveGraphQLDocument
 }

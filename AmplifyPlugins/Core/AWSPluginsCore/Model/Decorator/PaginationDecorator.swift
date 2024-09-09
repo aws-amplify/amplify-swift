@@ -19,15 +19,17 @@ public struct PaginationDecorator: ModelBasedGraphQLDocumentDecorator {
         self.nextToken = nextToken
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument
-    {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelType: Model.Type
+    ) -> SingleDirectiveGraphQLDocument {
         decorate(document, modelSchema: modelType.schema)
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument
-    {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelSchema: ModelSchema
+    ) -> SingleDirectiveGraphQLDocument {
         var inputs = document.inputs
 
         if let limit {
@@ -42,8 +44,10 @@ public struct PaginationDecorator: ModelBasedGraphQLDocumentDecorator {
 
         if let selectionSet = document.selectionSet {
 
-            return document.copy(inputs: inputs,
-                                 selectionSet: withPagination(selectionSet: selectionSet))
+            return document.copy(
+                inputs: inputs,
+                selectionSet: withPagination(selectionSet: selectionSet)
+            )
         }
 
         return document.copy(inputs: inputs)

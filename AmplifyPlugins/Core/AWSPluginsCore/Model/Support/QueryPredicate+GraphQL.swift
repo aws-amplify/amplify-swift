@@ -20,13 +20,16 @@ public struct GraphQLFilterConverter {
     /// Serialize the translated GraphQL query variable object to JSON string.
     /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
     ///   by host applications. The behavior of this may change without warning.
-    public static func toJSON(_ queryPredicate: QueryPredicate,
-                              modelSchema: ModelSchema,
-                              options: JSONSerialization.WritingOptions = []) throws -> String
-    {
+    public static func toJSON(
+        _ queryPredicate: QueryPredicate,
+        modelSchema: ModelSchema,
+        options: JSONSerialization.WritingOptions = []
+    ) throws -> String {
         let graphQLFilterData =
-            try JSONSerialization.data(withJSONObject: queryPredicate.graphQLFilter(for: modelSchema),
-                                       options: options)
+            try JSONSerialization.data(
+                withJSONObject: queryPredicate.graphQLFilter(for: modelSchema),
+                options: options
+            )
 
         guard let serializedString = String(data: graphQLFilterData, encoding: .utf8) else {
             return Fatal.preconditionFailure("""
@@ -42,11 +45,14 @@ public struct GraphQLFilterConverter {
     Use `toJSON(_:modelSchema:options)` instead. See https://github.com/aws-amplify/amplify-ios/pull/965 for more details.
     """)
     /// Serialize the translated GraphQL query variable object to JSON string.
-    public static func toJSON(_ queryPredicate: QueryPredicate,
-                              options: JSONSerialization.WritingOptions = []) throws -> String
-    {
-        let graphQLFilterData = try JSONSerialization.data(withJSONObject: queryPredicate.graphQLFilter,
-                                                           options: options)
+    public static func toJSON(
+        _ queryPredicate: QueryPredicate,
+        options: JSONSerialization.WritingOptions = []
+    ) throws -> String {
+        let graphQLFilterData = try JSONSerialization.data(
+            withJSONObject: queryPredicate.graphQLFilter,
+            options: options
+        )
 
         guard let serializedString = String(data: graphQLFilterData, encoding: .utf8) else {
             return Fatal.preconditionFailure("""

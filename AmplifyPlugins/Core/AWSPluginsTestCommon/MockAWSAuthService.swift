@@ -66,6 +66,7 @@ struct MyCustomCredentialsProvider: CredentialsProviding {
         AWSCredentials(
             accessKey: "AKIDEXAMPLE",
             secret: "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY",
-            expirationTimeout: Date().addingTimeInterval(30))
+            expirationTimeout: Date().addingTimeInterval(30)
+        )
     }
 }

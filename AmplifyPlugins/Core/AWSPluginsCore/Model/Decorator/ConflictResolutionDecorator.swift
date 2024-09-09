@@ -19,26 +19,29 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
     private let graphQLType: GraphQLOperationType
     private var primaryKeysOnly: Bool
 
-    public init(version: Int? = nil,
-                lastSync: Int64? = nil,
-                graphQLType: GraphQLOperationType,
-                primaryKeysOnly: Bool = true)
-    {
+    public init(
+        version: Int? = nil,
+        lastSync: Int64? = nil,
+        graphQLType: GraphQLOperationType,
+        primaryKeysOnly: Bool = true
+    ) {
         self.version = version
         self.lastSync = lastSync
         self.graphQLType = graphQLType
         self.primaryKeysOnly = primaryKeysOnly
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument
-    {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelType: Model.Type
+    ) -> SingleDirectiveGraphQLDocument {
         decorate(document, modelSchema: modelType.schema)
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument
-    {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelSchema: ModelSchema
+    ) -> SingleDirectiveGraphQLDocument {
         var primaryKeysOnly = primaryKeysOnly
         if primaryKeysOnly && ModelRegistry.modelType(from: modelSchema.name)?.rootPath == nil {
             primaryKeysOnly = false
@@ -48,8 +51,7 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
         if let version,
             case .mutation = document.operationType,
             var input = inputs["input"],
-            case var .object(value) = input.value
-        {
+            case var .object(value) = input.value {
 
             value["_version"] = version
             input.value = .object(value)
@@ -73,10 +75,11 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
         case deletedFieldOnly
     }
     /// Append the correct conflict resolution fields for `model` and `pagination` selection sets.
-    private func addConflictResolution(selectionSet: SelectionSet,
-                                       primaryKeysOnly: Bool,
-                                       includeSyncMetadataFields: SyncMetadataFields = .full)
-    {
+    private func addConflictResolution(
+        selectionSet: SelectionSet,
+        primaryKeysOnly: Bool,
+        includeSyncMetadataFields: SyncMetadataFields = .full
+    ) {
         var includeSyncMetadataFields = includeSyncMetadataFields
         switch selectionSet.value.fieldType {
         case .value, .embedded:
@@ -104,17 +107,21 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
             // subscriptions and sync query is to receive data, so it can be reduced to allow decoding to the
             // LazyReference type.
             for child in selectionSet.children {
-                addConflictResolution(selectionSet: child,
-                                      primaryKeysOnly: primaryKeysOnly,
-                                      includeSyncMetadataFields: .full)
+                addConflictResolution(
+                    selectionSet: child,
+                    primaryKeysOnly: primaryKeysOnly,
+                    includeSyncMetadataFields: .full
+                )
             }
         } else {
             // Only add all the sync metadata fields once. Once this was done once, `includeSyncMetadataFields`
             // should be set to `.deletedFieldOnly` and passed down to the recursive call stack.
             for child in selectionSet.children {
-                addConflictResolution(selectionSet: child,
-                                      primaryKeysOnly: primaryKeysOnly,
-                                      includeSyncMetadataFields: includeSyncMetadataFields)
+                addConflictResolution(
+                    selectionSet: child,
+                    primaryKeysOnly: primaryKeysOnly,
+                    includeSyncMetadataFields: includeSyncMetadataFields
+                )
             }
         }
     }

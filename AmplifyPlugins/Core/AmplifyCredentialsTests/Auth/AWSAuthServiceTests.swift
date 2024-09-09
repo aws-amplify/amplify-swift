@@ -166,7 +166,8 @@ class AWSAuthServiceTests: XCTestCase {
             sessionToken: "somesession",
             accessKeyId: "accessKeyId",
             secretAccessKey: "secretAccessKey",
-            expiration: Date().addingTimeInterval(100))
+            expiration: Date().addingTimeInterval(100)
+        )
         let sdkCredentials = credentials.toAWSSDKCredentials()
         XCTAssertNotNil(sdkCredentials)
     }
@@ -180,7 +181,8 @@ class AWSAuthServiceTests: XCTestCase {
             sessionToken: "somesession",
             accessKeyId: "accessKeyId",
             secretAccessKey: "secretAccessKey",
-            expiration: Date().addingTimeInterval(-100))
+            expiration: Date().addingTimeInterval(-100)
+        )
         let sdkCredentials = credentials.toAWSSDKCredentials()
         XCTAssertNotNil(sdkCredentials)
     }

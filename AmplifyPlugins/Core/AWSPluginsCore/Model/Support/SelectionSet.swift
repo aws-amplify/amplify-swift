@@ -50,8 +50,7 @@ extension SelectionSet {
                 addChild(settingParentOf: child)
             } else if field._isBelongsToOrHasOne,
                       let associatedModelName = field.associatedModelName,
-                      let schema = ModelRegistry.modelSchema(from: associatedModelName)
-            {
+                      let schema = ModelRegistry.modelSchema(from: associatedModelName) {
                 if recursive {
                     var recursive = recursive
                     if field._isBelongsToOrHasOne {

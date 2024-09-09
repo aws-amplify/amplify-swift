@@ -17,8 +17,10 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
 
         var firstField = true
         self.identifierFields = model.identifier(schema: schema).fields.compactMap { fieldName, _ in
-            guard let value = model.graphQLInputForPrimaryKey(modelFieldName: fieldName,
-                                                              modelSchema: schema)
+            guard let value = model.graphQLInputForPrimaryKey(
+                modelFieldName: fieldName,
+                modelSchema: schema
+            )
             else {
                 return nil
             }
@@ -65,15 +67,17 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
         self.identifierFields = identifierFields
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument
-    {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelType: Model.Type
+    ) -> SingleDirectiveGraphQLDocument {
         decorate(document, modelSchema: modelType.schema)
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument
-    {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelSchema: ModelSchema
+    ) -> SingleDirectiveGraphQLDocument {
         var inputs = document.inputs
 
         if case .mutation = document.operationType {

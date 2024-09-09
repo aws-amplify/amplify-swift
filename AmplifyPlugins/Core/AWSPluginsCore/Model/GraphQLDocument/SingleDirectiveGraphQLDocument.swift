@@ -32,10 +32,12 @@ public protocol SingleDirectiveGraphQLDocument {
     var selectionSet: SelectionSet? { get set }
 
     /// Simple constructor to be implemented by the concrete types, used by the `copy` method.
-    init(operationType: GraphQLOperationType,
-         name: String,
-         inputs: [GraphQLParameterName: GraphQLDocumentInput],
-         selectionSet: SelectionSet?)
+    init(
+        operationType: GraphQLOperationType,
+        name: String,
+        inputs: [GraphQLParameterName: GraphQLDocumentInput],
+        selectionSet: SelectionSet?
+    )
 }
 
 // Provides default implementation
@@ -43,16 +45,19 @@ public extension SingleDirectiveGraphQLDocument {
 
     /// Method to create a deep copy of the document, useful for `ModelBasedGraphQLDocumentDecorator` decorators
     /// when decorating a document and returning a new document.
-    func copy(operationType: GraphQLOperationType? = nil,
-                     name: String? = nil,
-                     inputs: [GraphQLParameterName: GraphQLDocumentInput]? = nil,
-                     selectionSet: SelectionSet? = nil) -> Self
-    {
+    func copy(
+        operationType: GraphQLOperationType? = nil,
+        name: String? = nil,
+        inputs: [GraphQLParameterName: GraphQLDocumentInput]? = nil,
+        selectionSet: SelectionSet? = nil
+    ) -> Self {
 
-        return Self.init(operationType: operationType ?? self.operationType,
-                         name: name ?? self.name,
-                         inputs: inputs ?? self.inputs,
-                         selectionSet: selectionSet ?? self.selectionSet)
+        return Self.init(
+            operationType: operationType ?? self.operationType,
+            name: name ?? self.name,
+            inputs: inputs ?? self.inputs,
+            selectionSet: selectionSet ?? self.selectionSet
+        )
     }
 
     /// Returns nil when there are no `inputs`. Otherwise, consolidates the `inputs`

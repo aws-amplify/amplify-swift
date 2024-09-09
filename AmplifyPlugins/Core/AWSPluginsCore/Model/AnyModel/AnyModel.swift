@@ -49,8 +49,10 @@ public extension AnyModel {
     static let schema = defineSchema { definition in
         let anyModel = AnyModel.keys
 
-        definition.attributes(.isSystem,
-                              .primaryKey(fields: [anyModel.id]))
+        definition.attributes(
+            .isSystem,
+            .primaryKey(fields: [anyModel.id])
+        )
 
         definition.fields(
             .field(anyModel.id, is: .required, ofType: .string),
