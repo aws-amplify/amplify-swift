@@ -26,8 +26,10 @@ final class LogActorTests: XCTestCase {
 
         directory = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        systemUnderTest = try LogActor(directory: directory,
-                                       fileSizeLimitInBytes: fileSizeLimitInBytes)
+        systemUnderTest = try LogActor(
+            directory: directory,
+            fileSizeLimitInBytes: fileSizeLimitInBytes
+        )
         subscription = await systemUnderTest.rotationPublisher().sink { [weak self] url in
             self?.rotations.append(url)
         }

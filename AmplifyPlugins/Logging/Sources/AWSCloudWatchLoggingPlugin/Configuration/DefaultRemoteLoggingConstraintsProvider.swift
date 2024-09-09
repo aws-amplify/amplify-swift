@@ -30,10 +30,10 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
     }
 
     public init(
-         endpoint: URL,
-         region: String,
-         credentialProvider: CredentialsProviding? = nil,
-         refreshIntervalInSeconds: Int = 1_200
+        endpoint: URL,
+        region: String,
+        credentialProvider: CredentialsProviding? = nil,
+        refreshIntervalInSeconds: Int = 1_200
     ) {
         self.endpoint = endpoint
         if credentialProvider == nil {
@@ -143,13 +143,15 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
             eventHandler: { [weak self] in
                 guard let self else { return }
                 refresh()
-        })
+        }
+        )
         refreshTimer?.resume()
     }
 
-    static func createRepeatingTimer(timeInterval: TimeInterval,
-                                     eventHandler: @escaping () -> Void) -> DispatchSourceTimer
-    {
+    static func createRepeatingTimer(
+        timeInterval: TimeInterval,
+        eventHandler: @escaping () -> Void
+    ) -> DispatchSourceTimer {
         let timer = DispatchSource.makeTimerSource(queue: DispatchQueue.global(qos: .background))
         timer.schedule(deadline: .now() + timeInterval, repeating: timeInterval)
         timer.setEventHandler(handler: eventHandler)

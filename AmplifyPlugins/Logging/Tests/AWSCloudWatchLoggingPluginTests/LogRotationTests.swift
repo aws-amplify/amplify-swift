@@ -19,8 +19,10 @@ final class LogRotationTests: XCTestCase {
     override func setUp() async throws {
         directory = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        systemUnderTest = try LogRotation(directory: directory,
-                                          fileSizeLimitInBytes: fileSizeLimitInBytes)
+        systemUnderTest = try LogRotation(
+            directory: directory,
+            fileSizeLimitInBytes: fileSizeLimitInBytes
+        )
     }
 
     override func tearDown() async throws {
@@ -50,8 +52,10 @@ final class LogRotationTests: XCTestCase {
             "amplify.0.log"
         ])
 
-        systemUnderTest = try LogRotation(directory: directory,
-                                          fileSizeLimitInBytes: fileSizeLimitInBytes)
+        systemUnderTest = try LogRotation(
+            directory: directory,
+            fileSizeLimitInBytes: fileSizeLimitInBytes
+        )
         XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.1.log")
         try systemUnderTest.rotate()
 
@@ -81,8 +85,10 @@ final class LogRotationTests: XCTestCase {
             "amplify.0.log",
         ])
 
-        systemUnderTest = try LogRotation(directory: directory,
-                                          fileSizeLimitInBytes: fileSizeLimitInBytes)
+        systemUnderTest = try LogRotation(
+            directory: directory,
+            fileSizeLimitInBytes: fileSizeLimitInBytes
+        )
         XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.0.log")
     }
 
@@ -154,8 +160,10 @@ final class LogRotationTests: XCTestCase {
     func testLogRotationThrowsErrorWithInvalidFileSizeLimitInBytes() throws {
         for fileSizeLimitInBytes in 0 ..< LogRotation.minimumFileSizeLimitInBytes {
             do {
-                _ = try LogRotation(directory: directory,
-                                    fileSizeLimitInBytes: fileSizeLimitInBytes)
+                _ = try LogRotation(
+                    directory: directory,
+                    fileSizeLimitInBytes: fileSizeLimitInBytes
+                )
                 XCTFail("Expecting failure when initializing with fileCountLimit=\(fileSizeLimitInBytes)")
                 break
             } catch {
@@ -173,8 +181,10 @@ final class LogRotationTests: XCTestCase {
             "amplify.0.log"
         ])
 
-        systemUnderTest = try LogRotation(directory: directory,
-                                          fileSizeLimitInBytes: fileSizeLimitInBytes)
+        systemUnderTest = try LogRotation(
+            directory: directory,
+            fileSizeLimitInBytes: fileSizeLimitInBytes
+        )
         XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.1.log")
         try systemUnderTest.rotate()
 

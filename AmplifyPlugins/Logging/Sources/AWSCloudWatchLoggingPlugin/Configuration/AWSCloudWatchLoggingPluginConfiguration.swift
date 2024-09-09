@@ -17,8 +17,7 @@ public struct AWSCloudWatchLoggingPluginConfiguration: Codable {
         flushIntervalInSeconds: Int = 60,
         defaultRemoteConfiguration: DefaultRemoteConfiguration? = nil,
         loggingConstraints: LoggingConstraints = LoggingConstraints()
-     )
-    {
+    ) {
          self.logGroupName = logGroupName
          self.region = region
          self.enable = enable

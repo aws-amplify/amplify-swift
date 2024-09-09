@@ -52,9 +52,11 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase {
 
         let bytes = (0 ..< 1_024).map { _ in UInt8.random(in: 0 ..< 255) }
         let fileURL = getLogFile()
-        FileManager.default.createFile(atPath: fileURL.path,
-                                       contents: Data(bytes),
-                                       attributes: [FileAttributeKey: Any]())
+        FileManager.default.createFile(
+            atPath: fileURL.path,
+            contents: Data(bytes),
+            attributes: [FileAttributeKey: Any]()
+        )
         systemUnderTest = AWSCloudWatchLoggingSessionController(
             credentialsProvider: mockCredentialProvider,
             authentication: mockAuth,
@@ -66,7 +68,8 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase {
             region: "us-east-1",
             localStoreMaxSizeInMB: 1,
             userIdentifier: nil,
-            networkMonitor: mockLoggingNetworkMonitor)
+            networkMonitor: mockLoggingNetworkMonitor
+        )
         systemUnderTest.client = mockCloudWatchLogClient
         systemUnderTest.enable()
         try await systemUnderTest.flushLogs()

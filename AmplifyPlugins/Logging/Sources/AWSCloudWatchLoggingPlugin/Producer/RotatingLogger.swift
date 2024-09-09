@@ -25,11 +25,12 @@ final class RotatingLogger {
     ///
     /// - Parameter directory: The URL of the directory to use for the log rotation.
     /// - Parameter logLevel: Amplify.LogLevel by which to filter any incomming log events.
-    init(directory: URL,
-         category: String,
-         namespace: String?,
-         logLevel: Amplify.LogLevel,
-         fileSizeLimitInBytes: Int
+    init(
+        directory: URL,
+        category: String,
+        namespace: String?,
+        logLevel: Amplify.LogLevel,
+        fileSizeLimitInBytes: Int
     ) throws {
         self.category = category
         self.namespace = namespace
@@ -77,7 +78,8 @@ final class RotatingLogger {
                 let payload = HubPayload(
                     eventName: HubPayload.EventName.Logging.writeLogFailure,
                     context: error.localizedDescription,
-                    data: payload)
+                    data: payload
+                )
                 Amplify.Hub.dispatch(to: HubChannel.logging, payload: payload)
             }
         }

@@ -25,11 +25,13 @@ final class AWSCloudWatchLoggingSession {
         self.category = category
         self.namespace = namespace
         self.userIdentifier = userIdentifier
-        self.logger = try Self.createLogger(category: category,
-                                            namespace: namespace,
-                                            logLevel: logLevel,
-                                            userIdentifier: userIdentifier,
-                                            localStoreMaxSizeInMB: localStoreMaxSizeInMB)
+        self.logger = try Self.createLogger(
+            category: category,
+            namespace: namespace,
+            logLevel: logLevel,
+            userIdentifier: userIdentifier,
+            localStoreMaxSizeInMB: localStoreMaxSizeInMB
+        )
     }
 
     private static func createLogger(
@@ -44,11 +46,13 @@ final class AWSCloudWatchLoggingSession {
         try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
         try (directory as NSURL).setResourceValue(true, forKey: URLResourceKey.isExcludedFromBackupKey)
         let cacheMaxSizeInBytes = localStoreMaxSizeInMB * 1_048_576
-        return try RotatingLogger(directory: directory,
-                                  category: category,
-                                  namespace: namespace,
-                                  logLevel: logLevel,
-                                  fileSizeLimitInBytes: cacheMaxSizeInBytes)
+        return try RotatingLogger(
+            directory: directory,
+            category: category,
+            namespace: namespace,
+            logLevel: logLevel,
+            fileSizeLimitInBytes: cacheMaxSizeInBytes
+        )
     }
 
     private static func directory(for category: String, userIdentifier: String?, fileManager: FileManager = .default) throws -> URL {
@@ -85,5 +89,6 @@ extension AWSCloudWatchLoggingSession: LogBatchProducer {
 
 extension AWSCloudWatchLoggingError {
     static let sessionInternalErrorForUserId = AWSCloudWatchLoggingError(
-        errorDescription: "Internal error while attempting to interpret userId", recoverySuggestion: "")
+        errorDescription: "Internal error while attempting to interpret userId", recoverySuggestion: ""
+    )
 }

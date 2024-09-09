@@ -145,17 +145,19 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
                 return existing
             }
 
-            let controller = AWSCloudWatchLoggingSessionController(credentialsProvider: credentialsProvider,
-                                                                   authentication: authentication,
-                                                                   logFilter: self.logFilter,
-                                                                   category: category,
-                                                                   namespace: namespace,
-                                                                   logLevel: logLevel,
-                                                                   logGroupName: self.logGroupName,
-                                                                   region: self.region,
-                                                                   localStoreMaxSizeInMB: self.localStoreMaxSizeInMB,
-                                                                   userIdentifier: self.userIdentifier,
-                                                                   networkMonitor: self.networkMonitor)
+            let controller = AWSCloudWatchLoggingSessionController(
+                credentialsProvider: credentialsProvider,
+                authentication: authentication,
+                logFilter: self.logFilter,
+                category: category,
+                namespace: namespace,
+                logLevel: logLevel,
+                logGroupName: self.logGroupName,
+                region: self.region,
+                localStoreMaxSizeInMB: self.localStoreMaxSizeInMB,
+                userIdentifier: self.userIdentifier,
+                networkMonitor: self.networkMonitor
+            )
             if enabled {
                 controller.enable()
             }

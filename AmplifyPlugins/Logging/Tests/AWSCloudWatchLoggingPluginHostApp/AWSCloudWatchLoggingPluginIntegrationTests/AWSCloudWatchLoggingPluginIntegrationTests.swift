@@ -64,7 +64,8 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         let fileURLs = try FileManager.default.contentsOfDirectory(
             at: URL(string: directory)!,
             includingPropertiesForKeys: nil,
-            options: .skipsHiddenFiles)
+            options: .skipsHiddenFiles
+        )
         for fileURL in fileURLs {
             try FileManager.default.removeItem(at: fileURL)
         }
@@ -104,13 +105,15 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         try await loggingPlugin.flushLogs()
         try await Task.sleep(seconds: 30)
         let cloudWatchClient = loggingPlugin.getEscapeHatch()
-        try await verifyMessagesSent(plugin: loggingPlugin,
-                                     client: cloudWatchClient,
-                                     logGroupName: loggingConfiguration?.logGroupName,
-                                     messageCount: 4,
-                                     message: message,
-                                     category: category,
-                                     namespace: namespace)
+        try await verifyMessagesSent(
+            plugin: loggingPlugin,
+            client: cloudWatchClient,
+            logGroupName: loggingConfiguration?.logGroupName,
+            messageCount: 4,
+            message: message,
+            category: category,
+            namespace: namespace
+        )
     }
 
 
@@ -132,13 +135,15 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         try await loggingPlugin.flushLogs()
         try await Task.sleep(seconds: 30)
         let cloudWatchClient = loggingPlugin.getEscapeHatch()
-        try await verifyMessageSent(plugin: loggingPlugin,
-                                    client: cloudWatchClient,
-                                    logGroupName: loggingConfiguration?.logGroupName,
-                                    logLevel: "verbose",
-                                    message: message,
-                                    category: category,
-                                    namespace: namespace)
+        try await verifyMessageSent(
+            plugin: loggingPlugin,
+            client: cloudWatchClient,
+            logGroupName: loggingConfiguration?.logGroupName,
+            logLevel: "verbose",
+            message: message,
+            category: category,
+            namespace: namespace
+        )
     }
 
     /// - Given: a AWS CloudWatch Logging plugin with logging disabled
@@ -159,20 +164,23 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         try await loggingPlugin.flushLogs()
         try await Task.sleep(seconds: 30)
         let cloudWatchClient = loggingPlugin.getEscapeHatch()
-        try await verifyMessageNotSent(plugin: loggingPlugin,
-                                       client: cloudWatchClient,
-                                       logGroupName: loggingConfiguration?.logGroupName,
-                                       message: message)
+        try await verifyMessageNotSent(
+            plugin: loggingPlugin,
+            client: cloudWatchClient,
+            logGroupName: loggingConfiguration?.logGroupName,
+            message: message
+        )
     }
 
-    func verifyMessagesSent(plugin: AWSCloudWatchLoggingPlugin,
-                            client: CloudWatchLogsClientProtocol?,
-                            logGroupName: String?,
-                            messageCount: Int,
-                            message: String,
-                            category: String,
-                            namespace: String) async throws
-    {
+    func verifyMessagesSent(
+        plugin: AWSCloudWatchLoggingPlugin,
+        client: CloudWatchLogsClientProtocol?,
+        logGroupName: String?,
+        messageCount: Int,
+        message: String,
+        category: String,
+        namespace: String
+    ) async throws {
 
         let events = try await getLastMessageSent(
             plugin: plugin,
@@ -180,7 +188,8 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
             logGroupName: logGroupName,
             expectedMessageCount: messageCount,
             message: message,
-            requestAttempt: 0)
+            requestAttempt: 0
+        )
         XCTAssertEqual(events?.count, messageCount)
         guard let sentLogMessage = events?.first?.message else {
             XCTFail("Unable to verify last log message")
@@ -191,14 +200,15 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         XCTAssertTrue(sentLogMessage.contains(namespace))
     }
 
-    func verifyMessageSent(plugin: AWSCloudWatchLoggingPlugin,
-                           client: CloudWatchLogsClientProtocol?,
-                           logGroupName: String?,
-                           logLevel: String,
-                           message: String,
-                           category: String,
-                           namespace: String) async throws
-    {
+    func verifyMessageSent(
+        plugin: AWSCloudWatchLoggingPlugin,
+        client: CloudWatchLogsClientProtocol?,
+        logGroupName: String?,
+        logLevel: String,
+        message: String,
+        category: String,
+        namespace: String
+    ) async throws {
 
         let events = try await getLastMessageSent(
             plugin: plugin,
@@ -206,7 +216,8 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
             logGroupName: logGroupName,
             expectedMessageCount: 1,
             message: message,
-            requestAttempt: 0)
+            requestAttempt: 0
+        )
         XCTAssertEqual(events?.count, 1)
         guard let sentLogMessage = events?.first?.message else {
             XCTFail("Unable to verify last log message")
@@ -218,11 +229,12 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         XCTAssertTrue(sentLogMessage.contains(namespace))
     }
 
-    func verifyMessageNotSent(plugin: AWSCloudWatchLoggingPlugin,
-                              client: CloudWatchLogsClientProtocol?,
-                              logGroupName: String?,
-                              message: String) async throws
-    {
+    func verifyMessageNotSent(
+        plugin: AWSCloudWatchLoggingPlugin,
+        client: CloudWatchLogsClientProtocol?,
+        logGroupName: String?,
+        message: String
+    ) async throws {
 
         let events = try await getLastMessageSent(
             plugin: plugin,
@@ -230,17 +242,19 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
             logGroupName: logGroupName,
             expectedMessageCount: 1,
             message: message,
-            requestAttempt: 0)
+            requestAttempt: 0
+        )
         XCTAssertEqual(events?.count, 0)
     }
 
-    func getLastMessageSent(plugin: AWSCloudWatchLoggingPlugin,
-                            client: CloudWatchLogsClientProtocol?,
-                            logGroupName: String?,
-                            expectedMessageCount: Int,
-                            message: String,
-                            requestAttempt: Int) async throws -> [CloudWatchLogsClientTypes.FilteredLogEvent]?
-    {
+    func getLastMessageSent(
+        plugin: AWSCloudWatchLoggingPlugin,
+        client: CloudWatchLogsClientProtocol?,
+        logGroupName: String?,
+        expectedMessageCount: Int,
+        message: String,
+        requestAttempt: Int
+    ) async throws -> [CloudWatchLogsClientTypes.FilteredLogEvent]? {
         let endTime = Date()
         let durationInMinutes = requestAttempt + 1
         let startTime = endTime.addingTimeInterval(TimeInterval(-durationInMinutes * 60))
@@ -256,7 +270,8 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
                 logGroupName: logGroupName,
                 expectedMessageCount: expectedMessageCount,
                 message: message,
-                requestAttempt: attempted)
+                requestAttempt: attempted
+            )
         }
 
         return events

@@ -54,7 +54,8 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
                 self.remoteLoggingConstraintsProvider = DefaultRemoteLoggingConstraintsProvider(
                     endpoint: remoteConfig.endpoint,
                     region: configuration.region,
-                    refreshIntervalInSeconds: remoteConfig.refreshIntervalInSeconds)
+                    refreshIntervalInSeconds: remoteConfig.refreshIntervalInSeconds
+                )
             }
         }
     }
@@ -122,7 +123,8 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
                 remoteLoggingConstraintsProvider = DefaultRemoteLoggingConstraintsProvider(
                     endpoint: remoteConfig.endpoint,
                     region: configuration.region,
-                    refreshIntervalInSeconds: remoteConfig.refreshIntervalInSeconds)
+                    refreshIntervalInSeconds: remoteConfig.refreshIntervalInSeconds
+                )
             }
 
             loggingClient = AWSCloudWatchLoggingCategoryClient(

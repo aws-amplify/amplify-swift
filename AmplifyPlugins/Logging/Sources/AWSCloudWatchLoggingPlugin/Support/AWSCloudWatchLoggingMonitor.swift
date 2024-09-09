@@ -35,7 +35,8 @@ class AWSCLoudWatchLoggingMonitor {
             eventHandler: { [weak self] in
                 guard let self else { return }
                 eventDelegate?.handleAutomaticFlushIntervalEvent()
-        })
+        }
+        )
         automaticFlushLogsTimer?.resume()
     }
 

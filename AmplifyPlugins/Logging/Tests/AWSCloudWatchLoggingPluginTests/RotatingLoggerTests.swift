@@ -24,11 +24,13 @@ final class RotatingLoggerTests: XCTestCase {
         directory = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
 
-        systemUnderTest = try RotatingLogger(directory: directory,
-                                             category: "RotatingLoggerTests",
-                                             namespace: nil,
-                                             logLevel: .verbose,
-                                             fileSizeLimitInBytes: fileSizeLimitInBytes)
+        systemUnderTest = try RotatingLogger(
+            directory: directory,
+            category: "RotatingLoggerTests",
+            namespace: nil,
+            logLevel: .verbose,
+            fileSizeLimitInBytes: fileSizeLimitInBytes
+        )
         batches = []
         subscription = systemUnderTest.logBatchPublisher.sink(receiveValue: { [weak self] in self?.batches.append($0) })
     }

@@ -59,17 +59,18 @@ final class AWSCloudWatchLoggingSessionController {
     }
 
     /// - Tag: CloudWatchLogSessionController.init
-    init(credentialsProvider: CredentialsProviding,
-         authentication: AuthCategoryUserBehavior,
-         logFilter: AWSCloudWatchLoggingFilterBehavior,
-         category: String,
-         namespace: String?,
-         logLevel: LogLevel,
-         logGroupName: String,
-         region: String,
-         localStoreMaxSizeInMB: Int,
-         userIdentifier: String?,
-         networkMonitor: LoggingNetworkMonitor
+    init(
+        credentialsProvider: CredentialsProviding,
+        authentication: AuthCategoryUserBehavior,
+        logFilter: AWSCloudWatchLoggingFilterBehavior,
+        category: String,
+        namespace: String?,
+        logLevel: LogLevel,
+        logGroupName: String,
+        region: String,
+        localStoreMaxSizeInMB: Int,
+        userIdentifier: String?,
+        networkMonitor: LoggingNetworkMonitor
     ) {
         self.credentialsProvider = credentialsProvider
         self.authentication = authentication
@@ -117,7 +118,8 @@ final class AWSCloudWatchLoggingSessionController {
         return CloudWatchLoggingConsumer(
             client: cloudWatchClient,
             logGroupName: logGroupName,
-            userIdentifier: userIdentifier)
+            userIdentifier: userIdentifier
+        )
     }
 
     private func connectProducerAndConsumer() {
@@ -153,11 +155,13 @@ final class AWSCloudWatchLoggingSessionController {
 
     private func updateSession() {
         do {
-            session = try AWSCloudWatchLoggingSession(category: category,
-                                                           namespace: namespace,
-                                                           logLevel: logLevel,
-                                                           userIdentifier: userIdentifier,
-                                                           localStoreMaxSizeInMB: localStoreMaxSizeInMB)
+            session = try AWSCloudWatchLoggingSession(
+                category: category,
+                namespace: namespace,
+                logLevel: logLevel,
+                userIdentifier: userIdentifier,
+                localStoreMaxSizeInMB: localStoreMaxSizeInMB
+            )
         } catch {
             session = nil
             print(error)
