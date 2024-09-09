@@ -41,19 +41,21 @@ class GraphQLScalarTests: GraphQLTestBase {
     }
 
     func testScalarContainer() async throws {
-        let container = ScalarContainer(myString: "myString".withUUID,
-                                        myInt: 1,
-                                        myDouble: 1.0,
-                                        myBool: true,
-                                        myDate: .now(),
-                                        myTime: .now(),
-                                        myDateTime: .now(),
-                                        myTimeStamp: 123,
-                                        myEmail: "local-part@domain-part",
-                                        myJSON: "{}",
-                                        myPhone: "2342355678",
-                                        myURL: "https://www.amazon.com/dp/B000NZW3KC/",
-                                        myIPAddress: "123.12.34.56")
+        let container = ScalarContainer(
+            myString: "myString".withUUID,
+            myInt: 1,
+            myDouble: 1.0,
+            myBool: true,
+            myDate: .now(),
+            myTime: .now(),
+            myDateTime: .now(),
+            myTimeStamp: 123,
+            myEmail: "local-part@domain-part",
+            myJSON: "{}",
+            myPhone: "2342355678",
+            myURL: "https://www.amazon.com/dp/B000NZW3KC/",
+            myIPAddress: "123.12.34.56"
+        )
         let updatedContainer = ScalarContainer(id: container.id)
 
         let createdModel = try await mutateModel(request: .create(container))
@@ -84,15 +86,18 @@ class GraphQLScalarTests: GraphQLTestBase {
             intList: [],
             intNullableList: [],
             nullableIntList: [],
-            nullableIntNullableList: nil)
+            nullableIntNullableList: nil
+        )
 
-        let updatedContainer = ListIntContainer(id: container.id,
-                                                test: 2,
-                                                nullableInt: nil,
-                                                intList: [1, 2, 3],
-                                                intNullableList: [1, 2, 3],
-                                                nullableIntList: [1, 2, 3],
-                                                nullableIntNullableList: [1, 2, 3])
+        let updatedContainer = ListIntContainer(
+            id: container.id,
+            test: 2,
+            nullableInt: nil,
+            intList: [1, 2, 3],
+            intNullableList: [1, 2, 3],
+            nullableIntList: [1, 2, 3],
+            nullableIntNullableList: [1, 2, 3]
+        )
 
         let createdModel = try await mutateModel(request: .create(container))
         XCTAssertEqual(createdModel, container)
@@ -120,23 +125,28 @@ class GraphQLScalarTests: GraphQLTestBase {
             stringList: ["value1".withUUID],
             stringNullableList: [],
             nullableStringList: [],
-            nullableStringNullableList: nil)
+            nullableStringNullableList: nil
+        )
 
-        let updatedContainer = ListStringContainer(id: container.id,
-                                                   test: "test",
-                                                   nullableString: "test",
-                                                   stringList: ["value1"],
-                                                   stringNullableList: ["value1"],
-                                                   nullableStringList: ["value1"],
-                                                   nullableStringNullableList: ["value1"])
+        let updatedContainer = ListStringContainer(
+            id: container.id,
+            test: "test",
+            nullableString: "test",
+            stringList: ["value1"],
+            stringNullableList: ["value1"],
+            nullableStringList: ["value1"],
+            nullableStringNullableList: ["value1"]
+        )
         let createdModel = try await mutateModel(request: .create(container))
         XCTAssertEqual(createdModel, container)
 
         let updatedModel = try await mutateModel(request: .update(updatedContainer))
         XCTAssertEqual(updatedModel, updatedContainer)
 
-        guard let queriedModel = try await queryModel(request: .get(ListStringContainer.self,
-                                                                    byId: container.id))
+        guard let queriedModel = try await queryModel(request: .get(
+            ListStringContainer.self,
+            byId: container.id
+        ))
         else {
             XCTFail("Failed to query model")
             return
@@ -157,23 +167,28 @@ class GraphQLScalarTests: GraphQLTestBase {
             stringList: ["value1".withUUID],
             stringNullableList: nil,
             nullableStringList: [nil],
-            nullableStringNullableList: nil)
+            nullableStringNullableList: nil
+        )
 
-        let updatedContainer = ListStringContainer(id: container.id,
-                                                   test: "test",
-                                                   nullableString: "test",
-                                                   stringList: ["value1"],
-                                                   stringNullableList: ["value1"],
-                                                   nullableStringList: ["value1"],
-                                                   nullableStringNullableList: ["value1"])
+        let updatedContainer = ListStringContainer(
+            id: container.id,
+            test: "test",
+            nullableString: "test",
+            stringList: ["value1"],
+            stringNullableList: ["value1"],
+            nullableStringList: ["value1"],
+            nullableStringNullableList: ["value1"]
+        )
         let createdModel = try await mutateModel(request: .create(container))
         XCTAssertEqual(createdModel, container)
 
         let updatedModel = try await mutateModel(request: .update(updatedContainer))
         XCTAssertEqual(updatedModel, updatedContainer)
 
-        guard let queriedModel = try await queryModel(request: .get(ListStringContainer.self,
-                                                                    byId: container.id))
+        guard let queriedModel = try await queryModel(request: .get(
+            ListStringContainer.self,
+            byId: container.id
+        ))
         else {
             XCTFail("Failed to query model")
             return
@@ -188,19 +203,23 @@ class GraphQLScalarTests: GraphQLTestBase {
     }
 
     func testEnumTestModel() async throws {
-        let container = EnumTestModel(enumVal: .valueOne,
-                                      nullableEnumVal: .valueTwo,
-                                      enumList: [.valueOne],
-                                      enumNullableList: [.valueTwo],
-                                      nullableEnumList: [.valueOne, .valueTwo],
-                                      nullableEnumNullableList: [.valueTwo, .valueOne])
-        let updatedContainer = EnumTestModel(id: container.id,
-                                             enumVal: .valueTwo,
-                                             nullableEnumVal: nil,
-                                             enumList: [.valueTwo],
-                                             enumNullableList: [.valueTwo, .valueOne],
-                                             nullableEnumList: [.valueTwo, .valueOne],
-                                             nullableEnumNullableList: [.valueOne, .valueTwo])
+        let container = EnumTestModel(
+            enumVal: .valueOne,
+            nullableEnumVal: .valueTwo,
+            enumList: [.valueOne],
+            enumNullableList: [.valueTwo],
+            nullableEnumList: [.valueOne, .valueTwo],
+            nullableEnumNullableList: [.valueTwo, .valueOne]
+        )
+        let updatedContainer = EnumTestModel(
+            id: container.id,
+            enumVal: .valueTwo,
+            nullableEnumVal: nil,
+            enumList: [.valueTwo],
+            enumNullableList: [.valueTwo, .valueOne],
+            nullableEnumList: [.valueTwo, .valueOne],
+            nullableEnumNullableList: [.valueOne, .valueTwo]
+        )
         let createdModel = try await mutateModel(request: .create(container))
         XCTAssertEqual(createdModel, container)
 
@@ -221,20 +240,24 @@ class GraphQLScalarTests: GraphQLTestBase {
     }
 
     func testNestedEnumTestModel() async throws {
-        let container = NestedTypeTestModel(nestedVal: .init(valueOne: 1),
-                                            nullableNestedVal: .init(),
-                                            nestedList: [.init(valueTwo: "value2")],
-                                            nestedNullableList: [.init()],
-                                            nullableNestedList: [.init(valueOne: 1, valueTwo: "value2")],
-                                            nullableNestedNullableList: [.init(valueOne: 1, valueTwo: "value2")])
+        let container = NestedTypeTestModel(
+            nestedVal: .init(valueOne: 1),
+            nullableNestedVal: .init(),
+            nestedList: [.init(valueTwo: "value2")],
+            nestedNullableList: [.init()],
+            nullableNestedList: [.init(valueOne: 1, valueTwo: "value2")],
+            nullableNestedNullableList: [.init(valueOne: 1, valueTwo: "value2")]
+        )
 
-        let updatedContainer = NestedTypeTestModel(id: container.id,
-                                                   nestedVal: .init(valueOne: 1),
-                                                   nullableNestedVal: .init(),
-                                                   nestedList: [.init(valueTwo: "updatedValue"), .init(valueOne: 1)],
-                                                   nestedNullableList: [.init(valueOne: 1, valueTwo: "value2")],
-                                                   nullableNestedList: [],
-                                                   nullableNestedNullableList: nil)
+        let updatedContainer = NestedTypeTestModel(
+            id: container.id,
+            nestedVal: .init(valueOne: 1),
+            nullableNestedVal: .init(),
+            nestedList: [.init(valueTwo: "updatedValue"), .init(valueOne: 1)],
+            nestedNullableList: [.init(valueOne: 1, valueTwo: "value2")],
+            nullableNestedList: [],
+            nullableNestedNullableList: nil
+        )
 
         let createdModel = try await mutateModel(request: .create(container))
         XCTAssertEqual(createdModel, container)
@@ -242,8 +265,10 @@ class GraphQLScalarTests: GraphQLTestBase {
         let updatedModel = try await mutateModel(request: .update(updatedContainer))
         XCTAssertEqual(updatedModel, updatedContainer)
 
-        guard let queriedModel = try await queryModel(request: .get(NestedTypeTestModel.self,
-                                                                    byId: container.id))
+        guard let queriedModel = try await queryModel(request: .get(
+            NestedTypeTestModel.self,
+            byId: container.id
+        ))
         else {
             XCTFail("Failed to query model")
             return

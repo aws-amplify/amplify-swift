@@ -24,7 +24,8 @@ final class GraphQLPostPerson41Tests: AWSAPIPluginGen2GraphQLBaseTest {
             title: "title",
             content: "content",
             author: author,
-            editor: editor)
+            editor: editor
+        )
         _ = try await Amplify.API.mutate(request: .create(post))
 
         // Code Snippet Begins
@@ -32,7 +33,8 @@ final class GraphQLPostPerson41Tests: AWSAPIPluginGen2GraphQLBaseTest {
             guard let queriedPost = try await Amplify.API.query(
                 request: .get(
                     Post.self,
-                    byIdentifier: post.identifier)).get()
+                    byIdentifier: post.identifier
+                )).get()
             else {
                 print("Missing post")
                 // Code Snippet Ends

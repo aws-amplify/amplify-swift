@@ -18,10 +18,12 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: PostComment8Models())
 
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              postId: post.postId,
-                              postTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            postId: post.postId,
+            postTitle: post.title
+        )
         let savedPost = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
     }
@@ -30,10 +32,12 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: PostComment8Models())
 
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              postId: post.postId,
-                              postTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            postId: post.postId,
+            postTitle: post.title
+        )
         let savedPost = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
         assertComment(savedComment, contains: savedPost)
@@ -54,15 +58,18 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
         XCTAssertNil(comment.postTitle)
     }
 
-    func assertPost(_ post: Post,
-                    canLazyLoad comment: Comment) async throws
-    {
+    func assertPost(
+        _ post: Post,
+        canLazyLoad comment: Comment
+    ) async throws {
         guard let comments = post.comments else {
             XCTFail("Missing comments on post")
             return
         }
-        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title],
-                                                 associatedFields: ["postId", "postTitle"]))
+        assertList(comments, state: .isNotLoaded(
+            associatedIdentifiers: [post.postId, post.title],
+            associatedFields: ["postId", "postTitle"]
+        ))
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))
         guard let comment = comments.first else {
@@ -75,18 +82,22 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
     func testListPostsListComments() async throws {
         await setup(withModels: PostComment8Models())
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              postId: post.postId,
-                              postTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            postId: post.postId,
+            postTitle: post.title
+        )
         try await mutate(.create(post))
         try await mutate(.create(comment))
 
 
         let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.postId == post.postId))
         assertList(queriedPosts, state: .isLoaded(count: 1))
-        assertList(queriedPosts.first!.comments!,
-                   state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedFields: ["postId", "postTitle"]))
+        assertList(
+            queriedPosts.first!.comments!,
+            state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedFields: ["postId", "postTitle"])
+        )
 
         let queriedComments = try await listQuery(.list(Comment.self, where: Comment.keys.commentId == comment.commentId))
         assertList(queriedComments, state: .isLoaded(count: 1))
@@ -112,10 +123,12 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
     func testUpdateFromQueriedComment() async throws {
         await setup(withModels: PostComment8Models())
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              postId: post.postId,
-                              postTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            postId: post.postId,
+            postTitle: post.title
+        )
         let savedPost = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
         let queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId, content: comment.content)))!
@@ -129,10 +142,12 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: PostComment8Models())
 
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              postId: post.postId,
-                              postTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            postId: post.postId,
+            postTitle: post.title
+        )
         _ = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
         var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId, content: comment.content)))!
@@ -150,10 +165,12 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: PostComment8Models())
 
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              postId: post.postId,
-                              postTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            postId: post.postId,
+            postTitle: post.title
+        )
         _ = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
         var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId, content: comment.content)))!
@@ -171,10 +188,12 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: PostComment8Models())
 
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              postId: post.postId,
-                              postTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            postId: post.postId,
+            postTitle: post.title
+        )
         let savedPost = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
 

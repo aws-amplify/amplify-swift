@@ -42,7 +42,8 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
                 region: region,
                 authorizationType: AWSAuthorizationType.none,
                 endpointType: .graphQL,
-                apiAuthProviderFactory: APIAuthProviderFactory())]
+                apiAuthProviderFactory: APIAuthProviderFactory()
+            )]
             let pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig)
             self.pluginConfig = pluginConfig
 
@@ -72,10 +73,12 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
         })
         await setUp(mockAppSyncRealTimeClientFactory: mockSubscriptionConnectionFactory)
 
-        let request = GraphQLRequest(apiName: apiName,
-                                     document: testDocument,
-                                     variables: nil,
-                                     responseType: JSONValue.self)
+        let request = GraphQLRequest(
+            apiName: apiName,
+            document: testDocument,
+            variables: nil,
+            responseType: JSONValue.self
+        )
 
         let receivedValueConnecting = expectation(description: "Received value for connecting")
 
@@ -152,10 +155,12 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
 
         await setUp(mockAppSyncRealTimeClientFactory: mockSubscriptionConnectionFactory)
 
-        let request = GraphQLRequest(apiName: apiName,
-                                     document: testDocument,
-                                     variables: nil,
-                                     responseType: JSONValue.self)
+        let request = GraphQLRequest(
+            apiName: apiName,
+            document: testDocument,
+            variables: nil,
+            responseType: JSONValue.self
+        )
 
         let receivedCompletion = expectation(description: "Received completion")
         receivedCompletion.isInverted = true
@@ -199,10 +204,12 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
 
         await setUp(mockAppSyncRealTimeClientFactory: mockSubscriptionConnectionFactory)
 
-        let request = GraphQLRequest(apiName: apiName,
-                                     document: testDocument,
-                                     variables: nil,
-                                     responseType: JSONValue.self)
+        let request = GraphQLRequest(
+            apiName: apiName,
+            document: testDocument,
+            variables: nil,
+            responseType: JSONValue.self
+        )
 
 
         let receivedValue = expectation(description: "Received value for connecting")

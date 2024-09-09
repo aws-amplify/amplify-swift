@@ -11,8 +11,7 @@ import Foundation
 
 public extension StrangeExplicitChild {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case strangeId
     case content
     case parent
@@ -53,9 +52,10 @@ extension StrangeExplicitChild: ModelIdentifiable {
 }
 
 public extension StrangeExplicitChild.IdentifierProtocol {
-  static func identifier(strangeId: String,
-      content: String) -> Self
-  {
+  static func identifier(
+    strangeId: String,
+    content: String
+  ) -> Self {
     .make(fields: [(name: "strangeId", value: strangeId), (name: "content", value: content)])
   }
 }

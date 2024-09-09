@@ -59,7 +59,8 @@ class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
             modelIntrospection: nil,
             apiKey: "apiKey123",
             defaultAuthorizationType: .amazonCognitoUserPools,
-            authorizationTypes: [.apiKey, .awsIAM]))
+            authorizationTypes: [.apiKey, .awsIAM]
+        ))
 
         let plugin = AWSAPIPlugin()
         try plugin.configure(using: config)
@@ -99,7 +100,8 @@ class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
             modelIntrospection: nil,
             apiKey: nil,
             defaultAuthorizationType: .apiKey,
-            authorizationTypes: []))
+            authorizationTypes: []
+        ))
 
         let plugin = AWSAPIPlugin()
         XCTAssertThrowsError(try plugin.configure(using: config)) { error in

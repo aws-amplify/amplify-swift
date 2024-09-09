@@ -16,22 +16,26 @@ public struct Post1: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      location: Location1? = nil,
-      content: String? = nil)
-  {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    location: Location1? = nil,
+    content: String? = nil
+  ) {
+    self.init(
+      id: id,
       location: location,
       content: content,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(id: String = UUID().uuidString,
-      location: Location1? = nil,
-      content: String? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    id: String = UUID().uuidString,
+    location: Location1? = nil,
+    content: String? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.location = location
       self.content = content

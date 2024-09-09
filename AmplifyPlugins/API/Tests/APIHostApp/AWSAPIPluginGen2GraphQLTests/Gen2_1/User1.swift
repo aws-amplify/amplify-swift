@@ -15,19 +15,23 @@ public struct User1: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      lastKnownLocation: Location1? = nil)
-  {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    lastKnownLocation: Location1? = nil
+  ) {
+    self.init(
+      id: id,
       lastKnownLocation: lastKnownLocation,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(id: String = UUID().uuidString,
-      lastKnownLocation: Location1? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    id: String = UUID().uuidString,
+    lastKnownLocation: Location1? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.lastKnownLocation = lastKnownLocation
       self.createdAt = createdAt

@@ -86,9 +86,11 @@ class GraphQLModelBasedTests: XCTestCase {
         let title = testMethodName + "Title"
         let post = Post(id: uuid, title: title, content: "content", createdAt: .now())
         _ = try await Amplify.API.mutate(request: .create(post))
-        let comment = Comment(content: "commentContent",
-                              createdAt: .now(),
-                              post: post)
+        let comment = Comment(
+            content: "commentContent",
+            createdAt: .now(),
+            post: post
+        )
         _ = try await Amplify.API.mutate(request: .create(comment))
 
         let document = """
@@ -124,10 +126,12 @@ class GraphQLModelBasedTests: XCTestCase {
       }
     }
     """
-        let graphQLRequest = GraphQLRequest(document: document,
-                                            variables: ["id": uuid],
-                                            responseType: Post?.self,
-                                            decodePath: "getPost")
+        let graphQLRequest = GraphQLRequest(
+            document: document,
+            variables: ["id": uuid],
+            responseType: Post?.self,
+            decodePath: "getPost"
+        )
         let graphQLResponse = try await Amplify.API.query(request: graphQLRequest)
         guard case .success(let data) = graphQLResponse else {
             XCTFail("Missing successful response")
@@ -166,12 +170,14 @@ class GraphQLModelBasedTests: XCTestCase {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let uniqueTitle = testMethodName + uuid + "Title"
-        let createdPost = Post(id: uuid,
-                               title: uniqueTitle,
-                               content: "content",
-                               createdAt: .now(),
-                               draft: true,
-                               rating: 12.3)
+        let createdPost = Post(
+            id: uuid,
+            title: uniqueTitle,
+            content: "content",
+            createdAt: .now(),
+            draft: true,
+            rating: 12.3
+        )
         _ = try await Amplify.API.mutate(request: .create(createdPost))
         let post = Post.keys
         let predicate = post.id == uuid &&
@@ -219,9 +225,11 @@ class GraphQLModelBasedTests: XCTestCase {
         let title = testMethodName + "Title"
         let post = Post(id: uuid, title: title, content: "content", createdAt: .now())
         _ = try await Amplify.API.mutate(request: .create(post))
-        let comment = Comment(content: "commentContent",
-                              createdAt: .now(),
-                              post: post)
+        let comment = Comment(
+            content: "commentContent",
+            createdAt: .now(),
+            post: post
+        )
         let createdCommentResult = try await Amplify.API.mutate(request: .create(comment))
         guard case .success(let resultComment) = createdCommentResult else {
             XCTFail("Error creating a Comment \(createdCommentResult)")
@@ -491,8 +499,7 @@ class GraphQLModelBasedTests: XCTestCase {
         if let appSyncRealTimeClientFactory =
             getUnderlyingAPIPlugin()?.appSyncRealTimeClientFactory as? AppSyncRealTimeClientFactory,
            let appSyncRealTimeClient =
-            await appSyncRealTimeClientFactory.apiToClientCache.values.first as? AppSyncRealTimeClient
-        {
+            await appSyncRealTimeClientFactory.apiToClientCache.values.first as? AppSyncRealTimeClient {
             var appSyncSubscriptions = await appSyncRealTimeClient.numberOfSubscriptions
             XCTAssertEqual(appSyncSubscriptions, numberOfSubscription)
 

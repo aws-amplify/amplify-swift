@@ -114,11 +114,13 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         try await mutate(.create(post))
 
         // blog includes post
-        let queriedBlogWithPost = try await query(.get(Blog.self,
-                                                       byIdentifier: blog.id,
-                                                       includes: { blog in
+        let queriedBlogWithPost = try await query(.get(
+            Blog.self,
+            byIdentifier: blog.id,
+            includes: { blog in
             [blog.posts]
-        }))!
+        }
+        ))!
         assertList(queriedBlogWithPost.posts!, state: .isLoaded(count: 1))
 
         // post includes blog
@@ -152,11 +154,13 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         try await mutate(.create(comment))
 
         // blog includes post and comment
-        let queriedBlogWithPostComment = try await query(.get(Blog.self,
-                                                       byIdentifier: blog.id,
-                                                       includes: { blog in
+        let queriedBlogWithPostComment = try await query(.get(
+            Blog.self,
+            byIdentifier: blog.id,
+            includes: { blog in
             [blog.posts.comments]
-        }))!
+        }
+        ))!
         assertList(queriedBlogWithPostComment.posts!, state: .isLoaded(count: 1))
         assertList(queriedBlogWithPostComment.posts!.first!.comments!, state: .isLoaded(count: 1))
 
@@ -178,18 +182,24 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
 
         let queriedBlogs = try await listQuery(.list(Blog.self, where: Blog.keys.id == blog.id))
         assertList(queriedBlogs, state: .isLoaded(count: 1))
-        assertList(queriedBlogs.first!.posts!,
-                   state: .isNotLoaded(associatedIdentifiers: [blog.id], associatedFields: ["blog"]))
+        assertList(
+            queriedBlogs.first!.posts!,
+            state: .isNotLoaded(associatedIdentifiers: [blog.id], associatedFields: ["blog"])
+        )
 
         let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.id == post.id))
         assertList(queriedPosts, state: .isLoaded(count: 1))
-        assertList(queriedPosts.first!.comments!,
-                   state: .isNotLoaded(associatedIdentifiers: [post.id], associatedFields: ["post"]))
+        assertList(
+            queriedPosts.first!.comments!,
+            state: .isNotLoaded(associatedIdentifiers: [post.id], associatedFields: ["post"])
+        )
 
         let queriedComments = try await listQuery(.list(Comment.self, where: Comment.keys.id == comment.id))
         assertList(queriedComments, state: .isLoaded(count: 1))
-        assertLazyReference(queriedComments.first!._post,
-                            state: .notLoaded(identifiers: [.init(name: "id", value: post.id)]))
+        assertLazyReference(
+            queriedComments.first!._post,
+            state: .notLoaded(identifiers: [.init(name: "id", value: post.id)])
+        )
     }
 
     func testUpdate() {

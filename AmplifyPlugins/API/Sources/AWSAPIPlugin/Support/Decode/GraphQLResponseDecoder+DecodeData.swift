@@ -45,33 +45,38 @@ extension GraphQLResponseDecoder {
             serializedJSON = try encoder.encode(anyModel)
         } else if request.responseType is ModelListMarker.Type, // 3
                   case .object(var graphQLDataObject) = graphQLData,
-                  case .array(var graphQLDataArray) = graphQLDataObject["items"]
-        {
+                  case .array(var graphQLDataArray) = graphQLDataObject["items"] {
             for (index, item) in graphQLDataArray.enumerated() {
                 let modelJSON: JSONValue = if let _ = (request.options.pluginOptions as? AWSAPIPluginDataStoreOptions) {
                     AppSyncModelMetadataUtils.addMetadata(
                         toModel: item,
                         apiName: request.apiName,
                         authMode: request.authMode as? AWSAuthorizationType,
-                        source: ModelProviderRegistry.DecoderSource.dataStore)
+                        source: ModelProviderRegistry.DecoderSource.dataStore
+                    )
                 } else {
                     AppSyncModelMetadataUtils.addMetadata(
                         toModel: item,
                         apiName: request.apiName,
-                        authMode: request.authMode as? AWSAuthorizationType)
+                        authMode: request.authMode as? AWSAuthorizationType
+                    )
                 }
                 graphQLDataArray[index] = modelJSON
             }
             graphQLDataObject["items"] = JSONValue.array(graphQLDataArray)
-            let payload = try AppSyncListPayload(graphQLData: JSONValue.object(graphQLDataObject),
-                                             apiName: request.apiName,
-                                             authMode: request.authMode as? AWSAuthorizationType,
-                                             variables: getVariablesJSON())
+            let payload = try AppSyncListPayload(
+                graphQLData: JSONValue.object(graphQLDataObject),
+                apiName: request.apiName,
+                authMode: request.authMode as? AWSAuthorizationType,
+                variables: getVariablesJSON()
+            )
             serializedJSON = try encoder.encode(payload)
         } else if AppSyncModelMetadataUtils.shouldAddMetadata(toModel: graphQLData) { // 4
-            let modelJSON = AppSyncModelMetadataUtils.addMetadata(toModel: graphQLData,
-                                                                  apiName: request.apiName,
-                                                                  authMode: request.authMode as? AWSAuthorizationType)
+            let modelJSON = AppSyncModelMetadataUtils.addMetadata(
+                toModel: graphQLData,
+                apiName: request.apiName,
+                authMode: request.authMode as? AWSAuthorizationType
+            )
             serializedJSON = try encoder.encode(modelJSON)
         } else { // 5
             serializedJSON = try encoder.encode(graphQLData)
@@ -124,8 +129,7 @@ extension GraphQLResponseDecoder {
            request.responseType == MutationSync<AnyModel>.self,
            case var .object(modelJSON) = graphQLData,
            // No need to replace existing response payloads that have it already
-           modelJSON["__typename"] == nil
-        {
+           modelJSON["__typename"] == nil {
             modelJSON["__typename"] = .string(modelName)
             return JSONValue.object(modelJSON)
         } else {

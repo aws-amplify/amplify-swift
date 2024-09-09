@@ -11,8 +11,7 @@ import Foundation
 
 public extension Project5 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case projectId
     case name
     case team
@@ -56,9 +55,10 @@ extension Project5: ModelIdentifiable {
 }
 
 public extension Project5.IdentifierProtocol {
-  static func identifier(projectId: String,
-      name: String) -> Self
-  {
+  static func identifier(
+    projectId: String,
+    name: String
+  ) -> Self {
     .make(fields: [(name: "projectId", value: projectId), (name: "name", value: name)])
   }
 }

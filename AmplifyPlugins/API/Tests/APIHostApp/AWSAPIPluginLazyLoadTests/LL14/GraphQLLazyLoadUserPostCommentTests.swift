@@ -121,10 +121,14 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
         let comment = Comment(content: "content", post: savedPost, author: savedUser)
         try await mutate(.create(comment))
 
-        guard let queriedUser = try await query(.get(User.self,
-                                                     byIdentifier: user.id,
-                                                     includes: { user in [user.comments,
-                                                                          user.posts] }))
+        guard let queriedUser = try await query(.get(
+            User.self,
+            byIdentifier: user.id,
+            includes: { user in [
+                user.comments,
+                user.posts
+            ] }
+        ))
         else {
             XCTFail("Could not perform nested query for User")
             return
@@ -146,9 +150,11 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
         }
         XCTAssertEqual(comments.count, 1)
 
-        guard let queriedPost = try await query(.get(Post.self,
-                                                     byIdentifier: post.id,
-                                                     includes: { post in [post.author, post.comments] }))
+        guard let queriedPost = try await query(.get(
+            Post.self,
+            byIdentifier: post.id,
+            includes: { post in [post.author, post.comments] }
+        ))
         else {
             XCTFail("Could not perform nested query for Post")
             return
@@ -163,9 +169,11 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
         }
         XCTAssertEqual(queriedPostComments.count, 1)
 
-        guard let queriedComment = try await query(.get(Comment.self,
-                                                     byIdentifier: comment.id,
-                                                        includes: { comment in [comment.author, comment.post] }))
+        guard let queriedComment = try await query(.get(
+            Comment.self,
+            byIdentifier: comment.id,
+            includes: { comment in [comment.author, comment.post] }
+        ))
         else {
             XCTFail("Could not perform nested query for Comment")
             return

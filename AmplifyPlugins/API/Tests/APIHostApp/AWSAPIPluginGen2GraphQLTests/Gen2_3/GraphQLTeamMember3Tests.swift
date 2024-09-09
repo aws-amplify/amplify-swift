@@ -24,7 +24,8 @@ final class GraphQLTeamMember3Tests: AWSAPIPluginGen2GraphQLBaseTest {
 
             let member = Member(
                 name: "Tim",
-                team: createdTeam) // Directly pass in the team instance
+                team: createdTeam
+            ) // Directly pass in the team instance
             let createdMember = try await Amplify.API.mutate(request: .create(member))
         } catch {
             print("Create team or member failed", error)
@@ -44,7 +45,8 @@ final class GraphQLTeamMember3Tests: AWSAPIPluginGen2GraphQLBaseTest {
         let oldTeamCreated = try await Amplify.API.mutate(request: .create(oldTeam)).get()
         let member = Member(
             name: "Tim",
-            team: oldTeamCreated) // Directly pass in the post instance
+            team: oldTeamCreated
+        ) // Directly pass in the post instance
         var existingMember = try await Amplify.API.mutate(request: .create(member)).get()
 
         // Code Snippet Begins
@@ -79,7 +81,8 @@ final class GraphQLTeamMember3Tests: AWSAPIPluginGen2GraphQLBaseTest {
         let teamCreated = try await Amplify.API.mutate(request: .create(team)).get()
         let member = Member(
             name: "Tim",
-            team: teamCreated) // Directly pass in the post instance
+            team: teamCreated
+        ) // Directly pass in the post instance
         var existingMember = try await Amplify.API.mutate(request: .create(member)).get()
 
         // Code Snippet Begins
@@ -102,7 +105,8 @@ final class GraphQLTeamMember3Tests: AWSAPIPluginGen2GraphQLBaseTest {
         let teamCreated = try await Amplify.API.mutate(request: .create(team)).get()
         let member = Member(
             name: "Tim",
-            team: teamCreated) // Directly pass in the post instance
+            team: teamCreated
+        ) // Directly pass in the post instance
         _ = try await Amplify.API.mutate(request: .create(member)).get()
 
         // Code Snippet Begins
@@ -110,7 +114,8 @@ final class GraphQLTeamMember3Tests: AWSAPIPluginGen2GraphQLBaseTest {
             let queriedTeam = try await Amplify.API.query(
                 request: .get(
                     Team.self,
-                    byIdentifier: team.identifier)).get()
+                    byIdentifier: team.identifier
+                )).get()
 
             guard let queriedTeam, let members = queriedTeam.members else {
                 print("Missing team or members")
@@ -140,7 +145,8 @@ final class GraphQLTeamMember3Tests: AWSAPIPluginGen2GraphQLBaseTest {
         let teamCreated = try await Amplify.API.mutate(request: .create(team)).get()
         let member = Member(
             name: "Tim",
-            team: teamCreated) // Directly pass in the post instance
+            team: teamCreated
+        ) // Directly pass in the post instance
         _ = try await Amplify.API.mutate(request: .create(member)).get()
 
         // Code Snippet Begins
@@ -149,7 +155,8 @@ final class GraphQLTeamMember3Tests: AWSAPIPluginGen2GraphQLBaseTest {
                 request: .get(
                     Team.self,
                     byIdentifier: team.identifier,
-                    includes: { team in [team.members]}))
+                    includes: { team in [team.members]}
+                ))
                 .get()
             guard let queriedTeamWithMembers, let members = queriedTeamWithMembers.members else {
                 print("Missing team or members")

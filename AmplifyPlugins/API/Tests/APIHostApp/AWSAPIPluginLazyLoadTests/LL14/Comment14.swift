@@ -27,25 +27,29 @@ public struct Comment14: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      content: String? = nil,
-      post: Post14? = nil,
-      author: User14)
-  {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    content: String? = nil,
+    post: Post14? = nil,
+    author: User14
+  ) {
+    self.init(
+      id: id,
       content: content,
       post: post,
       author: author,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(id: String = UUID().uuidString,
-      content: String? = nil,
-      post: Post14? = nil,
-      author: User14,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    id: String = UUID().uuidString,
+    content: String? = nil,
+    post: Post14? = nil,
+    author: User14,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.content = content
       self._post = LazyReference(post)

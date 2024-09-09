@@ -27,12 +27,15 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
 
         let interceptorsConfig = AWSAPIEndpointInterceptors(
             endpointName: graphQLAPI,
-            apiAuthProviderFactory: apiAuthProviderFactory)
+            apiAuthProviderFactory: apiAuthProviderFactory
+        )
 
-        config = AWSAPICategoryPluginConfiguration(endpoints: [graphQLAPI: endpointConfig!],
-                                                   interceptors: [graphQLAPI: interceptorsConfig],
-                                                   apiAuthProviderFactory: apiAuthProviderFactory,
-                                                   authService: MockAWSAuthService())
+        config = AWSAPICategoryPluginConfiguration(
+            endpoints: [graphQLAPI: endpointConfig!],
+            interceptors: [graphQLAPI: interceptorsConfig],
+            apiAuthProviderFactory: apiAuthProviderFactory,
+            authService: MockAWSAuthService()
+        )
     }
 
     func testThrowsOnMissingConfig() async throws {
@@ -86,8 +89,10 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
         config?.addInterceptor(apiKeyInterceptor, toEndpoint: graphQLAPI)
         config?.addInterceptor(CustomURLInterceptor(), toEndpoint: graphQLAPI)
 
-        let interceptors = try config?.interceptorsForEndpoint(withConfig: endpointConfig!,
-                                                               authType: .amazonCognitoUserPools)
+        let interceptors = try config?.interceptorsForEndpoint(
+            withConfig: endpointConfig!,
+            authType: .amazonCognitoUserPools
+        )
 
         XCTAssertEqual(interceptors!.preludeInterceptors.count, 1)
         XCTAssertNotNil(interceptors!.preludeInterceptors[0] as? AuthTokenURLRequestInterceptor)
@@ -119,7 +124,8 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
             authorizationType: AWSAuthorizationType.apiKey,
             endpointType: endpointType,
             apiKey: apiKey,
-            apiAuthProviderFactory: APIAuthProviderFactory())
+            apiAuthProviderFactory: APIAuthProviderFactory()
+        )
     }
 
     struct CustomURLInterceptor: URLRequestInterceptor {

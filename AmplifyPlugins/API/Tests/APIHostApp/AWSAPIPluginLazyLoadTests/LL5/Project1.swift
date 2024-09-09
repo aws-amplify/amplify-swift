@@ -23,28 +23,32 @@ public struct Project1: Model {
     public var project1TeamTeamId: String?
     public var project1TeamName: String?
 
-    public init(projectId: String,
-                name: String,
-                team: Team1? = nil,
-                project1TeamTeamId: String? = nil,
-                project1TeamName: String? = nil)
-    {
-        self.init(projectId: projectId,
-                  name: name,
-                  team: team,
-                  createdAt: nil,
-                  updatedAt: nil,
-                  project1TeamTeamId: project1TeamTeamId,
-                  project1TeamName: project1TeamName)
+    public init(
+        projectId: String,
+        name: String,
+        team: Team1? = nil,
+        project1TeamTeamId: String? = nil,
+        project1TeamName: String? = nil
+    ) {
+        self.init(
+            projectId: projectId,
+            name: name,
+            team: team,
+            createdAt: nil,
+            updatedAt: nil,
+            project1TeamTeamId: project1TeamTeamId,
+            project1TeamName: project1TeamName
+        )
     }
-    init(projectId: String,
-                  name: String,
-                  team: Team1? = nil,
-                  createdAt: Temporal.DateTime? = nil,
-                  updatedAt: Temporal.DateTime? = nil,
-                  project1TeamTeamId: String? = nil,
-                  project1TeamName: String? = nil)
-    {
+    init(
+        projectId: String,
+        name: String,
+        team: Team1? = nil,
+        createdAt: Temporal.DateTime? = nil,
+        updatedAt: Temporal.DateTime? = nil,
+        project1TeamTeamId: String? = nil,
+        project1TeamName: String? = nil
+    ) {
         self.projectId = projectId
         self.name = name
         self._team = LazyReference(team)

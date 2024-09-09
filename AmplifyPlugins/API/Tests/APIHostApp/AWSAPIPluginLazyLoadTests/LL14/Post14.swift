@@ -24,31 +24,35 @@ public struct Post14: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      title: String,
-      rating: Int,
-      status: PostStatus,
-      comments: List<Comment14>? = [],
-      author: User14)
-  {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    title: String,
+    rating: Int,
+    status: PostStatus,
+    comments: List<Comment14>? = [],
+    author: User14
+  ) {
+    self.init(
+      id: id,
       title: title,
       rating: rating,
       status: status,
       comments: comments,
       author: author,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(id: String = UUID().uuidString,
-      title: String,
-      rating: Int,
-      status: PostStatus,
-      comments: List<Comment14>? = [],
-      author: User14,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    id: String = UUID().uuidString,
+    title: String,
+    rating: Int,
+    status: PostStatus,
+    comments: List<Comment14>? = [],
+    author: User14,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.title = title
       self.rating = rating

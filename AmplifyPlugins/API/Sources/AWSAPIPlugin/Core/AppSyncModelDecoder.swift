@@ -21,11 +21,12 @@ public struct AppSyncModelDecoder: ModelProviderDecoder {
         let authMode: AWSAuthorizationType?
         let source: String
 
-        init(identifiers: [LazyReferenceIdentifier],
-             apiName: String?,
-             authMode: AWSAuthorizationType?,
-             source: String = ModelProviderRegistry.DecoderSource.appSync)
-        {
+        init(
+            identifiers: [LazyReferenceIdentifier],
+            apiName: String?,
+            authMode: AWSAuthorizationType?,
+            source: String = ModelProviderRegistry.DecoderSource.appSync
+        ) {
             self.identifiers = identifiers
             self.apiName = apiName
             self.authMode = authMode

@@ -28,28 +28,32 @@ public struct Post41: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      title: String,
-      content: String,
-      author: Person41? = nil,
-      editor: Person41? = nil)
-  {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    title: String,
+    content: String,
+    author: Person41? = nil,
+    editor: Person41? = nil
+  ) {
+    self.init(
+      id: id,
       title: title,
       content: content,
       author: author,
       editor: editor,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(id: String = UUID().uuidString,
-      title: String,
-      content: String,
-      author: Person41? = nil,
-      editor: Person41? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    id: String = UUID().uuidString,
+    title: String,
+    content: String,
+    author: Person41? = nil,
+    editor: Person41? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.title = title
       self.content = content

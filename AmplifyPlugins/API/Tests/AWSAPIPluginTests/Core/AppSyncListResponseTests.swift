@@ -36,10 +36,12 @@ class AppSyncListResponseTests: XCTestCase {
             ],
             "nextToken": "nextToken"
         ]
-        let listResponse = try AppSyncListResponse.initWithMetadata(type: Post4.self,
-                                                                    graphQLData: graphQLData,
-                                                                    apiName: "apiName",
-                                                                    authMode: nil)
+        let listResponse = try AppSyncListResponse.initWithMetadata(
+            type: Post4.self,
+            graphQLData: graphQLData,
+            apiName: "apiName",
+            authMode: nil
+        )
 
         XCTAssertEqual(listResponse.items.count, 2)
         XCTAssertEqual(listResponse.nextToken, "nextToken")
@@ -59,10 +61,12 @@ class AppSyncListResponseTests: XCTestCase {
                 ]
             ]
         ]
-        let listResponse = try AppSyncListResponse.initWithMetadata(type: Comment4.self,
-                                                                    graphQLData: graphQLData,
-                                                                    apiName: "apiName",
-                                                                    authMode: nil)
+        let listResponse = try AppSyncListResponse.initWithMetadata(
+            type: Comment4.self,
+            graphQLData: graphQLData,
+            apiName: "apiName",
+            authMode: nil
+        )
 
         XCTAssertEqual(listResponse.items.count, 2)
         XCTAssertNil(listResponse.nextToken)

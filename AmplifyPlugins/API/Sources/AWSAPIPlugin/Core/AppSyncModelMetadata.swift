@@ -26,10 +26,11 @@ public enum AppSyncModelMetadataUtils {
         return true
     }
 
-    static func addMetadata(toModelArray graphQLDataArray: [JSONValue],
-                            apiName: String?,
-                            authMode: AWSAuthorizationType?) -> [JSONValue]
-    {
+    static func addMetadata(
+        toModelArray graphQLDataArray: [JSONValue],
+        apiName: String?,
+        authMode: AWSAuthorizationType?
+    ) -> [JSONValue] {
         return graphQLDataArray.map { graphQLData -> JSONValue in
             addMetadata(toModel: graphQLData, apiName: apiName, authMode: authMode)
         }
@@ -39,8 +40,8 @@ public enum AppSyncModelMetadataUtils {
         toModel graphQLData: JSONValue,
         apiName: String?,
         authMode: AWSAuthorizationType?,
-        source: String = ModelProviderRegistry.DecoderSource.appSync) -> JSONValue
-    {
+        source: String = ModelProviderRegistry.DecoderSource.appSync
+    ) -> JSONValue {
 
         guard case var .object(modelJSON) = graphQLData else {
             Amplify.API.log.debug("Not an model object: \(graphQLData)")
@@ -89,19 +90,18 @@ public enum AppSyncModelMetadataUtils {
                let nestedModelJSON = modelJSON[modelField.name],
                case .object(let modelObject) = nestedModelJSON,
                let associatedModelName = modelField.associatedModelName,
-               let associatedModelType = ModelRegistry.modelType(from: associatedModelName)
-            {
+               let associatedModelType = ModelRegistry.modelType(from: associatedModelName) {
 
                 // Scenario: Belongs-To Primary Keys only are available for lazy loading
-                if let modelIdentifierMetadata = createModelIdentifierMetadata(associatedModelType,
-                                                                               modelObject: modelObject,
-                                                                               apiName: apiName,
-                                                                               authMode: authMode,
-                                                                               source: source)
-                {
+                if let modelIdentifierMetadata = createModelIdentifierMetadata(
+                    associatedModelType,
+                    modelObject: modelObject,
+                    apiName: apiName,
+                    authMode: authMode,
+                    source: source
+                ) {
                     if let serializedMetadata = try? encoder.encode(modelIdentifierMetadata),
-                       let metadataJSON = try? decoder.decode(JSONValue.self, from: serializedMetadata)
-                    {
+                       let metadataJSON = try? decoder.decode(JSONValue.self, from: serializedMetadata) {
                         Amplify.API.log.verbose("Adding [\(modelField.name): \(metadataJSON)]")
                         modelJSON.updateValue(metadataJSON, forKey: modelField.name)
                     } else {
@@ -114,9 +114,11 @@ public enum AppSyncModelMetadataUtils {
                 // add metadata to its fields, to create not loaded LazyReference objects
                 // only if the model type allowsfor lazy loading functionality
                 else if associatedModelType.rootPath != nil {
-                    let nestedModelWithMetadata = addMetadata(toModel: nestedModelJSON,
-                                                              apiName: apiName,
-                                                              authMode: authMode)
+                    let nestedModelWithMetadata = addMetadata(
+                        toModel: nestedModelJSON,
+                        apiName: apiName,
+                        authMode: authMode
+                    )
                     modelJSON.updateValue(nestedModelWithMetadata, forKey: modelField.name)
                 }
                 // otherwise do nothing to the data.
@@ -124,20 +126,20 @@ public enum AppSyncModelMetadataUtils {
 
             // Scenario: Has-Many eager loaded or empty payloads.
             if modelField.isArray && modelField.hasAssociation,
-               let associatedModelName = modelField.associatedModelName
-            {
+               let associatedModelName = modelField.associatedModelName {
 
                 // Scenario: Has-many items array is missing.
                 // Store the association data (parent's identifier and field name)
                 // This allows the list to perform lazy loading of child items using parent identifier as the predicate
                 if modelJSON[modelField.name] == nil {
-                    let appSyncModelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: identifiers,
-                                                                           appSyncAssociatedFields: modelField.associatedFieldNames,
-                                                                           apiName: apiName,
-                                                                           authMode: authMode)
+                    let appSyncModelMetadata = AppSyncListDecoder.Metadata(
+                        appSyncAssociatedIdentifiers: identifiers,
+                        appSyncAssociatedFields: modelField.associatedFieldNames,
+                        apiName: apiName,
+                        authMode: authMode
+                    )
                     if let serializedMetadata = try? encoder.encode(appSyncModelMetadata),
-                       let metadataJSON = try? decoder.decode(JSONValue.self, from: serializedMetadata)
-                    {
+                       let metadataJSON = try? decoder.decode(JSONValue.self, from: serializedMetadata) {
                         log.verbose("Adding [\(modelField.name): \(metadataJSON)]")
                         modelJSON.updateValue(metadataJSON, forKey: modelField.name)
                     } else {
@@ -153,25 +155,27 @@ public enum AppSyncModelMetadataUtils {
                    case .object(var graphQLDataObject) = nestedModelJSON,
                    case .array(var graphQLDataArray) = graphQLDataObject["items"],
                    let associatedModelType = ModelRegistry.modelType(from: associatedModelName),
-                   associatedModelType.rootPath != nil
-                {
+                   associatedModelType.rootPath != nil {
 
                     for (index, item) in graphQLDataArray.enumerated() {
-                        let modelJSON = AppSyncModelMetadataUtils.addMetadata(toModel: item,
-                                                                              apiName: apiName,
-                                                                              authMode: authMode)
+                        let modelJSON = AppSyncModelMetadataUtils.addMetadata(
+                            toModel: item,
+                            apiName: apiName,
+                            authMode: authMode
+                        )
                         graphQLDataArray[index] = modelJSON
                     }
 
                     graphQLDataObject["items"] = JSONValue.array(graphQLDataArray)
-                    let payload = AppSyncListPayload(graphQLData: JSONValue.object(graphQLDataObject),
-                                                     apiName: apiName,
-                                                     authMode: authMode,
-                                                     variables: nil)
+                    let payload = AppSyncListPayload(
+                        graphQLData: JSONValue.object(graphQLDataObject),
+                        apiName: apiName,
+                        authMode: authMode,
+                        variables: nil
+                    )
 
                     if let serializedPayload = try? encoder.encode(payload),
-                       let payloadJSON = try? decoder.decode(JSONValue.self, from: serializedPayload)
-                    {
+                       let payloadJSON = try? decoder.decode(JSONValue.self, from: serializedPayload) {
                         log.verbose("Adding [\(modelField.name): \(payloadJSON)]")
                         modelJSON.updateValue(payloadJSON, forKey: modelField.name)
                     } else {
@@ -188,12 +192,13 @@ public enum AppSyncModelMetadataUtils {
     /// fields on the `modelObject` is useful determining if the `modelOject` is eager or lazy loaded. If the identifiers
     /// plus one additional field (`__typename`) doesn't match the number of keys on the `modelObject` then there
     /// are more keys in the `modelObject` which means it was eager loaded.
-    static func createModelIdentifierMetadata(_ associatedModel: Model.Type,
-                                              modelObject: [String: JSONValue],
-                                              apiName: String?,
-                                              authMode: AWSAuthorizationType?,
-                                              source: String) -> AppSyncModelDecoder.Metadata?
-    {
+    static func createModelIdentifierMetadata(
+        _ associatedModel: Model.Type,
+        modelObject: [String: JSONValue],
+        apiName: String?,
+        authMode: AWSAuthorizationType?,
+        source: String
+    ) -> AppSyncModelDecoder.Metadata? {
         let primarykeys = associatedModel.schema.primaryKey
         var identifiers = [LazyReferenceIdentifier]()
         for identifierField in primarykeys.fields {
@@ -211,7 +216,8 @@ public enum AppSyncModelMetadataUtils {
                 identifiers: identifiers,
                 apiName: apiName,
                 authMode: authMode,
-                source: source)
+                source: source
+            )
         } else {
             return nil
         }

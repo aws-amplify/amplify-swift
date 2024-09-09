@@ -45,13 +45,16 @@ class GraphQLResponseDecoder<R: Decodable> {
         case .invalidResponse:
             guard let rawGraphQLResponseString = String(data: response, encoding: .utf8) else {
                 throw APIError.operationError(
-                    "Could not get the String representation of the GraphQL response", "")
+                    "Could not get the String representation of the GraphQL response", ""
+                )
             }
-            throw APIError.unknown("The service returned some data without any `data` and `errors`",
-                                   """
+            throw APIError.unknown(
+                "The service returned some data without any `data` and `errors`",
+                """
                                    The service did not return an expected GraphQL response: \
                                    \(rawGraphQLResponseString)
-                                   """)
+                                   """
+            )
         }
     }
 
@@ -63,7 +66,8 @@ class GraphQLResponseDecoder<R: Decodable> {
             let error = APIError(error: decodingError)
             guard let rawGraphQLResponseString = String(data: response, encoding: .utf8) else {
                 throw APIError.operationError(
-                    "Could not get the String representation of the GraphQL response", "")
+                    "Could not get the String representation of the GraphQL response", ""
+                )
             }
             return GraphQLResponse<R>.failure(.transformationError(rawGraphQLResponseString, error))
         } catch {
@@ -76,9 +80,10 @@ class GraphQLResponseDecoder<R: Decodable> {
         return GraphQLResponse<R>.failure(.error(responseErrors))
     }
 
-    func decodePartial(graphQLData: [String: JSONValue],
-                       graphQLErrors: [JSONValue]) throws -> GraphQLResponse<R>
-    {
+    func decodePartial(
+        graphQLData: [String: JSONValue],
+        graphQLErrors: [JSONValue]
+    ) throws -> GraphQLResponse<R> {
         do {
             if let first = graphQLData.first, case .null = first.value {
                 let responseErrors = try GraphQLErrorDecoder.decodeErrors(graphQLErrors: graphQLErrors)
@@ -91,7 +96,8 @@ class GraphQLResponseDecoder<R: Decodable> {
             let error = APIError(error: decodingError)
             guard let rawGraphQLResponseString = String(data: response, encoding: .utf8) else {
                 throw APIError.operationError(
-                    "Could not get the String representation of the GraphQL response", "")
+                    "Could not get the String representation of the GraphQL response", ""
+                )
             }
             return GraphQLResponse<R>.failure(.transformationError(rawGraphQLResponseString, error))
         } catch {

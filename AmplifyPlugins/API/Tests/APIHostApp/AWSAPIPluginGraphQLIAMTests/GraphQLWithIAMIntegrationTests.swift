@@ -81,11 +81,15 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
-        let request = GraphQLRequest(document: CreateTodoMutation.document,
-                                     variables: CreateTodoMutation.variables(id: expectedId,
-                                                                             name: expectedName,
-                                                                             description: expectedDescription),
-                                     responseType: CreateTodoMutation.Data.self)
+        let request = GraphQLRequest(
+            document: CreateTodoMutation.document,
+            variables: CreateTodoMutation.variables(
+                id: expectedId,
+                name: expectedName,
+                description: expectedDescription
+            ),
+            responseType: CreateTodoMutation.Data.self
+        )
 
 
         let event = try await Amplify.API.mutate(request: request)
@@ -231,10 +235,11 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         public var name: String
         public var description: String?
 
-        init(id: String = UUID().uuidString,
-             name: String,
-             description: String? = nil)
-        {
+        init(
+            id: String = UUID().uuidString,
+            name: String,
+            description: String? = nil
+        ) {
             self.id = id
             self.name = name
             self.description = description

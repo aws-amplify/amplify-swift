@@ -58,37 +58,47 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
         try await assertPostTag(queriedPostTag, canLazyLoadTag: savedTag, canLazyLoadPost: savedPost)
     }
 
-    func assertPost(_ post: Post,
-                    canLazyLoad postTag: PostTag) async throws
-    {
+    func assertPost(
+        _ post: Post,
+        canLazyLoad postTag: PostTag
+    ) async throws {
         guard let postTags = post.tags else {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title],
-                                                 associatedFields: ["postWithTagsCompositeKey"]))
+        assertList(postTags, state: .isNotLoaded(
+            associatedIdentifiers: [post.postId, post.title],
+            associatedFields: ["postWithTagsCompositeKey"]
+        ))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 1))
     }
 
-    func assertTag(_ tag: Tag,
-                   canLazyLoad postTag: PostTag) async throws
-    {
+    func assertTag(
+        _ tag: Tag,
+        canLazyLoad postTag: PostTag
+    ) async throws {
         guard let postTags = tag.posts else {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedIdentifiers: [tag.id, tag.name],
-                                                 associatedFields: ["tagWithCompositeKey"]))
+        assertList(postTags, state: .isNotLoaded(
+            associatedIdentifiers: [tag.id, tag.name],
+            associatedFields: ["tagWithCompositeKey"]
+        ))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 1))
     }
 
     func assertPostTag(_ postTag: PostTag, canLazyLoadTag tag: Tag, canLazyLoadPost post: Post) async throws {
-        assertLazyReference(postTag._tagWithCompositeKey, state: .notLoaded(identifiers: [.init(name: "id", value: tag.id),
-                                                                                      .init(name: "name", value: tag.name)]))
-        assertLazyReference(postTag._postWithTagsCompositeKey, state: .notLoaded(identifiers: [.init(name: "postId", value: post.postId),
-                                                                                           .init(name: "title", value: post.title)]))
+        assertLazyReference(postTag._tagWithCompositeKey, state: .notLoaded(identifiers: [
+            .init(name: "id", value: tag.id),
+            .init(name: "name", value: tag.name)
+        ]))
+        assertLazyReference(postTag._postWithTagsCompositeKey, state: .notLoaded(identifiers: [
+            .init(name: "postId", value: post.postId),
+            .init(name: "title", value: post.title)
+        ]))
         let loadedTag = try await postTag.tagWithCompositeKey
         assertLazyReference(postTag._tagWithCompositeKey, state: .loaded(model: loadedTag))
         try await assertTag(loadedTag, canLazyLoad: postTag)
@@ -106,10 +116,14 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
         try await mutate(.create(tag))
         try await mutate(.create(postTag))
 
-        guard let queriedPost = try await query(.get(Post.self,
-                                                     byIdentifier: .identifier(postId: post.postId,
-                                                                               title: post.title),
-                                                     includes: { post in [post.tags] }))
+        guard let queriedPost = try await query(.get(
+            Post.self,
+            byIdentifier: .identifier(
+                postId: post.postId,
+                title: post.title
+            ),
+            includes: { post in [post.tags] }
+        ))
         else {
             XCTFail("Could not perform nested query for Post")
             return
@@ -123,10 +137,14 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
         }
         XCTAssertEqual(tags.count, 1)
 
-        guard let queriedTag = try await query(.get(Tag.self,
-                                                    byIdentifier: .identifier(id: tag.id,
-                                                                              name: tag.name),
-                                                    includes: { tag in [tag.posts] }))
+        guard let queriedTag = try await query(.get(
+            Tag.self,
+            byIdentifier: .identifier(
+                id: tag.id,
+                name: tag.name
+            ),
+            includes: { tag in [tag.posts] }
+        ))
         else {
             XCTFail("Could not perform nested query for Tag")
             return
@@ -140,11 +158,14 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
         }
         XCTAssertEqual(posts.count, 1)
 
-        guard let queriedPostTag = try await query(.get(PostTag.self,
-                                                        byIdentifier: postTag.id,
-                                                        includes: { postTag in [
-                                                            postTag.postWithTagsCompositeKey,
-                                                            postTag.tagWithCompositeKey] }))
+        guard let queriedPostTag = try await query(.get(
+            PostTag.self,
+            byIdentifier: postTag.id,
+            includes: { postTag in [
+                postTag.postWithTagsCompositeKey,
+                postTag.tagWithCompositeKey
+            ] }
+        ))
         else {
             XCTFail("Could not perform nested query for PostTag")
             return
@@ -165,24 +186,34 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
 
         let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.postId == post.postId))
         assertList(queriedPosts, state: .isLoaded(count: 1))
-        assertList(queriedPosts.first!.tags!,
-                   state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedFields: ["postWithTagsCompositeKey"]))
+        assertList(
+            queriedPosts.first!.tags!,
+            state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedFields: ["postWithTagsCompositeKey"])
+        )
 
         let queriedTags = try await listQuery(.list(Tag.self, where: Tag.keys.id == tag.id))
         assertList(queriedTags, state: .isLoaded(count: 1))
-        assertList(queriedTags.first!.posts!,
-                   state: .isNotLoaded(associatedIdentifiers: [tag.id, tag.name], associatedFields: ["tagWithCompositeKey"]))
+        assertList(
+            queriedTags.first!.posts!,
+            state: .isNotLoaded(associatedIdentifiers: [tag.id, tag.name], associatedFields: ["tagWithCompositeKey"])
+        )
 
         let queriedPostTags = try await listQuery(.list(PostTag.self, where: PostTag.keys.id == postTag.id))
         assertList(queriedPostTags, state: .isLoaded(count: 1))
-        assertLazyReference(queriedPostTags.first!._postWithTagsCompositeKey,
-                            state: .notLoaded(identifiers: [
-                                .init(name: "postId", value: post.postId),
-                                .init(name: "title", value: post.title)]))
-        assertLazyReference(queriedPostTags.first!._tagWithCompositeKey,
-                            state: .notLoaded(identifiers: [
-                                .init(name: "id", value: tag.id),
-                                .init(name: "name", value: tag.name)]))
+        assertLazyReference(
+            queriedPostTags.first!._postWithTagsCompositeKey,
+            state: .notLoaded(identifiers: [
+                .init(name: "postId", value: post.postId),
+                .init(name: "title", value: post.title)
+            ])
+        )
+        assertLazyReference(
+            queriedPostTags.first!._tagWithCompositeKey,
+            state: .notLoaded(identifiers: [
+                .init(name: "id", value: tag.id),
+                .init(name: "name", value: tag.name)
+            ])
+        )
     }
 
     func testUpdate() async throws {
@@ -220,8 +251,10 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title],
-                                                 associatedFields: ["postWithTagsCompositeKey"]))
+        assertList(postTags, state: .isNotLoaded(
+            associatedIdentifiers: [post.postId, post.title],
+            associatedFields: ["postWithTagsCompositeKey"]
+        ))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 0))
     }
@@ -231,8 +264,10 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedIdentifiers: [tag.id, tag.name],
-                                                 associatedFields: ["tagWithCompositeKey"]))
+        assertList(postTags, state: .isNotLoaded(
+            associatedIdentifiers: [tag.id, tag.name],
+            associatedFields: ["tagWithCompositeKey"]
+        ))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 0))
     }

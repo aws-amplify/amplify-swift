@@ -46,10 +46,11 @@ struct AWSAPIEndpointInterceptors {
         }
     }
 
-    init(endpointName: APIEndpointName,
-         apiAuthProviderFactory: APIAuthProviderFactory,
-         authService: AWSAuthCredentialsProviderBehavior? = nil)
-    {
+    init(
+        endpointName: APIEndpointName,
+        apiAuthProviderFactory: APIAuthProviderFactory,
+        authService: AWSAuthCredentialsProviderBehavior? = nil
+    ) {
         self.apiEndpointName = endpointName
         self.apiAuthProviderFactory = apiAuthProviderFactory
         self.authService = authService
@@ -62,9 +63,10 @@ struct AWSAPIEndpointInterceptors {
     }
 
     /// Initialize authorization interceptors
-    mutating func addAuthInterceptorsToEndpoint(endpointType: AWSAPICategoryPluginEndpointType,
-                                                authConfiguration: AWSAuthorizationConfiguration) throws
-    {
+    mutating func addAuthInterceptorsToEndpoint(
+        endpointType: AWSAPICategoryPluginEndpointType,
+        authConfiguration: AWSAuthorizationConfiguration
+    ) throws {
         switch authConfiguration {
         case .none:
             // No interceptors needed
@@ -75,35 +77,47 @@ struct AWSAPIEndpointInterceptors {
             preludeInterceptors.append(interceptor)
         case .awsIAM(let iamConfig):
             guard let authService else {
-                throw PluginError.pluginConfigurationError("AuthService is not set for IAM",
-                                                           "")
+                throw PluginError.pluginConfigurationError(
+                    "AuthService is not set for IAM",
+                    ""
+                )
             }
             let provider = BasicIAMCredentialsProvider(authService: authService)
-            let interceptor = IAMURLRequestInterceptor(iamCredentialsProvider: provider,
-                                                       region: iamConfig.region,
-                                                       endpointType: endpointType)
+            let interceptor = IAMURLRequestInterceptor(
+                iamCredentialsProvider: provider,
+                region: iamConfig.region,
+                endpointType: endpointType
+            )
             postludeInterceptors.append(interceptor)
         case .amazonCognitoUserPools:
             guard let authService else {
-                throw PluginError.pluginConfigurationError("AuthService not set for cognito user pools",
-                                                           "")
+                throw PluginError.pluginConfigurationError(
+                    "AuthService not set for cognito user pools",
+                    ""
+                )
             }
             let provider = BasicUserPoolTokenProvider(authService: authService)
-            let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: provider,
-                                                             isTokenExpired: expiryValidator)
+            let interceptor = AuthTokenURLRequestInterceptor(
+                authTokenProvider: provider,
+                isTokenExpired: expiryValidator
+            )
             preludeInterceptors.append(interceptor)
         case .openIDConnect:
             guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
-                throw PluginError.pluginConfigurationError("AuthService not set for OIDC",
-                                                           "Provide an AmplifyOIDCAuthProvider via API plugin configuration")
+                throw PluginError.pluginConfigurationError(
+                    "AuthService not set for OIDC",
+                    "Provide an AmplifyOIDCAuthProvider via API plugin configuration"
+                )
             }
             let wrappedAuthProvider = AuthTokenProviderWrapper(tokenAuthProvider: oidcAuthProvider)
             let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: wrappedAuthProvider)
             preludeInterceptors.append(interceptor)
         case .function:
             guard let functionAuthProvider = apiAuthProviderFactory.functionAuthProvider() else {
-                throw PluginError.pluginConfigurationError("AuthService not set for function auth",
-                                                           "Provide an AmplifyFunctionAuthProvider via API plugin configuration")
+                throw PluginError.pluginConfigurationError(
+                    "AuthService not set for function auth",
+                    "Provide an AmplifyFunctionAuthProvider via API plugin configuration"
+                )
             }
             let wrappedAuthProvider = AuthTokenProviderWrapper(tokenAuthProvider: functionAuthProvider)
             let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: wrappedAuthProvider)

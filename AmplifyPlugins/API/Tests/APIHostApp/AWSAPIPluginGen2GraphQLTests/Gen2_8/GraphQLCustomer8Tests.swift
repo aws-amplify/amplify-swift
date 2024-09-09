@@ -45,7 +45,8 @@ final class GraphQLCustomer8Tests: AWSAPIPluginGen2GraphQLBaseTest {
         let request = GraphQLRequest<PaginatedList<Customer>>(
             document: document,
             responseType: PaginatedList<Customer>.self,
-            decodePath: operationName)
+            decodePath: operationName
+        )
 
         let queriedCustomers = try await Amplify.API.query(
             request: request).get()

@@ -19,10 +19,11 @@ class NetworkReachabilityNotifier {
         return reachabilityPublisher.eraseToAnyPublisher()
     }
 
-    public init(host: String,
-                allowsCellularAccess: Bool,
-                reachabilityFactory: NetworkReachabilityProvidingFactory.Type) throws
-    {
+    public init(
+        host: String,
+        allowsCellularAccess: Bool,
+        reachabilityFactory: NetworkReachabilityProvidingFactory.Type
+    ) throws {
     #if os(watchOS)
         self.reachability = reachabilityFactory.make()
     #else
@@ -31,10 +32,12 @@ class NetworkReachabilityNotifier {
         self.allowsCellularAccess = allowsCellularAccess
 
         // Add listener for Reachability and start its notifier
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(respondToReachabilityChange),
-                                               name: .reachabilityChanged,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(respondToReachabilityChange),
+            name: .reachabilityChanged,
+            object: nil
+        )
         do {
             try reachability?.startNotifier()
         } catch {

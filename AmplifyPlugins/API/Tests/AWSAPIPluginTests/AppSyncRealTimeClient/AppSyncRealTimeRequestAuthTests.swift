@@ -196,7 +196,8 @@ class AppSyncRealTimeRequestAuthTests: XCTestCase {
                 host: "example.com",
                 authToken: "c9dad897-90d1-4a4c-a5c9-2b36a247735f",
                 securityToken: "e7e6269e-fda1-4de0-8bdb-baa7b6dd0a0d",
-                amzDate: "9e0e2df9-2ee7-4659-8362-1c881e118c9f"))
+                amzDate: "9e0e2df9-2ee7-4659-8362-1c881e118c9f"
+            ))
         ).withBaseURL(URL(string: "https://example.com")!, encoder: jsonEncoder)
         XCTAssertEqual(encodedURL.absoluteString, expectedURL)
     }

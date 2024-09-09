@@ -50,10 +50,14 @@ final class GraphQLLazyLoadPhoneCallTests: GraphQLLazyLoadBaseTest {
         let phoneCall = PhoneCall(caller: savedCaller, callee: savedCallee)
         let savedPhoneCall = try await mutate(.create(phoneCall))
         let queriedPhoneCall = try await query(for: savedPhoneCall)!
-        assertLazyReference(queriedPhoneCall._caller,
-                            state: .notLoaded(identifiers: [.init(name: "id", value: caller.id)]))
-        assertLazyReference(queriedPhoneCall._callee,
-                            state: .notLoaded(identifiers: [.init(name: "id", value: callee.id)]))
+        assertLazyReference(
+            queriedPhoneCall._caller,
+            state: .notLoaded(identifiers: [.init(name: "id", value: caller.id)])
+        )
+        assertLazyReference(
+            queriedPhoneCall._callee,
+            state: .notLoaded(identifiers: [.init(name: "id", value: callee.id)])
+        )
         let loadedCaller = try await queriedPhoneCall.caller
         let loadedCallee = try await queriedPhoneCall.callee
         assertLazyReference(queriedPhoneCall._caller, state: .loaded(model: savedCaller))
@@ -95,15 +99,21 @@ final class GraphQLLazyLoadPhoneCallTests: GraphQLLazyLoadBaseTest {
         let savedPhoneCall = try await mutate(.create(phoneCall))
         XCTAssertEqual(savedPhoneCall.phoneCallTranscriptId, transcript.id)
         let savedTranscript = try await mutate(.create(transcript))
-        assertLazyReference(savedTranscript._phoneCall,
-                            state: .notLoaded(identifiers: [.init(name: "id", value: savedPhoneCall.id)]))
+        assertLazyReference(
+            savedTranscript._phoneCall,
+            state: .notLoaded(identifiers: [.init(name: "id", value: savedPhoneCall.id)])
+        )
 
         let queriedTranscript = try await query(for: savedTranscript)!
-        assertLazyReference(queriedTranscript._phoneCall,
-                            state: .notLoaded(identifiers: [.init(name: "id", value: savedPhoneCall.id)]))
+        assertLazyReference(
+            queriedTranscript._phoneCall,
+            state: .notLoaded(identifiers: [.init(name: "id", value: savedPhoneCall.id)])
+        )
         let loadedPhoneCall = try await queriedTranscript.phoneCall!
-        assertLazyReference(queriedTranscript._phoneCall,
-                            state: .loaded(model: savedPhoneCall))
+        assertLazyReference(
+            queriedTranscript._phoneCall,
+            state: .loaded(model: savedPhoneCall)
+        )
         let loadedCaller = try await loadedPhoneCall.caller
         let loadedCallee = try await loadedPhoneCall.callee
 

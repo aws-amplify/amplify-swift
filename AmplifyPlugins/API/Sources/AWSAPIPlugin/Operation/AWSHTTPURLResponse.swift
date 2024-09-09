@@ -37,10 +37,12 @@ public class AWSHTTPURLResponse: HTTPURLResponse {
         // Call the super class initializer with dummy values to satisfy the requirement of the inheritance.
         // Subsequent access to any properties of this instance (including `url`) will be delegated to
         // the `response`.
-        super.init(url: URL(string: "dummyURL")!,
-                   statusCode: 0,
-                   httpVersion: nil,
-                   headerFields: nil)
+        super.init(
+            url: URL(string: "dummyURL")!,
+            statusCode: 0,
+            httpVersion: nil,
+            headerFields: nil
+        )
     }
 
     required init?(coder: NSCoder) {

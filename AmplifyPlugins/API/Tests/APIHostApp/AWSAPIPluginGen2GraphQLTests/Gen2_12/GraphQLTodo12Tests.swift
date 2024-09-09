@@ -21,7 +21,8 @@ final class GraphQLTodo12Tests: AWSAPIPluginGen2GraphQLBaseTest {
             let todo = Todo(content: "My new todo")
             let createdTodo = try await Amplify.API.mutate(request: .create(
                 todo,
-                authMode: .apiKey)).get()
+                authMode: .apiKey
+            )).get()
         } catch {
             print("Failed to create todo", error)
             // Code Snippet Ends

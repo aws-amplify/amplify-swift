@@ -294,8 +294,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
                 self.receivedCompletionSuccess.fulfill()
             } catch {
                 if let apiError = error as? APIError,
-                   let expectedError = expectedCompletionFailureError
-                {
+                   let expectedError = expectedCompletionFailureError {
                     XCTAssertEqual(apiError, expectedError)
                 }
 

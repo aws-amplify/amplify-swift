@@ -21,22 +21,26 @@ public struct Cart4: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      items: [String]? = nil,
-      customer: Customer4? = nil)
-  {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    items: [String]? = nil,
+    customer: Customer4? = nil
+  ) {
+    self.init(
+      id: id,
       items: items,
       customer: customer,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(id: String = UUID().uuidString,
-      items: [String]? = nil,
-      customer: Customer4? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    id: String = UUID().uuidString,
+    items: [String]? = nil,
+    customer: Customer4? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.items = items
       self._customer = LazyReference(customer)

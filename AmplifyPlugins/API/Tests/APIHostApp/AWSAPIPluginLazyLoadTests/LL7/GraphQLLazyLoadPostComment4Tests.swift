@@ -35,8 +35,10 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
 
         // The created post should have comments that are also not loaded
         let comments = createdPost.comments!
-        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [createdPost.postId, createdPost.title],
-                                                 associatedFields: ["post4CommentsPostId", "post4CommentsTitle"]))
+        assertList(comments, state: .isNotLoaded(
+            associatedIdentifiers: [createdPost.postId, createdPost.title],
+            associatedFields: ["post4CommentsPostId", "post4CommentsTitle"]
+        ))
         // load the comments
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))
@@ -53,8 +55,10 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
         _ = try await mutate(.create(comment))
         let queriedPost = try await query(.get(Post.self, byIdentifier: .identifier(postId: post.postId, title: post.title)))!
         let comments = queriedPost.comments!
-        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title],
-                                                 associatedFields: ["post4CommentsPostId", "post4CommentsTitle"]))
+        assertList(comments, state: .isNotLoaded(
+            associatedIdentifiers: [post.postId, post.title],
+            associatedFields: ["post4CommentsPostId", "post4CommentsTitle"]
+        ))
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))
         XCTAssertEqual(comments.first!.post4CommentsPostId, post.postId)
@@ -84,9 +88,13 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
 
         let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.postId == post.postId))
         assertList(queriedPosts, state: .isLoaded(count: 1))
-        assertList(queriedPosts.first!.comments!,
-                   state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title],
-                                       associatedFields: ["post4CommentsPostId", "post4CommentsTitle"]))
+        assertList(
+            queriedPosts.first!.comments!,
+            state: .isNotLoaded(
+                associatedIdentifiers: [post.postId, post.title],
+                associatedFields: ["post4CommentsPostId", "post4CommentsTitle"]
+            )
+        )
 
         let queriedComments = try await listQuery(.list(Comment.self, where: Comment.keys.commentId == comment.commentId))
         assertList(queriedComments, state: .isLoaded(count: 1))
@@ -117,8 +125,10 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
         let comment = Comment(content: "content", post: post)
         try await mutate(.create(post))
         try await mutate(.create(comment))
-        var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId,
-                                                                                          content: comment.content)))!
+        var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(
+            commentId: comment.commentId,
+            content: comment.content
+        )))!
         XCTAssertEqual(queriedComment.post4CommentsPostId, post.postId)
         XCTAssertEqual(queriedComment.post4CommentsTitle, post.title)
         let newPost = Post(title: "title")
@@ -227,10 +237,16 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
                         switch result {
                         case .success(let createdPost):
                             log.verbose("Successfully got createdPost from subscription: \(createdPost)")
-                            assertList(createdPost.comments!, state: .isNotLoaded(associatedIdentifiers: [post.postId,
-                                                                                                          post.title],
-                                                                                  associatedFields: ["post4CommentsPostId",
-                                                                                                     "post4CommentsTitle"]))
+                            assertList(createdPost.comments!, state: .isNotLoaded(
+                                associatedIdentifiers: [
+                                    post.postId,
+                                    post.title
+                                ],
+                                associatedFields: [
+                                    "post4CommentsPostId",
+                                    "post4CommentsTitle"
+                                ]
+                            ))
                             onCreatedPost.fulfill()
                         case .failure(let error):
                             XCTFail("Got failed result with \(error.errorDescription)")
@@ -254,9 +270,11 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
 
         let connected = expectation(description: "subscription connected")
         let onCreatedPost = expectation(description: "onCreatedPost received")
-        let subscriptionIncludes = Amplify.API.subscribe(request: .subscription(of: Post.self,
-                                                                                type: .onCreate,
-                                                                                includes: { post in [post.comments]}))
+        let subscriptionIncludes = Amplify.API.subscribe(request: .subscription(
+            of: Post.self,
+            type: .onCreate,
+            includes: { post in [post.comments]}
+        ))
         Task {
             do {
                 for try await subscriptionEvent in subscriptionIncludes {
@@ -311,12 +329,15 @@ extension Post4 {
 }
 
 extension Comment4 {
-    init(content: String,
-         post: Post4? = nil)
-    {
-        self.init(commentId: UUID().uuidString,
-                  content: content,
-                  post4CommentsPostId: post?.postId,
-                  post4CommentsTitle: post?.title)
+    init(
+        content: String,
+        post: Post4? = nil
+    ) {
+        self.init(
+            commentId: UUID().uuidString,
+            content: content,
+            post4CommentsPostId: post?.postId,
+            post4CommentsTitle: post?.title
+        )
     }
 }

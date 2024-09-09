@@ -20,10 +20,12 @@ class AppSyncListPayloadTests: XCTestCase {
             ],
             "limit": 500
         ]
-        let payload = AppSyncListPayload(graphQLData: JSONValue.null,
-                                         apiName: "apiName",
-                                         authMode: nil,
-                                         variables: variables)
+        let payload = AppSyncListPayload(
+            graphQLData: JSONValue.null,
+            apiName: "apiName",
+            authMode: nil,
+            variables: variables
+        )
 
         guard let limit = payload.limit else {
             XCTFail("Could not get limit from payload")
@@ -52,20 +54,24 @@ class AppSyncListPayloadTests: XCTestCase {
             ],
             "missingLimit": 500
         ]
-        let payload = AppSyncListPayload(graphQLData: JSONValue.null,
-                                         apiName: "apiName",
-                                         authMode: nil,
-                                         variables: variables)
+        let payload = AppSyncListPayload(
+            graphQLData: JSONValue.null,
+            apiName: "apiName",
+            authMode: nil,
+            variables: variables
+        )
 
         XCTAssertNil(payload.graphQLFilter)
         XCTAssertNil(payload.limit)
     }
 
     func testRetrieveNilFilterAndLimit_MissingVariables() {
-        let payload = AppSyncListPayload(graphQLData: JSONValue.null,
-                                         apiName: "apiName",
-                                         authMode: nil,
-                                         variables: nil)
+        let payload = AppSyncListPayload(
+            graphQLData: JSONValue.null,
+            apiName: "apiName",
+            authMode: nil,
+            variables: nil
+        )
 
         XCTAssertNil(payload.graphQLFilter)
         XCTAssertNil(payload.limit)

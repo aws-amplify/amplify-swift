@@ -19,7 +19,8 @@ extension GraphQLConnectionScenario3Tests {
     func onCreatePost3APISwiftRequest() -> GraphQLRequest<APISwift.OnCreatePost3Subscription.Data> {
         let request = GraphQLRequest<APISwift.OnCreatePost3Subscription.Data>(
             document: APISwift.OnCreatePost3Subscription.operationString,
-            responseType: APISwift.OnCreatePost3Subscription.Data.self)
+            responseType: APISwift.OnCreatePost3Subscription.Data.self
+        )
         return request
     }
 
@@ -29,7 +30,8 @@ extension GraphQLConnectionScenario3Tests {
         let request = GraphQLRequest<APISwift.CreatePost3Mutation.Data>(
             document: APISwift.CreatePost3Mutation.operationString,
             variables: mutation.variables?.jsonObject,
-            responseType: APISwift.CreatePost3Mutation.Data.self)
+            responseType: APISwift.CreatePost3Mutation.Data.self
+        )
         let response = try await Amplify.API.mutate(request: request)
         switch response {
         case .success(let data):

@@ -140,32 +140,35 @@ public class AmplifyReachability {
         }
     }
 
-    public required init(reachabilityRef: SCNetworkReachability,
-                         queueQoS: DispatchQoS = .default,
-                         targetQueue: DispatchQueue? = nil,
-                         notificationQueue: DispatchQueue? = .main)
-    {
+    public required init(
+        reachabilityRef: SCNetworkReachability,
+        queueQoS: DispatchQoS = .default,
+        targetQueue: DispatchQueue? = nil,
+        notificationQueue: DispatchQueue? = .main
+    ) {
         self.allowsCellularConnection = true
         self.reachabilityRef = reachabilityRef
         self.reachabilitySerialQueue = DispatchQueue(label: "uk.co.ashleymills.reachability", qos: queueQoS, target: targetQueue)
         self.notificationQueue = notificationQueue
     }
 
-    public convenience init(hostname: String,
-                            queueQoS: DispatchQoS = .default,
-                            targetQueue: DispatchQueue? = nil,
-                            notificationQueue: DispatchQueue? = .main) throws
-    {
+    public convenience init(
+        hostname: String,
+        queueQoS: DispatchQoS = .default,
+        targetQueue: DispatchQueue? = nil,
+        notificationQueue: DispatchQueue? = .main
+    ) throws {
         guard let ref = SCNetworkReachabilityCreateWithName(nil, hostname) else {
             throw AmplifyReachabilityError.failedToCreateWithHostname(hostname, SCError())
         }
         self.init(reachabilityRef: ref, queueQoS: queueQoS, targetQueue: targetQueue, notificationQueue: notificationQueue)
     }
 
-    public convenience init(queueQoS: DispatchQoS = .default,
-                            targetQueue: DispatchQueue? = nil,
-                            notificationQueue: DispatchQueue? = .main) throws
-    {
+    public convenience init(
+        queueQoS: DispatchQoS = .default,
+        targetQueue: DispatchQueue? = nil,
+        notificationQueue: DispatchQueue? = .main
+    ) throws {
         var zeroAddress = sockaddr()
         zeroAddress.sa_len = UInt8(MemoryLayout<sockaddr>.size)
         zeroAddress.sa_family = sa_family_t(AF_INET)

@@ -42,10 +42,12 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
                 loadedState = .loaded(model: nil)
                 return nil
             }
-            let request = GraphQLRequest<ModelType?>.getRequest(ModelType.self,
-                                                                byIdentifiers: identifiers,
-                                                                apiName: apiName,
-                                                                authMode: authMode)
+            let request = GraphQLRequest<ModelType?>.getRequest(
+                ModelType.self,
+                byIdentifiers: identifiers,
+                apiName: apiName,
+                authMode: authMode
+            )
             log.verbose("Loading \(ModelType.modelName) with \(identifiers)")
             let graphQLResponse = try await Amplify.API.query(request: request)
             switch graphQLResponse {
@@ -72,7 +74,8 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
                 identifiers: identifiers ?? [],
                 apiName: apiName,
                 authMode: authMode,
-                source: source)
+                source: source
+            )
             try metadata.encode(to: encoder)
 
         case .loaded(let element):

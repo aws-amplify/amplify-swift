@@ -21,22 +21,26 @@ public struct StrangeExplicitChild: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(strangeId: String,
-      content: String,
-      parent: CompositePKParent)
-  {
-    self.init(strangeId: strangeId,
+  public init(
+    strangeId: String,
+    content: String,
+    parent: CompositePKParent
+  ) {
+    self.init(
+      strangeId: strangeId,
       content: content,
       parent: parent,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(strangeId: String,
-      content: String,
-      parent: CompositePKParent,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    strangeId: String,
+    content: String,
+    parent: CompositePKParent,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.strangeId = strangeId
       self.content = content
       self._parent = LazyReference(parent)

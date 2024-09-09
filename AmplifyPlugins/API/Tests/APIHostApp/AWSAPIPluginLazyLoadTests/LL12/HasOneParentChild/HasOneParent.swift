@@ -21,22 +21,26 @@ public struct HasOneParent: Model {
   public var updatedAt: Temporal.DateTime?
   public var hasOneParentChildId: String?
 
-  public init(id: String = UUID().uuidString,
-      child: HasOneChild? = nil,
-      hasOneParentChildId: String? = nil)
-  {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    child: HasOneChild? = nil,
+    hasOneParentChildId: String? = nil
+  ) {
+    self.init(
+      id: id,
       child: child,
       createdAt: nil,
       updatedAt: nil,
-      hasOneParentChildId: hasOneParentChildId)
+      hasOneParentChildId: hasOneParentChildId
+    )
   }
-  init(id: String = UUID().uuidString,
-      child: HasOneChild? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil,
-      hasOneParentChildId: String? = nil)
-  {
+  init(
+    id: String = UUID().uuidString,
+    child: HasOneChild? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil,
+    hasOneParentChildId: String? = nil
+  ) {
       self.id = id
       self._child = LazyReference(child)
       self.createdAt = createdAt

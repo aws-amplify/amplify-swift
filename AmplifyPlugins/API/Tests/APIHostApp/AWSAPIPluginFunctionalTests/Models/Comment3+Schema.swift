@@ -11,8 +11,7 @@ import Foundation
 
 public extension Comment3 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case postID
     case content

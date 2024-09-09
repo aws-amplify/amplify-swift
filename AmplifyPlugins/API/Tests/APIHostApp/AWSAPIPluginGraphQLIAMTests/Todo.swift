@@ -166,10 +166,11 @@ class ListTodosQuery {
             }\n}
         """
 
-    static func variables(filter: [String: Any]? = nil,
-                          limit: Int? = nil,
-                          nextToken: String? = nil) -> [String: Any]
-    {
+    static func variables(
+        filter: [String: Any]? = nil,
+        limit: Int? = nil,
+        nextToken: String? = nil
+    ) -> [String: Any] {
         var input: [String: Any] = [:]
 
         if let filter {

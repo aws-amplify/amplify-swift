@@ -42,7 +42,8 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
                 region: region,
                 authorizationType: AWSAuthorizationType.none,
                 endpointType: .graphQL,
-                apiAuthProviderFactory: APIAuthProviderFactory())]
+                apiAuthProviderFactory: APIAuthProviderFactory()
+            )]
             let pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig)
             self.pluginConfig = pluginConfig
 
@@ -73,10 +74,12 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
 
         await setUp(appSyncRealTimeClientFactory: mockSubscriptionConnectionFactory)
 
-        let request = GraphQLRequest(apiName: apiName,
-                                     document: testDocument,
-                                     variables: nil,
-                                     responseType: JSONValue.self)
+        let request = GraphQLRequest(
+            apiName: apiName,
+            document: testDocument,
+            variables: nil,
+            responseType: JSONValue.self
+        )
 
         let receivedValueConnecting = expectation(description: "Received value for connecting")
         let receivedValueDisconnected = expectation(description: "Received value for disconnected")
@@ -119,10 +122,12 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
 
         await setUp(appSyncRealTimeClientFactory: mockAppSyncRealTimeClientFactory)
 
-        let request = GraphQLRequest(apiName: apiName,
-                                     document: testDocument,
-                                     variables: nil,
-                                     responseType: JSONValue.self)
+        let request = GraphQLRequest(
+            apiName: apiName,
+            document: testDocument,
+            variables: nil,
+            responseType: JSONValue.self
+        )
 
         let receivedCompletion = expectation(description: "Received completion")
         receivedCompletion.isInverted = true
@@ -154,10 +159,12 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
 
         await setUp(appSyncRealTimeClientFactory: mockSubscriptionConnectionFactory)
 
-        let request = GraphQLRequest(apiName: apiName,
-                                     document: testDocument,
-                                     variables: nil,
-                                     responseType: JSONValue.self)
+        let request = GraphQLRequest(
+            apiName: apiName,
+            document: testDocument,
+            variables: nil,
+            responseType: JSONValue.self
+        )
 
         let receivedValue = expectation(description: "Received value for connecting")
         receivedValue.expectedFulfillmentCount = 1

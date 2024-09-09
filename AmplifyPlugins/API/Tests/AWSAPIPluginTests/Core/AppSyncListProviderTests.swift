@@ -59,10 +59,12 @@ class AppSyncListProviderTests: XCTestCase {
             ],
             "limit": 500
         ]
-        let appSyncPayload = AppSyncListPayload(graphQLData: json,
-                                                apiName: "apiName",
-                                                authMode: nil,
-                                                variables: variables)
+        let appSyncPayload = AppSyncListPayload(
+            graphQLData: json,
+            apiName: "apiName",
+            authMode: nil,
+            variables: variables
+        )
         let provider = try AppSyncListProvider<Post4>(payload: appSyncPayload)
         guard case .loaded(let elements, let nextToken, let filter) = provider.loadedState else {
             XCTFail("Should be in loaded state")
@@ -85,10 +87,12 @@ class AppSyncListProviderTests: XCTestCase {
             ],
             "nextToken": "nextToken"
         ]
-        let appSyncPayload = AppSyncListPayload(graphQLData: json,
-                                                apiName: nil,
-                                                authMode: nil,
-                                                variables: nil)
+        let appSyncPayload = AppSyncListPayload(
+            graphQLData: json,
+            apiName: nil,
+            authMode: nil,
+            variables: nil
+        )
         do {
             _ = try AppSyncListProvider<Post4>(payload: appSyncPayload)
         } catch _ as DecodingError {
@@ -99,10 +103,12 @@ class AppSyncListProviderTests: XCTestCase {
     }
 
     func testInitWithModelMetadataShouldBeNotLoadedState() throws {
-        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                        appSyncAssociatedFields: ["post"],
-                                                        apiName: "apiName",
-                                                        authMode: nil)
+        let modelMetadata = AppSyncListDecoder.Metadata(
+            appSyncAssociatedIdentifiers: ["postId"],
+            appSyncAssociatedFields: ["post"],
+            apiName: "apiName",
+            authMode: nil
+        )
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded(let associatedIdentifiers, let associatedFields) = provider.loadedState else {
             XCTFail("Should be in not loaded state")
@@ -144,10 +150,12 @@ class AppSyncListProviderTests: XCTestCase {
             ]
             return .success(json)
         }
-        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                        appSyncAssociatedFields: ["post"],
-                                                        apiName: "apiName",
-                                                        authMode: .amazonCognitoUserPools)
+        let modelMetadata = AppSyncListDecoder.Metadata(
+            appSyncAssociatedIdentifiers: ["postId"],
+            appSyncAssociatedFields: ["post"],
+            apiName: "apiName",
+            authMode: .amazonCognitoUserPools
+        )
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -181,10 +189,12 @@ class AppSyncListProviderTests: XCTestCase {
         mockAPIPlugin.responders[.queryRequestResponse] = QueryRequestResponder<JSONValue> { _ in
             throw APIError.unknown("", "", nil)
         }
-        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                        appSyncAssociatedFields: ["post"],
-                                                        apiName: "apiName",
-                                                        authMode: nil)
+        let modelMetadata = AppSyncListDecoder.Metadata(
+            appSyncAssociatedIdentifiers: ["postId"],
+            appSyncAssociatedFields: ["post"],
+            apiName: "apiName",
+            authMode: nil
+        )
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -229,10 +239,12 @@ class AppSyncListProviderTests: XCTestCase {
             ]
             return .success(json)
         }
-        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                        appSyncAssociatedFields: ["post"],
-                                                        apiName: "apiName",
-                                                        authMode: nil)
+        let modelMetadata = AppSyncListDecoder.Metadata(
+            appSyncAssociatedIdentifiers: ["postId"],
+            appSyncAssociatedFields: ["post"],
+            apiName: "apiName",
+            authMode: nil
+        )
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -266,10 +278,12 @@ class AppSyncListProviderTests: XCTestCase {
         mockAPIPlugin.responders[.queryRequestResponse] = QueryRequestResponder<JSONValue> { _ in
             throw APIError.unknown("", "", nil)
         }
-        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                        appSyncAssociatedFields: ["post"],
-                                                        apiName: "apiName",
-                                                        authMode: nil)
+        let modelMetadata = AppSyncListDecoder.Metadata(
+            appSyncAssociatedIdentifiers: ["postId"],
+            appSyncAssociatedFields: ["post"],
+            apiName: "apiName",
+            authMode: nil
+        )
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -301,10 +315,12 @@ class AppSyncListProviderTests: XCTestCase {
         mockAPIPlugin.responders[.queryRequestResponse] = QueryRequestResponder<JSONValue> { _ in
             return .failure(GraphQLResponseError.error([GraphQLError]()))
         }
-        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                        appSyncAssociatedFields: ["post"],
-                                                        apiName: "apiName",
-                                                        authMode: nil)
+        let modelMetadata = AppSyncListDecoder.Metadata(
+            appSyncAssociatedIdentifiers: ["postId"],
+            appSyncAssociatedFields: ["post"],
+            apiName: "apiName",
+            authMode: nil
+        )
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -351,10 +367,12 @@ class AppSyncListProviderTests: XCTestCase {
             ]
             return .success(json)
         }
-        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                        appSyncAssociatedFields: ["post"],
-                                                        apiName: "apiName",
-                                                        authMode: nil)
+        let modelMetadata = AppSyncListDecoder.Metadata(
+            appSyncAssociatedIdentifiers: ["postId"],
+            appSyncAssociatedFields: ["post"],
+            apiName: "apiName",
+            authMode: nil
+        )
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")

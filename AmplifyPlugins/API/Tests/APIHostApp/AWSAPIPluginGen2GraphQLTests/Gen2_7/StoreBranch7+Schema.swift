@@ -11,8 +11,7 @@ import Foundation
 
 public extension StoreBranch7 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case tenantId
     case name
     case country
@@ -65,9 +64,10 @@ extension StoreBranch7: ModelIdentifiable {
 }
 
 public extension StoreBranch7.IdentifierProtocol {
-  static func identifier(tenantId: String,
-      name: String) -> Self
-  {
+  static func identifier(
+    tenantId: String,
+    name: String
+  ) -> Self {
     .make(fields: [(name: "tenantId", value: tenantId), (name: "name", value: name)])
   }
 }

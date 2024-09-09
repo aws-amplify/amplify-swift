@@ -26,10 +26,11 @@ class MockURLSessionTask: URLSessionDataTaskBehavior {
     var onPause: BasicClosure?
     var onResume: BasicClosure?
 
-    init(onCancel: BasicClosure? = nil,
-         onPause: BasicClosure? = nil,
-         onResume: BasicClosure? = nil)
-    {
+    init(
+        onCancel: BasicClosure? = nil,
+        onPause: BasicClosure? = nil,
+        onResume: BasicClosure? = nil
+    ) {
         self.onCancel = onCancel
         self.onPause = onPause
         self.onResume = onResume

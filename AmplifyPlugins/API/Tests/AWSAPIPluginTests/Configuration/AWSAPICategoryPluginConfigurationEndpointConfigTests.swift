@@ -44,8 +44,10 @@ class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {
     }
 
     func testGetConfigEndpointTypeForGraphQL() throws {
-        let endpointConfig = try [graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
-                              restAPI: getEndpointConfig(apiName: restAPI, endpointType: .rest)]
+        let endpointConfig = try [
+            graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
+            restAPI: getEndpointConfig(apiName: restAPI, endpointType: .rest)
+        ]
 
         let endpoint = try endpointConfig.getConfig(endpointType: .graphQL)
 
@@ -54,8 +56,10 @@ class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {
     }
 
     func testGetConfigEndpointTypeFailsWhenMoreThanOneEndpointOfTheTypeExists() throws {
-        let endpointConfig = try [graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
-                              graphQLAPI2: getEndpointConfig(apiName: graphQLAPI2, endpointType: .graphQL)]
+        let endpointConfig = try [
+            graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
+            graphQLAPI2: getEndpointConfig(apiName: graphQLAPI2, endpointType: .graphQL)
+        ]
 
         do {
              _ = try endpointConfig.getConfig(endpointType: .graphQL)
@@ -94,8 +98,10 @@ class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {
     }
 
     func testGetConfigForOneGraphQLAndOneRESTEndpoint() throws {
-        let endpointConfig = try [graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
-                              restAPI: getEndpointConfig(apiName: restAPI, endpointType: .rest)]
+        let endpointConfig = try [
+            graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
+            restAPI: getEndpointConfig(apiName: restAPI, endpointType: .rest)
+        ]
 
         let endpoint = try endpointConfig.getConfig()
 
@@ -104,9 +110,11 @@ class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {
     }
 
     func testGetConfigForMoreThanOneGraphQLAndOneRESTEndpoint() throws {
-        let endpointConfig = try [graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
-                              graphQLAPI2: getEndpointConfig(apiName: graphQLAPI2, endpointType: .graphQL),
-                              restAPI: getEndpointConfig(apiName: restAPI, endpointType: .rest)]
+        let endpointConfig = try [
+            graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
+            graphQLAPI2: getEndpointConfig(apiName: graphQLAPI2, endpointType: .graphQL),
+            restAPI: getEndpointConfig(apiName: restAPI, endpointType: .rest)
+        ]
 
         let endpoint = try endpointConfig.getConfig()
 
@@ -115,9 +123,11 @@ class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {
     }
 
     func testGetConfigForOneGraphQLAndMoreThanOneRESTEndpoint() throws {
-        let endpointConfig = try [graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
-                              restAPI: getEndpointConfig(apiName: restAPI, endpointType: .rest),
-                              restAPI2: getEndpointConfig(apiName: restAPI2, endpointType: .rest)]
+        let endpointConfig = try [
+            graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
+            restAPI: getEndpointConfig(apiName: restAPI, endpointType: .rest),
+            restAPI2: getEndpointConfig(apiName: restAPI2, endpointType: .rest)
+        ]
 
         let endpoint = try endpointConfig.getConfig()
 
@@ -126,10 +136,12 @@ class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {
     }
 
     func testGetConfigShouldFailForMoreThanOneGraphQLAndRESTEndpoints() throws {
-        let endpointConfig = try [graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
-                              graphQLAPI2: getEndpointConfig(apiName: graphQLAPI2, endpointType: .graphQL),
-                              restAPI: getEndpointConfig(apiName: restAPI, endpointType: .rest),
-                              restAPI2: getEndpointConfig(apiName: restAPI2, endpointType: .rest)]
+        let endpointConfig = try [
+            graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
+            graphQLAPI2: getEndpointConfig(apiName: graphQLAPI2, endpointType: .graphQL),
+            restAPI: getEndpointConfig(apiName: restAPI, endpointType: .rest),
+            restAPI2: getEndpointConfig(apiName: restAPI2, endpointType: .rest)
+        ]
 
         do {
              _ = try endpointConfig.getConfig()
@@ -153,6 +165,7 @@ class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {
             region: nil,
             authorizationType: AWSAuthorizationType.none,
             endpointType: endpointType,
-            apiAuthProviderFactory: APIAuthProviderFactory())
+            apiAuthProviderFactory: APIAuthProviderFactory()
+        )
     }
 }

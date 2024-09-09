@@ -21,21 +21,24 @@ public final class AWSRESTOperation: AmplifyOperation<
     var mapper: OperationTaskMapper
     let pluginConfig: AWSAPICategoryPluginConfiguration
 
-    init(request: RESTOperationRequest,
-         session: URLSessionBehavior,
-         mapper: OperationTaskMapper,
-         pluginConfig: AWSAPICategoryPluginConfiguration,
-         resultListener: AWSRESTOperation.ResultListener?)
-    {
+    init(
+        request: RESTOperationRequest,
+        session: URLSessionBehavior,
+        mapper: OperationTaskMapper,
+        pluginConfig: AWSAPICategoryPluginConfiguration,
+        resultListener: AWSRESTOperation.ResultListener?
+    ) {
 
         self.session = session
         self.mapper = mapper
         self.pluginConfig = pluginConfig
 
-        super.init(categoryType: .api,
-                   eventName: request.operationType.hubEventName,
-                   request: request,
-                   resultListener: resultListener)
+        super.init(
+            categoryType: .api,
+            eventName: request.operationType.hubEventName,
+            request: request,
+            resultListener: resultListener
+        )
 
     }
 

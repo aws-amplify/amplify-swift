@@ -34,12 +34,13 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
 
     private var running = false
 
-    init(request: Request,
-         pluginConfig: AWSAPICategoryPluginConfiguration,
-         appSyncClientFactory: AppSyncRealTimeClientFactoryProtocol,
-         authService: AWSAuthCredentialsProviderBehavior,
-         apiAuthProviderFactory: APIAuthProviderFactory)
-    {
+    init(
+        request: Request,
+        pluginConfig: AWSAPICategoryPluginConfiguration,
+        appSyncClientFactory: AppSyncRealTimeClientFactoryProtocol,
+        authService: AWSAuthCredentialsProviderBehavior,
+        apiAuthProviderFactory: APIAuthProviderFactory
+    ) {
         self.request = request
         self.pluginConfig = pluginConfig
         self.appSyncClientFactory = appSyncClientFactory
@@ -200,25 +201,28 @@ public final class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
     var apiAuthProviderFactory: APIAuthProviderFactory
     private let subscriptionId = UUID().uuidString
 
-    init(request: GraphQLOperationRequest<R>,
-         pluginConfig: AWSAPICategoryPluginConfiguration,
-         appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol,
-         authService: AWSAuthCredentialsProviderBehavior,
-         apiAuthProviderFactory: APIAuthProviderFactory,
-         inProcessListener: AWSGraphQLSubscriptionOperation.InProcessListener?,
-         resultListener: AWSGraphQLSubscriptionOperation.ResultListener?)
-    {
+    init(
+        request: GraphQLOperationRequest<R>,
+        pluginConfig: AWSAPICategoryPluginConfiguration,
+        appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol,
+        authService: AWSAuthCredentialsProviderBehavior,
+        apiAuthProviderFactory: APIAuthProviderFactory,
+        inProcessListener: AWSGraphQLSubscriptionOperation.InProcessListener?,
+        resultListener: AWSGraphQLSubscriptionOperation.ResultListener?
+    ) {
 
         self.pluginConfig = pluginConfig
         self.appSyncRealTimeClientFactory = appSyncRealTimeClientFactory
         self.authService = authService
         self.apiAuthProviderFactory = apiAuthProviderFactory
 
-        super.init(categoryType: .api,
-                   eventName: HubPayload.EventName.API.subscribe,
-                   request: request,
-                   inProcessListener: inProcessListener,
-                   resultListener: resultListener)
+        super.init(
+            categoryType: .api,
+            eventName: HubPayload.EventName.API.subscribe,
+            request: request,
+            inProcessListener: inProcessListener,
+            resultListener: resultListener
+        )
     }
 
     override public func cancel() {

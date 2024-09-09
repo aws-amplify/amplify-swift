@@ -69,13 +69,15 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
     }
 
     func waitForSubscriptionExpectations() async {
-        await fulfillment(of: [receivedCompletionSuccess,
-                                   receivedCompletionFailure,
-                                   receivedStateValueConnecting,
-                                   receivedStateValueConnected,
-                                   receivedStateValueDisconnected,
-                                   receivedDataValueSuccess,
-                                   receivedDataValueError], timeout: 0.05)
+        await fulfillment(of: [
+            receivedCompletionSuccess,
+            receivedCompletionFailure,
+            receivedStateValueConnecting,
+            receivedStateValueConnected,
+            receivedStateValueDisconnected,
+            receivedDataValueSuccess,
+            receivedDataValueError
+        ], timeout: 0.05)
     }
 
     func testHappyPath() async throws {

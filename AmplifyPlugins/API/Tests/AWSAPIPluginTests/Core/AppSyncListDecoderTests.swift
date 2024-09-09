@@ -77,10 +77,12 @@ class AppSyncListDecoderTests: XCTestCase {
     }
 
     func testShouldDecodeFromModelMetadata() throws {
-        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                        appSyncAssociatedFields: ["post"],
-                                                        apiName: "apiName",
-                                                        authMode: nil)
+        let modelMetadata = AppSyncListDecoder.Metadata(
+            appSyncAssociatedIdentifiers: ["postId"],
+            appSyncAssociatedFields: ["post"],
+            apiName: "apiName",
+            authMode: nil
+        )
         let data = try encoder.encode(modelMetadata)
         let harness = try decoder.decode(AppSyncListDecoderHarness<Comment4>.self, from: data)
         XCTAssertNotNil(harness.listProvider)
@@ -97,9 +99,13 @@ class AppSyncListDecoderTests: XCTestCase {
     }
 
     func testShouldDecodeFromAWSAppSyncListResponse() throws {
-        let listResponse = AppSyncListResponse<Post4>(items: [Post4(title: "title"),
-                                                                 Post4(title: "title")],
-                                                                nextToken: "nextToken")
+        let listResponse = AppSyncListResponse<Post4>(
+            items: [
+                Post4(title: "title"),
+                Post4(title: "title")
+            ],
+            nextToken: "nextToken"
+        )
         let data = try encoder.encode(listResponse)
         let harness = try decoder.decode(AppSyncListDecoderHarness<Post4>.self, from: data)
         XCTAssertNotNil(harness.listProvider)

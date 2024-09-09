@@ -33,12 +33,16 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
         let sansChild = initChildSansBelongsTo(with: savedParent)
         try await mutate(.create(sansChild))
 
-        let request = GraphQLRequest<CompositePKParent>.get(CompositePKParent.self,
-                                                            byIdentifier: .identifier(customId: savedParent.customId,
-                                                                                      content: savedParent.content),
-                                                            includes: { parent in
+        let request = GraphQLRequest<CompositePKParent>.get(
+            CompositePKParent.self,
+            byIdentifier: .identifier(
+                customId: savedParent.customId,
+                content: savedParent.content
+            ),
+            includes: { parent in
             [parent.children, parent.implicitChildren, parent.strangeChildren, parent.childrenSansBelongsTo]
-        })
+        }
+        )
         let expectedDocument = """
         query GetCompositePKParent($content: String!, $customId: ID!) {
           getCompositePKParent(content: $content, customId: $customId) {
@@ -125,7 +129,9 @@ extension GraphQLLazyLoadCompositePKTests {
     }
 
     func initParent() -> CompositePKParent {
-        CompositePKParent(customId: UUID().uuidString,
-                          content: "content")
+        CompositePKParent(
+            customId: UUID().uuidString,
+            content: "content"
+        )
     }
 }

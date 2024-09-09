@@ -32,12 +32,16 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
             try Amplify.configure(amplifyConfig)
 
-            _ = try await AuthSignInHelper.signUpUser(username: user1.username,
-                                                      password: user1.password,
-                                                      email: "\(user1.username)@\(UUID().uuidString).com")
-            _ = try await AuthSignInHelper.signUpUser(username: user2.username,
-                                                      password: user2.password,
-                                                      email: "\(user2.username)@\(UUID().uuidString).com")
+            _ = try await AuthSignInHelper.signUpUser(
+                username: user1.username,
+                password: user1.password,
+                email: "\(user1.username)@\(UUID().uuidString).com"
+            )
+            _ = try await AuthSignInHelper.signUpUser(
+                username: user2.username,
+                password: user2.password,
+                email: "\(user2.username)@\(UUID().uuidString).com"
+            )
             ModelRegistry.register(modelType: SocialNote.self)
         } catch {
             XCTFail("Error during setup: \(error)")
@@ -192,8 +196,10 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         try await signIn(username: user1.username, password: user1.password)
         let connectedInvoked = expectation(description: "Connection established")
         let progressInvoked = expectation(description: "Progress invoked")
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: SocialNote.self,
-                                                                      subscriptionType: .onCreate)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: SocialNote.self,
+            subscriptionType: .onCreate
+        )
         let subscription = Amplify.API.subscribe(request: request)
         Task {
             do {
@@ -267,9 +273,11 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     }
 
     func deleteNote(byId id: String, version: Int) async throws -> GraphQLResponse<MutationSyncResult> {
-        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: SocialNote(id: id, content: ""),
-                                                                        modelSchema: SocialNote.schema,
-                                                                        version: version)
+        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(
+            of: SocialNote(id: id, content: ""),
+            modelSchema: SocialNote.schema,
+            version: version
+        )
         let mutateResult = try await Amplify.API.mutate(request: request)
         return mutateResult
     }

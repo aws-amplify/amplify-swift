@@ -15,9 +15,11 @@ import XCTest
 extension GraphQLResponseDecoderTests {
 
     func testDecodeToResponseTypeForString() throws {
-        let request = GraphQLRequest<String>(document: "",
-                                             responseType: String.self,
-                                             decodePath: "getSimpleModel")
+        let request = GraphQLRequest<String>(
+            document: "",
+            responseType: String.self,
+            decodePath: "getSimpleModel"
+        )
         let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
         let graphQLData: [String: JSONValue] = [
             "getSimpleModel": [
@@ -31,9 +33,11 @@ extension GraphQLResponseDecoderTests {
 
     func testDecodeToResponseTypeForAnyModel() throws {
         ModelRegistry.register(modelType: SimpleModel.self)
-        let request = GraphQLRequest<AnyModel>(document: "",
-                                              responseType: AnyModel.self,
-                                              decodePath: "getSimpleModel")
+        let request = GraphQLRequest<AnyModel>(
+            document: "",
+            responseType: AnyModel.self,
+            decodePath: "getSimpleModel"
+        )
         let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
         let graphQLData: [String: JSONValue] = [
             "getSimpleModel": [
@@ -54,9 +58,11 @@ extension GraphQLResponseDecoderTests {
     }
 
     func testDecodeToResponseTypeForModel() throws {
-        let request = GraphQLRequest<SimpleModel>(document: "",
-                                                  responseType: SimpleModel.self,
-                                                  decodePath: "getSimpleModel")
+        let request = GraphQLRequest<SimpleModel>(
+            document: "",
+            responseType: SimpleModel.self,
+            decodePath: "getSimpleModel"
+        )
         let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
         let graphQLData: [String: JSONValue] = [
             "getSimpleModel": [
@@ -70,9 +76,11 @@ extension GraphQLResponseDecoderTests {
     }
 
     func testDecodeToResponseTypeForModelWithArrayAssoiation() throws {
-        let request = GraphQLRequest<Post4>(document: "",
-                                            responseType: Post4.self,
-                                            decodePath: "getPost")
+        let request = GraphQLRequest<Post4>(
+            document: "",
+            responseType: Post4.self,
+            decodePath: "getPost"
+        )
         let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
         let graphQLData: [String: JSONValue] = [
             "getPost": [
@@ -90,9 +98,11 @@ extension GraphQLResponseDecoderTests {
     }
 
     func testDecodeToResponseTypeForList() async throws {
-        let request = GraphQLRequest<List<SimpleModel>>(document: "",
-                                                        responseType: List<SimpleModel>.self,
-                                                        decodePath: "listSimpleModel")
+        let request = GraphQLRequest<List<SimpleModel>>(
+            document: "",
+            responseType: List<SimpleModel>.self,
+            decodePath: "listSimpleModel"
+        )
         let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
         let graphQLData: [String: JSONValue] = [
             "listSimpleModel": [
@@ -123,18 +133,22 @@ extension GraphQLResponseDecoderTests {
 
     func testDecodeToResponseTypeForCodable() throws {
 
-        let request = GraphQLRequest<SimpleCodable>(document: "",
-                                                    responseType: SimpleCodable.self,
-                                                    decodePath: "getSimpleCodable")
+        let request = GraphQLRequest<SimpleCodable>(
+            document: "",
+            responseType: SimpleCodable.self,
+            decodePath: "getSimpleCodable"
+        )
         let graphQLDecoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
 
-        let expectedObject = SimpleCodable(myBool: true,
-                                           myDouble: 1.0,
-                                           myInt: 1,
-                                           myString: "string",
-                                           myDate: .now(),
-                                           myDateTime: .now(),
-                                           myTime: .now())
+        let expectedObject = SimpleCodable(
+            myBool: true,
+            myDouble: 1.0,
+            myInt: 1,
+            myString: "string",
+            myDate: .now(),
+            myDateTime: .now(),
+            myTime: .now()
+        )
 
         let data = try encoder.encode(expectedObject)
         let objectJSON = try decoder.decode(JSONValue.self, from: data)

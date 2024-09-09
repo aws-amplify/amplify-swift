@@ -47,12 +47,15 @@ class GraphQLQueryCombineTests: OperationTestBase {
             }
         })
 
-        await fulfillment(of: [receivedValue,
-                               receivedFinish,
-                               receivedFailure,
-                               receivedResponseError
-                              ],
-                          timeout: 0.05)
+        await fulfillment(
+            of: [
+                receivedValue,
+                receivedFinish,
+                receivedFailure,
+                receivedResponseError
+            ],
+            timeout: 0.05
+        )
         sink.cancel()
     }
 
@@ -87,12 +90,15 @@ class GraphQLQueryCombineTests: OperationTestBase {
             }
         })
 
-        await fulfillment(of: [receivedValue,
-                               receivedFinish,
-                               receivedFailure,
-                               receivedResponseError
-                              ],
-                          timeout: 0.05)
+        await fulfillment(
+            of: [
+                receivedValue,
+                receivedFinish,
+                receivedFailure,
+                receivedResponseError
+            ],
+            timeout: 0.05
+        )
         sink.cancel()
 
     }
@@ -128,12 +134,15 @@ class GraphQLQueryCombineTests: OperationTestBase {
             }
         })
 
-        await fulfillment(of: [receivedValue,
-                               receivedFinish,
-                               receivedFailure,
-                               receivedResponseError
-                              ],
-                          timeout: 0.05)
+        await fulfillment(
+            of: [
+                receivedValue,
+                receivedFinish,
+                receivedFailure,
+                receivedResponseError
+            ],
+            timeout: 0.05
+        )
         sink.cancel()
     }
 }

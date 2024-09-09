@@ -21,22 +21,26 @@ public struct Team5: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(teamId: String,
-      name: String,
-      project: Project5? = nil)
-  {
-    self.init(teamId: teamId,
+  public init(
+    teamId: String,
+    name: String,
+    project: Project5? = nil
+  ) {
+    self.init(
+      teamId: teamId,
       name: name,
       project: project,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(teamId: String,
-      name: String,
-      project: Project5? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    teamId: String,
+    name: String,
+    project: Project5? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.teamId = teamId
       self.name = name
       self._project = LazyReference(project)

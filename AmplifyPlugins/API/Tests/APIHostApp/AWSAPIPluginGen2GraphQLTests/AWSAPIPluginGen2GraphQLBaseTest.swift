@@ -41,10 +41,11 @@ class AWSAPIPluginGen2GraphQLBaseTest: XCTestCase {
 
     /// Setup API with given models
     /// - Parameter models: DataStore models
-    func setup(withModels models: AmplifyModelRegistration,
-               logLevel: LogLevel = .verbose,
-               withAuthPlugin: Bool = false) async
-    {
+    func setup(
+        withModels models: AmplifyModelRegistration,
+        logLevel: LogLevel = .verbose,
+        withAuthPlugin: Bool = false
+    ) async {
         do {
             setupConfig()
             Amplify.Logging.logLevel = logLevel
@@ -111,9 +112,10 @@ class AWSAPIPluginGen2GraphQLBaseTest: XCTestCase {
         case loaded(model: M?)
     }
 
-    func assertLazyReference<M: Model>(_ lazyModel: LazyReference<M>,
-                                   state: AssertLazyModelState<M>)
-    {
+    func assertLazyReference<M: Model>(
+        _ lazyModel: LazyReference<M>,
+        state: AssertLazyModelState<M>
+    ) {
         switch state {
         case .notLoaded(let expectedIdentifiers):
             if case .notLoaded(let identifiers) = lazyModel.modelProvider.getState() {
@@ -170,8 +172,10 @@ class AWSAPIPluginGen2GraphQLBaseTest: XCTestCase {
     func query<M: Model>(for model: M, includes: IncludedAssociations<M> = { _ in [] }) async throws -> M? {
         let id = M.identifier(model)(schema: model.schema)
 
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: model.schema,
-                                                               operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: model.schema,
+            operationType: .query
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
 
         if let modelPath = M.rootPath as? ModelPath<M> {
@@ -181,10 +185,12 @@ class AWSAPIPluginGen2GraphQLBaseTest: XCTestCase {
         documentBuilder.add(decorator: ModelIdDecorator(identifierFields: id.fields))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<M?>(document: document.stringValue,
-                                         variables: document.variables,
-                                         responseType: M?.self,
-                                         decodePath: document.name)
+        let request = GraphQLRequest<M?>(
+            document: document.stringValue,
+            variables: document.variables,
+            responseType: M?.self,
+            decodePath: document.name
+        )
         return try await query(request)
     }
 
@@ -208,8 +214,7 @@ class AWSAPIPluginGen2GraphQLBaseTest: XCTestCase {
                 }
 
                 if let data = subscriptionEvent.extractData(),
-                   try await verifyChange(data)
-                {
+                   try await verifyChange(data) {
                     eventReceived.fulfill()
                 }
             }

@@ -220,13 +220,17 @@ final class GraphQLLazyLoadPostComment4V2Tests: AWSAPIPluginGen2GraphQLBaseTest 
 
         let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.id == post.id))
         assertList(queriedPosts, state: .isLoaded(count: 1))
-        assertList(queriedPosts.first!.comments!,
-                   state: .isNotLoaded(associatedIdentifiers: [post.id], associatedFields: ["post"]))
+        assertList(
+            queriedPosts.first!.comments!,
+            state: .isNotLoaded(associatedIdentifiers: [post.id], associatedFields: ["post"])
+        )
 
         let queriedComments = try await listQuery(.list(Comment.self, where: Comment.keys.id == comment.id))
         assertList(queriedComments, state: .isLoaded(count: 1))
-        assertLazyReference(queriedComments.first!._post,
-                            state: .notLoaded(identifiers: [.init(name: "id", value: post.id)]))
+        assertLazyReference(
+            queriedComments.first!._post,
+            state: .notLoaded(identifiers: [.init(name: "id", value: post.id)])
+        )
     }
 
     func testCreateWithoutPost() async throws {
@@ -343,9 +347,11 @@ final class GraphQLLazyLoadPostComment4V2Tests: AWSAPIPluginGen2GraphQLBaseTest 
         try await mutate(.create(post))
         let connected = expectation(description: "subscription connected")
         let onCreatedComment = expectation(description: "onCreatedComment received")
-        let subscriptionIncludes = Amplify.API.subscribe(request: .subscription(of: Comment.self,
-                                                                                type: .onCreate,
-                                                                                includes: { comment in [comment.post]}))
+        let subscriptionIncludes = Amplify.API.subscribe(request: .subscription(
+            of: Comment.self,
+            type: .onCreate,
+            includes: { comment in [comment.post]}
+        ))
         Task {
             do {
                 for try await subscriptionEvent in subscriptionIncludes {
@@ -422,9 +428,11 @@ final class GraphQLLazyLoadPostComment4V2Tests: AWSAPIPluginGen2GraphQLBaseTest 
 
         let connected = expectation(description: "subscription connected")
         let onCreatedPost = expectation(description: "onCreatedPost received")
-        let subscriptionIncludes = Amplify.API.subscribe(request: .subscription(of: Post.self,
-                                                                                type: .onCreate,
-                                                                                includes: { post in [post.comments]}))
+        let subscriptionIncludes = Amplify.API.subscribe(request: .subscription(
+            of: Post.self,
+            type: .onCreate,
+            includes: { post in [post.comments]}
+        ))
         Task {
             do {
                 for try await subscriptionEvent in subscriptionIncludes {

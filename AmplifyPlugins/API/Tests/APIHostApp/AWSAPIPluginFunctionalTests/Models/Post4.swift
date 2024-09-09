@@ -16,22 +16,26 @@ public struct Post4: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      title: String,
-      comments: List<Comment4>? = [])
-  {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    title: String,
+    comments: List<Comment4>? = []
+  ) {
+    self.init(
+      id: id,
       title: title,
       comments: comments,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(id: String = UUID().uuidString,
-      title: String,
-      comments: List<Comment4>? = [],
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    id: String = UUID().uuidString,
+    title: String,
+    comments: List<Comment4>? = [],
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.title = title
       self.comments = comments

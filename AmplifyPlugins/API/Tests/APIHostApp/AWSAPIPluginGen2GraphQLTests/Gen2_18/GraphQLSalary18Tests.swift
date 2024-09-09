@@ -20,7 +20,8 @@ final class GraphQLSalary18Tests: AWSAPIPluginGen2GraphQLBaseTest {
             _ = try await AuthSignInHelper.registerAndSignInUser(
                 username: username,
                 password: password,
-                email: defaultTestEmail)
+                email: defaultTestEmail
+            )
         } catch {
             XCTFail("Could not sign up and sign in user \(error)")
         }
@@ -29,10 +30,12 @@ final class GraphQLSalary18Tests: AWSAPIPluginGen2GraphQLBaseTest {
         do {
             let salary = Salary(
                 wage: 50.25,
-                currency: "USD")
+                currency: "USD"
+            )
             let createdSalary = try await Amplify.API.mutate(request: .create(
                 salary,
-                authMode: .amazonCognitoUserPools)).get()
+                authMode: .amazonCognitoUserPools
+            )).get()
             // Code Snippet Ends
             XCTFail("Should not make it to here. Expected to catch failure since user is not in the Admin group.")
             // Code Snippet begins

@@ -46,11 +46,15 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
-        let request = GraphQLRequest(document: CreateTodoMutation.document,
-                                     variables: CreateTodoMutation.variables(id: expectedId,
-                                                                             name: expectedName,
-                                                                             description: expectedDescription),
-                                     responseType: CreateTodoMutation.Data.self)
+        let request = GraphQLRequest(
+            document: CreateTodoMutation.document,
+            variables: CreateTodoMutation.variables(
+                id: expectedId,
+                name: expectedName,
+                description: expectedDescription
+            ),
+            responseType: CreateTodoMutation.Data.self
+        )
         let graphQLResponse = try await Amplify.API.mutate(request: request)
         guard case let .success(data) = graphQLResponse else {
             XCTFail("Missing successful response")
@@ -161,10 +165,11 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
         public var name: String
         public var description: String?
 
-        init(id: String = UUID().uuidString,
-             name: String,
-             description: String? = nil)
-        {
+        init(
+            id: String = UUID().uuidString,
+            name: String,
+            description: String? = nil
+        ) {
             self.id = id
             self.name = name
             self.description = description

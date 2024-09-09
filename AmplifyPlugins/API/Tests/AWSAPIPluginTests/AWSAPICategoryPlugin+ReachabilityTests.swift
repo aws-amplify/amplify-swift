@@ -58,8 +58,10 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
         let graphQLAPI = "graphQLAPI"
         let restAPI = "restAPI"
         do {
-            let endpointConfig = try [graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
-                                  restAPI: getEndpointConfig(apiName: restAPI, endpointType: .rest)]
+            let endpointConfig = try [
+                graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
+                restAPI: getEndpointConfig(apiName: restAPI, endpointType: .rest)
+            ]
             let pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig)
             let dependencies = AWSAPIPlugin.ConfigurationDependencies(
                 pluginConfig: pluginConfig,
@@ -86,8 +88,10 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
         let graphQLAPI = "graphQLAPI"
         let restAPI = "restAPI"
         do {
-            let endpointConfig = try [graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
-                                  restAPI: getEndpointConfig(apiName: restAPI, endpointType: .rest)]
+            let endpointConfig = try [
+                graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
+                restAPI: getEndpointConfig(apiName: restAPI, endpointType: .rest)
+            ]
             let pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig)
             let dependencies = AWSAPIPlugin.ConfigurationDependencies(
                 pluginConfig: pluginConfig,
@@ -128,6 +132,7 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
             region: nil,
             authorizationType: AWSAuthorizationType.none,
             endpointType: endpointType,
-            apiAuthProviderFactory: APIAuthProviderFactory())
+            apiAuthProviderFactory: APIAuthProviderFactory()
+        )
     }
 }

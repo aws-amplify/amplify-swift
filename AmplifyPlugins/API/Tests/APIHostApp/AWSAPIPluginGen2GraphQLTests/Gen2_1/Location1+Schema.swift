@@ -11,8 +11,7 @@ import Foundation
 
 public extension Location1 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case lat
     case long
   }

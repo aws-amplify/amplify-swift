@@ -19,7 +19,8 @@ final class APISwiftTests: XCTestCase {
         let request = GraphQLRequest<CreateBlogMutation.Data>(
             document: CreateBlogMutation.requestString,
             variables: mutation.variables?.jsonObject,
-            responseType: CreateBlogMutation.Data.self)
+            responseType: CreateBlogMutation.Data.self
+        )
 
         var expectedDocument = """
         mutation CreateBlog($input: CreateBlogInput!, $condition: ModelBlogConditionInput) {

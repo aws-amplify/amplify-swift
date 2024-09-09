@@ -16,10 +16,12 @@ class AWSGraphQLOperationTests: AWSAPICategoryPluginTestBase {
 
     /// Tests that upon completion, the operation is removed from the task mapper.
     func testOperationCleanup() async {
-        let request = GraphQLRequest(apiName: apiName,
-                                     document: testDocument,
-                                     variables: nil,
-                                     responseType: JSONValue.self)
+        let request = GraphQLRequest(
+            apiName: apiName,
+            document: testDocument,
+            variables: nil,
+            responseType: JSONValue.self
+        )
 
         let operation = apiPlugin.query(request: request, listener: nil)
 
@@ -43,11 +45,13 @@ class AWSGraphQLOperationTests: AWSAPICategoryPluginTestBase {
     /// Request for `.amazonCognitoUserPool` at runtime with `request` while passing in what
     /// is configured as `.apiKey`. Expect that the interceptor is the token interceptor
     func testGetEndpointInterceptors() throws {
-        let request = GraphQLRequest<JSONValue>(apiName: apiName,
-                                                document: testDocument,
-                                                variables: nil,
-                                                responseType: JSONValue.self,
-                                                authMode: AWSAuthorizationType.amazonCognitoUserPools)
+        let request = GraphQLRequest<JSONValue>(
+            apiName: apiName,
+            document: testDocument,
+            variables: nil,
+            responseType: JSONValue.self,
+            authMode: AWSAuthorizationType.amazonCognitoUserPools
+        )
         let task = try OperationTestBase.makeSingleValueErrorMockTask()
         let mockSession = MockURLSession(onTaskForRequest: { _ in task })
         let pluginConfig = try AWSAPICategoryPluginConfiguration(
@@ -59,14 +63,19 @@ class AWSGraphQLOperationTests: AWSAPICategoryPluginTestBase {
                     authorizationType: .apiKey,
                     endpointType: .graphQL,
                     apiKey: "apiKey",
-                    apiAuthProviderFactory: .init())],
+                    apiAuthProviderFactory: .init()
+                )
+            ],
             apiAuthProviderFactory: .init(),
-            authService: MockAWSAuthService())
-        let operation = AWSGraphQLOperation(request: request.toOperationRequest(operationType: .query),
-                                            session: mockSession,
-                                            mapper: OperationTaskMapper(),
-                                            pluginConfig: pluginConfig,
-                                            resultListener: { _ in })
+            authService: MockAWSAuthService()
+        )
+        let operation = AWSGraphQLOperation(
+            request: request.toOperationRequest(operationType: .query),
+            session: mockSession,
+            mapper: OperationTaskMapper(),
+            pluginConfig: pluginConfig,
+            resultListener: { _ in }
+        )
 
         // Act
         let results = operation.getEndpointInterceptors()

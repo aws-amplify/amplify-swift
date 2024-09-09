@@ -17,9 +17,10 @@ class MockURLSession: URLSessionBehavior {
     var onTaskForRequest: (URLRequest) -> URLSessionDataTaskBehavior
     var onReset: ((BasicClosure?) -> Void)?
 
-    init(onTaskForRequest: @escaping (URLRequest) -> URLSessionDataTaskBehavior,
-         onReset: ((BasicClosure?) -> Void)? = MockURLSession.defaultOnReset)
-    {
+    init(
+        onTaskForRequest: @escaping (URLRequest) -> URLSessionDataTaskBehavior,
+        onReset: ((BasicClosure?) -> Void)? = MockURLSession.defaultOnReset
+    ) {
         self.onTaskForRequest = onTaskForRequest
         self.onReset = onReset
     }

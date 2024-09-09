@@ -100,20 +100,24 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
             let provider = AWSOIDCAuthProvider(authService: authService)
             return AuthTokenInterceptor(getLatestAuthToken: provider.getLatestAuthToken)
         case .awsIAM(let awsIAMConfiguration):
-            return IAMAuthInterceptor(authService.getCredentialsProvider(),
-                                                 region: awsIAMConfiguration.region)
+            return IAMAuthInterceptor(
+                authService.getCredentialsProvider(),
+                region: awsIAMConfiguration.region
+            )
         case .openIDConnect:
             guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
                 throw APIError.invalidConfiguration(
                     "Using openIDConnect requires passing in an APIAuthProvider with an OIDC AuthProvider",
-                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil)
+                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil
+                )
             }
             return AuthTokenInterceptor(getLatestAuthToken: oidcAuthProvider.getLatestAuthToken)
         case .function:
             guard let functionAuthProvider = apiAuthProviderFactory.functionAuthProvider() else {
                 throw APIError.invalidConfiguration(
                     "Using function as auth provider requires passing in an APIAuthProvider with a Function AuthProvider",
-                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil)
+                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil
+                )
             }
             return AuthTokenInterceptor(authTokenProvider: functionAuthProvider)
         case .none:

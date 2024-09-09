@@ -11,8 +11,7 @@ import Foundation
 
 public extension User1 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case lastKnownLocation
     case createdAt

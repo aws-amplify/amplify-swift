@@ -11,8 +11,7 @@ import Foundation
 
 public extension Post14 {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case title
     case rating

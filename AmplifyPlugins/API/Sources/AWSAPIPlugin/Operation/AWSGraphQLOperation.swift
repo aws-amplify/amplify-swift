@@ -16,22 +16,25 @@ public final class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
     let pluginConfig: AWSAPICategoryPluginConfiguration
     let graphQLResponseDecoder: GraphQLResponseDecoder<R>
 
-    init(request: GraphQLOperationRequest<R>,
-         session: URLSessionBehavior,
-         mapper: OperationTaskMapper,
-         pluginConfig: AWSAPICategoryPluginConfiguration,
-         resultListener: AWSGraphQLOperation.ResultListener?)
-    {
+    init(
+        request: GraphQLOperationRequest<R>,
+        session: URLSessionBehavior,
+        mapper: OperationTaskMapper,
+        pluginConfig: AWSAPICategoryPluginConfiguration,
+        resultListener: AWSGraphQLOperation.ResultListener?
+    ) {
 
         self.session = session
         self.mapper = mapper
         self.pluginConfig = pluginConfig
         self.graphQLResponseDecoder = GraphQLResponseDecoder(request: request)
 
-        super.init(categoryType: .api,
-                   eventName: request.operationType.hubEventName,
-                   request: request,
-                   resultListener: resultListener)
+        super.init(
+            categoryType: .api,
+            eventName: request.operationType.hubEventName,
+            request: request,
+            resultListener: resultListener
+        )
     }
 
     override public func main() {
@@ -120,13 +123,16 @@ public final class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
 
     private func getRequestPayload(from request: GraphQLOperationRequest<R>) -> Result<Data, APIError> {
         // Prepare request payload
-        let queryDocument = GraphQLOperationRequestUtils.getQueryDocument(document: request.document,
-                                                                          variables: request.variables)
+        let queryDocument = GraphQLOperationRequestUtils.getQueryDocument(
+            document: request.document,
+            variables: request.variables
+        )
         if Amplify.API.log.logLevel == .verbose,
-           let serializedJSON = try? JSONSerialization.data(withJSONObject: queryDocument,
-                                                            options: .prettyPrinted),
-           let prettyPrintedQueryDocument = String(data: serializedJSON, encoding: .utf8)
-        {
+           let serializedJSON = try? JSONSerialization.data(
+               withJSONObject: queryDocument,
+               options: .prettyPrinted
+           ),
+           let prettyPrintedQueryDocument = String(data: serializedJSON, encoding: .utf8) {
             Amplify.API.log.verbose("\(prettyPrintedQueryDocument)")
         }
 
@@ -156,8 +162,7 @@ public final class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         getEndpointConfig(from: request).flatMap { endpointConfig in
             do {
                 if let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions,
-                   let authType = pluginOptions.authType
-                {
+                   let authType = pluginOptions.authType {
                     return try .success(pluginConfig.interceptorsForEndpoint(
                         withConfig: endpointConfig,
                         authType: authType

@@ -20,10 +20,11 @@ public struct AWSAPICategoryPluginConfiguration {
     private var apiAuthProviderFactory: APIAuthProviderFactory?
     private var authService: AWSAuthCredentialsProviderBehavior?
 
-    init(jsonValue: JSONValue,
-         apiAuthProviderFactory: APIAuthProviderFactory,
-         authService: AWSAuthCredentialsProviderBehavior) throws
-    {
+    init(
+        jsonValue: JSONValue,
+        apiAuthProviderFactory: APIAuthProviderFactory,
+        authService: AWSAuthCredentialsProviderBehavior
+    ) throws {
         guard case .object(let config) = jsonValue else {
             throw PluginError.pluginConfigurationError(
                 "Could not cast incoming configuration to a JSONValue `.object`",
@@ -36,24 +37,31 @@ public struct AWSAPICategoryPluginConfiguration {
             )
         }
 
-        let endpoints = try AWSAPICategoryPluginConfiguration.endpointsFromConfig(config: config,
-                                                                                  apiAuthProviderFactory: apiAuthProviderFactory,
-                                                                                  authService: authService)
-        let interceptors = try AWSAPICategoryPluginConfiguration.makeInterceptors(forEndpoints: endpoints,
-                                                                                  apiAuthProviderFactory: apiAuthProviderFactory,
-                                                                                  authService: authService)
+        let endpoints = try AWSAPICategoryPluginConfiguration.endpointsFromConfig(
+            config: config,
+            apiAuthProviderFactory: apiAuthProviderFactory,
+            authService: authService
+        )
+        let interceptors = try AWSAPICategoryPluginConfiguration.makeInterceptors(
+            forEndpoints: endpoints,
+            apiAuthProviderFactory: apiAuthProviderFactory,
+            authService: authService
+        )
 
-        self.init(endpoints: endpoints,
-                  interceptors: interceptors,
-                  apiAuthProviderFactory: apiAuthProviderFactory,
-                  authService: authService)
+        self.init(
+            endpoints: endpoints,
+            interceptors: interceptors,
+            apiAuthProviderFactory: apiAuthProviderFactory,
+            authService: authService
+        )
 
     }
 
-    init(configuration: AmplifyOutputsData,
-         apiAuthProviderFactory: APIAuthProviderFactory,
-         authService: AWSAuthCredentialsProviderBehavior) throws
-    {
+    init(
+        configuration: AmplifyOutputsData,
+        apiAuthProviderFactory: APIAuthProviderFactory,
+        authService: AWSAuthCredentialsProviderBehavior
+    ) throws {
 
         guard let data = configuration.data else {
             throw PluginError.pluginConfigurationError(
@@ -68,16 +76,20 @@ public struct AWSAPICategoryPluginConfiguration {
         let endpoints = try AWSAPICategoryPluginConfiguration.endpointsFromConfig(
             config: data,
             apiAuthProviderFactory: apiAuthProviderFactory,
-            authService: authService)
+            authService: authService
+        )
         let interceptors = try AWSAPICategoryPluginConfiguration.makeInterceptors(
             forEndpoints: endpoints,
             apiAuthProviderFactory: apiAuthProviderFactory,
-            authService: authService)
+            authService: authService
+        )
 
-        self.init(endpoints: endpoints,
-                  interceptors: interceptors,
-                  apiAuthProviderFactory: apiAuthProviderFactory,
-                  authService: authService)
+        self.init(
+            endpoints: endpoints,
+            interceptors: interceptors,
+            apiAuthProviderFactory: apiAuthProviderFactory,
+            authService: authService
+        )
 
     }
 
@@ -85,9 +97,10 @@ public struct AWSAPICategoryPluginConfiguration {
     /// - Parameters:
     ///   - endpoints: dictionary of EndpointConfig whose keys are the API endpoint name
     ///   - interceptors: dictionary of AWSAPIEndpointInterceptors whose keys are the API endpoint name
-    init(endpoints: [APIEndpointName: EndpointConfig],
-                  interceptors: [APIEndpointName: AWSAPIEndpointInterceptors] = [:])
-    {
+    init(
+        endpoints: [APIEndpointName: EndpointConfig],
+        interceptors: [APIEndpointName: AWSAPIEndpointInterceptors] = [:]
+    ) {
         self.endpoints = endpoints
         self.interceptors = interceptors
     }
@@ -96,11 +109,12 @@ public struct AWSAPICategoryPluginConfiguration {
     /// - Parameters:
     ///   - endpoints: dictionary of EndpointConfig whose keys are the API endpoint name
     ///   - interceptors: dictionary of AWSAPIEndpointInterceptors whose keys are the API endpoint name
-    init(endpoints: [APIEndpointName: EndpointConfig],
-                  interceptors: [APIEndpointName: AWSAPIEndpointInterceptors] = [:],
-                  apiAuthProviderFactory: APIAuthProviderFactory,
-                  authService: AWSAuthCredentialsProviderBehavior)
-    {
+    init(
+        endpoints: [APIEndpointName: EndpointConfig],
+        interceptors: [APIEndpointName: AWSAPIEndpointInterceptors] = [:],
+        apiAuthProviderFactory: APIAuthProviderFactory,
+        authService: AWSAuthCredentialsProviderBehavior
+    ) {
         self.endpoints = endpoints
         self.interceptors = interceptors
         self.apiAuthProviderFactory = apiAuthProviderFactory
@@ -110,9 +124,10 @@ public struct AWSAPICategoryPluginConfiguration {
     /// Registers an customer interceptor for the provided API endpoint
     /// - Parameter interceptor: operation interceptor used to decorate API requests
     /// - Parameter toEndpoint: API endpoint name
-    mutating func addInterceptor(_ interceptor: URLRequestInterceptor,
-                                 toEndpoint apiName: APIEndpointName)
-    {
+    mutating func addInterceptor(
+        _ interceptor: URLRequestInterceptor,
+        toEndpoint apiName: APIEndpointName
+    ) {
         guard interceptors[apiName] != nil else {
             log.error("No interceptors configuration found for \(apiName)")
             return
@@ -150,14 +165,20 @@ public struct AWSAPICategoryPluginConfiguration {
             return interceptorsForEndpoint(named: endpointConfig.name)
         }
 
-        var config = AWSAPIEndpointInterceptors(endpointName: endpointConfig.name,
-                                                apiAuthProviderFactory: apiAuthProviderFactory,
-                                                authService: authService)
-        let authConfiguration = try AWSAuthorizationConfiguration.makeConfiguration(authType: authType,
-                                                                       region: endpointConfig.region,
-                                                                       apiKey: endpointConfig.apiKey)
-        try config.addAuthInterceptorsToEndpoint(endpointType: endpointConfig.endpointType,
-                                                 authConfiguration: authConfiguration)
+        var config = AWSAPIEndpointInterceptors(
+            endpointName: endpointConfig.name,
+            apiAuthProviderFactory: apiAuthProviderFactory,
+            authService: authService
+        )
+        let authConfiguration = try AWSAuthorizationConfiguration.makeConfiguration(
+            authType: authType,
+            region: endpointConfig.region,
+            apiKey: endpointConfig.apiKey
+        )
+        try config.addAuthInterceptorsToEndpoint(
+            endpointType: endpointConfig.endpointType,
+            authConfiguration: authConfiguration
+        )
 
         // retrieve current interceptors and replace auth interceptor
         let currentInterceptors = interceptorsForEndpoint(named: endpointConfig.name)
@@ -186,10 +207,12 @@ public struct AWSAPICategoryPluginConfiguration {
 
         for (key, jsonValue) in config {
             let name = key
-            let endpointConfig = try EndpointConfig(name: name,
-                                                    jsonValue: jsonValue,
-                                                    apiAuthProviderFactory: apiAuthProviderFactory,
-                                                    authService: authService)
+            let endpointConfig = try EndpointConfig(
+                name: name,
+                jsonValue: jsonValue,
+                apiAuthProviderFactory: apiAuthProviderFactory,
+                authService: authService
+            )
             endpoints[name] = endpointConfig
         }
 
@@ -203,10 +226,12 @@ public struct AWSAPICategoryPluginConfiguration {
     ) throws -> [APIEndpointName: EndpointConfig] {
         var endpoints = [APIEndpointName: EndpointConfig]()
         let name = AWSAPIPlugin.defaultGraphQLAPI
-        let endpointConfig = try EndpointConfig(name: name,
-                                                config: config,
-                                                apiAuthProviderFactory: apiAuthProviderFactory,
-                                                authService: authService)
+        let endpointConfig = try EndpointConfig(
+            name: name,
+            config: config,
+            apiAuthProviderFactory: apiAuthProviderFactory,
+            authService: authService
+        )
         endpoints[name] = endpointConfig
         return endpoints
     }
@@ -219,17 +244,22 @@ public struct AWSAPICategoryPluginConfiguration {
     ///   - authService: authService
     /// - Throws:
     /// - Returns: dictionary of AWSAPIEndpointInterceptors indexed by API endpoint name
-    private static func makeInterceptors(forEndpoints endpoints: [APIEndpointName: EndpointConfig],
-                                         apiAuthProviderFactory: APIAuthProviderFactory,
-                                         authService: AWSAuthCredentialsProviderBehavior) throws -> [APIEndpointName: AWSAPIEndpointInterceptors]
-    {
+    private static func makeInterceptors(
+        forEndpoints endpoints: [APIEndpointName: EndpointConfig],
+        apiAuthProviderFactory: APIAuthProviderFactory,
+        authService: AWSAuthCredentialsProviderBehavior
+    ) throws -> [APIEndpointName: AWSAPIEndpointInterceptors] {
         var interceptors: [APIEndpointName: AWSAPIEndpointInterceptors] = [:]
         for (name, config) in endpoints {
-            var interceptorsConfig = AWSAPIEndpointInterceptors(endpointName: name,
-                               apiAuthProviderFactory: apiAuthProviderFactory,
-                               authService: authService)
-            try interceptorsConfig.addAuthInterceptorsToEndpoint(endpointType: config.endpointType,
-                                                                 authConfiguration: config.authorizationConfiguration)
+            var interceptorsConfig = AWSAPIEndpointInterceptors(
+                endpointName: name,
+                apiAuthProviderFactory: apiAuthProviderFactory,
+                authService: authService
+            )
+            try interceptorsConfig.addAuthInterceptorsToEndpoint(
+                endpointType: config.endpointType,
+                authConfiguration: config.authorizationConfiguration
+            )
             interceptors[name] = interceptorsConfig
         }
 

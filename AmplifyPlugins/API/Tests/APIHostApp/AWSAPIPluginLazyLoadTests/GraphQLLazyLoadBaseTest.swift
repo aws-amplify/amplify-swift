@@ -47,9 +47,10 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
 
     /// Setup API with given models
     /// - Parameter models: DataStore models
-    func setup(withModels models: AmplifyModelRegistration,
-               logLevel: LogLevel = .verbose) async
-    {
+    func setup(
+        withModels models: AmplifyModelRegistration,
+        logLevel: LogLevel = .verbose
+    ) async {
         do {
             setupConfig()
             Amplify.Logging.logLevel = logLevel
@@ -113,9 +114,10 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
         case loaded(model: M?)
     }
 
-    func assertLazyReference<M: Model>(_ lazyModel: LazyReference<M>,
-                                   state: AssertLazyModelState<M>)
-    {
+    func assertLazyReference<M: Model>(
+        _ lazyModel: LazyReference<M>,
+        state: AssertLazyModelState<M>
+    ) {
         switch state {
         case .notLoaded(let expectedIdentifiers):
             if case .notLoaded(let identifiers) = lazyModel.modelProvider.getState() {
@@ -172,8 +174,10 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
     func query<M: Model>(for model: M, includes: IncludedAssociations<M> = { _ in [] }) async throws -> M? {
         let id = M.identifier(model)(schema: model.schema)
 
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: model.schema,
-                                                               operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: model.schema,
+            operationType: .query
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
 
         if let modelPath = M.rootPath as? ModelPath<M> {
@@ -183,10 +187,12 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
         documentBuilder.add(decorator: ModelIdDecorator(identifierFields: id.fields))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<M?>(document: document.stringValue,
-                                         variables: document.variables,
-                                         responseType: M?.self,
-                                         decodePath: document.name)
+        let request = GraphQLRequest<M?>(
+            document: document.stringValue,
+            variables: document.variables,
+            responseType: M?.self,
+            decodePath: document.name
+        )
         return try await query(request)
     }
 
@@ -210,8 +216,7 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
                 }
 
                 if let data = subscriptionEvent.extractData(),
-                   try await verifyChange(data)
-                {
+                   try await verifyChange(data) {
                     eventReceived.fulfill()
                 }
             }

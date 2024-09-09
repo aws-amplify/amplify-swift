@@ -19,10 +19,11 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
     let endpointType: AWSAPICategoryPluginEndpointType
     private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
 
-    init(iamCredentialsProvider: IAMCredentialsProvider,
-         region: AWSRegionType,
-         endpointType: AWSAPICategoryPluginEndpointType)
-    {
+    init(
+        iamCredentialsProvider: IAMCredentialsProvider,
+        region: AWSRegionType,
+        endpointType: AWSAPICategoryPluginEndpointType
+    ) {
         self.iamCredentialsProvider = iamCredentialsProvider
         self.region = region
         self.endpointType = endpointType

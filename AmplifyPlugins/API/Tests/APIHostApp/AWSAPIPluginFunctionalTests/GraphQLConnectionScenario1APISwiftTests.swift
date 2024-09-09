@@ -21,7 +21,8 @@ extension GraphQLConnectionScenario1Tests {
         let request = GraphQLRequest<APISwift.CreateTeam1Mutation.Data>(
             document: APISwift.CreateTeam1Mutation.operationString,
             variables: mutation.variables?.jsonObject,
-            responseType: APISwift.CreateTeam1Mutation.Data.self)
+            responseType: APISwift.CreateTeam1Mutation.Data.self
+        )
         let response = try await Amplify.API.mutate(request: request)
         switch response {
         case .success(let data):
@@ -38,7 +39,8 @@ extension GraphQLConnectionScenario1Tests {
         let request = GraphQLRequest<APISwift.CreateProject1Mutation.Data>(
             document: APISwift.CreateProject1Mutation.operationString,
             variables: mutation.variables?.jsonObject,
-            responseType: APISwift.CreateProject1Mutation.Data.self)
+            responseType: APISwift.CreateProject1Mutation.Data.self
+        )
         let response = try await Amplify.API.mutate(request: request)
         switch response {
         case .success(let data):
@@ -54,7 +56,8 @@ extension GraphQLConnectionScenario1Tests {
         let request = GraphQLRequest<APISwift.UpdateProject1Mutation.Data>(
             document: APISwift.UpdateProject1Mutation.operationString,
             variables: mutation.variables?.jsonObject,
-            responseType: APISwift.UpdateProject1Mutation.Data.self)
+            responseType: APISwift.UpdateProject1Mutation.Data.self
+        )
         let response = try await Amplify.API.mutate(request: request)
         switch response {
         case .success(let data):
@@ -70,7 +73,8 @@ extension GraphQLConnectionScenario1Tests {
         let request = GraphQLRequest<APISwift.DeleteProject1Mutation.Data>(
             document: APISwift.DeleteProject1Mutation.operationString,
             variables: mutation.variables?.jsonObject,
-            responseType: APISwift.DeleteProject1Mutation.Data.self)
+            responseType: APISwift.DeleteProject1Mutation.Data.self
+        )
         let response = try await Amplify.API.mutate(request: request)
         switch response {
         case .success(let data):
@@ -85,7 +89,8 @@ extension GraphQLConnectionScenario1Tests {
         let request = GraphQLRequest<APISwift.GetProject1Query.Data>(
             document: APISwift.GetProject1Query.operationString,
             variables: query.variables?.jsonObject,
-            responseType: APISwift.GetProject1Query.Data.self)
+            responseType: APISwift.GetProject1Query.Data.self
+        )
         let response = try await Amplify.API.query(request: request)
         switch response {
         case .success(let data):
@@ -100,7 +105,8 @@ extension GraphQLConnectionScenario1Tests {
         let request = GraphQLRequest<APISwift.ListProject1sQuery.Data>(
             document: APISwift.ListProject1sQuery.operationString,
             variables: query.variables?.jsonObject,
-            responseType: APISwift.ListProject1sQuery.Data.self)
+            responseType: APISwift.ListProject1sQuery.Data.self
+        )
         let response = try await Amplify.API.query(request: request)
         switch response {
         case .success(let data):
@@ -136,7 +142,8 @@ extension GraphQLConnectionScenario1Tests {
         let request = GraphQLRequest<APISwift.GetProject1Query.Data>(
             document: APISwift.GetProject1Query.operationString,
             variables: query.variables?.jsonObject,
-            responseType: APISwift.GetProject1Query.Data.self)
+            responseType: APISwift.GetProject1Query.Data.self
+        )
         let result = try await Amplify.API.query(request: request)
         switch result {
         case .success(let data):

@@ -70,11 +70,13 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
 
     func testGetAPIWithQueryParamsSuccess() async throws {
         try await createAuthenticatedUser()
-        let request = RESTRequest(path: "/items",
-                                  queryParameters: [
-                                    "user": "hello@email.com",
-                                    "created": "2021-06-18T09:00:00Z"
-                                  ])
+        let request = RESTRequest(
+            path: "/items",
+            queryParameters: [
+                "user": "hello@email.com",
+                "created": "2021-06-18T09:00:00Z"
+            ]
+        )
         let data = try await Amplify.API.get(request: request)
         let result = String(decoding: data, as: UTF8.self)
         print(result)
@@ -82,11 +84,13 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
 
     func testGetAPIWithEncodedQueryParamsSuccess() async throws {
         try await createAuthenticatedUser()
-        let request = RESTRequest(path: "/items",
-                                  queryParameters: [
-                                    "user": "hello%40email.com",
-                                    "created": "2021-06-18T09%3A00%3A00Z"
-                                  ])
+        let request = RESTRequest(
+            path: "/items",
+            queryParameters: [
+                "user": "hello%40email.com",
+                "created": "2021-06-18T09%3A00%3A00Z"
+            ]
+        )
         let data = try await Amplify.API.get(request: request)
         let result = String(decoding: data, as: UTF8.self)
         print(result)
@@ -146,8 +150,10 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
 
 
     func signIn() async throws {
-        let signInResult = try await Amplify.Auth.signIn(username: username,
-                                               password: password)
+        let signInResult = try await Amplify.Auth.signIn(
+            username: username,
+            password: password
+        )
         guard signInResult.isSignedIn else {
             XCTFail("Sign in successful but not complete")
             return

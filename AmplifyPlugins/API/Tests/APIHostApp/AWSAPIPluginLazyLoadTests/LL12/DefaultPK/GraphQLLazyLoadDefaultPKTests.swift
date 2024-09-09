@@ -25,11 +25,15 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
         let defaultPKChild = DefaultPKChild(parent: savedParent)
         let savedChild = try await mutate(.create(defaultPKChild))
 
-        assertLazyReference(savedChild._parent,
-                            state: .notLoaded(identifiers: [.init(name: "id", value: savedParent.id)]))
+        assertLazyReference(
+            savedChild._parent,
+            state: .notLoaded(identifiers: [.init(name: "id", value: savedParent.id)])
+        )
         let loadedParent = try await savedChild.parent
-        assertLazyReference(savedChild._parent,
-                            state: .loaded(model: loadedParent))
+        assertLazyReference(
+            savedChild._parent,
+            state: .loaded(model: loadedParent)
+        )
     }
 
     func testDefaultParentChildUpdate() async throws {
@@ -44,11 +48,15 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
         savedChild.setParent(savedNewParent)
         var updatedChild = try await mutate(.update(savedChild))
 
-        assertLazyReference(updatedChild._parent,
-                            state: .notLoaded(identifiers: [.init(name: "id", value: newParent.id)]))
+        assertLazyReference(
+            updatedChild._parent,
+            state: .notLoaded(identifiers: [.init(name: "id", value: newParent.id)])
+        )
         let loadedParent = try await updatedChild.parent
-        assertLazyReference(updatedChild._parent,
-                            state: .loaded(model: loadedParent))
+        assertLazyReference(
+            updatedChild._parent,
+            state: .loaded(model: loadedParent)
+        )
     }
 
     func testDefaultParentChildDelete() async throws {
@@ -73,17 +81,23 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
         let savedChild = try await mutate(.create(defaultPKChild))
 
         let queriedParent = try await query(.get(DefaultPKParent.self, byId: savedParent.id))!
-        assertList(queriedParent.children!, state: .isNotLoaded(associatedIdentifiers: [queriedParent.id],
-                                                                associatedFields: ["parent"]))
+        assertList(queriedParent.children!, state: .isNotLoaded(
+            associatedIdentifiers: [queriedParent.id],
+            associatedFields: ["parent"]
+        ))
         try await queriedParent.children?.fetch()
         assertList(queriedParent.children!, state: .isLoaded(count: 1))
 
         let queriedChild = try await query(.get(DefaultPKChild.self, byId: savedChild.id))!
-        assertLazyReference(queriedChild._parent,
-                            state: .notLoaded(identifiers: [.init(name: "id", value: savedParent.id)]))
+        assertLazyReference(
+            queriedChild._parent,
+            state: .notLoaded(identifiers: [.init(name: "id", value: savedParent.id)])
+        )
         let loadedParent = try await queriedChild.parent
-        assertLazyReference(queriedChild._parent,
-                            state: .loaded(model: loadedParent))
+        assertLazyReference(
+            queriedChild._parent,
+            state: .loaded(model: loadedParent)
+        )
     }
 
     func testDefaultPKParentChildList() async throws {
@@ -93,12 +107,16 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
         let defaultPKChild = DefaultPKChild(parent: savedParent)
         let savedChild = try await mutate(.create(defaultPKChild))
 
-        let queriedParents = try await listQuery(.list(DefaultPKParent.self,
-                                                       where: DefaultPKParent.keys.id == defaultPKParent.id))
+        let queriedParents = try await listQuery(.list(
+            DefaultPKParent.self,
+            where: DefaultPKParent.keys.id == defaultPKParent.id
+        ))
         assertList(queriedParents, state: .isLoaded(count: 1))
 
-        let queriedChildren = try await listQuery(.list(DefaultPKChild.self,
-                                                        where: DefaultPKChild.keys.id == defaultPKChild.id))
+        let queriedChildren = try await listQuery(.list(
+            DefaultPKChild.self,
+            where: DefaultPKChild.keys.id == defaultPKChild.id
+        ))
         assertList(queriedChildren, state: .isLoaded(count: 1))
     }
 

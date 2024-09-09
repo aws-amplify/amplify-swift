@@ -68,9 +68,11 @@ enum GraphQLErrorDecoder {
             mergedExtensions[key] = value
         }
 
-        return GraphQLError(message: graphQLError.message,
-                            locations: graphQLError.locations,
-                            path: graphQLError.path,
-                            extensions: mergedExtensions.isEmpty ? nil : mergedExtensions)
+        return GraphQLError(
+            message: graphQLError.message,
+            locations: graphQLError.locations,
+            path: graphQLError.path,
+            extensions: mergedExtensions.isEmpty ? nil : mergedExtensions
+        )
     }
 }

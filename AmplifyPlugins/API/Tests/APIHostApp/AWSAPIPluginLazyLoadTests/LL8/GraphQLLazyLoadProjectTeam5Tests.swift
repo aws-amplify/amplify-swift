@@ -23,8 +23,10 @@ class GraphQLLazyLoadProjectTeam5Tests: GraphQLLazyLoadBaseTest {
 
     func testSaveProject() async throws {
         await setup(withModels: ProjectTeam5Models())
-        let project = Project(projectId: UUID().uuidString,
-                              name: "name")
+        let project = Project(
+            projectId: UUID().uuidString,
+            name: "name"
+        )
         let savedProject = try await mutate(.create(project))
         try await assertModelExists(savedProject)
         assertProjectDoesNotContainTeam(savedProject)
@@ -36,28 +38,34 @@ class GraphQLLazyLoadProjectTeam5Tests: GraphQLLazyLoadBaseTest {
         let savedTeam = try await mutate(.create(team))
 
         // Project initializer variation #1 (pass both team reference and fields in)
-        let project = Project(projectId: UUID().uuidString,
-                              name: "name",
-                              team: team,
-                              teamId: team.teamId,
-                              teamName: team.name)
+        let project = Project(
+            projectId: UUID().uuidString,
+            name: "name",
+            team: team,
+            teamId: team.teamId,
+            teamName: team.name
+        )
         let savedProject = try await mutate(.create(project))
         let queriedProject = try await query(for: savedProject)!
         assertProject(queriedProject, hasTeam: savedTeam)
 
         // Project initializer variation #2 (pass only team reference)
-        let project2 = Project(projectId: UUID().uuidString,
-                               name: "name",
-                               team: team)
+        let project2 = Project(
+            projectId: UUID().uuidString,
+            name: "name",
+            team: team
+        )
         let savedProject2 = try await mutate(.create(project2))
         let queriedProject2 = try await query(for: savedProject2)!
         assertProject(queriedProject2, hasTeam: savedTeam)
 
         // Project initializer variation #3 (pass fields in)
-        let project3 = Project(projectId: UUID().uuidString,
-                               name: "name",
-                               teamId: team.teamId,
-                               teamName: team.name)
+        let project3 = Project(
+            projectId: UUID().uuidString,
+            name: "name",
+            teamId: team.teamId,
+            teamName: team.name
+        )
         let savedProject3 = try await mutate(.create(project3))
         let queriedProject3 = try await query(for: savedProject3)!
         assertProject(queriedProject3, hasTeam: savedTeam)
@@ -80,19 +88,25 @@ class GraphQLLazyLoadProjectTeam5Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: ProjectTeam5Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
         var savedTeam = try await mutate(.create(team))
-        let project = Project(projectId: UUID().uuidString,
-                              name: "name",
-                              team: team,
-                              teamId: team.teamId,
-                              teamName: team.name)
+        let project = Project(
+            projectId: UUID().uuidString,
+            name: "name",
+            team: team,
+            teamId: team.teamId,
+            teamName: team.name
+        )
         let savedProject = try await mutate(.create(project))
         savedTeam.setProject(savedProject)
         try await mutate(.update(savedTeam))
 
-        guard let queriedTeam = try await query(.get(Team.self,
-                                                     byIdentifier: .identifier(teamId: team.teamId,
-                                                                               name: team.name),
-                                                     includes: { team in [team.project]}))
+        guard let queriedTeam = try await query(.get(
+            Team.self,
+            byIdentifier: .identifier(
+                teamId: team.teamId,
+                name: team.name
+            ),
+            includes: { team in [team.project]}
+        ))
         else {
             XCTFail("Could not perform nested query for Team")
             return
@@ -100,10 +114,14 @@ class GraphQLLazyLoadProjectTeam5Tests: GraphQLLazyLoadBaseTest {
 
         assertLazyReference(queriedTeam._project, state: .loaded(model: project))
 
-        guard let queriedProject = try await query(.get(Project.self,
-                                                     byIdentifier: .identifier(projectId: project.projectId,
-                                                                               name: project.name),
-                                                     includes: { project in [project.team]}))
+        guard let queriedProject = try await query(.get(
+            Project.self,
+            byIdentifier: .identifier(
+                projectId: project.projectId,
+                name: project.name
+            ),
+            includes: { project in [project.team]}
+        ))
         else {
             XCTFail("Could not perform nested query for Project")
             return
@@ -116,11 +134,13 @@ class GraphQLLazyLoadProjectTeam5Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: ProjectTeam5Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
         var savedTeam = try await mutate(.create(team))
-        let project = Project(projectId: UUID().uuidString,
-                              name: "name",
-                              team: team,
-                              teamId: team.teamId,
-                              teamName: team.name)
+        let project = Project(
+            projectId: UUID().uuidString,
+            name: "name",
+            team: team,
+            teamId: team.teamId,
+            teamName: team.name
+        )
         let savedProject = try await mutate(.create(project))
         savedTeam.setProject(savedProject)
         try await mutate(.update(savedTeam))
@@ -129,14 +149,18 @@ class GraphQLLazyLoadProjectTeam5Tests: GraphQLLazyLoadBaseTest {
         assertList(queriedProjects, state: .isLoaded(count: 1))
         assertLazyReference(queriedProjects.first!._team, state: .notLoaded(identifiers: [
             .init(name: "teamId", value: team.teamId),
-            .init(name: "name", value: team.name)]))
+            .init(name: "name", value: team.name)
+        ]))
 
         let queriedTeams = try await listQuery(.list(Team.self, where: Team.keys.teamId == team.teamId))
         assertList(queriedTeams, state: .isLoaded(count: 1))
-        assertLazyReference(queriedTeams.first!._project,
-                            state: .notLoaded(identifiers: [
-                                .init(name: "projectId", value: project.projectId),
-                                .init(name: "name", value: project.name)]))
+        assertLazyReference(
+            queriedTeams.first!._project,
+            state: .notLoaded(identifiers: [
+                .init(name: "projectId", value: project.projectId),
+                .init(name: "name", value: project.name)
+            ])
+        )
     }
 
     func testSaveProjectWithTeamThenUpdate() async throws {
@@ -217,11 +241,13 @@ class GraphQLLazyLoadProjectTeam5Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: ProjectTeam5Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await mutate(.create(team))
-        let project = Project(projectId: UUID().uuidString,
-                              name: "name",
-                              team: team,
-                              teamId: team.teamId,
-                              teamName: team.name)
+        let project = Project(
+            projectId: UUID().uuidString,
+            name: "name",
+            team: team,
+            teamId: team.teamId,
+            teamName: team.name
+        )
         let savedProject = try await mutate(.create(project))
 
         try await assertModelExists(savedProject)
@@ -305,8 +331,10 @@ class GraphQLLazyLoadProjectTeam5Tests: GraphQLLazyLoadBaseTest {
 
         await fulfillment(of: [connected], timeout: 10)
 
-        let project = Project(projectId: UUID().uuidString,
-                              name: "name")
+        let project = Project(
+            projectId: UUID().uuidString,
+            name: "name"
+        )
         let savedProject = try await mutate(.create(project))
         _ = savedProject
 
@@ -331,10 +359,12 @@ extension GraphQLLazyLoadProjectTeam5Tests {
     }
 
     func initializeProjectWithTeam(_ team: Team) -> Project {
-        return Project(projectId: UUID().uuidString,
-                       name: "name",
-                       team: team,
-                       teamId: team.teamId,
-                       teamName: team.name)
+        return Project(
+            projectId: UUID().uuidString,
+            name: "name",
+            team: team,
+            teamId: team.teamId,
+            teamName: team.name
+        )
     }
 }

@@ -20,15 +20,17 @@ public struct ListStringContainer: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      test: String,
-      nullableString: String? = nil,
-      stringList: [String] = [],
-      stringNullableList: [String]? = nil,
-      nullableStringList: [String?] = [],
-      nullableStringNullableList: [String?]? = nil)
-  {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    test: String,
+    nullableString: String? = nil,
+    stringList: [String] = [],
+    stringNullableList: [String]? = nil,
+    nullableStringList: [String?] = [],
+    nullableStringNullableList: [String?]? = nil
+  ) {
+    self.init(
+      id: id,
       test: test,
       nullableString: nullableString,
       stringList: stringList,
@@ -36,18 +38,20 @@ public struct ListStringContainer: Model {
       nullableStringList: nullableStringList,
       nullableStringNullableList: nullableStringNullableList,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(id: String = UUID().uuidString,
-      test: String,
-      nullableString: String? = nil,
-      stringList: [String] = [],
-      stringNullableList: [String]? = nil,
-      nullableStringList: [String?] = [],
-      nullableStringNullableList: [String?]? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    id: String = UUID().uuidString,
+    test: String,
+    nullableString: String? = nil,
+    stringList: [String] = [],
+    stringNullableList: [String]? = nil,
+    nullableStringList: [String?] = [],
+    nullableStringNullableList: [String?]? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.test = test
       self.nullableString = nullableString

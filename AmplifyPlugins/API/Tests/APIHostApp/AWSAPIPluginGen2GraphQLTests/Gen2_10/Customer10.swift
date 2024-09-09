@@ -17,25 +17,29 @@ public struct Customer10: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      name: String? = nil,
-      phoneNumber: String? = nil,
-      accountRepresentativeId: String)
-  {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    name: String? = nil,
+    phoneNumber: String? = nil,
+    accountRepresentativeId: String
+  ) {
+    self.init(
+      id: id,
       name: name,
       phoneNumber: phoneNumber,
       accountRepresentativeId: accountRepresentativeId,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(id: String = UUID().uuidString,
-      name: String? = nil,
-      phoneNumber: String? = nil,
-      accountRepresentativeId: String,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    id: String = UUID().uuidString,
+    name: String? = nil,
+    phoneNumber: String? = nil,
+    accountRepresentativeId: String,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.name = name
       self.phoneNumber = phoneNumber

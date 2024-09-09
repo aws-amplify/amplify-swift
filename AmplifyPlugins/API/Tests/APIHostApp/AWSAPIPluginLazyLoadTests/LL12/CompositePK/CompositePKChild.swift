@@ -21,22 +21,26 @@ public struct CompositePKChild: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(childId: String,
-      content: String,
-      parent: CompositePKParent? = nil)
-  {
-    self.init(childId: childId,
+  public init(
+    childId: String,
+    content: String,
+    parent: CompositePKParent? = nil
+  ) {
+    self.init(
+      childId: childId,
       content: content,
       parent: parent,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(childId: String,
-      content: String,
-      parent: CompositePKParent? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    childId: String,
+    content: String,
+    parent: CompositePKParent? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.childId = childId
       self.content = content
       self._parent = LazyReference(parent)

@@ -15,8 +15,10 @@ class GraphQLOperationRequestUtilsTests: XCTestCase {
     let testDocument = "testDocument"
 
     func testGraphQLOperationRequestWithCache() throws {
-        let request = GraphQLOperationRequestUtils.constructRequest(with: baseURL,
-                                                                    requestPayload: Data())
+        let request = GraphQLOperationRequestUtils.constructRequest(
+            with: baseURL,
+            requestPayload: Data()
+        )
         XCTAssertEqual(request.allHTTPHeaderFields?["Cache-Control"], "no-store")
     }
 }

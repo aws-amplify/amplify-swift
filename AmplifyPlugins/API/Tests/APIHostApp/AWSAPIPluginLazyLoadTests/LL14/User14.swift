@@ -24,31 +24,35 @@ public struct User14: Model {
   public var updatedAt: Temporal.DateTime?
   public var user14SettingsId: String?
 
-  public init(id: String = UUID().uuidString,
-      username: String,
-      posts: List<Post14>? = [],
-      comments: List<Comment14>? = [],
-      settings: UserSettings14? = nil,
-      user14SettingsId: String? = nil)
-  {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    username: String,
+    posts: List<Post14>? = [],
+    comments: List<Comment14>? = [],
+    settings: UserSettings14? = nil,
+    user14SettingsId: String? = nil
+  ) {
+    self.init(
+      id: id,
       username: username,
       posts: posts,
       comments: comments,
       settings: settings,
       createdAt: nil,
       updatedAt: nil,
-      user14SettingsId: user14SettingsId)
+      user14SettingsId: user14SettingsId
+    )
   }
-  init(id: String = UUID().uuidString,
-      username: String,
-      posts: List<Post14>? = [],
-      comments: List<Comment14>? = [],
-      settings: UserSettings14? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil,
-      user14SettingsId: String? = nil)
-  {
+  init(
+    id: String = UUID().uuidString,
+    username: String,
+    posts: List<Post14>? = [],
+    comments: List<Comment14>? = [],
+    settings: UserSettings14? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil,
+    user14SettingsId: String? = nil
+  ) {
       self.id = id
       self.username = username
       self.posts = posts

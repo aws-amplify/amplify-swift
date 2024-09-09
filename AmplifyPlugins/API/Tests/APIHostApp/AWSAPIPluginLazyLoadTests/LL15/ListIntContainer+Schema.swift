@@ -11,8 +11,7 @@ import Foundation
 
 public extension ListIntContainer {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case test
     case nullableInt

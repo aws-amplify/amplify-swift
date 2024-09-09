@@ -19,9 +19,11 @@ class AWSAPIEndpointInterceptorsTests: XCTestCase {
     var config: AWSAuthorizationConfiguration?
 
     override func setUpWithError() throws {
-        config = try AWSAuthorizationConfiguration.makeConfiguration(authType: .apiKey,
-                                                                     region: "us-west-2",
-                                                                     apiKey: apiKey)
+        config = try AWSAuthorizationConfiguration.makeConfiguration(
+            authType: .apiKey,
+            region: "us-west-2",
+            apiKey: apiKey
+        )
     }
 
     /// Given: an AWSAPIEndpointInterceptors
@@ -52,26 +54,38 @@ class AWSAPIEndpointInterceptorsTests: XCTestCase {
     }
 
     func testaddMultipleAuthInterceptors() throws {
-        let apiKeyConfig = try AWSAuthorizationConfiguration.makeConfiguration(authType: .apiKey,
-                                                                               region: "us-west-2",
-                                                                               apiKey: apiKey)
+        let apiKeyConfig = try AWSAuthorizationConfiguration.makeConfiguration(
+            authType: .apiKey,
+            region: "us-west-2",
+            apiKey: apiKey
+        )
 
-        let awsIAMConfig = try AWSAuthorizationConfiguration.makeConfiguration(authType: .awsIAM,
-                                                                               region: "us-west-2",
-                                                                               apiKey: apiKey)
+        let awsIAMConfig = try AWSAuthorizationConfiguration.makeConfiguration(
+            authType: .awsIAM,
+            region: "us-west-2",
+            apiKey: apiKey
+        )
 
-        let userPoolConfig = try AWSAuthorizationConfiguration.makeConfiguration(authType: .amazonCognitoUserPools,
-                                                                                 region: "us-west-2",
-                                                                                 apiKey: nil)
+        let userPoolConfig = try AWSAuthorizationConfiguration.makeConfiguration(
+            authType: .amazonCognitoUserPools,
+            region: "us-west-2",
+            apiKey: nil
+        )
 
         var interceptorConfig = createAPIInterceptorConfig()
-        try interceptorConfig.addAuthInterceptorsToEndpoint(endpointType: .graphQL,
-                                                            authConfiguration: apiKeyConfig)
-        try interceptorConfig.addAuthInterceptorsToEndpoint(endpointType: .graphQL,
-                                                            authConfiguration: awsIAMConfig)
+        try interceptorConfig.addAuthInterceptorsToEndpoint(
+            endpointType: .graphQL,
+            authConfiguration: apiKeyConfig
+        )
+        try interceptorConfig.addAuthInterceptorsToEndpoint(
+            endpointType: .graphQL,
+            authConfiguration: awsIAMConfig
+        )
 
-        try interceptorConfig.addAuthInterceptorsToEndpoint(endpointType: .graphQL,
-                                                            authConfiguration: userPoolConfig)
+        try interceptorConfig.addAuthInterceptorsToEndpoint(
+            endpointType: .graphQL,
+            authConfiguration: userPoolConfig
+        )
 
         XCTAssertEqual(interceptorConfig.preludeInterceptors.count, 2)
         XCTAssertEqual(interceptorConfig.interceptors.count, 0)
@@ -107,7 +121,8 @@ class AWSAPIEndpointInterceptorsTests: XCTestCase {
         return AWSAPIEndpointInterceptors(
             endpointName: endpointName,
             apiAuthProviderFactory: APIAuthProviderFactory(),
-            authService: authService)
+            authService: authService
+        )
     }
 
     struct CustomInterceptor: URLRequestInterceptor {

@@ -80,22 +80,26 @@ class RESTWithIAMIntegrationTests: XCTestCase {
 
     // TODO: Should not be HTTPStatusError
     func testGetAPIWithQueryParamsSuccess() async throws {
-        let request = RESTRequest(path: "/items",
-                                  queryParameters: [
-                                    "user": "hello@email.com",
-                                    "created": "2021-06-18T09:00:00Z"
-                                  ])
+        let request = RESTRequest(
+            path: "/items",
+            queryParameters: [
+                "user": "hello@email.com",
+                "created": "2021-06-18T09:00:00Z"
+            ]
+        )
         let data = try await Amplify.API.get(request: request)
         let result = String(decoding: data, as: UTF8.self)
         log.info(result)
     }
 
     func testGetAPIWithEncodedQueryParamsSuccess() async throws {
-        let request = RESTRequest(path: "/items",
-                                  queryParameters: [
-                                    "user": "hello%40email.com",
-                                    "created": "2021-06-18T09%3A00%3A00Z"
-                                  ])
+        let request = RESTRequest(
+            path: "/items",
+            queryParameters: [
+                "user": "hello%40email.com",
+                "created": "2021-06-18T09%3A00%3A00Z"
+            ]
+        )
         let data = try await Amplify.API.get(request: request)
         let result = String(decoding: data, as: UTF8.self)
         log.info(result)

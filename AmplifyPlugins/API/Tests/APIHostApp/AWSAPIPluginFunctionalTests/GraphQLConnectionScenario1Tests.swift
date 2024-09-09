@@ -194,10 +194,11 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
         }
     }
 
-    func createProject(id: String = UUID().uuidString,
-                       name: String? = nil,
-                       team: Team1? = nil) async throws -> Project1?
-    {
+    func createProject(
+        id: String = UUID().uuidString,
+        name: String? = nil,
+        team: Team1? = nil
+    ) async throws -> Project1? {
         let project = Project1(id: id, name: name, team: team)
         let graphQLResponse = try await Amplify.API.mutate(request: .create(project))
         switch graphQLResponse {
@@ -210,9 +211,10 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
 }
 
 extension Team1: Equatable {
-    public static func == (lhs: Team1,
-                           rhs: Team1) -> Bool
-    {
+    public static func == (
+        lhs: Team1,
+        rhs: Team1
+    ) -> Bool {
         return lhs.id == rhs.id
             && lhs.name == rhs.name
     }

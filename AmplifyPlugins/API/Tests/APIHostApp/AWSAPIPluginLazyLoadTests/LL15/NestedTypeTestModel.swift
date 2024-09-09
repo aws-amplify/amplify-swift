@@ -20,15 +20,17 @@ public struct NestedTypeTestModel: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      nestedVal: Nested,
-      nullableNestedVal: Nested? = nil,
-      nestedList: [Nested] = [],
-      nestedNullableList: [Nested]? = nil,
-      nullableNestedList: [Nested?] = [],
-      nullableNestedNullableList: [Nested?]? = nil)
-  {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    nestedVal: Nested,
+    nullableNestedVal: Nested? = nil,
+    nestedList: [Nested] = [],
+    nestedNullableList: [Nested]? = nil,
+    nullableNestedList: [Nested?] = [],
+    nullableNestedNullableList: [Nested?]? = nil
+  ) {
+    self.init(
+      id: id,
       nestedVal: nestedVal,
       nullableNestedVal: nullableNestedVal,
       nestedList: nestedList,
@@ -36,18 +38,20 @@ public struct NestedTypeTestModel: Model {
       nullableNestedList: nullableNestedList,
       nullableNestedNullableList: nullableNestedNullableList,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(id: String = UUID().uuidString,
-      nestedVal: Nested,
-      nullableNestedVal: Nested? = nil,
-      nestedList: [Nested] = [],
-      nestedNullableList: [Nested]? = nil,
-      nullableNestedList: [Nested?] = [],
-      nullableNestedNullableList: [Nested?]? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    id: String = UUID().uuidString,
+    nestedVal: Nested,
+    nullableNestedVal: Nested? = nil,
+    nestedList: [Nested] = [],
+    nestedNullableList: [Nested]? = nil,
+    nullableNestedList: [Nested?] = [],
+    nullableNestedNullableList: [Nested?]? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.nestedVal = nestedVal
       self.nullableNestedVal = nullableNestedVal

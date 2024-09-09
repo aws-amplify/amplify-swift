@@ -35,8 +35,10 @@ class AuthTokenURLRequestInterceptorTests: XCTestCase {
 
     func testAuthTokenInterceptor_ThrowsInvalid() async throws {
         let mockTokenProvider = MockTokenProvider()
-        let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: mockTokenProvider,
-                                                         isTokenExpired: { _ in return true })
+        let interceptor = AuthTokenURLRequestInterceptor(
+            authTokenProvider: mockTokenProvider,
+            isTokenExpired: { _ in return true }
+        )
         let request = RESTOperationRequestUtils.constructURLRequest(
             with: URL(string: "http://anapiendpoint.ca")!,
             operationType: .get,

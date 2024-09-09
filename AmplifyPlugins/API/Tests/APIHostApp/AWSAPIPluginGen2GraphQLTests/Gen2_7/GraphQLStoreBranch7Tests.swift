@@ -24,7 +24,9 @@ final class GraphQLStoreBranch7Tests: AWSAPIPluginGen2GraphQLBaseTest {
                 StoreBranch.self,
                 byIdentifier: .identifier(
                     tenantId: "123",
-                    name: "Downtown")))
+                    name: "Downtown"
+                )
+            ))
     }
 }
 

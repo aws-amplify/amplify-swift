@@ -24,7 +24,8 @@ final class GraphQLCartCustomer4Tests: AWSAPIPluginGen2GraphQLBaseTest {
 
             let cart = Cart(
                 items: ["Tomato", "Ice", "Mint"],
-                customer: createdCustomer)
+                customer: createdCustomer
+            )
             let createdCart = try await Amplify.API.mutate(request: .create(cart)).get()
 
             // Code Snippet Ends
@@ -47,7 +48,8 @@ final class GraphQLCartCustomer4Tests: AWSAPIPluginGen2GraphQLBaseTest {
         let createdCustomer = try await Amplify.API.mutate(request: .create(customer)).get()
         let cart = Cart(
             items: ["Tomato", "Ice", "Mint"],
-            customer: createdCustomer)
+            customer: createdCustomer
+        )
         var existingCart = try await Amplify.API.mutate(request: .create(cart)).get()
 
         // Code Snippet Begins
@@ -77,7 +79,8 @@ final class GraphQLCartCustomer4Tests: AWSAPIPluginGen2GraphQLBaseTest {
         let createdCustomer = try await Amplify.API.mutate(request: .create(customer)).get()
         let cart = Cart(
             items: ["Tomato", "Ice", "Mint"],
-            customer: createdCustomer)
+            customer: createdCustomer
+        )
         var existingCart = try await Amplify.API.mutate(request: .create(cart)).get()
 
         // Code Snippet Begins
@@ -105,7 +108,8 @@ final class GraphQLCartCustomer4Tests: AWSAPIPluginGen2GraphQLBaseTest {
         let createdCustomer = try await Amplify.API.mutate(request: .create(customer)).get()
         let cart = Cart(
             items: ["Tomato", "Ice", "Mint"],
-            customer: createdCustomer)
+            customer: createdCustomer
+        )
         var existingCart = try await Amplify.API.mutate(request: .create(cart)).get()
 
         // Code Snippet Begins
@@ -113,7 +117,8 @@ final class GraphQLCartCustomer4Tests: AWSAPIPluginGen2GraphQLBaseTest {
             guard let queriedCart = try await Amplify.API.query(
                 request: .get(
                     Cart.self,
-                    byIdentifier: existingCart.identifier)).get()
+                    byIdentifier: existingCart.identifier
+                )).get()
             else {
                 print("Missing cart")
                 // Code Snippet Ends

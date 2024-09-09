@@ -86,10 +86,11 @@ public struct Todo: Model {
     public var name: String
     public var description: String?
 
-    public init(id: String = UUID().uuidString,
-                name: String,
-                description: String? = nil)
-    {
+    public init(
+        id: String = UUID().uuidString,
+        name: String,
+        description: String? = nil
+    ) {
         self.id = id
         self.name = name
         self.description = description
@@ -98,8 +99,7 @@ public struct Todo: Model {
 
 public extension Todo {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case name
     case description
@@ -115,8 +115,9 @@ public extension Todo {
     model.syncPluralName = "Todos"
 
     model.fields(
-      .id(),
-      .field(todo.name, is: .required, ofType: .string),
-      .field(todo.description, is: .optional, ofType: .string))
+        .id(),
+        .field(todo.name, is: .required, ofType: .string),
+        .field(todo.description, is: .optional, ofType: .string)
+    )
     }
 }

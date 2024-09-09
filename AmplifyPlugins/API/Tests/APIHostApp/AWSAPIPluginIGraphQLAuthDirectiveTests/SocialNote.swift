@@ -13,10 +13,11 @@ public struct SocialNote: Model {
   public var content: String
   public var owner: String?
 
-  public init(id: String = UUID().uuidString,
-      content: String,
-      owner: String? = nil)
-  {
+  public init(
+    id: String = UUID().uuidString,
+    content: String,
+    owner: String? = nil
+  ) {
       self.id = id
       self.content = content
       self.owner = owner
@@ -25,8 +26,7 @@ public struct SocialNote: Model {
 
 public extension SocialNote {
   // MARK: - CodingKeys
-   enum CodingKeys: String, ModelKey
-  {
+   enum CodingKeys: String, ModelKey {
     case id
     case content
     case owner

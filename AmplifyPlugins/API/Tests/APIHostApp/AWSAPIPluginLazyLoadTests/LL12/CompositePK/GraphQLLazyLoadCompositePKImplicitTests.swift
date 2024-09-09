@@ -69,27 +69,45 @@ extension GraphQLLazyLoadCompositePKTests {
         let savedChild = try await mutate(.create(child))
 
         // query parent and load the children
-        let queriedParent = try await query(.get(CompositePKParent.self,
-                                                 byIdentifier: .identifier(customId: savedParent.customId,
-                                                                           content: savedParent.content)))!
+        let queriedParent = try await query(.get(
+            CompositePKParent.self,
+            byIdentifier: .identifier(
+                customId: savedParent.customId,
+                content: savedParent.content
+            )
+        ))!
 
-        assertList(queriedParent.implicitChildren!, state: .isNotLoaded(associatedIdentifiers: [queriedParent.customId,
-                                                                                                queriedParent.content],
-                                                                        associatedFields: ["parent"]))
+        assertList(queriedParent.implicitChildren!, state: .isNotLoaded(
+            associatedIdentifiers: [
+                queriedParent.customId,
+                queriedParent.content
+            ],
+            associatedFields: ["parent"]
+        ))
         try await queriedParent.implicitChildren?.fetch()
         assertList(queriedParent.implicitChildren!, state: .isLoaded(count: 1))
 
 
         // query child and load the parent - ImplicitChild
-        let queriedImplicitChild = try await query(.get(ImplicitChild.self,
-                                                        byIdentifier: .identifier(childId: savedChild.childId,
-                                                                                  content: savedChild.content)))!
-        assertLazyReference(queriedImplicitChild._parent,
-                            state: .notLoaded(identifiers: [.init(name: "customId", value: savedParent.customId),
-                                                            .init(name: "content", value: savedParent.content)]))
+        let queriedImplicitChild = try await query(.get(
+            ImplicitChild.self,
+            byIdentifier: .identifier(
+                childId: savedChild.childId,
+                content: savedChild.content
+            )
+        ))!
+        assertLazyReference(
+            queriedImplicitChild._parent,
+            state: .notLoaded(identifiers: [
+                .init(name: "customId", value: savedParent.customId),
+                .init(name: "content", value: savedParent.content)
+            ])
+        )
         let loadedParent = try await queriedImplicitChild.parent
-        assertLazyReference(queriedImplicitChild._parent,
-                            state: .loaded(model: loadedParent))
+        assertLazyReference(
+            queriedImplicitChild._parent,
+            state: .loaded(model: loadedParent)
+        )
     }
 
     func testListImplicitChild() async throws {
@@ -100,8 +118,10 @@ extension GraphQLLazyLoadCompositePKTests {
         try await mutate(.create(child))
 
         var queriedChild = try await listQuery(
-            .list(ImplicitChild.self,
-                  where: ImplicitChild.keys.childId == child.childId && ImplicitChild.keys.content == child.content))
+            .list(
+                ImplicitChild.self,
+                where: ImplicitChild.keys.childId == child.childId && ImplicitChild.keys.content == child.content
+            ))
         while queriedChild.hasNextPage() {
             queriedChild = try await queriedChild.getNextPage()
         }

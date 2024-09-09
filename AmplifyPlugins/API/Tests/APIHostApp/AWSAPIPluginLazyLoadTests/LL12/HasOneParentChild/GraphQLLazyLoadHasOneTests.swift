@@ -25,11 +25,15 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
         let hasOneParent = HasOneParent(child: hasOneChild)
         let savedParent = try await mutate(.create(hasOneParent))
 
-        assertLazyReference(savedParent._child,
-                            state: .notLoaded(identifiers: [.init(name: "id", value: savedChild.id)]))
+        assertLazyReference(
+            savedParent._child,
+            state: .notLoaded(identifiers: [.init(name: "id", value: savedChild.id)])
+        )
         let loadedChild = try await savedParent.child
-        assertLazyReference(savedParent._child,
-                            state: .loaded(model: loadedChild))
+        assertLazyReference(
+            savedParent._child,
+            state: .loaded(model: loadedChild)
+        )
     }
 
     func testHasOneParentChildUpdate() async throws {
@@ -44,11 +48,15 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
         savedParent.setChild(newChild)
         var updatedParent = try await mutate(.update(savedParent))
 
-        assertLazyReference(updatedParent._child,
-                            state: .notLoaded(identifiers: [.init(name: "id", value: newChild.id)]))
+        assertLazyReference(
+            updatedParent._child,
+            state: .notLoaded(identifiers: [.init(name: "id", value: newChild.id)])
+        )
         let loadedChild = try await updatedParent.child
-        assertLazyReference(updatedParent._child,
-                            state: .loaded(model: loadedChild))
+        assertLazyReference(
+            updatedParent._child,
+            state: .loaded(model: loadedChild)
+        )
     }
 
     func testHasOneParentChildDelete() async throws {
@@ -73,11 +81,15 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
         let savedParent = try await mutate(.create(hasOneParent))
 
         let queriedParent = try await query(.get(HasOneParent.self, byId: savedParent.id))!
-        assertLazyReference(queriedParent._child,
-                            state: .notLoaded(identifiers: [.init(name: "id", value: savedChild.id)]))
+        assertLazyReference(
+            queriedParent._child,
+            state: .notLoaded(identifiers: [.init(name: "id", value: savedChild.id)])
+        )
         let loadedChild = try await queriedParent.child
-        assertLazyReference(queriedParent._child,
-                            state: .loaded(model: loadedChild))
+        assertLazyReference(
+            queriedParent._child,
+            state: .loaded(model: loadedChild)
+        )
 
         let queriedChild = try await query(.get(HasOneChild.self, byId: savedChild.id))!
     }
@@ -89,12 +101,16 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
         let hasOneParent = HasOneParent(child: hasOneChild)
         let savedParent = try await mutate(.create(hasOneParent))
 
-        let queriedParents = try await listQuery(.list(HasOneParent.self,
-                                                       where: HasOneParent.keys.id == hasOneParent.id))
+        let queriedParents = try await listQuery(.list(
+            HasOneParent.self,
+            where: HasOneParent.keys.id == hasOneParent.id
+        ))
         assertList(queriedParents, state: .isLoaded(count: 1))
 
-        let queriedChildren = try await listQuery(.list(HasOneChild.self,
-                                                       where: HasOneChild.keys.id == hasOneChild.id))
+        let queriedChildren = try await listQuery(.list(
+            HasOneChild.self,
+            where: HasOneChild.keys.id == hasOneChild.id
+        ))
         assertList(queriedChildren, state: .isLoaded(count: 1))
     }
 

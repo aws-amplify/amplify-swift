@@ -18,11 +18,12 @@ public struct AppSyncListPayload: Codable {
     let apiName: String?
     let authMode: AWSAuthorizationType?
 
-    public init(graphQLData: JSONValue,
-                apiName: String?,
-                authMode: AWSAuthorizationType?,
-                variables: [String: JSONValue]?)
-    {
+    public init(
+        graphQLData: JSONValue,
+        apiName: String?,
+        authMode: AWSAuthorizationType?,
+        variables: [String: JSONValue]?
+    ) {
         self.apiName = apiName
         self.authMode = authMode
         self.variables = variables
@@ -63,8 +64,7 @@ public struct AppSyncListPayload: Codable {
     var limit: Int? {
         if let storedVariables = variables,
            let limit = storedVariables["limit"],
-           case let .number(limitValue) = limit
-        {
+           case let .number(limitValue) = limit {
             return Int(limitValue)
         }
 

@@ -19,13 +19,17 @@ extension GraphQLWithUserPoolIntegrationTests {
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
-        let input = APISwift.CreateTodoInput(id: expectedId,
-                                             name: expectedName,
-                                             description: expectedDescription)
+        let input = APISwift.CreateTodoInput(
+            id: expectedId,
+            name: expectedName,
+            description: expectedDescription
+        )
         let mutation = APISwift.CreateTodoMutation(input: input)
-        let request = GraphQLRequest(document: APISwift.CreateTodoMutation.operationString,
-                                     variables: mutation.variables?.jsonObject,
-                                     responseType: APISwift.CreateTodoMutation.Data.self)
+        let request = GraphQLRequest(
+            document: APISwift.CreateTodoMutation.operationString,
+            variables: mutation.variables?.jsonObject,
+            responseType: APISwift.CreateTodoMutation.Data.self
+        )
 
 
         let event = try await Amplify.API.mutate(request: request)

@@ -17,25 +17,29 @@ public struct Comment8: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(commentId: String,
-      content: String,
-      postId: String? = nil,
-      postTitle: String? = nil)
-  {
-    self.init(commentId: commentId,
+  public init(
+    commentId: String,
+    content: String,
+    postId: String? = nil,
+    postTitle: String? = nil
+  ) {
+    self.init(
+      commentId: commentId,
       content: content,
       postId: postId,
       postTitle: postTitle,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  init(commentId: String,
-      content: String,
-      postId: String? = nil,
-      postTitle: String? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil)
-  {
+  init(
+    commentId: String,
+    content: String,
+    postId: String? = nil,
+    postTitle: String? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.commentId = commentId
       self.content = content
       self.postId = postId

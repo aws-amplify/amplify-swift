@@ -21,7 +21,8 @@ extension GraphQLLazyLoadCompositePKTests {
             childId: UUID().uuidString,
             content: "content",
             compositePKParentChildrenSansBelongsToCustomId: parent.customId,
-            compositePKParentChildrenSansBelongsToContent: parent.content)
+            compositePKParentChildrenSansBelongsToContent: parent.content
+        )
     }
 
     func testSaveChildSansBelongsTo() async throws {
@@ -74,20 +75,32 @@ extension GraphQLLazyLoadCompositePKTests {
         let savedChild = try await mutate(.create(child))
 
         // query parent and load the children
-        let queriedParent = try await query(.get(CompositePKParent.self,
-                                                 byIdentifier: .identifier(customId: savedParent.customId,
-                                                                           content: savedParent.content)))!
+        let queriedParent = try await query(.get(
+            CompositePKParent.self,
+            byIdentifier: .identifier(
+                customId: savedParent.customId,
+                content: savedParent.content
+            )
+        ))!
 
-        assertList(queriedParent.childrenSansBelongsTo!, state: .isNotLoaded(associatedIdentifiers: [queriedParent.customId,
-                                                                                                     queriedParent.content],
-                                                                             associatedFields: ["compositePKParentChildrenSansBelongsToCustomId", "compositePKParentChildrenSansBelongsToContent"]))
+        assertList(queriedParent.childrenSansBelongsTo!, state: .isNotLoaded(
+            associatedIdentifiers: [
+                queriedParent.customId,
+                queriedParent.content
+            ],
+            associatedFields: ["compositePKParentChildrenSansBelongsToCustomId", "compositePKParentChildrenSansBelongsToContent"]
+        ))
         try await queriedParent.childrenSansBelongsTo?.fetch()
         assertList(queriedParent.childrenSansBelongsTo!, state: .isLoaded(count: 1))
 
         // query children and verify the parent - ChildSansBelongsTo
-        let queriedChildSansBelongsTo = try await query(.get(ChildSansBelongsTo.self,
-                                                             byIdentifier: .identifier(childId: savedChild.childId,
-                                                                                       content: savedChild.content)))!
+        let queriedChildSansBelongsTo = try await query(.get(
+            ChildSansBelongsTo.self,
+            byIdentifier: .identifier(
+                childId: savedChild.childId,
+                content: savedChild.content
+            )
+        ))!
         XCTAssertEqual(queriedChildSansBelongsTo.compositePKParentChildrenSansBelongsToCustomId, savedParent.customId)
         XCTAssertEqual(queriedChildSansBelongsTo.compositePKParentChildrenSansBelongsToContent, savedParent.content)
     }
@@ -99,8 +112,10 @@ extension GraphQLLazyLoadCompositePKTests {
         let child = initChildSansBelongsTo(with: savedParent)
         try await mutate(.create(child))
 
-        var queriedChild = try await listQuery(.list(ChildSansBelongsTo.self,
-                                                     where: ChildSansBelongsTo.keys.childId == child.childId && ChildSansBelongsTo.keys.content == child.content))
+        var queriedChild = try await listQuery(.list(
+            ChildSansBelongsTo.self,
+            where: ChildSansBelongsTo.keys.childId == child.childId && ChildSansBelongsTo.keys.content == child.content
+        ))
         while queriedChild.hasNextPage() {
             queriedChild = try await queriedChild.getNextPage()
         }
