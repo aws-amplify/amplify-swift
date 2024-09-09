@@ -101,8 +101,7 @@ struct DefaultProvisioningProfileReader: ProvisioningProfileReader {
 
         var profile = ProvisioningProfile()
         if let entitlements = provisioning[Keys.entitlements] as? [String: Any],
-           let apnsEnvironment = entitlements[Keys.apsEnvironment] as? String
-        {
+           let apnsEnvironment = entitlements[Keys.apsEnvironment] as? String {
             profile.apsEnvironment = ProvisioningProfile.APSEnvironment(rawValue: apnsEnvironment)
         }
 

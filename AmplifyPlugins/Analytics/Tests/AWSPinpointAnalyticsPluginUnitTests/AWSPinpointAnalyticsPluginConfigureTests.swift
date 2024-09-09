@@ -95,7 +95,8 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
             let analyticsPlugin = AWSPinpointAnalyticsPlugin(
                 options: .init(
                     autoFlushEventsInterval: 50,
-                    trackAppSessions: true))
+                    trackAppSessions: true
+                ))
             try analyticsPlugin.configure(using: analyticsPluginConfig)
 
             XCTAssertNotNil(analyticsPlugin.pinpoint)
@@ -127,8 +128,10 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
 
     func testConfigure_WithAmplifyOutputs() {
         let config = AmplifyOutputsData.init(analytics: .init(
-            amazonPinpoint: .init(awsRegion: testRegion,
-                                  appId: testAppId)))
+            amazonPinpoint: .init(
+                awsRegion: testRegion,
+                appId: testAppId
+            )))
 
         do {
             let analyticsPlugin = AWSPinpointAnalyticsPlugin()
@@ -149,13 +152,16 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
 
     func testConfigure_WithAmplifyOutputsAndOptions() {
         let config = AmplifyOutputsData.init(analytics: .init(
-            amazonPinpoint: .init(awsRegion: testRegion,
-                                  appId: testAppId)))
+            amazonPinpoint: .init(
+                awsRegion: testRegion,
+                appId: testAppId
+            )))
 
         do {
             let analyticsPlugin = AWSPinpointAnalyticsPlugin(options: .init(
                 autoFlushEventsInterval: 100,
-                trackAppSessions: false))
+                trackAppSessions: false
+            ))
             try analyticsPlugin.configure(using: config)
 
             XCTAssertNotNil(analyticsPlugin.pinpoint)

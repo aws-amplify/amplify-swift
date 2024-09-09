@@ -32,19 +32,22 @@ class SessionClient: SessionClientBehaviour {
     private let activityTracker: ActivityTrackerBehaviour
     private let archiver: AmplifyArchiverBehaviour
     private let configuration: SessionClientConfiguration
-    private let sessionClientQueue = DispatchQueue(label: Constants.queue,
-                                                   attributes: .concurrent)
+    private let sessionClientQueue = DispatchQueue(
+        label: Constants.queue,
+        attributes: .concurrent
+    )
     private let analyticsTaskQueue = TaskQueue<Void>()
     private let userDefaults: UserDefaultsBehaviour
     private var sessionBackgroundTimeout: TimeInterval = .zero
 
-    init(activityTracker: ActivityTrackerBehaviour = ActivityTracker(),
-         analyticsClient: AnalyticsClientBehaviour? = nil,
-         archiver: AmplifyArchiverBehaviour,
-         configuration: SessionClientConfiguration,
-         endpointClient: EndpointClientBehaviour,
-         userDefaults: UserDefaultsBehaviour)
-    {
+    init(
+        activityTracker: ActivityTrackerBehaviour = ActivityTracker(),
+        analyticsClient: AnalyticsClientBehaviour? = nil,
+        archiver: AmplifyArchiverBehaviour,
+        configuration: SessionClientConfiguration,
+        endpointClient: EndpointClientBehaviour,
+        userDefaults: UserDefaultsBehaviour
+    ) {
         self.activityTracker = activityTracker
         self.analyticsClient = analyticsClient
         self.archiver = archiver
@@ -91,9 +94,10 @@ class SessionClient: SessionClientBehaviour {
         }
     }
 
-    private static func retrieveStoredSession(from userDefaults: UserDefaultsBehaviour,
-                                              using archiver: AmplifyArchiverBehaviour) -> PinpointSession?
-    {
+    private static func retrieveStoredSession(
+        from userDefaults: UserDefaultsBehaviour,
+        using archiver: AmplifyArchiverBehaviour
+    ) -> PinpointSession? {
         guard let sessionData = userDefaults.data(forKey: Constants.sessionKey),
               let storedSession = try? archiver.decode(PinpointSession.self, from: sessionData),
               !storedSession.sessionId.isEmpty
@@ -105,8 +109,10 @@ class SessionClient: SessionClientBehaviour {
     }
 
     private func startNewSession() {
-        session = PinpointSession(appId: configuration.appId,
-                                  uniqueId: configuration.uniqueDeviceId)
+        session = PinpointSession(
+            appId: configuration.appId,
+            uniqueId: configuration.uniqueDeviceId
+        )
         saveSession()
         log.info("Session Started.")
 

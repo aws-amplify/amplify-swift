@@ -15,8 +15,10 @@ extension AnyCancellable: StateMachineSubscriberToken {}
 
 class StateMachine<State, Event> {
     typealias Reducer = (State, Event) -> State
-    private let queue = DispatchQueue(label: "com.amazonaws.Amplify.StateMachine<\(State.self), \(Event.self)>",
-                                      target: DispatchQueue.global())
+    private let queue = DispatchQueue(
+        label: "com.amazonaws.Amplify.StateMachine<\(State.self), \(Event.self)>",
+        target: DispatchQueue.global()
+    )
     private var reducer: Reducer
 
 #if canImport(Combine)

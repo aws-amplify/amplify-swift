@@ -37,8 +37,10 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
         mockPinpoint = MockAWSPinpoint()
         mockNetworkMonitor = MockNetworkMonitor()
 
-        analyticsPlugin.configure(pinpoint: mockPinpoint,
-                                  networkMonitor: mockNetworkMonitor)
+        analyticsPlugin.configure(
+            pinpoint: mockPinpoint,
+            networkMonitor: mockNetworkMonitor
+        )
 
         await Amplify.reset()
         let config = AmplifyConfiguration()

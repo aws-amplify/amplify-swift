@@ -49,9 +49,11 @@ extension FileManager: FileManagerBehaviour, DefaultLogger {
     }
 
     func createDirectory(atPath path: String, withIntermediateDirectories createIntermediates: Bool) throws {
-        try createDirectory(atPath: path,
-                        withIntermediateDirectories: createIntermediates,
-                        attributes: nil)
+        try createDirectory(
+            atPath: path,
+            withIntermediateDirectories: createIntermediates,
+            attributes: nil
+        )
     }
 
     func fileSize(for url: URL) -> Byte {
@@ -81,11 +83,12 @@ struct PinpointContextConfiguration {
     /// Setting this flag to true will set the Endpoint Profile to have a channel type of "APNS_SANDBOX".
     let isDebug: Bool
 
-    init(appId: String,
-         region: String,
-         credentialsProvider: CredentialsProviding,
-         isDebug: Bool = false)
-    {
+    init(
+        appId: String,
+        region: String,
+        credentialsProvider: CredentialsProviding,
+        isDebug: Bool = false
+    ) {
         self.appId = appId
         self.region = region
         self.credentialsProvider = credentialsProvider
@@ -110,38 +113,51 @@ class PinpointContext {
     private let configuration: PinpointContextConfiguration
     private let storage: PinpointContextStorage
 
-    init(with configuration: PinpointContextConfiguration,
-         endpointInformationProvider: EndpointInformationProvider = DefaultEndpointInformationProvider(),
-         userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
-         keychainStore: KeychainStoreBehavior = KeychainStore(service: PinpointContext.Constants.Keychain.service),
-         fileManager: FileManagerBehaviour = FileManager.default,
-         archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
-         remoteNotificationsHelper: RemoteNotificationsBehaviour = .default) throws
-    {
+    init(
+        with configuration: PinpointContextConfiguration,
+        endpointInformationProvider: EndpointInformationProvider = DefaultEndpointInformationProvider(),
+        userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
+        keychainStore: KeychainStoreBehavior = KeychainStore(service: PinpointContext.Constants.Keychain.service),
+        fileManager: FileManagerBehaviour = FileManager.default,
+        archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
+        remoteNotificationsHelper: RemoteNotificationsBehaviour = .default
+    ) throws {
         self.configuration = configuration
-        self.storage = PinpointContextStorage(userDefaults: userDefaults,
-                                         keychainStore: keychainStore,
-                                         fileManager: fileManager,
-                                         archiver: archiver)
+        self.storage = PinpointContextStorage(
+            userDefaults: userDefaults,
+            keychainStore: keychainStore,
+            fileManager: fileManager,
+            archiver: archiver
+        )
         self.uniqueId = Self.retrieveUniqueId(applicationId: configuration.appId, storage: storage)
 
-        let pinpointClient = try PinpointClient(region: configuration.region,
-                                                credentialsProvider: configuration.credentialsProvider)
+        let pinpointClient = try PinpointClient(
+            region: configuration.region,
+            credentialsProvider: configuration.credentialsProvider
+        )
 
-        self.endpointClient = EndpointClient(configuration: .init(appId: configuration.appId,
-                                                             uniqueDeviceId: uniqueId,
-                                                             isDebug: configuration.isDebug),
-                                        pinpointClient: pinpointClient,
-                                        endpointInformationProvider: endpointInformationProvider,
-                                        userDefaults: userDefaults,
-                                        keychain: keychainStore,
-                                        remoteNotificationsHelper: remoteNotificationsHelper)
+        self.endpointClient = EndpointClient(
+            configuration: .init(
+                appId: configuration.appId,
+                uniqueDeviceId: uniqueId,
+                isDebug: configuration.isDebug
+            ),
+            pinpointClient: pinpointClient,
+            endpointInformationProvider: endpointInformationProvider,
+            userDefaults: userDefaults,
+            keychain: keychainStore,
+            remoteNotificationsHelper: remoteNotificationsHelper
+        )
 
-        self.sessionClient = SessionClient(archiver: archiver,
-                                      configuration: .init(appId: configuration.appId,
-                                                           uniqueDeviceId: uniqueId),
-                                      endpointClient: endpointClient,
-                                      userDefaults: userDefaults)
+        self.sessionClient = SessionClient(
+            archiver: archiver,
+            configuration: .init(
+                appId: configuration.appId,
+                uniqueDeviceId: uniqueId
+            ),
+            endpointClient: endpointClient,
+            userDefaults: userDefaults
+        )
 
         let sessionProvider: () -> PinpointSession = { [weak sessionClient] in
             guard let sessionClient else {
@@ -150,20 +166,25 @@ class PinpointContext {
             return sessionClient.currentSession
         }
 
-        self.analyticsClient = try AnalyticsClient(applicationId: configuration.appId,
-                                              pinpointClient: pinpointClient,
-                                              endpointClient: endpointClient,
-                                              sessionProvider: sessionProvider)
+        self.analyticsClient = try AnalyticsClient(
+            applicationId: configuration.appId,
+            pinpointClient: pinpointClient,
+            endpointClient: endpointClient,
+            sessionProvider: sessionProvider
+        )
         sessionClient.analyticsClient = analyticsClient
         sessionClient.startPinpointSession()
         setAutomaticSubmitEventsInterval(Constants.defaultAutomaticSubmissionInterval)
     }
 
-    private static func legacyPreferencesFilePath(applicationId: String,
-                                                  storage: PinpointContextStorage) -> String?
-    {
-        let applicationSupportDirectoryUrls = storage.fileManager.urls(for: .applicationSupportDirectory,
-                                                                       in: .userDomainMask)
+    private static func legacyPreferencesFilePath(
+        applicationId: String,
+        storage: PinpointContextStorage
+    ) -> String? {
+        let applicationSupportDirectoryUrls = storage.fileManager.urls(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask
+        )
         let preferencesFileUrl = applicationSupportDirectoryUrls.first?
             .appendingPathComponent(Constants.Preferences.mobileAnalyticsRoot)
             .appendingPathComponent(applicationId)
@@ -172,11 +193,14 @@ class PinpointContext {
         return preferencesFileUrl?.path
     }
 
-    private static func removeLegacyPreferencesFile(applicationId: String,
-                                                    storage: PinpointContextStorage)
-    {
-        guard let preferencesPath = legacyPreferencesFilePath(applicationId: applicationId,
-                                                              storage: storage)
+    private static func removeLegacyPreferencesFile(
+        applicationId: String,
+        storage: PinpointContextStorage
+    ) {
+        guard let preferencesPath = legacyPreferencesFilePath(
+            applicationId: applicationId,
+            storage: storage
+        )
         else {
             return
         }
@@ -188,14 +212,19 @@ class PinpointContext {
         }
     }
 
-    private static func legacyUniqueId(applicationId: String,
-                                       storage: PinpointContextStorage) -> String?
-    {
-        guard let preferencesPath = legacyPreferencesFilePath(applicationId: applicationId,
-                                                              storage: storage),
+    private static func legacyUniqueId(
+        applicationId: String,
+        storage: PinpointContextStorage
+    ) -> String? {
+        guard let preferencesPath = legacyPreferencesFilePath(
+            applicationId: applicationId,
+            storage: storage
+        ),
               storage.fileManager.fileExists(atPath: preferencesPath),
-              let preferencesJson = try? JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: preferencesPath)),
-                                                                      options: .mutableContainers) as? [String: String]
+              let preferencesJson = try? JSONSerialization.jsonObject(
+                  with: Data(contentsOf: URL(fileURLWithPath: preferencesPath)),
+                  options: .mutableContainers
+              ) as? [String: String]
         else {
             return nil
         }
@@ -217,9 +246,10 @@ class PinpointContext {
 
      - Returns: A string representing the Device Unique ID
      */
-    private static func retrieveUniqueId(applicationId: String,
-                                         storage: PinpointContextStorage) -> String
-    {
+    private static func retrieveUniqueId(
+        applicationId: String,
+        storage: PinpointContextStorage
+    ) -> String {
         // 1. Look for the UniqueId in the Keychain
         if let deviceUniqueId = try? storage.keychainStore._getString(Constants.Keychain.uniqueIdKey) {
             return deviceUniqueId

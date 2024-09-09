@@ -11,8 +11,10 @@ import Foundation
 
 extension HubCategory {
     func dispatchIdentifyUser(_ identityId: String, userProfile: AnalyticsUserProfile?) {
-        let payload = HubPayload(eventName: HubPayload.EventName.Analytics.identifyUser,
-                                 data: (identityId, userProfile))
+        let payload = HubPayload(
+            eventName: HubPayload.EventName.Analytics.identifyUser,
+            data: (identityId, userProfile)
+        )
         dispatch(to: .analytics, payload: payload)
     }
 

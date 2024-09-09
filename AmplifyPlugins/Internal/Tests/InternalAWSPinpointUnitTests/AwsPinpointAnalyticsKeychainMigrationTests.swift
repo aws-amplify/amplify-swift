@@ -40,14 +40,18 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
         XCTAssertNil(currentKeychainDeviceToken)
         XCTAssertNotNil(userDefaults.data(forKey: EndpointClient.Constants.deviceTokenKey))
 
-        _ = EndpointClient(configuration: .init(appId: currentApplicationId,
-                                                             uniqueDeviceId: currentEndpointId,
-                                                             isDebug: false),
-                                        pinpointClient: pinpointClient,
-                                        archiver: archiver,
-                                        endpointInformationProvider: endpointInformationProvider,
-                                        userDefaults: userDefaults,
-                                        keychain: keychain)
+        _ = EndpointClient(
+            configuration: .init(
+                appId: currentApplicationId,
+                uniqueDeviceId: currentEndpointId,
+                isDebug: false
+            ),
+            pinpointClient: pinpointClient,
+            archiver: archiver,
+            endpointInformationProvider: endpointInformationProvider,
+            userDefaults: userDefaults,
+            keychain: keychain
+        )
 
         currentKeychainDeviceToken = try? keychain._getData(EndpointClient.Constants.deviceTokenKey)
         XCTAssertNil(userDefaults.data(forKey: EndpointClient.Constants.deviceTokenKey))
@@ -63,14 +67,18 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
         XCTAssertNil(currentKeychainProfile)
         XCTAssertNotNil(userDefaults.data(forKey: EndpointClient.Constants.endpointProfileKey))
 
-        _ = EndpointClient(configuration: .init(appId: currentApplicationId,
-                                                             uniqueDeviceId: currentEndpointId,
-                                                             isDebug: false),
-                                        pinpointClient: pinpointClient,
-                                        archiver: archiver,
-                                        endpointInformationProvider: endpointInformationProvider,
-                                        userDefaults: userDefaults,
-                                        keychain: keychain)
+        _ = EndpointClient(
+            configuration: .init(
+                appId: currentApplicationId,
+                uniqueDeviceId: currentEndpointId,
+                isDebug: false
+            ),
+            pinpointClient: pinpointClient,
+            archiver: archiver,
+            endpointInformationProvider: endpointInformationProvider,
+            userDefaults: userDefaults,
+            keychain: keychain
+        )
 
         currentKeychainProfile = try? keychain._getData(EndpointClient.Constants.endpointProfileKey)
         XCTAssertNil(userDefaults.data(forKey: EndpointClient.Constants.endpointProfileKey))

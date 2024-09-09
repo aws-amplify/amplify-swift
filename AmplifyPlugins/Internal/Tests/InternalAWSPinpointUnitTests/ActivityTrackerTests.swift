@@ -58,8 +58,10 @@ class ActivityTrackerTests: XCTestCase {
             return .initializing
         }
 
-        tracker = ActivityTracker(backgroundTrackingTimeout: timeout,
-                                  stateMachine: stateMachine)
+        tracker = ActivityTracker(
+            backgroundTrackingTimeout: timeout,
+            stateMachine: stateMachine
+        )
     }
 
     override func tearDown() {

@@ -32,9 +32,10 @@ public struct AWSPinpointPluginConfiguration {
         )
     }
 
-    public init(appId: String,
-                region: String)
-    {
+    public init(
+        appId: String,
+        region: String
+    ) {
         self.appId = appId
         self.region = region
     }

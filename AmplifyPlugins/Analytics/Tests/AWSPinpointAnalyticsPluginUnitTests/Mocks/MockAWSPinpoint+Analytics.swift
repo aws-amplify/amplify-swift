@@ -104,9 +104,10 @@ public extension MockAWSPinpoint {
         return createEventResult ?? createEmptyEvent()
     }
 
-    func createAppleMonetizationEvent(with transaction: SKPaymentTransaction,
-                                             with product: SKProduct) -> PinpointEvent
-    {
+    func createAppleMonetizationEvent(
+        with transaction: SKPaymentTransaction,
+        with product: SKProduct
+    ) -> PinpointEvent {
         createAppleMonetizationEventCalled += 1
         createAppleMonetizationEventTransaction = transaction
         createAppleMonetizationEventProduct = product
@@ -114,11 +115,12 @@ public extension MockAWSPinpoint {
         return createAppleMonetizationEventResult ?? createEmptyEvent()
     }
 
-    func createVirtualMonetizationEvent(withProductId theProductId: String,
-                                               withItemPrice theItemPrice: Double,
-                                               withQuantity theQuantity: Int,
-                                               withCurrency theCurrency: String) -> PinpointEvent
-    {
+    func createVirtualMonetizationEvent(
+        withProductId theProductId: String,
+        withItemPrice theItemPrice: Double,
+        withQuantity theQuantity: Int,
+        withCurrency theCurrency: String
+    ) -> PinpointEvent {
         createVirtualMonetizationEventCalled += 1
         createVirtualMonetizationEventProductId = theProductId
         createVirtualMonetizationEventItemPrice = theItemPrice
@@ -145,13 +147,16 @@ public extension MockAWSPinpoint {
     }
 
     private func createEmptyEvent() -> PinpointEvent {
-        return PinpointEvent(eventType: "",
-                             session: PinpointSession(appId: "", uniqueId: ""))
+        return PinpointEvent(
+            eventType: "",
+            session: PinpointSession(appId: "", uniqueId: "")
+        )
     }
 
-    func setAutomaticSubmitEventsInterval(_ interval: TimeInterval,
-                                                 onSubmit: AnalyticsClientBehaviour.SubmitResult?)
-    {
+    func setAutomaticSubmitEventsInterval(
+        _ interval: TimeInterval,
+        onSubmit: AnalyticsClientBehaviour.SubmitResult?
+    ) {
 
     }
 

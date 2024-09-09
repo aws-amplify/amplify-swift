@@ -122,26 +122,33 @@ class ActivityTracker: ActivityTrackerBehaviour {
         applicationWillTerminateNotification
     ]
 
-    init(backgroundTrackingTimeout: TimeInterval = .infinity,
-         stateMachine: StateMachine<ApplicationState, ActivityEvent>? = nil)
-    {
+    init(
+        backgroundTrackingTimeout: TimeInterval = .infinity,
+        stateMachine: StateMachine<ApplicationState, ActivityEvent>? = nil
+    ) {
         self.backgroundTrackingTimeout = backgroundTrackingTimeout
-        self.stateMachine = stateMachine ?? StateMachine(initialState: .initializing,
-                                                         resolver: ApplicationState.Resolver.resolve(currentState:event:))
+        self.stateMachine = stateMachine ?? StateMachine(
+            initialState: .initializing,
+            resolver: ApplicationState.Resolver.resolve(currentState:event:)
+        )
 
         for notification in ActivityTracker.notifications {
-            NotificationCenter.default.addObserver(self,
-                                                   selector: #selector(handleApplicationStateChange),
-                                                   name: notification,
-                                                   object: nil)
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(handleApplicationStateChange),
+                name: notification,
+                object: nil
+            )
         }
     }
 
     deinit {
         for notification in ActivityTracker.notifications {
-            NotificationCenter.default.removeObserver(self,
-                                                      name: notification,
-                                                      object: nil)
+            NotificationCenter.default.removeObserver(
+                self,
+                name: notification,
+                object: nil
+            )
         }
         stateMachineSubscriberToken = nil
     }

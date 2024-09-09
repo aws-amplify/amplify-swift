@@ -25,16 +25,17 @@ public struct PinpointEndpointProfile: Codable, Equatable {
     private(set) var attributes: [String: [String]] = [:]
     private(set) var metrics: [String: Double] = [:]
 
-    init(applicationId: String,
-         endpointId: String,
-         deviceToken: DeviceToken? = nil,
-         effectiveDate: Date = Date(),
-         isDebug: Bool = false,
-         isOptOut: Bool = false,
-         location: PinpointClientTypes.EndpointLocation = .init(),
-         demographic: PinpointClientTypes.EndpointDemographic = .init(),
-         user: PinpointClientTypes.EndpointUser = .init())
-    {
+    init(
+        applicationId: String,
+        endpointId: String,
+        deviceToken: DeviceToken? = nil,
+        effectiveDate: Date = Date(),
+        isDebug: Bool = false,
+        isOptOut: Bool = false,
+        location: PinpointClientTypes.EndpointLocation = .init(),
+        demographic: PinpointClientTypes.EndpointDemographic = .init(),
+        user: PinpointClientTypes.EndpointUser = .init()
+    ) {
         self.applicationId = applicationId
         self.endpointId = endpointId
         self.deviceToken = deviceToken
@@ -96,9 +97,10 @@ public struct PinpointEndpointProfile: Codable, Equatable {
         )
     }
 
-    private mutating func setCustomProperty(_ value: UserProfilePropertyValue,
-                                   forKey key: String)
-    {
+    private mutating func setCustomProperty(
+        _ value: UserProfilePropertyValue,
+        forKey key: String
+    ) {
         if let value = value as? String {
             attributes[key] = [value]
         } else if let values = value as? [String] {

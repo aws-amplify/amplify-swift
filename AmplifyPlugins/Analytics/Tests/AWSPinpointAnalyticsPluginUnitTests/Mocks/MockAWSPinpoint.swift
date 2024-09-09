@@ -216,19 +216,21 @@ extension MockAWSPinpoint {
         XCTAssertEqual(createEventEventType, theEventType)
     }
 
-    public func verifyCreateAppleMonetizationEvent(with transaction: SKPaymentTransaction,
-                                                   with product: SKProduct)
-    {
+    public func verifyCreateAppleMonetizationEvent(
+        with transaction: SKPaymentTransaction,
+        with product: SKProduct
+    ) {
         XCTAssertEqual(createAppleMonetizationEventCalled, 1)
         XCTAssertEqual(createAppleMonetizationEventTransaction, transaction)
         XCTAssertEqual(createAppleMonetizationEventProduct, product)
     }
 
-    public func verifyCreateVirtualMonetizationEvent(withProductId theProductId: String,
-                                                     withItemPrice theItemPrice: Double,
-                                                     withQuantity theQuantity: Int,
-                                                     withCurrency theCurrency: String)
-    {
+    public func verifyCreateVirtualMonetizationEvent(
+        withProductId theProductId: String,
+        withItemPrice theItemPrice: Double,
+        withQuantity theQuantity: Int,
+        withCurrency theCurrency: String
+    ) {
         XCTAssertEqual(createVirtualMonetizationEventCalled, 1)
         XCTAssertEqual(createVirtualMonetizationEventProductId, theProductId)
         XCTAssertEqual(createVirtualMonetizationEventItemPrice, theItemPrice)

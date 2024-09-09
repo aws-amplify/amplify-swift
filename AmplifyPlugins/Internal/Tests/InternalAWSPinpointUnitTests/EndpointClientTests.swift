@@ -29,15 +29,19 @@ class EndpointClientTests: XCTestCase {
         endpointInformationProvider = MockEndpointInformationProvider()
         keychain = MockKeychainStore()
         remoteNotificationsHelper = MockRemoteNotifications()
-        endpointClient = EndpointClient(configuration: .init(appId: currentApplicationId,
-                                                             uniqueDeviceId: currentEndpointId,
-                                                             isDebug: false),
-                                        pinpointClient: pinpointClient,
-                                        archiver: archiver,
-                                        endpointInformationProvider: endpointInformationProvider,
-                                        userDefaults: userDefaults,
-                                        keychain: keychain,
-                                        remoteNotificationsHelper: remoteNotificationsHelper)
+        endpointClient = EndpointClient(
+            configuration: .init(
+                appId: currentApplicationId,
+                uniqueDeviceId: currentEndpointId,
+                isDebug: false
+            ),
+            pinpointClient: pinpointClient,
+            archiver: archiver,
+            endpointInformationProvider: endpointInformationProvider,
+            userDefaults: userDefaults,
+            keychain: keychain,
+            remoteNotificationsHelper: remoteNotificationsHelper
+        )
     }
 
     override func tearDown() {
@@ -52,10 +56,12 @@ class EndpointClientTests: XCTestCase {
 
     func testCurrentEndpointProfile_withValidStoredProfile_shouldReturnUpdatedStored() async {
         let oldDemographic = PinpointClientTypes.EndpointDemographic(appVersion: "oldVersion")
-        let storedEndpointProfile = PinpointEndpointProfile(applicationId: currentApplicationId,
-                                                            endpointId: "oldEndpoint",
-                                                            deviceToken: "oldToken",
-                                                            demographic: oldDemographic)
+        let storedEndpointProfile = PinpointEndpointProfile(
+            applicationId: currentApplicationId,
+            endpointId: "oldEndpoint",
+            deviceToken: "oldToken",
+            demographic: oldDemographic
+        )
         let newToken = Data("newToken".utf8)
         do {
             try keychain._set(Data(), key: EndpointClient.Constants.endpointProfileKey)
@@ -89,11 +95,13 @@ class EndpointClientTests: XCTestCase {
     func testCurrentEndpointProfile_withInvalidStoredProfile_shouldRemoveStored_andReturnNew() async {
         let oldEffectiveDate = Date().addingTimeInterval(-1_000)
         let oldDemographic = PinpointClientTypes.EndpointDemographic(appVersion: "oldVersion")
-        let storedEndpointProfile = PinpointEndpointProfile(applicationId: "oldApplicationId",
-                                                            endpointId: "oldEndpoint",
-                                                            deviceToken: "oldToken",
-                                                            effectiveDate: oldEffectiveDate,
-                                                            demographic: oldDemographic)
+        let storedEndpointProfile = PinpointEndpointProfile(
+            applicationId: "oldApplicationId",
+            endpointId: "oldEndpoint",
+            deviceToken: "oldToken",
+            effectiveDate: oldEffectiveDate,
+            demographic: oldDemographic
+        )
         let newToken = storeToken("newToken")
         keychain.resetCounters()
         archiver.decoded = storedEndpointProfile
@@ -128,8 +136,10 @@ class EndpointClientTests: XCTestCase {
     func testUpdateEndpointProfile_withAPNsToken_withoutStoredToken_shouldSaveToken() async {
         keychain.resetCounters()
 
-        var endpoint = PinpointEndpointProfile(applicationId: "applicationId",
-                                               endpointId: "endpointId")
+        var endpoint = PinpointEndpointProfile(
+            applicationId: "applicationId",
+            endpointId: "endpointId"
+        )
         endpoint.setAPNsToken(Data(hexString: newTokenHex)!)
         try? await endpointClient.updateEndpointProfile(with: endpoint)
 
@@ -142,8 +152,10 @@ class EndpointClientTests: XCTestCase {
         storeToken("oldToken")
         keychain.resetCounters()
 
-        var endpoint = PinpointEndpointProfile(applicationId: "applicationId",
-                                               endpointId: "endpointId")
+        var endpoint = PinpointEndpointProfile(
+            applicationId: "applicationId",
+            endpointId: "endpointId"
+        )
         endpoint.setAPNsToken(Data(hexString: newTokenHex)!)
         try? await endpointClient.updateEndpointProfile(with: endpoint)
 
@@ -156,8 +168,10 @@ class EndpointClientTests: XCTestCase {
         storeToken(newTokenHex)
         keychain.resetCounters()
 
-        var endpoint = PinpointEndpointProfile(applicationId: "applicationId",
-                                               endpointId: "endpointId")
+        var endpoint = PinpointEndpointProfile(
+            applicationId: "applicationId",
+            endpointId: "endpointId"
+        )
         endpoint.setAPNsToken(Data(hexString: newTokenHex)!)
         try? await endpointClient.updateEndpointProfile(with: endpoint)
 
@@ -170,8 +184,10 @@ class EndpointClientTests: XCTestCase {
         storeToken("oldToken")
         keychain.resetCounters()
 
-        let endpoint = PinpointEndpointProfile(applicationId: "applicationId",
-                                               endpointId: "endpointId")
+        let endpoint = PinpointEndpointProfile(
+            applicationId: "applicationId",
+            endpointId: "endpointId"
+        )
         try? await endpointClient.updateEndpointProfile(with: endpoint)
 
         XCTAssertEqual(keychain.removeObjectCount, 1)

@@ -25,9 +25,11 @@ protocol AnalyticsEventRecording: Actor {
     ///   - ofType: event type
     ///   - withSessionId: session identifier
     ///   - setAttributes: event attributes
-    func updateAttributesOfEvents(ofType: String,
-                                  withSessionId: PinpointSession.SessionId,
-                                  setAttributes: [String: String]) throws
+    func updateAttributesOfEvents(
+        ofType: String,
+        withSessionId: PinpointSession.SessionId,
+        setAttributes: [String: String]
+    ) throws
 
     /// Updates the session information of the events that match the same sessionId.
     /// - Parameter session: The session to update
@@ -53,11 +55,12 @@ actor EventRecorder: AnalyticsEventRecording {
     ///   - storage: A storage object that conforms to AnalyticsEventStorage
     ///   - pinpointClient: A Pinpoint client
     ///   - endpointClient: An EndpointClientBehaviour client
-    init(appId: String,
-         storage: AnalyticsEventStorage,
-         pinpointClient: PinpointClientProtocol,
-         endpointClient: EndpointClientBehaviour) throws
-    {
+    init(
+        appId: String,
+        storage: AnalyticsEventStorage,
+        pinpointClient: PinpointClientProtocol,
+        endpointClient: EndpointClientBehaviour
+    ) throws {
         self.appId = appId
         self.storage = storage
         self.pinpointClient = pinpointClient
@@ -75,13 +78,16 @@ actor EventRecorder: AnalyticsEventRecording {
         try storage.checkDiskSize(limit: Constants.pinpointClientByteLimitDefault)
     }
 
-    func updateAttributesOfEvents(ofType eventType: String,
-                                  withSessionId sessionId: PinpointSession.SessionId,
-                                  setAttributes attributes: [String: String]) throws
-    {
-        try storage.updateEvents(ofType: eventType,
-                                      withSessionId: sessionId,
-                                      setAttributes: attributes)
+    func updateAttributesOfEvents(
+        ofType eventType: String,
+        withSessionId sessionId: PinpointSession.SessionId,
+        setAttributes attributes: [String: String]
+    ) throws {
+        try storage.updateEvents(
+            ofType: eventType,
+            withSessionId: sessionId,
+            setAttributes: attributes
+        )
     }
 
     func update(_ session: PinpointSession) throws {
@@ -130,9 +136,10 @@ actor EventRecorder: AnalyticsEventRecording {
         }
     }
 
-    private func submit(pinpointEvents: [PinpointEvent],
-                        endpointProfile: PinpointEndpointProfile) async throws
-    {
+    private func submit(
+        pinpointEvents: [PinpointEvent],
+        endpointProfile: PinpointEndpointProfile
+    ) async throws {
         var clientEvents = [String: PinpointClientTypes.Event]()
         var pinpointEventsById = [String: PinpointEvent]()
         for event in pinpointEvents {
@@ -141,11 +148,15 @@ actor EventRecorder: AnalyticsEventRecording {
         }
 
         let publicEndpoint = endpointClient.convertToPublicEndpoint(endpointProfile)
-        let eventsBatch = PinpointClientTypes.EventsBatch(endpoint: publicEndpoint,
-                                                          events: clientEvents)
+        let eventsBatch = PinpointClientTypes.EventsBatch(
+            endpoint: publicEndpoint,
+            events: clientEvents
+        )
         let batchItem = [endpointProfile.endpointId: eventsBatch]
-        let putEventsInput = PutEventsInput(applicationId: appId,
-                                            eventsRequest: .init(batchItem: batchItem))
+        let putEventsInput = PutEventsInput(
+            applicationId: appId,
+            eventsRequest: .init(batchItem: batchItem)
+        )
 
         await identifySource(for: pinpointEvents)
         do {
@@ -172,8 +183,7 @@ actor EventRecorder: AnalyticsEventRecording {
                 guard let event = pinpointEventsById[eventId] else { continue }
                 let responseMessage = eventResponse.message ?? "Unknown"
                 if HttpStatusCode.accepted.rawValue == eventResponse.statusCode,
-                   Constants.acceptedResponseMessage == responseMessage
-                {
+                   Constants.acceptedResponseMessage == responseMessage {
                     // On successful submission, add the event to the list of submitted events and delete it from the local storage
                     log.verbose("Successful submit for event with id \(eventId)")
                     submittedEvents.append(event)
@@ -329,10 +339,11 @@ actor EventRecorder: AnalyticsEventRecording {
         events.forEach { incrementEventRetry(eventId: $0.id) }
     }
 
-    private func retry(times: Int = Constants.defaultNumberOfRetriesForStorageOperations,
-                       onErrorMessage: String,
-                       _ closure: () throws -> Void)
-    {
+    private func retry(
+        times: Int = Constants.defaultNumberOfRetriesForStorageOperations,
+        onErrorMessage: String,
+        _ closure: () throws -> Void
+    ) {
         do {
             try closure()
         } catch {

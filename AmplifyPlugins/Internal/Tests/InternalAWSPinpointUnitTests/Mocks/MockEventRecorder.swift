@@ -22,10 +22,11 @@ actor MockEventRecorder: AnalyticsEventRecording {
         lastSavedEvent = event
     }
 
-    func updateAttributesOfEvents(ofType: String,
-                                  withSessionId: PinpointSession.SessionId,
-                                  setAttributes: [String: String]) throws
-    {
+    func updateAttributesOfEvents(
+        ofType: String,
+        withSessionId: PinpointSession.SessionId,
+        setAttributes: [String: String]
+    ) throws {
         updateCount += 1
     }
 

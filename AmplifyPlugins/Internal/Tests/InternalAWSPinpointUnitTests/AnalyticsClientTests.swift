@@ -34,8 +34,10 @@ class AnalyticsClientTests: XCTestCase {
     func testCreateAppleMonetizationEvent() {
         let transaction = MockTransaction(transactionId: "transactionId", quantity: 5)
         let product = MockProduct(productId: "producId", price: 2.5)
-        let event = analyticsClient.createAppleMonetizationEvent(with: transaction,
-                                                                 with: product)
+        let event = analyticsClient.createAppleMonetizationEvent(
+            with: transaction,
+            with: product
+        )
 
         XCTAssertEqual(event.eventType, "_monetization.purchase")
         XCTAssertEqual(event.attributes["_store"], "Apple")
@@ -52,10 +54,12 @@ class AnalyticsClientTests: XCTestCase {
         let quantity = 2
         let currency = "USD"
 
-        let event = analyticsClient.createVirtualMonetizationEvent(withProductId: productId,
-                                                                   withItemPrice: itemPrice,
-                                                                   withQuantity: quantity,
-                                                                   withCurrency: currency)
+        let event = analyticsClient.createVirtualMonetizationEvent(
+            withProductId: productId,
+            withItemPrice: itemPrice,
+            withQuantity: quantity,
+            withCurrency: currency
+        )
 
         XCTAssertEqual(event.eventType, "_monetization.purchase")
         XCTAssertEqual(event.attributes["_store"], "Virtual")
@@ -167,9 +171,10 @@ private class MockTransaction: SKPaymentTransaction {
 
     }
 
-    init(transactionId: String,
-         quantity: Int)
-    {
+    init(
+        transactionId: String,
+        quantity: Int
+    ) {
         self._transactionId = transactionId
         self._payment = MockPayment(quantity: quantity)
     }
@@ -187,9 +192,10 @@ private class MockProduct: SKProduct {
     private let _productId: String
     private let _price: Double
 
-    init(productId: String,
-         price: Double)
-    {
+    init(
+        productId: String,
+        price: Double
+    ) {
         self._productId = productId
         self._price = price
     }

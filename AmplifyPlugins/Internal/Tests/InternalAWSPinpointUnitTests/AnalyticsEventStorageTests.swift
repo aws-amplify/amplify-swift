@@ -345,19 +345,27 @@ class AnalyticsEventStorageTests: XCTestCase {
         let eventType = "_session.start"
         let expectedSessionStartTime = DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2050-06-11T17:00:20.618+0000")
         let expectedSessionStopTime = DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2050-06-11T17:10:20.618+0000")
-        let session = PinpointSession(sessionId: "session-id",
-                                      startTime: expectedSessionStartTime!,
-                                      stopTime: expectedSessionStopTime)
-        let event1 = PinpointEvent(id: "event-1",
-                                   eventType: eventType,
-                                   session: session)
-        let event2 = PinpointEvent(id: "event-2",
-                                   eventType: eventType,
-                                   session: session)
+        let session = PinpointSession(
+            sessionId: "session-id",
+            startTime: expectedSessionStartTime!,
+            stopTime: expectedSessionStopTime
+        )
+        let event1 = PinpointEvent(
+            id: "event-1",
+            eventType: eventType,
+            session: session
+        )
+        let event2 = PinpointEvent(
+            id: "event-2",
+            eventType: eventType,
+            session: session
+        )
 
-        let notASessionStartEvent = PinpointEvent(id: "event-3",
-                                                  eventType: "another-event-type",
-                                                  session: session)
+        let notASessionStartEvent = PinpointEvent(
+            id: "event-3",
+            eventType: "another-event-type",
+            session: session
+        )
 
         let attributes = ["attr1": "value1", "attr2": "value2"]
 
@@ -365,9 +373,11 @@ class AnalyticsEventStorageTests: XCTestCase {
         try storage.saveEvent(event2)
         try storage.saveEvent(notASessionStartEvent)
 
-        try storage.updateEvents(ofType: eventType,
-                                 withSessionId: session.sessionId,
-                                 setAttributes: attributes)
+        try storage.updateEvents(
+            ofType: eventType,
+            withSessionId: session.sessionId,
+            setAttributes: attributes
+        )
 
         let savedEvents = try storage.getEventsWith(limit: 3)
 

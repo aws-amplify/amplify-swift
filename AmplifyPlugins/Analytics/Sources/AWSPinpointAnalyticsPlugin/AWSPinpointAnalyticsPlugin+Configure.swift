@@ -82,11 +82,12 @@ public extension AWSPinpointAnalyticsPlugin {
     // MARK: Internal
 
     /// Internal configure method to set the properties of the plugin
-    internal func configure(pinpoint: AWSPinpointBehavior,
-                   networkMonitor: NetworkMonitor,
-                   globalProperties: AtomicDictionary<String, AnalyticsPropertyValue> = [:],
-                   isEnabled: Bool = true)
-    {
+    internal func configure(
+        pinpoint: AWSPinpointBehavior,
+        networkMonitor: NetworkMonitor,
+        globalProperties: AtomicDictionary<String, AnalyticsPropertyValue> = [:],
+        isEnabled: Bool = true
+    ) {
         self.pinpoint = pinpoint
         self.networkMonitor = networkMonitor
         self.globalProperties = globalProperties

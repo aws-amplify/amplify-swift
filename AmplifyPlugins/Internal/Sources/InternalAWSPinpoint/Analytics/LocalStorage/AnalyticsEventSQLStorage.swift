@@ -101,10 +101,11 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
         _ = try dbAdapter.executeQuery(deleteStatement, [])
     }
 
-    func updateEvents(ofType eventType: String,
-                      withSessionId sessionId: PinpointSession.SessionId,
-                      setAttributes attributes: [String: String]) throws
-    {
+    func updateEvents(
+        ofType eventType: String,
+        withSessionId sessionId: PinpointSession.SessionId,
+        setAttributes attributes: [String: String]
+    ) throws {
         let updateStatement = """
         UPDATE Event
         SET attributes = ?
@@ -114,7 +115,8 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
         _ = try dbAdapter.executeQuery(updateStatement, [
             PinpointEvent.archiveEventAttributes(attributes),
             sessionId,
-            eventType])
+            eventType
+        ])
     }
 
     func updateSession(_ session: PinpointSession) throws {

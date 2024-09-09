@@ -39,13 +39,17 @@ class SessionClientTests: XCTestCase {
     }
 
     func createNewSessionClient() {
-        client = SessionClient(activityTracker: activityTracker,
-                               analyticsClient: analyticsClient,
-                               archiver: archiver,
-                               configuration: SessionClientConfiguration(appId: "appId",
-                                                                         uniqueDeviceId: "deviceId"),
-                               endpointClient: endpointClient,
-                               userDefaults: userDefaults)
+        client = SessionClient(
+            activityTracker: activityTracker,
+            analyticsClient: analyticsClient,
+            archiver: archiver,
+            configuration: SessionClientConfiguration(
+                appId: "appId",
+                uniqueDeviceId: "deviceId"
+            ),
+            endpointClient: endpointClient,
+            userDefaults: userDefaults
+        )
     }
 
     func resetCounters() async {

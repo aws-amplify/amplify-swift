@@ -21,8 +21,10 @@ public extension PinpointEvent {
             properties[metric.key] = metric.value
         }
 
-        return BasicAnalyticsEvent(name: eventType,
-                                   properties: properties)
+        return BasicAnalyticsEvent(
+            name: eventType,
+            properties: properties
+        )
     }
 }
 

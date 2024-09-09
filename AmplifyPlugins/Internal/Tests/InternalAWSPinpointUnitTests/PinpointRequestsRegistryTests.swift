@@ -24,8 +24,10 @@ class PinpointRequestsRegistryTests: XCTestCase {
         let oldHttpClientEngine = pinpointConfiguration.httpClientEngine
         PinpointRequestsRegistry.shared.setCustomHttpEngine(on: pinpointConfiguration)
 
-        XCTAssertNotEqual(oldHttpClientEngine.typeString,
-                          pinpointConfiguration.httpClientEngine.typeString)
+        XCTAssertNotEqual(
+            oldHttpClientEngine.typeString,
+            pinpointConfiguration.httpClientEngine.typeString
+        )
     }
 
     func testExecute_withSourcesRegistered_shouldAppendSuffixToUserAgent() async throws {

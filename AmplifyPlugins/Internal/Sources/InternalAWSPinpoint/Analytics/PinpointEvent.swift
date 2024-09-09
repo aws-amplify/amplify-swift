@@ -20,12 +20,13 @@ public class PinpointEvent: AnalyticsPropertiesModel {
     public private(set) lazy var attributes: [String: String] = [:]
     public private(set) lazy var metrics: [String: Double] = [:]
 
-    init(id: String = UUID().uuidString,
-         eventType: String,
-         eventDate: Date = Date(),
-         session: PinpointSession,
-         retryCount: Int = 0)
-    {
+    init(
+        id: String = UUID().uuidString,
+        eventType: String,
+        eventDate: Date = Date(),
+        session: PinpointSession,
+        retryCount: Int = 0
+    ) {
         self.id = id
         self.eventType = eventType
         self.eventDate = eventDate

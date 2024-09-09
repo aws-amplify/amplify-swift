@@ -16,16 +16,18 @@ public extension AWSPinpointAnalyticsPlugin {
         public let trackAppSessions: Bool
 
         #if os(macOS)
-        public init(autoFlushEventsInterval: TimeInterval = 60,
-                    trackAppSessions: Bool = true)
-        {
+        public init(
+            autoFlushEventsInterval: TimeInterval = 60,
+            trackAppSessions: Bool = true
+        ) {
             self.autoFlushEventsInterval = autoFlushEventsInterval
             self.trackAppSessions = trackAppSessions
         }
         #else
-        public init(autoFlushEventsInterval: TimeInterval = 60,
-                    trackAppSessions: Bool = true)
-        {
+        public init(
+            autoFlushEventsInterval: TimeInterval = 60,
+            trackAppSessions: Bool = true
+        ) {
             self.autoFlushEventsInterval = autoFlushEventsInterval
             self.trackAppSessions = trackAppSessions
         }

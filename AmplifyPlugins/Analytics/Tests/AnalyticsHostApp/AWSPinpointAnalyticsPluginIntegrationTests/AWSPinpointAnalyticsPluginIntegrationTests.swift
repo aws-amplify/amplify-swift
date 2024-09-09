@@ -65,21 +65,27 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
             }
         }
 
-        let location = AnalyticsUserProfile.Location(latitude: 47.606209,
-                                                     longitude: -122.332069,
-                                                     postalCode: "98122",
-                                                     city: "Seattle",
-                                                     region: "WA",
-                                                     country: "USA")
-        let properties = ["userPropertyStringKey": "userProperyStringValue",
-                          "userPropertyIntKey": 123,
-                          "userPropertyDoubleKey": 12.34,
-                          "userPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
-        let userProfile = AnalyticsUserProfile(name: "name",
-                                               email: "email",
-                                               plan: "plan",
-                                               location: location,
-                                               properties: properties)
+        let location = AnalyticsUserProfile.Location(
+            latitude: 47.606209,
+            longitude: -122.332069,
+            postalCode: "98122",
+            city: "Seattle",
+            region: "WA",
+            country: "USA"
+        )
+        let properties = [
+            "userPropertyStringKey": "userProperyStringValue",
+            "userPropertyIntKey": 123,
+            "userPropertyDoubleKey": 12.34,
+            "userPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
+        let userProfile = AnalyticsUserProfile(
+            name: "name",
+            email: "email",
+            plan: "plan",
+            location: location,
+            properties: properties
+        )
         Amplify.Analytics.identifyUser(userId: userId, userProfile: userProfile)
 
         await fulfillment(of: [identifyUserEvent], timeout: TestCommonConstants.networkTimeout)
@@ -96,8 +102,10 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     func skip_testDeleteEndpointsForUser() async throws {
         let userId = "userId"
         let applicationId = await endpointClient().currentEndpointProfile().applicationId
-        let deleteEndpointsRequest = DeleteUserEndpointsInput(applicationId: applicationId,
-                                                              userId: userId)
+        let deleteEndpointsRequest = DeleteUserEndpointsInput(
+            applicationId: applicationId,
+            userId: userId
+        )
         do {
             let response = try await pinpointClient().deleteUserEndpoints(input: deleteEndpointsRequest)
             XCTAssertNotNil(response.endpointsResponse)
@@ -132,15 +140,19 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
             }
         }
 
-        let globalProperties = ["globalPropertyStringKey": "eventProperyStringValue",
-                                "globalPropertyIntKey": 123,
-                                "globalPropertyDoubleKey": 12.34,
-                                "globalPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let globalProperties = [
+            "globalPropertyStringKey": "eventProperyStringValue",
+            "globalPropertyIntKey": 123,
+            "globalPropertyDoubleKey": 12.34,
+            "globalPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         Amplify.Analytics.registerGlobalProperties(globalProperties)
-        let properties = ["eventPropertyStringKey": "eventProperyStringValue",
-                          "eventPropertyIntKey": 123,
-                          "eventPropertyDoubleKey": 12.34,
-                          "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let properties = [
+            "eventPropertyStringKey": "eventProperyStringValue",
+            "eventPropertyIntKey": 123,
+            "eventPropertyDoubleKey": 12.34,
+            "eventPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
 
@@ -180,15 +192,19 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         Amplify.Analytics.disable()
         Amplify.Analytics.enable()
 
-        let globalProperties = ["globalPropertyStringKey": "eventProperyStringValue",
-                                "globalPropertyIntKey": 123,
-                                "globalPropertyDoubleKey": 12.34,
-                                "globalPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let globalProperties = [
+            "globalPropertyStringKey": "eventProperyStringValue",
+            "globalPropertyIntKey": 123,
+            "globalPropertyDoubleKey": 12.34,
+            "globalPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         Amplify.Analytics.registerGlobalProperties(globalProperties)
-        let properties = ["eventPropertyStringKey": "eventProperyStringValue",
-                          "eventPropertyIntKey": 123,
-                          "eventPropertyDoubleKey": 12.34,
-                          "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let properties = [
+            "eventPropertyStringKey": "eventProperyStringValue",
+            "eventPropertyIntKey": 123,
+            "eventPropertyDoubleKey": 12.34,
+            "eventPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
 
@@ -222,15 +238,19 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
 
         Amplify.Analytics.disable()
 
-        let globalProperties = ["globalPropertyStringKey": "eventProperyStringValue",
-                                "globalPropertyIntKey": 123,
-                                "globalPropertyDoubleKey": 12.34,
-                                "globalPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let globalProperties = [
+            "globalPropertyStringKey": "eventProperyStringValue",
+            "globalPropertyIntKey": 123,
+            "globalPropertyDoubleKey": 12.34,
+            "globalPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         Amplify.Analytics.registerGlobalProperties(globalProperties)
-        let properties = ["eventPropertyStringKey": "eventProperyStringValue",
-                          "eventPropertyIntKey": 123,
-                          "eventPropertyDoubleKey": 12.34,
-                          "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let properties = [
+            "eventPropertyStringKey": "eventProperyStringValue",
+            "eventPropertyIntKey": 123,
+            "eventPropertyDoubleKey": 12.34,
+            "eventPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
 
@@ -276,15 +296,19 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
             }
         }
 
-        let globalProperties = ["globalPropertyStringKey": "GlobalProperyStringValue",
-                                "globalPropertyIntKey": 321,
-                                "globalPropertyDoubleKey": 43.21,
-                                "globalPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let globalProperties = [
+            "globalPropertyStringKey": "GlobalProperyStringValue",
+            "globalPropertyIntKey": 321,
+            "globalPropertyDoubleKey": 43.21,
+            "globalPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         Amplify.Analytics.registerGlobalProperties(globalProperties)
-        let properties = ["eventPropertyStringKey": "eventProperyStringValue",
-                          "eventPropertyIntKey": 123,
-                          "eventPropertyDoubleKey": 12.34,
-                          "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let properties = [
+            "eventPropertyStringKey": "eventProperyStringValue",
+            "eventPropertyIntKey": 123,
+            "eventPropertyDoubleKey": 12.34,
+            "eventPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
 
@@ -330,16 +354,20 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
             }
         }
 
-        let globalProperties = ["globalPropertyStringKey": "GlobalProperyStringValue",
-                                "globalPropertyIntKey": 321,
-                                "globalPropertyDoubleKey": 43.21,
-                                "globalPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let globalProperties = [
+            "globalPropertyStringKey": "GlobalProperyStringValue",
+            "globalPropertyIntKey": 321,
+            "globalPropertyDoubleKey": 43.21,
+            "globalPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         Amplify.Analytics.registerGlobalProperties(globalProperties)
         Amplify.Analytics.unregisterGlobalProperties()
-        let properties = ["eventPropertyStringKey": "eventProperyStringValue",
-                          "eventPropertyIntKey": 123,
-                          "eventPropertyDoubleKey": 12.34,
-                          "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let properties = [
+            "eventPropertyStringKey": "eventProperyStringValue",
+            "eventPropertyIntKey": 123,
+            "eventPropertyDoubleKey": 12.34,
+            "eventPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
 

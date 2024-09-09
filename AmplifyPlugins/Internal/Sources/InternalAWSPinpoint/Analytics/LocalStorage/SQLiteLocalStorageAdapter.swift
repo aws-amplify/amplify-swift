@@ -23,16 +23,19 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
     ///     - prefixPath: A prefix to be used for the database path. Defaults to none.
     ///     - databaseName: The database name
     ///     - fileManager: A FileManagerBehaviour instance to interact with the disk. Defaults to FileManager.default
-    init(prefixPath: String = "",
-         databaseName: String,
-         fileManager: FileManagerBehaviour = FileManager.default) throws
-    {
+    init(
+        prefixPath: String = "",
+        databaseName: String,
+        fileManager: FileManagerBehaviour = FileManager.default
+    ) throws {
         let dbDirectoryPath = try Self.getTmpPath()
             .appendingPathComponent(prefixPath)
         var dbFilePath = dbDirectoryPath.appendingPathComponent(databaseName)
         if !fileManager.fileExists(atPath: dbDirectoryPath.path) {
-            try fileManager.createDirectory(atPath: dbDirectoryPath.path,
-                                            withIntermediateDirectories: true)
+            try fileManager.createDirectory(
+                atPath: dbDirectoryPath.path,
+                withIntermediateDirectories: true
+            )
         }
 
         let connection: Connection
