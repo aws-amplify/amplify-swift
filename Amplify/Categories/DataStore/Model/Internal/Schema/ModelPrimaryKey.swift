@@ -13,13 +13,16 @@ public struct ModelPrimaryKey {
         fields.count > 1
     }
 
-    init?(allFields: ModelFields,
-          attributes: [ModelAttribute],
-          primaryKeyFieldKeys: [String] = [])
-    {
-        self.fields = resolvePrimaryKeyFields(allFields: allFields,
-                                              attributes: attributes,
-                                              primaryKeyFieldKeys: primaryKeyFieldKeys)
+    init?(
+        allFields: ModelFields,
+        attributes: [ModelAttribute],
+        primaryKeyFieldKeys: [String] = []
+    ) {
+        self.fields = resolvePrimaryKeyFields(
+            allFields: allFields,
+            attributes: attributes,
+            primaryKeyFieldKeys: primaryKeyFieldKeys
+        )
 
         if fields.isEmpty {
             return nil
@@ -50,10 +53,11 @@ public struct ModelPrimaryKey {
     /// It returns an array of fields as custom and composite primary keys are supported.
     /// - Parameter fields: schema model fields
     /// - Returns: an array of model fields
-    func resolvePrimaryKeyFields(allFields: ModelFields,
-                                 attributes: [ModelAttribute],
-                                 primaryKeyFieldKeys: [String]) -> [ModelField]
-    {
+    func resolvePrimaryKeyFields(
+        allFields: ModelFields,
+        attributes: [ModelAttribute],
+        primaryKeyFieldKeys: [String]
+    ) -> [ModelField] {
         var primaryKeyFields: [ModelField] = []
 
         if !primaryKeyFieldKeys.isEmpty {

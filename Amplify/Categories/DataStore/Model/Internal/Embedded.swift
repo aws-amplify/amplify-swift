@@ -24,12 +24,15 @@ public protocol Embeddable: Codable {
 }
 
 public extension Embeddable {
-    static func defineSchema(name: String? = nil,
-                                    attributes: ModelAttribute...,
-                                    define: (inout ModelSchemaDefinition) -> Void) -> ModelSchema
-    {
-        var definition = ModelSchemaDefinition(name: name ?? "",
-                                               attributes: attributes)
+    static func defineSchema(
+        name: String? = nil,
+        attributes: ModelAttribute...,
+        define: (inout ModelSchemaDefinition) -> Void
+    ) -> ModelSchema {
+        var definition = ModelSchemaDefinition(
+            name: name ?? "",
+            attributes: attributes
+        )
         define(&definition)
         return definition.build()
     }

@@ -53,15 +53,16 @@ public struct ModelField {
         return attributes.contains { $0 == .primaryKey }
     }
 
-    public init(name: String,
-                type: ModelFieldType,
-                isRequired: Bool = false,
-                isReadOnly: Bool = false,
-                isArray: Bool = false,
-                attributes: [ModelFieldAttribute] = [],
-                association: ModelAssociation? = nil,
-                authRules: AuthRules = [])
-    {
+    public init(
+        name: String,
+        type: ModelFieldType,
+        isRequired: Bool = false,
+        isReadOnly: Bool = false,
+        isArray: Bool = false,
+        attributes: [ModelFieldAttribute] = [],
+        association: ModelAssociation? = nil,
+        authRules: AuthRules = []
+    ) {
         self.name = name
         self.type = type
         self.isRequired = isRequired
@@ -107,15 +108,16 @@ public struct ModelSchema {
         return primaryKey
     }
 
-    public init(name: String,
-                pluralName: String? = nil,
-                listPluralName: String? = nil,
-                syncPluralName: String? = nil,
-                authRules: AuthRules = [],
-                attributes: [ModelAttribute] = [],
-                fields: ModelFields = [:],
-                primaryKeyFieldKeys: [ModelFieldName] = [])
-    {
+    public init(
+        name: String,
+        pluralName: String? = nil,
+        listPluralName: String? = nil,
+        syncPluralName: String? = nil,
+        authRules: AuthRules = [],
+        attributes: [ModelAttribute] = [],
+        fields: ModelFields = [:],
+        primaryKeyFieldKeys: [ModelFieldName] = []
+    ) {
         self.name = name
         self.pluralName = pluralName
         self.listPluralName = listPluralName
@@ -124,9 +126,11 @@ public struct ModelSchema {
         self.attributes = attributes
         self.fields = fields
         self.indexes = attributes.indexes
-        self._primaryKey = ModelPrimaryKey(allFields: fields,
-                                           attributes: attributes,
-                                           primaryKeyFieldKeys: primaryKeyFieldKeys)
+        self._primaryKey = ModelPrimaryKey(
+            allFields: fields,
+            attributes: attributes,
+            primaryKeyFieldKeys: primaryKeyFieldKeys
+        )
 
         let indexOfPrimaryKeyField = _primaryKey?.indexOfField ?? { (_: String) in nil }
         self.sortedFields = fields.sortedFields(indexOfPrimaryKeyField: indexOfPrimaryKeyField)

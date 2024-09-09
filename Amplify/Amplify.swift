@@ -36,7 +36,7 @@ public class Amplify {
     public internal(set) static var Analytics = AnalyticsCategory()
 
     /// - Tag: Amplify.API
-    public internal(set) static var API: APICategory = .init()
+    public internal(set) static var API = APICategory()
 
     /// - Tag: Amplify.Auth
     public internal(set) static var Auth = AuthCategory()
@@ -73,6 +73,8 @@ public class Amplify {
     }
     private static let loggingAtomic = AtomicValue<LoggingCategory>(initialValue: LoggingCategory())
 
+    // swiftlint:disable cyclomatic_complexity
+
     /// Adds `plugin` to the category
     ///
     /// See: [Category.removePlugin(for:)](x-source-tag://Category.removePlugin)
@@ -105,8 +107,11 @@ public class Amplify {
         default:
             throw PluginError.pluginConfigurationError(
                 "Plugin category does not exist.",
-                "Verify that the library version is correct and supports the plugin's category.")
+                "Verify that the library version is correct and supports the plugin's category."
+            )
         }
+
+        // swiftlint:enable cyclomatic_complexity
     }
 }
 

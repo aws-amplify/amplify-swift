@@ -34,12 +34,13 @@ open class AmplifyInProcessReportingOperation<
     var inProcessSubject: PassthroughSubject<InProcess, Never>!
 #endif
 
-    public init(categoryType: CategoryType,
-                eventName: HubPayloadEventName,
-                request: Request,
-                inProcessListener: InProcessListener? = nil,
-                resultListener: ResultListener? = nil)
-    {
+    public init(
+        categoryType: CategoryType,
+        eventName: HubPayloadEventName,
+        request: Request,
+        inProcessListener: InProcessListener? = nil,
+        resultListener: ResultListener? = nil
+    ) {
 
         super.init(categoryType: categoryType, eventName: eventName, request: request, resultListener: resultListener)
 
@@ -75,9 +76,11 @@ open class AmplifyInProcessReportingOperation<
             }
         }
 
-        inProcessListenerToken = Amplify.Hub.listen(to: channel,
-                                                    isIncluded: filterById,
-                                                    listener: inProcessHubListener)
+        inProcessListenerToken = Amplify.Hub.listen(
+            to: channel,
+            isIncluded: filterById,
+            listener: inProcessHubListener
+        )
 
         return inProcessListenerToken
     }

@@ -30,9 +30,10 @@ public extension QueryPaginationInput {
     ///   - page: the page number (starting at 0)
     ///   - limit: the page size (defaults to `QueryPaginationInput.defaultLimit`)
     /// - Returns: a new instance of `QueryPaginationInput`
-    static func page(_ page: UInt,
-                            limit: UInt = QueryPaginationInput.defaultLimit) -> QueryPaginationInput
-    {
+    static func page(
+        _ page: UInt,
+        limit: UInt = QueryPaginationInput.defaultLimit
+    ) -> QueryPaginationInput {
         return QueryPaginationInput(page: page, limit: limit)
     }
 

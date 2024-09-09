@@ -22,11 +22,12 @@ public struct AuthConfirmResetPasswordRequest: AmplifyOperationRequest {
     /// Extra request options defined in `AuthConfirmResetPasswordRequest.Options`
     public var options: Options
 
-    public init(username: String,
-                newPassword: String,
-                confirmationCode: String,
-                options: Options)
-    {
+    public init(
+        username: String,
+        newPassword: String,
+        confirmationCode: String,
+        options: Options
+    ) {
         self.username = username
         self.newPassword = newPassword
         self.confirmationCode = confirmationCode

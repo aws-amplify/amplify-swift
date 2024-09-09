@@ -97,8 +97,10 @@ public struct DeviceInfo {
         let device = UIDevice.current
         return (name: device.systemName, version: device.systemVersion)
     #else
-        return (name: "macOS",
-                version: ProcessInfo.processInfo.operatingSystemVersionString)
+        return (
+            name: "macOS",
+            version: ProcessInfo.processInfo.operatingSystemVersionString
+        )
     #endif
     }
 
@@ -130,8 +132,10 @@ public struct DeviceInfo {
 
 #if canImport(IOKit)
     private func value(forKey key: String) -> String? {
-        let service = IOServiceGetMatchingService(kIOMasterPortDefault,
-                                                  IOServiceMatching("IOPlatformExpertDevice"))
+        let service = IOServiceGetMatchingService(
+            kIOMasterPortDefault,
+            IOServiceMatching("IOPlatformExpertDevice")
+        )
         var modelIdentifier: String?
         if let modelData = IORegistryEntryCreateCFProperty(service, key as CFString, kCFAllocatorDefault, 0).takeRetainedValue() as? Data {
             modelIdentifier = String(data: modelData, encoding: .utf8)?.trimmingCharacters(in: .controlCharacters)

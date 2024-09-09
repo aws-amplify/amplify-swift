@@ -35,8 +35,10 @@ public final class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
         self.subsystem = Bundle.main.bundleIdentifier ?? "com.amazonaws.amplify.AWSUnifiedLoggingPlugin"
 
         let defaultOSLog = OSLog(subsystem: subsystem, category: AWSUnifiedLoggingPlugin.defaultCategory)
-        let wrapper = OSLogWrapper(osLog: defaultOSLog,
-                                   getLogLevel: { Amplify.Logging.logLevel })
+        let wrapper = OSLogWrapper(
+            osLog: defaultOSLog,
+            getLogLevel: { Amplify.Logging.logLevel }
+        )
         registeredLogs["default"] = wrapper
     }
 
@@ -72,8 +74,10 @@ public final class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
             }
 
             let osLog = OSLog(subsystem: subsystem, category: category)
-            let wrapper = OSLogWrapper(osLog: osLog,
-                                       getLogLevel: { Amplify.Logging.logLevel })
+            let wrapper = OSLogWrapper(
+                osLog: osLog,
+                getLogLevel: { Amplify.Logging.logLevel }
+            )
             wrapper.enabled = enabled
             registeredLogs[key] = wrapper
             return wrapper

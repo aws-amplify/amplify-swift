@@ -117,12 +117,13 @@ public enum ModelAssociation {
     public static func hasOne(
         associatedWith: CodingKey? = nil,
         associatedFields: [CodingKey] = [],
-        targetNames: [String] = []) -> ModelAssociation
-    {
+        targetNames: [String] = []
+    ) -> ModelAssociation {
             return .hasOne(
                 associatedFieldName: associatedWith?.stringValue,
                 associatedFieldNames: associatedFields.map(\.stringValue),
-                targetNames: targetNames)
+                targetNames: targetNames
+            )
     }
 
     @available(*, deprecated, message: "Use belongsTo(associatedWith:targetNames:)")

@@ -37,9 +37,10 @@ public class QueryPredicateGroup: QueryPredicate, Encodable {
     public internal(set) var type: QueryPredicateGroupType
     public internal(set) var predicates: [QueryPredicate]
 
-    public init(type: QueryPredicateGroupType = .and,
-                predicates: [QueryPredicate] = [])
-    {
+    public init(
+        type: QueryPredicateGroupType = .and,
+        predicates: [QueryPredicate] = []
+    ) {
         self.type = type
         self.predicates = predicates
     }

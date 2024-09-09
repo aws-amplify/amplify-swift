@@ -15,10 +15,11 @@ import Foundation
 public enum Fatal {
 
     @discardableResult
-    public static func preconditionFailure<T>(_ message: @autoclosure () -> String = String(),
-                                              file: StaticString = #file,
-                                              line: UInt = #line) -> T
-    {
+    public static func preconditionFailure<T>(
+        _ message: @autoclosure () -> String = String(),
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> T {
         guard let instanceFactory = AmplifyTesting.getInstanceFactory() else {
             Swift.preconditionFailure(message(), file: file, line: line)
         }
@@ -31,10 +32,11 @@ public enum Fatal {
 
     /// Die because a default method must be overriden by a
     /// subtype or extension.
-    public static func mustOverride(function: StaticString = #function,
-                                    file: StaticString = #file,
-                                    line: UInt = #line) -> Never
-    {
+    public static func mustOverride(
+        function: StaticString = #function,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> Never {
         die(reason: "Must be overridden", extra: String(describing: function), file: file, line: line)
     }
 

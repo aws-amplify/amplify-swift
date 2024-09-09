@@ -19,10 +19,11 @@ public struct AuthConfirmUserAttributeRequest: AmplifyOperationRequest {
     /// Extra request options defined in `AuthConfirmUserAttributeRequest.Options`
     public var options: Options
 
-    public init(attributeKey: AuthUserAttributeKey,
-                confirmationCode: String,
-                options: Options)
-    {
+    public init(
+        attributeKey: AuthUserAttributeKey,
+        confirmationCode: String,
+        options: Options
+    ) {
         self.attributeKey = attributeKey
         self.confirmationCode = confirmationCode
         self.options = options

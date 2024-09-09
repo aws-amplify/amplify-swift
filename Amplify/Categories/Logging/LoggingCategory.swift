@@ -81,8 +81,10 @@ public final class LoggingCategory: Category {
         let key = plugin.key
         guard !key.isEmpty else {
             let pluginDescription = String(describing: plugin)
-            let error = LoggingError.configuration("Plugin \(pluginDescription) has an empty `key`.",
-                "Set the `key` property for \(String(describing: plugin))")
+            let error = LoggingError.configuration(
+                "Plugin \(pluginDescription) has an empty `key`.",
+                "Set the `key` property for \(String(describing: plugin))"
+            )
             throw error
         }
 
@@ -95,8 +97,10 @@ public final class LoggingCategory: Category {
     /// - Returns: The wrapped plugin
     public func getPlugin(for key: PluginKey) throws -> LoggingCategoryPlugin {
         guard let plugin = plugins.first(where: { $0.key == key})?.value else {
-            let error = LoggingError.configuration("No plugin has been added for '\(key)'.",
-                "Either add a plugin for '\(key)', or use the installed plugin, which has the key '\(key)'")
+            let error = LoggingError.configuration(
+                "No plugin has been added for '\(key)'.",
+                "Either add a plugin for '\(key)', or use the installed plugin, which has the key '\(key)'"
+            )
             throw error
         }
         return plugin

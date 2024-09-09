@@ -10,10 +10,11 @@ import Foundation
 import Combine
 #endif
 
-public class AmplifyOperationTaskAdapter<Request: AmplifyOperationRequest,
-                                            Success,
-                                            Failure: AmplifyError>: AmplifyTask
-{
+public class AmplifyOperationTaskAdapter<
+    Request: AmplifyOperationRequest,
+    Success,
+    Failure: AmplifyError
+>: AmplifyTask {
     let operation: AmplifyOperation<Request, Success, Failure>
     let childTask: ChildTask<Void, Success, Failure>
     var resultToken: UnsubscribeToken?
@@ -65,11 +66,12 @@ public class AmplifyOperationTaskAdapter<Request: AmplifyOperationRequest,
     }
 }
 
-public class AmplifyInProcessReportingOperationTaskAdapter<Request: AmplifyOperationRequest,
-                                                            InProcess,
-                                                            Success,
-                                                            Failure: AmplifyError>: AmplifyTask, AmplifyInProcessReportingTask
-{
+public class AmplifyInProcessReportingOperationTaskAdapter<
+    Request: AmplifyOperationRequest,
+    InProcess,
+    Success,
+    Failure: AmplifyError
+>: AmplifyTask, AmplifyInProcessReportingTask {
     let operation: AmplifyInProcessReportingOperation<Request, InProcess, Success, Failure>
     let childTask: ChildTask<InProcess, Success, Failure>
     var resultToken: UnsubscribeToken?

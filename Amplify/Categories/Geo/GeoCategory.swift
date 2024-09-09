@@ -56,7 +56,8 @@ public final class GeoCategory: Category {
             let pluginDescription = String(describing: plugin)
             let error = Geo.Error.invalidConfiguration(
                 "Plugin \(pluginDescription) has an empty `key`.",
-                "Set the `key` property for \(String(describing: plugin))")
+                "Set the `key` property for \(String(describing: plugin))"
+            )
             throw error
         }
 
@@ -81,7 +82,8 @@ public final class GeoCategory: Category {
             let keys = plugins.keys.joined(separator: ", ")
             let error = Geo.Error.invalidConfiguration(
                 "No plugin has been added for '\(key)'.",
-                "Either add a plugin for '\(key)', or use one of the known keys: \(keys)")
+                "Either add a plugin for '\(key)', or use one of the known keys: \(keys)"
+            )
             throw error
         }
         return plugin

@@ -46,34 +46,40 @@ public extension Model {
     /// - Returns: a valid `ModelSchema` instance
     /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
     ///   directly by host applications. The behavior of this may change without warning.
-    static func defineSchema(name: String? = nil,
-                                    attributes: ModelAttribute...,
-                                    define: (inout ModelSchemaDefinition) -> Void) -> ModelSchema
-    {
-        var definition = ModelSchemaDefinition(name: name ?? modelName,
-                                               attributes: attributes)
+    static func defineSchema(
+        name: String? = nil,
+        attributes: ModelAttribute...,
+        define: (inout ModelSchemaDefinition) -> Void
+    ) -> ModelSchema {
+        var definition = ModelSchemaDefinition(
+            name: name ?? modelName,
+            attributes: attributes
+        )
         define(&definition)
         return definition.build()
     }
 
     /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
     ///   directly by host applications. The behavior of this may change without warning.
-    static func rule(allow: AuthStrategy,
-                            ownerField: String? = nil,
-                            identityClaim: String? = nil,
-                            groupClaim: String? = nil,
-                            groups: [String] = [],
-                            groupsField: String? = nil,
-                            provider: AuthRuleProvider? = nil,
-                            operations: [ModelOperation] = []) -> AuthRule
-    {
-        return AuthRule(allow: allow,
-                        ownerField: ownerField,
-                        identityClaim: identityClaim,
-                        groupClaim: groupClaim,
-                        groups: groups,
-                        groupsField: groupsField,
-                        provider: provider,
-                        operations: operations)
+    static func rule(
+        allow: AuthStrategy,
+        ownerField: String? = nil,
+        identityClaim: String? = nil,
+        groupClaim: String? = nil,
+        groups: [String] = [],
+        groupsField: String? = nil,
+        provider: AuthRuleProvider? = nil,
+        operations: [ModelOperation] = []
+    ) -> AuthRule {
+        return AuthRule(
+            allow: allow,
+            ownerField: ownerField,
+            identityClaim: identityClaim,
+            groupClaim: groupClaim,
+            groups: groups,
+            groupsField: groupsField,
+            provider: provider,
+            operations: operations
+        )
     }
 }

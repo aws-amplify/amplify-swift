@@ -24,9 +24,10 @@ public extension Model where Self: Codable {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    static func from(json: String,
-                            decoder: JSONDecoder? = nil) throws -> Self
-    {
+    static func from(
+        json: String,
+        decoder: JSONDecoder? = nil
+    ) throws -> Self {
         let resolvedDecoder: JSONDecoder = if let decoder {
             decoder
         } else {

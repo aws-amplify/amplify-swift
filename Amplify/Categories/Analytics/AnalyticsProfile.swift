@@ -32,12 +32,13 @@ public struct AnalyticsUserProfile {
     ///   - plan: The plan for the user
     ///   - location: Location data about the user
     ///   - properties: Properties of the user profile
-    public init(name: String? = nil,
-                email: String? = nil,
-                plan: String? = nil,
-                location: Location? = nil,
-                properties: AnalyticsProperties? = nil)
-    {
+    public init(
+        name: String? = nil,
+        email: String? = nil,
+        plan: String? = nil,
+        location: Location? = nil,
+        properties: AnalyticsProperties? = nil
+    ) {
         self.name = name
         self.email = email
         self.plan = plan

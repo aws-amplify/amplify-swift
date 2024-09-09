@@ -37,10 +37,11 @@ public extension AuthSignOutRequest {
         /// in the presentation anchor provided.
         public let presentationAnchorForWebUI: AuthUIPresentationAnchor?
 
-        public init(globalSignOut: Bool = false,
-                    presentationAnchor: AuthUIPresentationAnchor? = nil,
-                    pluginOptions: Any? = nil)
-        {
+        public init(
+            globalSignOut: Bool = false,
+            presentationAnchor: AuthUIPresentationAnchor? = nil,
+            pluginOptions: Any? = nil
+        ) {
             self.globalSignOut = globalSignOut
             self.pluginOptions = pluginOptions
             self.presentationAnchorForWebUI = presentationAnchor

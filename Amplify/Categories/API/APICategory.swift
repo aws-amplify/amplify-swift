@@ -57,8 +57,10 @@ public final class APICategory: Category {
         let key = plugin.key
         guard !key.isEmpty else {
             let pluginDescription = String(describing: plugin)
-            let error = APIError.invalidConfiguration("Plugin \(pluginDescription) has an empty `key`.",
-                "Set the `key` property for \(String(describing: plugin))")
+            let error = APIError.invalidConfiguration(
+                "Plugin \(pluginDescription) has an empty `key`.",
+                "Set the `key` property for \(String(describing: plugin))"
+            )
             throw error
         }
 
@@ -81,8 +83,10 @@ public final class APICategory: Category {
     public func getPlugin(for key: PluginKey) throws -> APICategoryPlugin {
         guard let plugin = plugins[key] else {
             let keys = plugins.keys.joined(separator: ", ")
-            let error = APIError.invalidConfiguration("No plugin has been added for '\(key)'.",
-                "Either add a plugin for '\(key)', or use one of the known keys: \(keys)")
+            let error = APIError.invalidConfiguration(
+                "No plugin has been added for '\(key)'.",
+                "Either add a plugin for '\(key)', or use one of the known keys: \(keys)"
+            )
             throw error
         }
         return plugin

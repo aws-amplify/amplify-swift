@@ -40,9 +40,11 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - username: Username used that was used to signUp.
     ///   - confirmationCode: Confirmation code received to the user.
     ///   - options: Parameters specific to plugin behavior
-    func confirmSignUp(for username: String,
-                       confirmationCode: String,
-                       options: AuthConfirmSignUpRequest.Options?) async throws -> AuthSignUpResult
+    func confirmSignUp(
+        for username: String,
+        confirmationCode: String,
+        options: AuthConfirmSignUpRequest.Options?
+    ) async throws -> AuthSignUpResult
 
     /// Resends the confirmation code to confirm the signUp process
     ///
@@ -63,9 +65,11 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - username: Username to signIn the user
     ///   - password: Password to signIn the user
     ///   - options: Parameters specific to plugin behavior
-    func signIn(username: String?,
-                password: String?,
-                options: AuthSignInRequest.Options?) async throws -> AuthSignInResult
+    func signIn(
+        username: String?,
+        password: String?,
+        options: AuthSignInRequest.Options?
+    ) async throws -> AuthSignInResult
 
 #if os(iOS) || os(macOS)
     /// SignIn using pre configured web UI.
@@ -75,8 +79,10 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// - Parameters:
     ///   - presentationAnchor: Anchor on which the UI is presented.
     ///   - options: Parameters specific to plugin behavior.
-    func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor?,
-                         options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
+    func signInWithWebUI(
+        presentationAnchor: AuthUIPresentationAnchor?,
+        options: AuthWebUISignInRequest.Options?
+    ) async throws -> AuthSignInResult
 
     /// SignIn using an auth provider on a web UI
     ///
@@ -88,9 +94,11 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - authProvider: Auth provider used to signIn.
     ///   - presentationAnchor: Anchor on which the UI is presented.
     ///   - options: Parameters specific to plugin behavior.
-    func signInWithWebUI(for authProvider: AuthProvider,
-                         presentationAnchor: AuthUIPresentationAnchor?,
-                         options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
+    func signInWithWebUI(
+        for authProvider: AuthProvider,
+        presentationAnchor: AuthUIPresentationAnchor?,
+        options: AuthWebUISignInRequest.Options?
+    ) async throws -> AuthSignInResult
 #endif
 
     /// Confirms a next step in signIn flow.
@@ -123,8 +131,10 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// - Parameters:
     ///   - username: username whose password need to reset
     ///   - options: Parameters specific to plugin behavior
-    func resetPassword(for username: String,
-                       options: AuthResetPasswordRequest.Options?) async throws -> AuthResetPasswordResult
+    func resetPassword(
+        for username: String,
+        options: AuthResetPasswordRequest.Options?
+    ) async throws -> AuthResetPasswordResult
 
     /// Confirms a reset password flow
     ///

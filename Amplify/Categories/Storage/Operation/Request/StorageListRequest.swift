@@ -96,14 +96,15 @@ public extension StorageListRequest {
         public let pluginOptions: Any?
 
         /// - Tag: StorageListRequestOptions.init
-        public init(accessLevel: StorageAccessLevel = .guest,
-                    targetIdentityId: String? = nil,
-                    path: String? = nil,
-                    subpathStrategy: SubpathStrategy = .include,
-                    pageSize: UInt = 1_000,
-                    nextToken: String? = nil,
-                    pluginOptions: Any? = nil)
-        {
+        public init(
+            accessLevel: StorageAccessLevel = .guest,
+            targetIdentityId: String? = nil,
+            path: String? = nil,
+            subpathStrategy: SubpathStrategy = .include,
+            pageSize: UInt = 1_000,
+            nextToken: String? = nil,
+            pluginOptions: Any? = nil
+        ) {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
             self.path = path

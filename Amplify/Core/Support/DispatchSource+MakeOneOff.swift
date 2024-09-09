@@ -15,10 +15,11 @@ public extension DispatchSource {
     ///   - queue: The queue on which the timer should perform its block
     ///   - block: The block to invoke when the timer is fired
     /// - Returns: The unstarted timer
-    static func makeOneOffDispatchSourceTimer(interval: DispatchTimeInterval,
-                                                     queue: DispatchQueue,
-                                                     block: @escaping () -> Void ) -> DispatchSourceTimer
-    {
+    static func makeOneOffDispatchSourceTimer(
+        interval: DispatchTimeInterval,
+        queue: DispatchQueue,
+        block: @escaping () -> Void
+    ) -> DispatchSourceTimer {
         let deadline = DispatchTime.now() + interval
         return makeOneOffDispatchSourceTimer(deadline: deadline, queue: queue, block: block)
     }
@@ -28,10 +29,11 @@ public extension DispatchSource {
     ///   - deadline: The time to fire the timer
     ///   - queue: The queue on which the timer should perform its block
     ///   - block: The block to invoke when the timer is fired
-    static func makeOneOffDispatchSourceTimer(deadline: DispatchTime,
-                                                     queue: DispatchQueue,
-                                                     block: @escaping () -> Void ) -> DispatchSourceTimer
-    {
+    static func makeOneOffDispatchSourceTimer(
+        deadline: DispatchTime,
+        queue: DispatchQueue,
+        block: @escaping () -> Void
+    ) -> DispatchSourceTimer {
         let timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0), queue: queue)
         #if swift(>=4)
         timer.schedule(deadline: deadline)

@@ -21,7 +21,9 @@ public extension HubPayload.EventName.Storage {
 }
 
 /// - Tag: StorageUploadDataTask
-public typealias StorageUploadDataTask = AmplifyInProcessReportingOperationTaskAdapter<StorageUploadDataRequest,
-                                                                                       Progress,
-                                                                                       String,
-                                                                                       StorageError>
+public typealias StorageUploadDataTask = AmplifyInProcessReportingOperationTaskAdapter<
+    StorageUploadDataRequest,
+    Progress,
+    String,
+    StorageError
+>

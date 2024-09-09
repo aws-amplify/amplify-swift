@@ -85,19 +85,20 @@ public struct AmplifyOutputsData: Codable {
             case phoneNumber = "phone_number"
         }
 
-        init(awsRegion: AWSRegion,
-             userPoolId: String,
-             userPoolClientId: String,
-             identityPoolId: String? = nil,
-             passwordPolicy: PasswordPolicy? = nil,
-             oauth: OAuth? = nil,
-             standardRequiredAttributes: [AmazonCognitoStandardAttributes]? = nil,
-             usernameAttributes: [UsernameAttributes]? = nil,
-             userVerificationTypes: [UserVerificationType]? = nil,
-             unauthenticatedIdentitiesEnabled: Bool? = nil,
-             mfaConfiguration: String? = nil,
-             mfaMethods: [String]? = nil)
-        {
+        init(
+            awsRegion: AWSRegion,
+            userPoolId: String,
+            userPoolClientId: String,
+            identityPoolId: String? = nil,
+            passwordPolicy: PasswordPolicy? = nil,
+            oauth: OAuth? = nil,
+            standardRequiredAttributes: [AmazonCognitoStandardAttributes]? = nil,
+            usernameAttributes: [UsernameAttributes]? = nil,
+            userVerificationTypes: [UserVerificationType]? = nil,
+            unauthenticatedIdentitiesEnabled: Bool? = nil,
+            mfaConfiguration: String? = nil,
+            mfaMethods: [String]? = nil
+        ) {
             self.awsRegion = awsRegion
             self.userPoolId = userPoolId
             self.userPoolClientId = userPoolClientId
@@ -155,11 +156,12 @@ public struct AmplifyOutputsData: Codable {
         }
 
         // Internal init used for testing
-        init(awsRegion: AWSRegion,
-             maps: Maps? = nil,
-             searchIndices: SearchIndices? = nil,
-             geofenceCollections: GeofenceCollections? = nil)
-        {
+        init(
+            awsRegion: AWSRegion,
+            maps: Maps? = nil,
+            searchIndices: SearchIndices? = nil,
+            geofenceCollections: GeofenceCollections? = nil
+        ) {
             self.awsRegion = awsRegion
             self.maps = maps
             self.searchIndices = searchIndices
@@ -227,15 +229,16 @@ public struct AmplifyOutputsData: Codable {
     }
 
     // Internal init used for testing
-    init(version: String = "",
-         analytics: Analytics? = nil,
-         auth: Auth? = nil,
-         data: DataCategory? = nil,
-         geo: Geo? = nil,
-         notifications: Notifications? = nil,
-         storage: Storage? = nil,
-         custom: CustomOutput? = nil)
-    {
+    init(
+        version: String = "",
+        analytics: Analytics? = nil,
+        auth: Auth? = nil,
+        data: DataCategory? = nil,
+        geo: Geo? = nil,
+        notifications: Notifications? = nil,
+        storage: Storage? = nil,
+        custom: CustomOutput? = nil
+    ) {
         self.version = version
         self.analytics = analytics
         self.auth = auth

@@ -56,7 +56,8 @@ public final class AnalyticsCategory: Category {
             let pluginDescription = String(describing: plugin)
             let error = AnalyticsError.configuration(
                 "Plugin \(pluginDescription) has an empty `key`.",
-                "Set the `key` property for \(String(describing: plugin))")
+                "Set the `key` property for \(String(describing: plugin))"
+            )
             throw error
         }
 
@@ -81,7 +82,8 @@ public final class AnalyticsCategory: Category {
             let keys = plugins.keys.joined(separator: ", ")
             let error = AnalyticsError.configuration(
                 "No plugin has been added for '\(key)'.",
-                "Either add a plugin for '\(key)', or use one of the known keys: \(keys)")
+                "Either add a plugin for '\(key)', or use one of the known keys: \(keys)"
+            )
             throw error
         }
         return plugin

@@ -86,11 +86,12 @@ public extension StorageUploadFileRequest {
 
         /// - Tag: StorageUploadFileRequestOptions.init
         @available(*, deprecated, message: "Use init(metadata:contentType:pluginOptions)")
-        public init(accessLevel: StorageAccessLevel = .guest,
-                    targetIdentityId: String? = nil,
-                    metadata: [String: String]? = nil,
-                    contentType: String? = nil,
-                    pluginOptions: Any? = nil
+        public init(
+            accessLevel: StorageAccessLevel = .guest,
+            targetIdentityId: String? = nil,
+            metadata: [String: String]? = nil,
+            contentType: String? = nil,
+            pluginOptions: Any? = nil
         ) {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
@@ -100,9 +101,10 @@ public extension StorageUploadFileRequest {
         }
 
         /// - Tag: StorageUploadFileRequestOptions.init
-        public init(metadata: [String: String]? = nil,
-                    contentType: String? = nil,
-                    pluginOptions: Any? = nil
+        public init(
+            metadata: [String: String]? = nil,
+            contentType: String? = nil,
+            pluginOptions: Any? = nil
         ) {
             self.accessLevel = .guest
             self.targetIdentityId = nil

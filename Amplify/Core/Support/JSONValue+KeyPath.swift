@@ -12,9 +12,10 @@ public extension JSONValue {
         value(at: keyPath, separatedBy: ".")
     }
 
-    func value(at keyPath: String,
-                                  separatedBy separator: some StringProtocol) -> JSONValue?
-    {
+    func value(
+        at keyPath: String,
+        separatedBy separator: some StringProtocol
+    ) -> JSONValue? {
         let pathComponents = keyPath.components(separatedBy: separator)
         let value = pathComponents.reduce(self) { currVal, nextVal in currVal?[nextVal] }
         return value

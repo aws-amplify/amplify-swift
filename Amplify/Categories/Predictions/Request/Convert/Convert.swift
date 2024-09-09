@@ -24,25 +24,25 @@ public extension Predictions.Convert.Request {
 
         case textToSpeech(
             Lift<
-            String, Input,
-            Predictions.Convert.TextToSpeech.Options?, Options?,
-            Predictions.Convert.TextToSpeech.Result, Output
+                String, Input,
+                Predictions.Convert.TextToSpeech.Options?, Options?,
+                Predictions.Convert.TextToSpeech.Result, Output
             >
         )
 
         case speechToText(
             Lift<
-            URL, Input,
-            Predictions.Convert.SpeechToText.Options?, Options?,
-            AsyncThrowingStream<Predictions.Convert.SpeechToText.Result, Error>, Output
+                URL, Input,
+                Predictions.Convert.SpeechToText.Options?, Options?,
+                AsyncThrowingStream<Predictions.Convert.SpeechToText.Result, Error>, Output
             >
         )
 
         case textToTranslate(
             Lift<
-            (String, Predictions.Language?, Predictions.Language?), Input,
-            Predictions.Convert.TranslateText.Options?, Options?,
-            Predictions.Convert.TranslateText.Result, Output
+                (String, Predictions.Language?, Predictions.Language?), Input,
+                Predictions.Convert.TranslateText.Options?, Options?,
+                Predictions.Convert.TranslateText.Result, Output
             >
         )
     }
