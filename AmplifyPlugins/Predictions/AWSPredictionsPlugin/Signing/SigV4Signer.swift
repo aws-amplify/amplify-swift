@@ -178,7 +178,8 @@ struct SigV4Signer {
             hostHeader,
             uniquingKeysWith: { _, host in
                 host
-            })
+            }
+        )
 
         let url = url.path.isEmpty
         ? url.appendingPathComponent("/")

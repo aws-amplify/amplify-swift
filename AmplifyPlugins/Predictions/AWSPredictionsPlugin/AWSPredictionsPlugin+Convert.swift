@@ -103,14 +103,12 @@ extension AWSPredictionsPlugin {
         config: PredictionsPluginConfiguration
     ) -> PollyClientTypes.VoiceId {
         if let voice,
-           let pollyVoiceID = PollyClientTypes.VoiceId(rawValue: voice.id)
-        {
+           let pollyVoiceID = PollyClientTypes.VoiceId(rawValue: voice.id) {
             return pollyVoiceID
         }
 
         if let configVoice = config.convert.speechGenerator?.voiceID,
-           let pollyVoiceID = PollyClientTypes.VoiceId(rawValue: configVoice)
-        {
+           let pollyVoiceID = PollyClientTypes.VoiceId(rawValue: configVoice) {
             return pollyVoiceID
         }
 

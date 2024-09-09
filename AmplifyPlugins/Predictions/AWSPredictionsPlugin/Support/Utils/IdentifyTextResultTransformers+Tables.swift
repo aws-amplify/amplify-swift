@@ -57,8 +57,7 @@ extension IdentifyTextResultTransformers {
 
                 if !rows.contains(row),
                     !cols.contains(row),
-                    let cell = constructTableCell(cellBlock, blockMap)
-                {
+                    let cell = constructTableCell(cellBlock, blockMap) {
                     table.cells.append(cell)
                     rows.insert(row)
                     cols.insert(col)

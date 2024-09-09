@@ -48,7 +48,8 @@ enum PluginErrorMessage {
 
     static let invalidRegion: PluginErrorString = (
         "The region is invalid",
-        "Make sure the region is one of the AWS regions, like 'us-east-1', etc...")
+        "Make sure the region is one of the AWS regions, like 'us-east-1', etc..."
+    )
 
     static let serviceConfigurationInitializationError: PluginErrorString = (
         "Could not initialize service configuration",

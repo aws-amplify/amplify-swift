@@ -151,7 +151,7 @@ enum IdentifyTextResultTransformers {
             boundingBox: boundingBox,
             polygon: polygon,
             page: block.page ?? 0
-         )
+        )
     }
 
     static func processSelectionElementBlock(block: TextractClientTypes.Block) -> Predictions.Selection? {

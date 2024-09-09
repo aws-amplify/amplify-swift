@@ -20,7 +20,8 @@ public final class FaceLivenessSession: LivenessService {
 
     private let livenessServiceDispatchQueue = DispatchQueue(
         label: "com.amazon.aws.amplify.liveness.service",
-        qos: .userInteractive)
+        qos: .userInteractive
+    )
 
     init(
         websocket: WebSocketSession,
