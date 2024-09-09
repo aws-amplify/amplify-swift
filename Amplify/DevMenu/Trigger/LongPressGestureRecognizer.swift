@@ -28,8 +28,7 @@ class LongPressGestureRecognizer: NSObject, TriggerRecognizer, UIGestureRecogniz
         _ gestureRecognizer: UIGestureRecognizer,
         shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
     )
-        -> Bool
-    {
+        -> Bool {
         return true
     }
 

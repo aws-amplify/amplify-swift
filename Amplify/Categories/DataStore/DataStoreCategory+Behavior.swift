@@ -26,8 +26,7 @@ extension DataStoreCategory: DataStoreBaseBehavior {
         _ modelType: M.Type,
         byIdentifier id: String
     ) async throws -> M?
-        where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default
-    {
+        where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
             try await plugin.query(modelType, byIdentifier: id)
     }
 
@@ -35,8 +34,7 @@ extension DataStoreCategory: DataStoreBaseBehavior {
         _ modelType: M.Type,
         byIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>
     )
-        async throws -> M? where M: ModelIdentifiable
-    {
+        async throws -> M? where M: ModelIdentifiable {
             try await plugin.query(modelType, byIdentifier: identifier)
     }
 
@@ -69,8 +67,7 @@ extension DataStoreCategory: DataStoreBaseBehavior {
         withIdentifier id: String,
         where predicate: QueryPredicate? = nil
     ) async throws
-        where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default
-    {
+        where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
             try await plugin.delete(modelType, withIdentifier: id, where: predicate)
     }
 

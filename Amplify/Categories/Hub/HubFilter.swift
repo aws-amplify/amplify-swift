@@ -32,8 +32,7 @@ public enum HubFilters {
     /// Returns a HubFilter that is `true` if the event's `context` property has a UUID that matches `operation.id`
     /// - Parameter operation: The operation to match
     public static func forOperation<Request: AmplifyOperationRequest>
-        (_ operation: AmplifyOperation<Request, some Any, some AmplifyError>) -> HubFilter
-    {
+        (_ operation: AmplifyOperation<Request, some Any, some AmplifyError>) -> HubFilter {
         let operationId = operation.id
         let filter: HubFilter = { payload in
             guard let context = payload.context as? AmplifyOperationContext<Request> else {

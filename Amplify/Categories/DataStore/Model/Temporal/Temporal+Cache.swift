@@ -51,8 +51,7 @@ extension Temporal {
         // the time zones match, we return it rather than
         // creating a new one.
         if let formatter = formatterCache[format],
-           formatter.timeZone == timeZone
-        {
+           formatter.timeZone == timeZone {
                 return formatter
             // defer takes care of unlock
         }
@@ -65,8 +64,7 @@ extension Temporal {
         // We can safely change the formatter's time zone and return it
         if isKnownUniquelyReferenced(&formatterCache[format]),
            let formatter = formatterCache[format],
-           formatter.timeZone != timeZone
-        {
+           formatter.timeZone != timeZone {
             formatter.timeZone = timeZone
             return formatter
             // defer takes care of unlock

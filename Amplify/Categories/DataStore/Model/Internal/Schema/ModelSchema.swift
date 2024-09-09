@@ -147,8 +147,7 @@ extension ModelAttribute {
     /// Convenience method to check if a model attribute is a primary key index
     var isPrimaryKeyIndex: Bool {
         if case let .index(fields: fields, name: name) = self,
-           name == nil, fields.count >= 1
-        {
+           name == nil, fields.count >= 1 {
             return true
         }
         return false
@@ -199,8 +198,7 @@ extension [String: ModelField] {
     func sortedFields(indexOfPrimaryKeyField: (ModelFieldName) -> Int?) -> [Value] {
         return values.sorted { one, other in
             if let oneIndex = indexOfPrimaryKeyField(one.name),
-               let otherIndex = indexOfPrimaryKeyField(other.name)
-            {
+               let otherIndex = indexOfPrimaryKeyField(other.name) {
                 return oneIndex < otherIndex
             }
 

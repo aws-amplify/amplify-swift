@@ -30,8 +30,7 @@ extension AuthCategory: AuthCategoryUserBehavior {
         userAttributes: [AuthUserAttribute],
         options: AuthUpdateUserAttributesRequest.Options? = nil
     )
-        async throws -> [AuthUserAttributeKey: AuthUpdateAttributeResult]
-    {
+        async throws -> [AuthUserAttributeKey: AuthUpdateAttributeResult] {
             try await plugin.update(userAttributes: userAttributes, options: options)
     }
 

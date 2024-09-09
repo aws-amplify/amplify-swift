@@ -135,8 +135,7 @@ public extension JSONValue {
 
     var intValue: Int? {
         if case .number(let double) = self,
-           double < Double(Int.max) && double >= Double(Int.min)
-        {
+           double < Double(Int.max) && double >= Double(Int.min) {
             return Int(double)
         }
         return nil
