@@ -35,7 +35,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             XCTAssertEqual(clientMetadata, input.clientMetadata)
             return RespondToAuthChallengeOutput(
@@ -45,10 +46,12 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                     idToken: "idToken",
                     newDeviceMetadata: nil,
                     refreshToken: "refreshToken",
-                    tokenType: ""),
+                    tokenType: ""
+                ),
                 challengeName: .none,
                 challengeParameters: [:],
-                session: "session")
+                session: "session"
+            )
         })
 
         let pluginOptions = AWSAuthSignInOptions(metadata: clientMetadata)
@@ -82,7 +85,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .init(
@@ -91,10 +95,12 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                     idToken: "idToken",
                     newDeviceMetadata: nil,
                     refreshToken: "refreshToken",
-                    tokenType: ""),
+                    tokenType: ""
+                ),
                 challengeName: .none,
                 challengeParameters: [:],
-                session: "session")
+                session: "session"
+            )
         })
 
         let pluginOptions = AWSAuthSignInOptions(
@@ -154,14 +160,16 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
         mockIdentity = MockIdentity(
             mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
+            mockGetCredentialsResponse: getCredentials
+        )
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .init(
@@ -170,10 +178,12 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                     idToken: "idToken",
                     newDeviceMetadata: nil,
                     refreshToken: "refreshToken",
-                    tokenType: ""),
+                    tokenType: ""
+                ),
                 challengeName: .none,
                 challengeParameters: [:],
-                session: "session")
+                session: "session"
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -239,7 +249,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                     authenticationResult: .none,
                     challengeName: .passwordVerifier,
                     challengeParameters: InitiateAuthOutput.validChalengeParams,
-                    session: "someSession")
+                    session: "someSession"
+                )
             }, mockRespondToAuthChallengeResponse: { _ in
                 RespondToAuthChallengeOutput(
                     authenticationResult: .init(
@@ -248,10 +259,12 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                         idToken: "idToken",
                         newDeviceMetadata: nil,
                         refreshToken: "refreshToken",
-                        tokenType: ""),
+                        tokenType: ""
+                    ),
                     challengeName: .none,
                     challengeParameters: [:],
-                    session: "session")
+                    session: "session"
+                )
             })
 
             do {
@@ -279,13 +292,15 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .smsMfa,
                 challengeParameters: [:],
-                session: "session")
+                session: "session"
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -319,14 +334,16 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             XCTAssertEqual(clientMetadata, input.clientMetadata)
             return RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .customChallenge,
                 challengeParameters: ["paramKey": "value"],
-                session: "session")
+                session: "session"
+            )
         })
 
         let pluginOptions = AWSAuthSignInOptions(
@@ -367,13 +384,15 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .smsMfa,
                 challengeParameters: ["paramKey": "value"],
-                session: "session")
+                session: "session"
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -410,13 +429,15 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .newPasswordRequired,
                 challengeParameters: ["paramKey": "value"],
-                session: "session")
+                session: "session"
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -449,13 +470,15 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .newPasswordRequired,
                 challengeParameters: ["paramKey": "value"],
-                session: "session")
+                session: "session"
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -492,13 +515,15 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .customChallenge,
                 challengeParameters: ["paramKey": "value"],
-                session: "session")
+                session: "session"
+            )
         })
 
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .customWithSRP)
@@ -531,13 +556,15 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .sdkUnknown("no idea"),
                 challengeParameters: ["paramKey": "value"],
-                session: "session")
+                session: "session"
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -568,13 +595,15 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .deviceSrpAuth,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .devicePasswordVerifier,
                 challengeParameters: ["paramKey": "value"],
-                session: "session")
+                session: "session"
+            )
         })
 
         let pluginOptions = AWSAuthSignInOptions(
@@ -586,7 +615,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(
                 username: "username",
                 password: "password",
-                options: options)
+                options: options
+            )
             XCTFail("Should not produce result - \(result)")
         } catch {
             guard case AuthError.service = error else {
@@ -612,13 +642,15 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .customChallenge,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .smsMfa,
                 challengeParameters: ["paramKey": "value"],
-                session: "session")
+                session: "session"
+            )
         })
 
         let pluginOptions = AWSAuthSignInOptions(
@@ -630,7 +662,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(
                 username: "username",
                 password: "password",
-                options: options)
+                options: options
+            )
             guard case .confirmSignInWithCustomChallenge = result.nextStep,
                   case let confirmSignInResult = try await plugin.confirmSignIn(
                     challengeResponse: "245234"
@@ -652,13 +685,15 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .softwareTokenMfa,
                 challengeParameters: ["paramKey": "value"],
-                session: "session")
+                session: "session"
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -681,13 +716,15 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .selectMfaType,
                 challengeParameters: ["MFAS_CAN_CHOOSE": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"],
-                session: "session")
+                session: "session"
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -712,13 +749,15 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"],
-                session: "session")
+                session: "session"
+            )
         }, mockAssociateSoftwareTokenResponse: { _ in
                 return .init(secretCode: "123456", session: "session")
         } )
@@ -745,13 +784,15 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\"]"],
-                session: "session")
+                session: "session"
+            )
         }, mockAssociateSoftwareTokenResponse: { _ in
             return .init(secretCode: "123456", session: "session")
         } )
@@ -1205,7 +1246,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             throw AWSCognitoIdentityProvider.AliasExistsException()
         })
@@ -1241,7 +1283,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             throw AWSCognitoIdentityProvider.InvalidPasswordException()
         })
@@ -1276,13 +1319,15 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .smsMfa,
                 challengeParameters: [:],
-                session: "session")
+                session: "session"
+            )
         })
 
         let pluginOptions = AWSAuthSignInOptions(metadata: ["somekey": "somevalue"])
@@ -1300,7 +1345,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                     authenticationResult: .none,
                     challengeName: .passwordVerifier,
                     challengeParameters: InitiateAuthOutput.validChalengeParams,
-                    session: "someSession")
+                    session: "someSession"
+                )
             }, mockRespondToAuthChallengeResponse: { _ in
                 RespondToAuthChallengeOutput(
                     authenticationResult: .init(
@@ -1309,10 +1355,12 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                         idToken: "idToken",
                         newDeviceMetadata: nil,
                         refreshToken: "refreshToken",
-                        tokenType: ""),
+                        tokenType: ""
+                    ),
                     challengeName: .none,
                     challengeParameters: [:],
-                    session: "session")
+                    session: "session"
+                )
             })
             let result2 = try await plugin.signIn(username: "username2", password: "password", options: options)
             guard case .done =  result2.nextStep else {
@@ -1344,7 +1392,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                     message: "Invalid parameter passed"
                 )
             },
-            mockGetCredentialsResponse: getCredentials)
+            mockGetCredentialsResponse: getCredentials
+        )
 
         mockIdentityProvider = MockIdentityProvider(mockRevokeTokenResponse: { _ in
             RevokeTokenOutput()
@@ -1353,7 +1402,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .init(
@@ -1362,10 +1412,12 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                     idToken: "idToken",
                     newDeviceMetadata: nil,
                     refreshToken: "refreshToken",
-                    tokenType: ""),
+                    tokenType: ""
+                ),
                 challengeName: .none,
                 challengeParameters: [:],
-                session: "session")
+                session: "session"
+            )
         })
 
         let pluginOptions = AWSAuthSignInOptions(metadata: ["somekey": "somevalue"])

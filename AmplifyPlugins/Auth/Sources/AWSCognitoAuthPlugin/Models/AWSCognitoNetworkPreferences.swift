@@ -21,10 +21,11 @@ public struct AWSCognitoNetworkPreferences {
     /// not support resource timeouts
     public let timeoutIntervalForResource: TimeInterval?
 
-    public init(maxRetryCount: UInt32,
-                timeoutIntervalForRequest: TimeInterval,
-                timeoutIntervalForResource: TimeInterval? = nil)
-    {
+    public init(
+        maxRetryCount: UInt32,
+        timeoutIntervalForRequest: TimeInterval,
+        timeoutIntervalForResource: TimeInterval? = nil
+    ) {
         self.maxRetryCount = maxRetryCount
         self.timeoutIntervalForRequest = timeoutIntervalForRequest
         self.timeoutIntervalForResource = timeoutIntervalForResource

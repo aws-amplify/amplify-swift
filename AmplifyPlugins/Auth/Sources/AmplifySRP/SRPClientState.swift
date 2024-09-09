@@ -19,9 +19,11 @@ public struct SRPClientState {
 
     public init(commonState: SRPCommonState) {
         self.privateA = SRPClientState.calculatePrivateA(prime: commonState.prime)
-        self.publicA = SRPClientState.calculatePublicA(privateA: privateA,
-                                                       generator: commonState.generator,
-                                                       prime: commonState.prime)
+        self.publicA = SRPClientState.calculatePublicA(
+            privateA: privateA,
+            generator: commonState.generator,
+            prime: commonState.prime
+        )
     }
 
     private static func calculatePrivateA(prime N: BigInt) -> BigInt {
@@ -33,10 +35,11 @@ public struct SRPClientState {
         return randomInt
     }
 
-    private static func calculatePublicA(privateA: BigInt,
-                                 generator: BigInt,
-                                 prime: BigInt) -> BigInt
-    {
+    private static func calculatePublicA(
+        privateA: BigInt,
+        generator: BigInt,
+        prime: BigInt
+    ) -> BigInt {
         return generator.pow(privateA, modulus: prime)
     }
 
@@ -57,14 +60,15 @@ public struct SRPClientState {
         return BigInt(unsignedData: hashBytes)
     }
 
-    public static func calculateSessionKey(username: String,
-                                           password: String,
-                                           publicClientKey: BigInt,
-                                           privateClientKey: BigInt,
-                                           publicServerKey: BigInt,
-                                           salt: BigInt,
-                                           commonState: SRPCommonState) -> BigInt
-    {
+    public static func calculateSessionKey(
+        username: String,
+        password: String,
+        publicClientKey: BigInt,
+        privateClientKey: BigInt,
+        publicServerKey: BigInt,
+        salt: BigInt,
+        commonState: SRPCommonState
+    ) -> BigInt {
 
         // Calculations are detailed in RFC - https://datatracker.ietf.org/doc/html/rfc2945
         // Calculate x = SHA(<salt> | SHA(<username> | ":" | <raw password>))
@@ -90,7 +94,8 @@ public struct SRPClientState {
         deviceGroupKey: String,
         deviceKey: String,
         password: String,
-        commonState: SRPCommonState) -> (salt: BigInt, passwordVerifier: BigInt) {
+        commonState: SRPCommonState
+    ) -> (salt: BigInt, passwordVerifier: BigInt) {
 
             // Salt (16 random bytes)
             let salt = generateRandomUnsigned(of: 16)

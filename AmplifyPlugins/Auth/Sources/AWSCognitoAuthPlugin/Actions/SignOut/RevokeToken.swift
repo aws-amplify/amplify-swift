@@ -59,19 +59,22 @@ struct RevokeToken: Action {
             let internalError = authErrorConvertible.authError
             revokeTokenError = AWSCognitoRevokeTokenError(
                 refreshToken: signedInData.cognitoUserPoolTokens.refreshToken,
-                error: internalError)
+                error: internalError
+            )
         } else if let error {
             let internalError = AuthError.service("", "", error)
             revokeTokenError = AWSCognitoRevokeTokenError(
                 refreshToken: signedInData.cognitoUserPoolTokens.refreshToken,
-                error: internalError)
+                error: internalError
+            )
         }
 
         let event = SignOutEvent(eventType: .signOutLocally(
             signedInData,
             hostedUIError: hostedUIError,
             globalSignOutError: globalSignOutError,
-            revokeTokenError: revokeTokenError))
+            revokeTokenError: revokeTokenError
+        ))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         await dispatcher.send(event)
     }

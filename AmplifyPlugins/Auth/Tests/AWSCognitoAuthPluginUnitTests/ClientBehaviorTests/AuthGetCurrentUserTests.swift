@@ -72,10 +72,11 @@ class AuthGetCurrentUserTests: XCTestCase {
 
 
 
-    private func createPlugin(authState: AuthState,
-                              file: StaticString = #filePath,
-                              line: UInt = #line) throws -> AWSCognitoAuthPlugin
-    {
+    private func createPlugin(
+        authState: AuthState,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws -> AWSCognitoAuthPlugin {
         let plugin = AWSCognitoAuthPlugin()
         plugin.authStateMachine = Defaults.makeDefaultAuthStateMachine(initialState: authState)
 

@@ -46,7 +46,8 @@ extension CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType {
         }
         return  AuthCodeDeliveryDetails(
             destination: destination,
-            attributeKey: AuthUserAttributeKey(rawValue: attributeToVerify))
+            attributeKey: AuthUserAttributeKey(rawValue: attributeToVerify)
+        )
     }
 
 }

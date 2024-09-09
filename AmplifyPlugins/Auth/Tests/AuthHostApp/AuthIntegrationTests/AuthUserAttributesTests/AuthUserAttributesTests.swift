@@ -33,9 +33,11 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
-                                               password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let attributes = try await Amplify.Auth.fetchUserAttributes()
@@ -63,9 +65,11 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         let password = "P123@\(UUID().uuidString)"
         let updatedEmail = "\(username)@amazon.com"
 
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
-                                               password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let pluginOptions = AWSAuthUpdateUserAttributeOptions(metadata: ["mydata": "myvalue"])
@@ -98,9 +102,11 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         let updatedFamilyName = "\(username)@amazon.com"
         let updatedName = "Name\(UUID().uuidString)"
 
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
-                                               password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let pluginOptions = AWSAuthUpdateUserAttributesOptions(metadata: ["mydata": "myvalue"])
@@ -136,9 +142,11 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         let password = "P123@\(UUID().uuidString)"
         let updatedEmail = "\(username)@amazon.com"
 
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
-                                               password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let pluginOptions = AWSAuthUpdateUserAttributeOptions(metadata: ["mydata": "myvalue"])
@@ -180,9 +188,11 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         let password = "P123@\(UUID().uuidString)"
         let updatedEmail = "\(username)@amazon.com"
 
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
-                                               password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         _ = try await Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: updatedEmail))
@@ -207,9 +217,11 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
-                                               password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let pluginOptions = AWSSendUserAttributeVerificationCodeOptions(metadata: ["mydata": "myvalue"])
@@ -230,9 +242,11 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         let oldPassword = "P123@\(UUID().uuidString)"
         let updatedPassword = "P123@\(UUID().uuidString)"
 
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
-                                               password: oldPassword,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: oldPassword,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         try await Amplify.Auth.update(oldPassword: oldPassword, to: updatedPassword)

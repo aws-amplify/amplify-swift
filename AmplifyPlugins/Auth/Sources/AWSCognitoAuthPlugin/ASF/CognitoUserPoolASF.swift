@@ -27,25 +27,31 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
     static let phoneTypeKey = "PhoneType"
     static let asfVersion = "IOS20171114"
 
-    func userContextData(for username: String = "unknown",
-                         deviceInfo: ASFDeviceBehavior,
-                         appInfo: ASFAppInfoBehavior,
-                         configuration: UserPoolConfigurationData) throws -> String
-    {
+    func userContextData(
+        for username: String = "unknown",
+        deviceInfo: ASFDeviceBehavior,
+        appInfo: ASFAppInfoBehavior,
+        configuration: UserPoolConfigurationData
+    ) throws -> String {
 
         let contextData = prepareUserContextData(deviceInfo: deviceInfo, appInfo: appInfo)
-        let payload = try prepareJsonPayload(username: username,
-                                             contextData: contextData,
-                                             userPoolId: configuration.poolId)
-        let signature = try calculateSecretHash(contextJson: payload,
-                                                clientId: configuration.clientId)
+        let payload = try prepareJsonPayload(
+            username: username,
+            contextData: contextData,
+            userPoolId: configuration.poolId
+        )
+        let signature = try calculateSecretHash(
+            contextJson: payload,
+            clientId: configuration.clientId
+        )
         let result = try prepareJsonResult(payload: payload, signature: signature)
         return result
     }
 
-    func prepareUserContextData(deviceInfo: ASFDeviceBehavior,
-                                appInfo: ASFAppInfoBehavior) -> [String: String]
-    {
+    func prepareUserContextData(
+        deviceInfo: ASFDeviceBehavior,
+        appInfo: ASFAppInfoBehavior
+    ) -> [String: String] {
         var build = "release"
 #if DEBUG
         build = "debug"
@@ -75,10 +81,11 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
         return contextData
     }
 
-    func prepareJsonPayload(username: String,
-                            contextData: [String: String],
-                            userPoolId: String) throws -> String
-    {
+    func prepareJsonPayload(
+        username: String,
+        contextData: [String: String],
+        userPoolId: String
+    ) throws -> String {
         let timestamp = String(format: "%lli", floor(Date().timeIntervalSince1970 * 1_000))
         let payload = [
             "contextData": contextData,

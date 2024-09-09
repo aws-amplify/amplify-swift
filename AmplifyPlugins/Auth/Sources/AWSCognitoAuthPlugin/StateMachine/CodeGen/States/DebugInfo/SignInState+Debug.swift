@@ -26,7 +26,8 @@ extension SignInState: CustomDebugDictionaryConvertible {
                     "challengeType": challengeType,
                     "signInMethod": signInMethod
                 ],
-                uniquingKeysWith: {$1})
+                uniquingKeysWith: {$1}
+            )
 
         case .notStarted:
             [:]
@@ -45,7 +46,8 @@ extension SignInState: CustomDebugDictionaryConvertible {
         case .resolvingTOTPSetup(let signInTOTPSetupState, let signInEventData):
             [
                 "SignInTOTPSetupState": signInTOTPSetupState.debugDictionary,
-                "SignInEventData": signInEventData.debugDictionary]
+                "SignInEventData": signInEventData.debugDictionary
+            ]
         case .error:
             [:]
         }

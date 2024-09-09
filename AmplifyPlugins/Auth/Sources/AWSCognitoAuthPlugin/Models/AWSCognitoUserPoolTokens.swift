@@ -21,11 +21,12 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
 
     // swiftlint:disable:next line_length
     @available(*, deprecated, message: "Use of `init(idToken,accessToken,refreshToken:expiresIn)` is deprecated, use `exp` claim in the `idToken` or `accessToken` instead")
-    public init(idToken: String,
-                accessToken: String,
-                refreshToken: String,
-                expiresIn: Int)
-    {
+    public init(
+        idToken: String,
+        accessToken: String,
+        refreshToken: String,
+        expiresIn: Int
+    ) {
         self.idToken = idToken
         self.accessToken = accessToken
         self.refreshToken = refreshToken
@@ -34,22 +35,24 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
 
     // swiftlint:disable:next line_length
     @available(*, deprecated, message: "Use of `init(idToken,accessToken,refreshToken:expiration)` is deprecated, use `exp` claim in the `idToken` or `accessToken` instead")
-    public init(idToken: String,
-                accessToken: String,
-                refreshToken: String,
-                expiration: Date)
-    {
+    public init(
+        idToken: String,
+        accessToken: String,
+        refreshToken: String,
+        expiration: Date
+    ) {
         self.idToken = idToken
         self.accessToken = accessToken
         self.refreshToken = refreshToken
         self.expiration = expiration
     }
 
-    init(idToken: String,
-         accessToken: String,
-         refreshToken: String,
-         expiresIn: Int? = nil)
-    {
+    init(
+        idToken: String,
+        accessToken: String,
+        refreshToken: String,
+        expiresIn: Int? = nil
+    ) {
 
         self.idToken = idToken
         self.accessToken = accessToken

@@ -61,24 +61,25 @@ extension AWSCognitoSignOutResult: Codable {
 
             var revokeTokenErrorObject: AWSCognitoRevokeTokenError? = nil
             if let revokeAuthError,
-               let refreshToken
-            {
+               let refreshToken {
                 revokeTokenErrorObject = AWSCognitoRevokeTokenError(
-                    refreshToken: refreshToken, error: revokeAuthError)
+                    refreshToken: refreshToken, error: revokeAuthError
+                )
             }
 
             var globalSignOutErrorObject: AWSCognitoGlobalSignOutError? = nil
             if let globalAuthError,
-               let accessToken
-            {
+               let accessToken {
                 globalSignOutErrorObject = AWSCognitoGlobalSignOutError(
-                    accessToken: accessToken, error: globalAuthError)
+                    accessToken: accessToken, error: globalAuthError
+                )
             }
 
             self = .partial(
                 revokeTokenError: revokeTokenErrorObject,
                 globalSignOutError: globalSignOutErrorObject,
-                hostedUIError: nil)
+                hostedUIError: nil
+            )
         } else {
             fatalError("type not supported")
         }

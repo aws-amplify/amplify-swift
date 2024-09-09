@@ -22,10 +22,11 @@ class AWSAuthRememberDeviceTask: AuthRememberDeviceTask, DefaultLogger {
         HubPayload.EventName.Auth.rememberDeviceAPI
     }
 
-    init(_ request: AuthRememberDeviceRequest,
-         authStateMachine: AuthStateMachine,
-         environment: AuthEnvironment)
-    {
+    init(
+        _ request: AuthRememberDeviceRequest,
+        authStateMachine: AuthStateMachine,
+        environment: AuthEnvironment
+    ) {
         self.request = request
         self.authStateMachine = authStateMachine
         self.environment = environment
@@ -50,8 +51,7 @@ class AWSAuthRememberDeviceTask: AuthRememberDeviceTask, DefaultLogger {
     func getCurrentUsername() async throws -> String {
         let authState = await authStateMachine.currentState
         if case .configured(let authenticationState, _) = authState,
-           case .signedIn(let signInData) = authenticationState
-        {
+           case .signedIn(let signInData) = authenticationState {
            return signInData.username
         }
         throw AuthError.unknown("Unable to get username for the signedIn user")
@@ -61,11 +61,14 @@ class AWSAuthRememberDeviceTask: AuthRememberDeviceTask, DefaultLogger {
         let userPoolService = try environment.cognitoUserPoolFactory()
         let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
             for: username,
-            with: environment)
+            with: environment
+        )
         if case .metadata(let data) = deviceMetadata {
-            let input = UpdateDeviceStatusInput(accessToken: accessToken,
-                                                deviceKey: data.deviceKey,
-                                                deviceRememberedStatus: .remembered)
+            let input = UpdateDeviceStatusInput(
+                accessToken: accessToken,
+                deviceKey: data.deviceKey,
+                deviceRememberedStatus: .remembered
+            )
             _ = try await userPoolService.updateDeviceStatus(input: input)
         } else {
             throw AuthError.unknown("Unable to get device metadata")

@@ -24,7 +24,8 @@ class AWSAuthSignInOptionsTestCase: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .init(
@@ -33,10 +34,12 @@ class AWSAuthSignInOptionsTestCase: BasePluginTest {
                     idToken: "idToken",
                     newDeviceMetadata: nil,
                     refreshToken: "refreshToken",
-                    tokenType: ""),
+                    tokenType: ""
+                ),
                 challengeName: .none,
                 challengeParameters: [:],
-                session: "session")
+                session: "session"
+            )
         })
     }
 

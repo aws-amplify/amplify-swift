@@ -49,7 +49,8 @@ extension AuthTestHarnessInput {
 
         return MockIdentity(
             mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
+            mockGetCredentialsResponse: getCredentials
+        )
     }
 
 }

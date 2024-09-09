@@ -30,7 +30,8 @@ class SendUserAttributeVerificationCodeTests: BasePluginTest {
                 codeDeliveryDetails: .init(
                     attributeName: "attributeName",
                     deliveryMedium: .email,
-                    destination: "destination"))
+                    destination: "destination"
+                ))
         })
 
         let attribute = try await plugin.sendVerificationCode(forUserAttributeKey: .email)

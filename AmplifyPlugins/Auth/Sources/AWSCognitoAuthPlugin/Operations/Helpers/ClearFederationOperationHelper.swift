@@ -17,7 +17,8 @@ struct ClearFederationOperationHelper {
         guard case .configured(let authNState, let authZState) = currentState else {
             let authError = AuthError.invalidState(
                 "Clearing of federation failed.",
-                AuthPluginErrorConstants.invalidStateError, nil)
+                AuthPluginErrorConstants.invalidStateError, nil
+            )
             throw authError
         }
 
@@ -28,7 +29,8 @@ struct ClearFederationOperationHelper {
         default:
             let authError = AuthError.invalidState(
                 "Clearing of federation failed.",
-                AuthPluginErrorConstants.invalidStateError, nil)
+                AuthPluginErrorConstants.invalidStateError, nil
+            )
             throw authError
         }
     }

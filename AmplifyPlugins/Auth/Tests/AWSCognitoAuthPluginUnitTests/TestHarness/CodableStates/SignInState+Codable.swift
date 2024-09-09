@@ -24,7 +24,8 @@ extension SignInState: Codable {
             self = try .resolvingChallenge(
                 values.decode(SignInChallengeState.self, forKey: .SignInChallengeState),
                 .smsMfa,
-                .apiBased(.userSRP))
+                .apiBased(.userSRP)
+            )
         } else {
             fatalError("Decoding not supported")
         }

@@ -33,7 +33,8 @@ struct FetchHostedUISignInToken: Action {
         do {
             let request = try HostedUIRequestHelper.createTokenRequest(
                 configuration: hostedUIConfig,
-                result: result)
+                result: result
+            )
 
             let data = try await withCheckedThrowingContinuation {
                 (continuation: CheckedContinuation<Data, Error>) in
@@ -72,7 +73,8 @@ struct FetchHostedUISignInToken: Action {
     func handleData(_ data: Data) async throws -> SignedInData {
         guard let json = try JSONSerialization.jsonObject(
             with: data,
-            options: []) as? [String: Any]
+            options: []
+        ) as? [String: Any]
         else {
             throw HostedUIError.tokenParsing
         }
@@ -83,17 +85,18 @@ struct FetchHostedUISignInToken: Action {
 
         } else if let idToken = json["id_token"] as? String,
                   let accessToken = json["access_token"] as? String,
-                  let refreshToken = json["refresh_token"] as? String
-        {
+                  let refreshToken = json["refresh_token"] as? String {
             let userPoolTokens = AWSCognitoUserPoolTokens(
                 idToken: idToken,
                 accessToken: accessToken,
                 refreshToken: refreshToken,
-                expiresIn: json["expires_in"] as? Int)
+                expiresIn: json["expires_in"] as? Int
+            )
             let signedInData = SignedInData(
                 signedInDate: Date(),
                 signInMethod: .hostedUI(result.options),
-                cognitoUserPoolTokens: userPoolTokens)
+                cognitoUserPoolTokens: userPoolTokens
+            )
             return signedInData
         } else {
             throw HostedUIError.tokenParsing

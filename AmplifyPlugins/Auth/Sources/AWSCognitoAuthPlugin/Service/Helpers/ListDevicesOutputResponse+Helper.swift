@@ -27,6 +27,7 @@ extension CognitoIdentityProviderClientTypes.DeviceType {
             attributes: attributes,
             createdDate: deviceCreateDate,
             lastAuthenticatedDate: deviceLastAuthenticatedDate,
-            lastModifiedDate: deviceLastModifiedDate)
+            lastModifiedDate: deviceLastModifiedDate
+        )
     }
 }

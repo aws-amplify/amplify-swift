@@ -49,7 +49,8 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
         _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: defaultTestEmail
+        )
 
         await fulfillment(of: [signInExpectation], timeout: networkTimeout)
     }
@@ -79,7 +80,8 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
         _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: defaultTestEmail
+        )
         _ = await Amplify.Auth.signOut()
         await fulfillment(of: [signOutExpectation], timeout: networkTimeout)
     }
@@ -115,7 +117,8 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
             _ = try await AuthSignInHelper.registerAndSignInUser(
                 username: username,
                 password: password,
-                email: defaultTestEmail)
+                email: defaultTestEmail
+            )
         } catch {
             _ = try await Amplify.Auth.fetchAuthSession()
             AuthSessionHelper.invalidateSession(with: amplifyConfiguration)
@@ -154,7 +157,8 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
         _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: defaultTestEmail
+        )
         await fulfillment(of: [signInExpectation], timeout: networkTimeout)
 
         do {

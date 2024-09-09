@@ -48,7 +48,8 @@ class AWSAuthUpdateUserAttributeTask: AuthUpdateUserAttributeTask, DefaultLogger
             attributes: [request.userAttribute],
             accessToken: accessToken,
             userPoolFactory: userPoolFactory,
-            clientMetaData: clientMetaData)
+            clientMetaData: clientMetaData
+        )
 
         guard let attributeResult = finalResult[request.userAttribute.key] else {
             let authError = AuthError.unknown("Attribute to be updated does not exist in the result", nil)

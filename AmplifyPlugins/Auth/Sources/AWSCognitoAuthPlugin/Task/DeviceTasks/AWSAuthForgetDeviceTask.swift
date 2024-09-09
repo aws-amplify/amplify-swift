@@ -22,10 +22,11 @@ class AWSAuthForgetDeviceTask: AuthForgetDeviceTask, DefaultLogger {
         HubPayload.EventName.Auth.forgetDeviceAPI
     }
 
-    init(_ request: AuthForgetDeviceRequest,
-         authStateMachine: AuthStateMachine,
-         environment: AuthEnvironment)
-    {
+    init(
+        _ request: AuthForgetDeviceRequest,
+        authStateMachine: AuthStateMachine,
+        environment: AuthEnvironment
+    ) {
 
         self.request = request
         self.authStateMachine = authStateMachine
@@ -51,8 +52,7 @@ class AWSAuthForgetDeviceTask: AuthForgetDeviceTask, DefaultLogger {
     func getCurrentUsername() async throws -> String {
         let authState = await authStateMachine.currentState
         if case .configured(let authenticationState, _) = authState,
-           case .signedIn(let signInData) = authenticationState
-        {
+           case .signedIn(let signInData) = authenticationState {
            return signInData.username
         }
         throw AuthError.unknown("Unable to get username for the signedIn user")
@@ -63,7 +63,8 @@ class AWSAuthForgetDeviceTask: AuthForgetDeviceTask, DefaultLogger {
         guard let device = request.device else {
             let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: username,
-                with: environment)
+                with: environment
+            )
             if case .metadata(let data) = deviceMetadata {
                 let input = ForgetDeviceInput(accessToken: accessToken, deviceKey: data.deviceKey)
                 _ = try await userPoolService.forgetDevice(input: input)

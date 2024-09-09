@@ -47,7 +47,8 @@ class AWSAuthUpdateUserAttributesTask: AuthUpdateUserAttributesTask, DefaultLogg
             attributes: request.userAttributes,
             accessToken: accessToken,
             userPoolFactory: userPoolFactory,
-            clientMetaData: clientMetaData)
+            clientMetaData: clientMetaData
+        )
         return finalResult
     }
 }

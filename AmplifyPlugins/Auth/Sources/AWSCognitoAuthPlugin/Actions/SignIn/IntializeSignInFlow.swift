@@ -36,7 +36,8 @@ struct InitializeSignInFlow: Action {
         if let username = signInEventData.username {
             deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: username,
-                with: environment)
+                with: environment
+            )
         }
 
         let event: SignInEvent = switch signInEventData.signInMethod {
@@ -50,9 +51,10 @@ struct InitializeSignInFlow: Action {
         return event
     }
 
-    func signInEvent(for authflow: AuthFlowType,
-                     with deviceMetadata: DeviceMetadata) -> SignInEvent
-    {
+    func signInEvent(
+        for authflow: AuthFlowType,
+        with deviceMetadata: DeviceMetadata
+    ) -> SignInEvent {
         switch authflow {
         case .userSRP:
             return .init(eventType: .initiateSignInWithSRP(signInEventData, deviceMetadata))

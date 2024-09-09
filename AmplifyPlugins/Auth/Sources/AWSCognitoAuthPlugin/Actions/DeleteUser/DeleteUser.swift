@@ -54,7 +54,8 @@ struct DeleteUser: Action {
                 let authError = AuthError.service(
                     "Delete user failed with service error",
                     AmplifyErrorMessages.reportBugToAWS(),
-                    error)
+                    error
+                )
                 event = DeleteUserEvent(eventType: .throwError(authError))
                 logVerbose("\(#fileID) Delete user failed \(error)", environment: environment)
             }

@@ -19,8 +19,8 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
         url: URL,
         callbackScheme: String,
         inPrivate: Bool,
-        presentationAnchor: AuthUIPresentationAnchor?) async throws -> [URLQueryItem]
-    {
+        presentationAnchor: AuthUIPresentationAnchor?
+    ) async throws -> [URLQueryItem] {
 
     #if os(iOS) || os(macOS)
         webPresentation = presentationAnchor
@@ -57,7 +57,8 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                         return continuation.resume(
                             throwing: HostedUIError.unknown)
                     }
-                })
+                }
+            )
             aswebAuthenticationSession.presentationContextProvider = self
             aswebAuthenticationSession.prefersEphemeralWebBrowserSession = inPrivate
 

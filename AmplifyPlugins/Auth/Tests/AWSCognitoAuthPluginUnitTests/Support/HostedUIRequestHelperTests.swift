@@ -24,7 +24,8 @@ class HostedUIRequestHelperTests: XCTestCase {
                 idpIdentifier: nil
             ),
             presentationAnchor: nil,
-            preferPrivateSession: false)
+            preferPrivateSession: false
+        )
     )
 
     override func setUp() {

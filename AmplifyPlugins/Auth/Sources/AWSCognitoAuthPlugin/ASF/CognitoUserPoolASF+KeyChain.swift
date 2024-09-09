@@ -11,12 +11,12 @@ extension CognitoUserPoolASF {
 
     static func asfDeviceID(
         for username: String,
-        credentialStoreClient: CredentialStoreStateBehavior) async throws -> String {
+        credentialStoreClient: CredentialStoreStateBehavior
+    ) async throws -> String {
             let deviceMetaDataType = CredentialStoreDataType.deviceMetadata(username: username)
             let data = try? await credentialStoreClient.fetchData(type: deviceMetaDataType)
             if case .deviceMetadata(let metadata, _) = data,
-               case .metadata(let deviceData) = metadata
-            {
+               case .metadata(let deviceData) = metadata {
                 return deviceData.deviceKey
             }
 
@@ -30,11 +30,12 @@ extension CognitoUserPoolASF {
             return uuid
         }
 
-    static func encodedContext(username: String,
-                               asfDeviceId: String,
-                               asfClient: AdvancedSecurityBehavior,
-                               userPoolConfiguration: UserPoolConfigurationData) async -> String?
-    {
+    static func encodedContext(
+        username: String,
+        asfDeviceId: String,
+        asfClient: AdvancedSecurityBehavior,
+        userPoolConfiguration: UserPoolConfigurationData
+    ) async -> String? {
         let deviceInfo: ASFDeviceBehavior = await ASFDeviceInfo(id: asfDeviceId)
         let appInfo: ASFAppInfoBehavior = ASFAppInfo()
 
@@ -43,7 +44,8 @@ extension CognitoUserPoolASF {
                 for: username,
                 deviceInfo: deviceInfo,
                 appInfo: appInfo,
-                configuration: userPoolConfiguration)
+                configuration: userPoolConfiguration
+            )
         } catch {
             // Ignore the error and add nil as context data
             return nil

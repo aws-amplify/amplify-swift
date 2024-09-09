@@ -39,9 +39,11 @@ class AWSAuthConfirmSignUpTaskTests: XCTestCase {
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: {MockIdentityProvider(mockConfirmSignUpResponse: confirmSignUp)})
 
-        let request = AuthConfirmSignUpRequest(username: "jeffb",
-                                               code: "213",
-                                               options: AuthConfirmSignUpRequest.Options())
+        let request = AuthConfirmSignUpRequest(
+            username: "jeffb",
+            code: "213",
+            options: AuthConfirmSignUpRequest.Options()
+        )
         let task = AWSAuthConfirmSignUpTask(request, authEnvironment: authEnvironment)
         let confirmSignUpResult = try await task.value
         print("Confirm Sign Up Result: \(confirmSignUpResult)")
@@ -63,9 +65,11 @@ class AWSAuthConfirmSignUpTaskTests: XCTestCase {
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: {MockIdentityProvider(mockConfirmSignUpResponse: confirmSignUp)})
 
-        let request = AuthConfirmSignUpRequest(username: "jeffb",
-                                               code: "213",
-                                               options: AuthConfirmSignUpRequest.Options())
+        let request = AuthConfirmSignUpRequest(
+            username: "jeffb",
+            code: "213",
+            options: AuthConfirmSignUpRequest.Options()
+        )
 
         do {
             let task = AWSAuthConfirmSignUpTask(request, authEnvironment: authEnvironment)

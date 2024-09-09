@@ -34,9 +34,11 @@ class AWSAuthSignUpTaskTests: XCTestCase {
             return .init(codeDeliveryDetails: nil, userConfirmed: true, userSub: UUID().uuidString)
         }
 
-        let request = AuthSignUpRequest(username: "jeffb",
-                                        password: "Valid&99",
-                                        options: AuthSignUpRequest.Options())
+        let request = AuthSignUpRequest(
+            username: "jeffb",
+            password: "Valid&99",
+            options: AuthSignUpRequest.Options()
+        )
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
         let task = AWSAuthSignUpTask(request, authEnvironment: authEnvironment)
@@ -58,9 +60,11 @@ class AWSAuthSignUpTaskTests: XCTestCase {
             )
         }
 
-        let request = AuthSignUpRequest(username: "jeffb",
-                                        password: "Valid&99",
-                                        options: AuthSignUpRequest.Options())
+        let request = AuthSignUpRequest(
+            username: "jeffb",
+            password: "Valid&99",
+            options: AuthSignUpRequest.Options()
+        )
 
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
@@ -85,9 +89,11 @@ class AWSAuthSignUpTaskTests: XCTestCase {
             return .init(codeDeliveryDetails: nil, userConfirmed: true, userSub: UUID().uuidString)
         }
 
-        let request = AuthSignUpRequest(username: "jeffb",
-                                        password: "Valid&99",
-                                        options: AuthSignUpRequest.Options())
+        let request = AuthSignUpRequest(
+            username: "jeffb",
+            password: "Valid&99",
+            options: AuthSignUpRequest.Options()
+        )
 
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})

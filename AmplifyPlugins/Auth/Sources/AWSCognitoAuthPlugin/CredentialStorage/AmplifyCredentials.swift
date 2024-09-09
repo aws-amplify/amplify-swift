@@ -13,16 +13,22 @@ enum AmplifyCredentials {
 
     case userPoolOnly(signedInData: SignedInData)
 
-    case identityPoolOnly(identityID: String,
-                          credentials: AuthAWSCognitoCredentials)
+    case identityPoolOnly(
+        identityID: String,
+        credentials: AuthAWSCognitoCredentials
+    )
 
-    case identityPoolWithFederation(federatedToken: FederatedToken,
-                                    identityID: String,
-                                    credentials: AuthAWSCognitoCredentials)
+    case identityPoolWithFederation(
+        federatedToken: FederatedToken,
+        identityID: String,
+        credentials: AuthAWSCognitoCredentials
+    )
 
-    case userPoolAndIdentityPool(signedInData: SignedInData,
-                                 identityID: String,
-                                 credentials: AuthAWSCognitoCredentials)
+    case userPoolAndIdentityPool(
+        signedInData: SignedInData,
+        identityID: String,
+        credentials: AuthAWSCognitoCredentials
+    )
 
     case noCredentials
 }

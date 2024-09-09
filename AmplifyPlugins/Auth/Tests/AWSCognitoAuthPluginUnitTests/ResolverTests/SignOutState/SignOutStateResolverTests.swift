@@ -12,9 +12,10 @@ import XCTest
 typealias SignOutStateSequence = StateSequence<SignOutState, SignOutEvent>
 
 extension SignOutStateSequence {
-    init(oldState: MyState,
-         event: MyEvent,
-         expected: MyState
+    init(
+        oldState: MyState,
+        event: MyEvent,
+        expected: MyState
     ) {
         self.resolver = SignOutState.Resolver().logging().eraseToAnyResolver()
         self.oldState = oldState
@@ -29,25 +30,31 @@ class SignOutStateResolverTests: XCTestCase {
             SignOutStateSequence(
                 oldState: .notStarted,
                 event: SignOutEvent(eventType: .signOutGlobally(.testData)),
-                expected: .signingOutGlobally),
+                expected: .signingOutGlobally
+            ),
             SignOutStateSequence(
                 oldState: .notStarted,
                 event: SignOutEvent(eventType: .revokeToken(.testData)),
-                expected: .revokingToken),
+                expected: .revokingToken
+            ),
             SignOutStateSequence(
                 oldState: .signingOutGlobally,
                 event: SignOutEvent(eventType: .revokeToken(.testData)),
-                expected: .revokingToken),
+                expected: .revokingToken
+            ),
             SignOutStateSequence(
                 oldState: .signingOutGlobally,
                 event: SignOutEvent(eventType: .globalSignOutError(
                     .testData,
-                    globalSignOutError: .init(accessToken: "", error: .service("", "", nil)))),
-                expected: .buildingRevokeTokenError),
+                    globalSignOutError: .init(accessToken: "", error: .service("", "", nil))
+                )),
+                expected: .buildingRevokeTokenError
+            ),
             SignOutStateSequence(
                 oldState: .revokingToken,
                 event: SignOutEvent(eventType: .signOutLocally(.testData)),
-                expected: .signingOutLocally(.testData))
+                expected: .signingOutLocally(.testData)
+            )
         ]
 
         for sequence in validSequences {

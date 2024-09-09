@@ -22,18 +22,21 @@ struct FeatureSpecification: Codable {
     var api: API
     var validations: [JSONValue]
 
-    init(fileName: String,
-         fileExtension: String = "",
-         subdirectory: String)
-    {
+    init(
+        fileName: String,
+        fileExtension: String = "",
+        subdirectory: String
+    ) {
         let bundle = Bundle.authCognitoTestBundle()
         let url = bundle.url(
             forResource: fileName,
             withExtension: fileExtension,
-            subdirectory: subdirectory)!
+            subdirectory: subdirectory
+        )!
         let fileData: Data = try! Data(contentsOf: url)
         self = try! JSONDecoder().decode(
-            FeatureSpecification.self, from: fileData)
+            FeatureSpecification.self, from: fileData
+        )
     }
 }
 
@@ -49,10 +52,11 @@ struct Preconditions: Codable {
     var initialAuthState: AuthState
     var mockedResponses: [JSONValue]
 
-    init(amplifyConfiguration: AmplifyConfiguration,
-         initialAuthState: AuthState,
-         expectedResponses: [JSONValue])
-    {
+    init(
+        amplifyConfiguration: AmplifyConfiguration,
+        initialAuthState: AuthState,
+        expectedResponses: [JSONValue]
+    ) {
         self.initialAuthState = initialAuthState
         self.amplifyConfiguration = amplifyConfiguration
         self.mockedResponses = expectedResponses

@@ -15,9 +15,10 @@ struct UserPoolAnalytics: UserPoolAnalyticsBehavior {
     static let AWSPinpointContextKeychainUniqueIdKey = "com.amazonaws.AWSPinpointContextKeychainUniqueIdKey"
     let pinpointEndpoint: String?
 
-    init(_ configuration: UserPoolConfigurationData?,
-         credentialStoreEnvironment: CredentialStoreEnvironment) throws
-    {
+    init(
+        _ configuration: UserPoolConfigurationData?,
+        credentialStoreEnvironment: CredentialStoreEnvironment
+    ) throws {
 
         if let pinpointId = configuration?.pinpointAppId, !pinpointId.isEmpty {
             self.pinpointEndpoint = try UserPoolAnalytics.getInternalPinpointEndpoint(
@@ -38,8 +39,10 @@ struct UserPoolAnalytics: UserPoolAnalyticsBehavior {
                 AWSPinpointContextKeychainUniqueIdKey)
             else {
                 let uniqueValue = UUID().uuidString.lowercased()
-                try legacyKeychainStore._set(AWSPinpointContextKeychainUniqueIdKey,
-                                              key: uniqueValue)
+                try legacyKeychainStore._set(
+                    AWSPinpointContextKeychainUniqueIdKey,
+                    key: uniqueValue
+                )
                 return uniqueValue
             }
             return value

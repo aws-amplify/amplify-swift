@@ -13,9 +13,10 @@ struct InitializeAuthorizationConfiguration: Action {
 
     let storedCredentials: AmplifyCredentials
 
-    func execute(withDispatcher dispatcher: EventDispatcher,
-                        environment: Environment) async
-    {
+    func execute(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
         // ATM this is a no-op action
         logVerbose("\(#fileID) Starting execution", environment: environment)
         var event = switch storedCredentials {

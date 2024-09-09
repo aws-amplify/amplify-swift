@@ -44,12 +44,12 @@ class AWSAuthTaskHelper: DefaultLogger {
             case .signedOut(let data):
                 if data.revokeTokenError != nil ||
                     data.globalSignOutError != nil ||
-                    data.hostedUIError != nil
-                {
+                    data.hostedUIError != nil {
                     return AWSCognitoSignOutResult.partial(
                         revokeTokenError: data.revokeTokenError,
                         globalSignOutError: data.globalSignOutError,
-                        hostedUIError: data.hostedUIError)
+                        hostedUIError: data.hostedUIError
+                    )
                 }
                 return AWSCognitoSignOutResult.complete
             case .signingIn:
@@ -90,7 +90,8 @@ class AWSAuthTaskHelper: DefaultLogger {
         guard case .configured(let authenticationState, _) = authState else {
             throw AuthError.configuration(
                 "Plugin not configured",
-                AuthPluginErrorConstants.configurationError)
+                AuthPluginErrorConstants.configurationError
+            )
         }
 
         switch authenticationState {
@@ -102,7 +103,8 @@ class AWSAuthTaskHelper: DefaultLogger {
         case .signedOut, .configured:
             throw AuthError.signedOut(
                 "There is no user signed in to retrieve current user",
-                "Call Auth.signIn to sign in a user and then call Auth.getCurrentUser", nil)
+                "Call Auth.signIn to sign in a user and then call Auth.getCurrentUser", nil
+            )
         case .error(let authNError):
             throw authNError.authError
         default:

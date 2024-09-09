@@ -20,7 +20,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
 
         let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
 
-        await action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(
+            withDispatcher: MockDispatcher { event in
 
             guard let event = event as? RefreshSessionEvent else {
                 return
@@ -31,7 +32,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
                 XCTAssertEqual(error, .noUserPool)
                 expectation.fulfill()
             }
-        }, environment: MockInvalidEnvironment()
+        },
+            environment: MockInvalidEnvironment()
         )
 
         await fulfillment(
@@ -53,7 +55,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
 
         let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
 
-        await action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(
+            withDispatcher: MockDispatcher { event in
 
             guard let event = event as? RefreshSessionEvent else { return }
 
@@ -62,7 +65,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
                 XCTAssertEqual(error, .invalidTokens)
                 expectation.fulfill()
             }
-        }, environment: Defaults.makeDefaultAuthEnvironment(
+        },
+            environment: Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
         )
 
@@ -83,21 +87,23 @@ class RefreshUserPoolTokensTests: XCTestCase {
                             accessToken: "accessTokenNew",
                             expiresIn: 100,
                             idToken: "idTokenNew",
-                            refreshToken: "refreshTokenNew"))
+                            refreshToken: "refreshTokenNew"
+                        ))
                 }
             )
         }
 
         let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
 
-        await action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(
+            withDispatcher: MockDispatcher { event in
 
             if let userPoolEvent = event as? RefreshSessionEvent,
-               case .refreshIdentityInfo = userPoolEvent.eventType
-            {
+               case .refreshIdentityInfo = userPoolEvent.eventType {
                 expectation.fulfill()
             }
-        }, environment: Defaults.makeDefaultAuthEnvironment(
+        },
+            environment: Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
         )
 
@@ -125,15 +131,15 @@ class RefreshUserPoolTokensTests: XCTestCase {
             userPoolConfiguration: UserPoolConfigurationData.testData,
             cognitoUserPoolFactory: identityProviderFactory,
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
-            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
+            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics
+        )
 
         let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
 
         await action.execute(withDispatcher: MockDispatcher { event in
 
             if let userPoolEvent = event as? RefreshSessionEvent,
-               case let .throwError(error) = userPoolEvent.eventType
-            {
+               case let .throwError(error) = userPoolEvent.eventType {
                 XCTAssertNotNil(error)
                 XCTAssertEqual(error, .service(testError))
                 expectation.fulfill()

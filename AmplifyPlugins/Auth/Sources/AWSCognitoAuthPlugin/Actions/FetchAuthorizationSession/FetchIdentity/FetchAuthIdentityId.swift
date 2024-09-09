@@ -19,9 +19,10 @@ struct FetchAuthIdentityId: Action {
         self.loginsMap = loginsMap
     }
 
-    func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async
-    {
+    func execute(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
@@ -38,7 +39,8 @@ struct FetchAuthIdentityId: Action {
 
         let getIdInput = GetIdInput(
             identityPoolId: authZEnvironment.identityPoolConfiguration.poolId,
-            logins: loginsMap)
+            logins: loginsMap
+        )
 
         do {
             let response = try await client.getId(input: getIdInput)
@@ -58,8 +60,10 @@ struct FetchAuthIdentityId: Action {
             } else {
                 FetchAuthSessionEvent(eventType: .throwError(.service(error)))
             }
-            logVerbose("\(#fileID) Sending event \(event.type)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(event.type)",
+                environment: environment
+            )
             await dispatcher.send(event)
         }
     }

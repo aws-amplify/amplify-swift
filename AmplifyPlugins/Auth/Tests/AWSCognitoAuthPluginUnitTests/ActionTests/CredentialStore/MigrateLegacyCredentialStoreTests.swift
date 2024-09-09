@@ -31,9 +31,10 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
             saveCredentialHandler: { codableCredentials in
                 guard let credentials = codableCredentials as? AmplifyCredentials,
                       case .userPoolAndIdentityPool(
-                        signedInData: let signedInData,
-                        identityID: let identityID,
-                        credentials: let awsCredentials) = credentials
+                          signedInData: let signedInData,
+                          identityID: let identityID,
+                          credentials: let awsCredentials
+                      ) = credentials
                 else {
                     XCTFail("The credentials saved should be of type AmplifyCredentials")
                     return
@@ -59,16 +60,19 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         }
         let authConfig = AuthConfiguration.userPoolsAndIdentityPools(
             Defaults.makeDefaultUserPoolConfigData(),
-            Defaults.makeIdentityConfigData())
+            Defaults.makeIdentityConfigData()
+        )
 
         let credentialStoreEnv = BasicCredentialStoreEnvironment(
             amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
-            legacyKeychainStoreFactory: legacyKeychainStoreFactory)
+            legacyKeychainStoreFactory: legacyKeychainStoreFactory
+        )
 
         let environment = CredentialEnvironment(
             authConfiguration: authConfig,
             credentialStoreEnvironment: credentialStoreEnv,
-            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
+            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+        )
 
         let action = MigrateLegacyCredentialStore()
         await action.execute(withDispatcher: MockDispatcher { _ in }, environment: environment)
@@ -106,16 +110,19 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         }
         let authConfig = AuthConfiguration.userPoolsAndIdentityPools(
             Defaults.makeDefaultUserPoolConfigData(),
-            Defaults.makeIdentityConfigData())
+            Defaults.makeIdentityConfigData()
+        )
 
         let credentialStoreEnv = BasicCredentialStoreEnvironment(
             amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
-            legacyKeychainStoreFactory: legacyKeychainStoreFactory)
+            legacyKeychainStoreFactory: legacyKeychainStoreFactory
+        )
 
         let environment = CredentialEnvironment(
             authConfiguration: authConfig,
             credentialStoreEnvironment: credentialStoreEnv,
-            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
+            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+        )
 
         let action = MigrateLegacyCredentialStore()
         await action.execute(withDispatcher: MockDispatcher { _ in }, environment: environment)
@@ -188,7 +195,8 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
                     },
                     legacyKeychainStoreFactory: { _ in
                         MockKeychainStoreBehavior(data: "hostedUI")
-                    }),
+                    }
+                ),
                 logger: MigrateLegacyCredentialStore.log
             )
         )
@@ -239,7 +247,8 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
                         return MockKeychainStoreBehavior(
                             data: String(decoding: data, as: UTF8.self)
                         )
-                    }),
+                    }
+                ),
                 logger: action.log
             )
         )

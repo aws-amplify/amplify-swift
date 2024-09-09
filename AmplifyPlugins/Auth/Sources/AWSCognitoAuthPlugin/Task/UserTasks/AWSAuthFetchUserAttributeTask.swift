@@ -58,8 +58,10 @@ class AWSAuthFetchUserAttributeTask: AuthFetchUserAttributeTask, DefaultLogger {
             else {
                 return nil
             }
-            return AuthUserAttribute(AuthUserAttributeKey(rawValue: attributeName),
-                                     value: attributeValue)
+            return AuthUserAttribute(
+                AuthUserAttributeKey(rawValue: attributeName),
+                value: attributeValue
+            )
         }
         return mappedAttributes
     }

@@ -36,7 +36,8 @@ class GetCurrentUserTests: AWSAuthBaseTest {
         _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: defaultTestEmail
+        )
 
         let authUser = try await Amplify.Auth.getCurrentUser()
 

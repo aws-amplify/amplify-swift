@@ -55,19 +55,22 @@ struct SignOutGlobally: Action {
             let internalError = authErrorConvertible.authError
             globalSignOutError = AWSCognitoGlobalSignOutError(
                 accessToken: signedInData.cognitoUserPoolTokens.accessToken,
-                error: internalError)
+                error: internalError
+            )
         } else if let error {
             let internalError = AuthError.service("", "", error)
             globalSignOutError = AWSCognitoGlobalSignOutError(
                 accessToken: signedInData.cognitoUserPoolTokens.accessToken,
-                error: internalError)
+                error: internalError
+            )
         }
 
         if let globalSignOutError {
             let event = SignOutEvent(eventType: .globalSignOutError(
                 signedInData,
                 globalSignOutError: globalSignOutError,
-                hostedUIError: hostedUIError))
+                hostedUIError: hostedUIError
+            ))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             await dispatcher.send(event)
             return
@@ -75,7 +78,8 @@ struct SignOutGlobally: Action {
 
         let event = SignOutEvent(eventType: .revokeToken(
             signedInData,
-            hostedUIError: hostedUIError))
+            hostedUIError: hostedUIError
+        ))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         await dispatcher.send(event)
     }

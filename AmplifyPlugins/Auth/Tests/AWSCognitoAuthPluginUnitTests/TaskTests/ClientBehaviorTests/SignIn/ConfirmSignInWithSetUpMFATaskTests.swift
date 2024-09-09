@@ -23,9 +23,12 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
                     .waitingForAnswer(.init(
                         secretCode: "sharedSecret",
                         session: "session",
-                        username: "username")),
-                    .testData)),
-            AuthorizationState.sessionEstablished(.testData))
+                        username: "username"
+                    )),
+                    .testData
+                )),
+            AuthorizationState.sessionEstablished(.testData)
+        )
     }
 
     /// Test a successful confirmSignIn call with .done as next step
@@ -55,7 +58,8 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
             let pluginOptions = AWSAuthConfirmSignInOptions(friendlyDeviceName: "device")
             let confirmSignInResult = try await plugin.confirmSignIn(
                 challengeResponse: "123456",
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             guard case .done = confirmSignInResult.nextStep else {
                 XCTFail("Result should be .done for next step")
                 return
@@ -303,7 +307,8 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
         let identityPoolConfigData = Defaults.makeIdentityConfigData()
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: identityPoolConfigData,
-            cognitoIdentityFactory: Defaults.makeIdentity)
+            cognitoIdentityFactory: Defaults.makeIdentity
+        )
         let environment = AuthEnvironment(
             configuration: .identityPools(identityPoolConfigData),
             userPoolConfigData: nil,
@@ -313,8 +318,10 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
             credentialsClient: Defaults.makeCredentialStoreOperationBehavior(),
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
-        let stateMachine = Defaults.authStateMachineWith(environment: environment,
-                                                         initialState: .notConfigured)
+        let stateMachine = Defaults.authStateMachineWith(
+            environment: environment,
+            initialState: .notConfigured
+        )
         let plugin = AWSCognitoAuthPlugin()
         plugin.configure(
             authConfiguration: .identityPools(identityPoolConfigData),
@@ -322,7 +329,8 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
             authStateMachine: stateMachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior(),
-            analyticsHandler: MockAnalyticsHandler())
+            analyticsHandler: MockAnalyticsHandler()
+        )
 
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "")

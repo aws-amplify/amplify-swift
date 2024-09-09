@@ -46,7 +46,8 @@ class ShowHostedUISignOut: NSObject, Action {
                 url: logoutURL,
                 callbackScheme: callbackURLScheme,
                 inPrivate: false,
-                presentationAnchor: signOutEvent.presentationAnchor)
+                presentationAnchor: signOutEvent.presentationAnchor
+            )
             await sendEvent(with: nil, dispatcher: dispatcher, environment: environment)
         } catch {
             logVerbose("\(#fileID) Received error \(error)", environment: environment)
@@ -54,10 +55,11 @@ class ShowHostedUISignOut: NSObject, Action {
         }
     }
 
-    func sendEvent(with error: Error?,
-                   dispatcher: EventDispatcher,
-                   environment: Environment) async
-    {
+    func sendEvent(
+        with error: Error?,
+        dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
 
         let event: SignOutEvent
         if let hostedUIInternalError = error as? HostedUIError {
@@ -80,11 +82,15 @@ class ShowHostedUISignOut: NSObject, Action {
 
     private func getEvent(for hostedUIError: AWSCognitoHostedUIError?) -> SignOutEvent {
         if signOutEvent.globalSignOut {
-            return SignOutEvent(eventType: .signOutGlobally(signInData,
-                                                             hostedUIError: hostedUIError))
+            return SignOutEvent(eventType: .signOutGlobally(
+                signInData,
+                hostedUIError: hostedUIError
+            ))
         } else {
-            return SignOutEvent(eventType: .revokeToken(signInData,
-                                                         hostedUIError: hostedUIError))
+            return SignOutEvent(eventType: .revokeToken(
+                signInData,
+                hostedUIError: hostedUIError
+            ))
         }
     }
 }

@@ -47,12 +47,14 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
     ///
     func testSuccessfulForgetDevice() async throws {
 
-        let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
-                                          name: "name",
-                                          attributes: nil,
-                                          createdDate: nil,
-                                          lastAuthenticatedDate: nil,
-                                          lastModifiedDate: nil)
+        let awsAuthDevice = AWSAuthDevice(
+            id: "authDeviceID",
+            name: "name",
+            attributes: nil,
+            createdDate: nil,
+            lastAuthenticatedDate: nil,
+            lastModifiedDate: nil
+        )
         try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
     }
 
@@ -108,12 +110,14 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
                 )
             }
         )
-        let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
-                                          name: "name",
-                                          attributes: nil,
-                                          createdDate: nil,
-                                          lastAuthenticatedDate: nil,
-                                          lastModifiedDate: nil)
+        let awsAuthDevice = AWSAuthDevice(
+            id: "authDeviceID",
+            name: "name",
+            attributes: nil,
+            createdDate: nil,
+            lastAuthenticatedDate: nil,
+            lastModifiedDate: nil
+        )
         do {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error")
@@ -179,12 +183,14 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
                 )
             }
         )
-        let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
-                                          name: "name",
-                                          attributes: nil,
-                                          createdDate: nil,
-                                          lastAuthenticatedDate: nil,
-                                          lastModifiedDate: nil)
+        let awsAuthDevice = AWSAuthDevice(
+            id: "authDeviceID",
+            name: "name",
+            attributes: nil,
+            createdDate: nil,
+            lastAuthenticatedDate: nil,
+            lastModifiedDate: nil
+        )
         do {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error if the result from service is invalid")
@@ -247,12 +253,14 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
                 )
             }
         )
-        let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
-                                          name: "name",
-                                          attributes: nil,
-                                          createdDate: nil,
-                                          lastAuthenticatedDate: nil,
-                                          lastModifiedDate: nil)
+        let awsAuthDevice = AWSAuthDevice(
+            id: "authDeviceID",
+            name: "name",
+            attributes: nil,
+            createdDate: nil,
+            lastAuthenticatedDate: nil,
+            lastModifiedDate: nil
+        )
         do {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error if the result from service is invalid")
@@ -313,12 +321,14 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
                 )
             }
         )
-        let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
-                                          name: "name",
-                                          attributes: nil,
-                                          createdDate: nil,
-                                          lastAuthenticatedDate: nil,
-                                          lastModifiedDate: nil)
+        let awsAuthDevice = AWSAuthDevice(
+            id: "authDeviceID",
+            name: "name",
+            attributes: nil,
+            createdDate: nil,
+            lastAuthenticatedDate: nil,
+            lastModifiedDate: nil
+        )
         do {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error if the result from service is invalid")
@@ -383,12 +393,14 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
                 )
             }
         )
-        let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
-                                          name: "name",
-                                          attributes: nil,
-                                          createdDate: nil,
-                                          lastAuthenticatedDate: nil,
-                                          lastModifiedDate: nil)
+        let awsAuthDevice = AWSAuthDevice(
+            id: "authDeviceID",
+            name: "name",
+            attributes: nil,
+            createdDate: nil,
+            lastAuthenticatedDate: nil,
+            lastModifiedDate: nil
+        )
         do {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error if the result from service is invalid")
@@ -457,12 +469,14 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
                 )
             }
         )
-        let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
-                                          name: "name",
-                                          attributes: nil,
-                                          createdDate: nil,
-                                          lastAuthenticatedDate: nil,
-                                          lastModifiedDate: nil)
+        let awsAuthDevice = AWSAuthDevice(
+            id: "authDeviceID",
+            name: "name",
+            attributes: nil,
+            createdDate: nil,
+            lastAuthenticatedDate: nil,
+            lastModifiedDate: nil
+        )
         do {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error if the result from service is invalid")
@@ -531,12 +545,14 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
                 )
             }
         )
-        let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
-                                          name: "name",
-                                          attributes: nil,
-                                          createdDate: nil,
-                                          lastAuthenticatedDate: nil,
-                                          lastModifiedDate: nil)
+        let awsAuthDevice = AWSAuthDevice(
+            id: "authDeviceID",
+            name: "name",
+            attributes: nil,
+            createdDate: nil,
+            lastAuthenticatedDate: nil,
+            lastModifiedDate: nil
+        )
         do {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error if the result from service is invalid")
@@ -605,12 +621,14 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
                 )
             }
         )
-        let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
-                                          name: "name",
-                                          attributes: nil,
-                                          createdDate: nil,
-                                          lastAuthenticatedDate: nil,
-                                          lastModifiedDate: nil)
+        let awsAuthDevice = AWSAuthDevice(
+            id: "authDeviceID",
+            name: "name",
+            attributes: nil,
+            createdDate: nil,
+            lastAuthenticatedDate: nil,
+            lastModifiedDate: nil
+        )
         do {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error if the result from service is invalid")
@@ -679,12 +697,14 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
                 )
             }
         )
-        let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
-                                          name: "name",
-                                          attributes: nil,
-                                          createdDate: nil,
-                                          lastAuthenticatedDate: nil,
-                                          lastModifiedDate: nil)
+        let awsAuthDevice = AWSAuthDevice(
+            id: "authDeviceID",
+            name: "name",
+            attributes: nil,
+            createdDate: nil,
+            lastAuthenticatedDate: nil,
+            lastModifiedDate: nil
+        )
         do {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error if the result from service is invalid")

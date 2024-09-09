@@ -42,18 +42,22 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                     mockSetUserMFAPreferenceResponse: { request in
                         XCTAssertEqual(
                             request.smsMfaSettings,
-                            smsPreference.smsSetting())
+                            smsPreference.smsSetting()
+                        )
                         XCTAssertEqual(
                             request.softwareTokenMfaSettings,
-                            totpPreference.softwareTokenSetting())
+                            totpPreference.softwareTokenSetting()
+                        )
 
                         return .init()
-                    })
+                    }
+                )
 
                 do {
                     try await plugin.updateMFAPreference(
                         sms: smsPreference,
-                        totp: totpPreference)
+                        totp: totpPreference
+                    )
                 } catch {
                     XCTFail("Received failure with error \(error)")
                 }

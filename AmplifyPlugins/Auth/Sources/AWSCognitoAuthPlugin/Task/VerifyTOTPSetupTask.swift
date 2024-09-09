@@ -24,10 +24,11 @@ class VerifyTOTPSetupTask: AuthVerifyTOTPSetupTask, DefaultLogger {
         HubPayload.EventName.Auth.verifyTOTPSetupAPI
     }
 
-    init(_ request: VerifyTOTPSetupRequest,
-         authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory)
-    {
+    init(
+        _ request: VerifyTOTPSetupRequest,
+        authStateMachine: AuthStateMachine,
+        userPoolFactory: @escaping CognitoUserPoolFactory
+    ) {
         self.request = request
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
@@ -39,7 +40,8 @@ class VerifyTOTPSetupTask: AuthVerifyTOTPSetupTask, DefaultLogger {
             await taskHelper.didStateMachineConfigured()
             let accessToken = try await taskHelper.getAccessToken()
             try await verifyTOTPSetup(
-                with: accessToken, userCode: request.code)
+                with: accessToken, userCode: request.code
+            )
         } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch {
@@ -53,7 +55,8 @@ class VerifyTOTPSetupTask: AuthVerifyTOTPSetupTask, DefaultLogger {
         let input = VerifySoftwareTokenInput(
             accessToken: accessToken,
             friendlyDeviceName: friendlyDeviceName,
-            userCode: userCode)
+            userCode: userCode
+        )
         let result = try await userPoolService.verifySoftwareToken(input: input)
 
         guard let output = result.status else {
@@ -62,14 +65,17 @@ class VerifyTOTPSetupTask: AuthVerifyTOTPSetupTask, DefaultLogger {
 
         switch output {
         case .error:
-            throw AuthError.service("Unknown service error occurred",
-                                    AmplifyErrorMessages.reportBugToAWS())
+            throw AuthError.service(
+                "Unknown service error occurred",
+                AmplifyErrorMessages.reportBugToAWS()
+            )
         case .success:
             return
         case .sdkUnknown(let error):
             throw AuthError.service(
                 error,
-                AmplifyErrorMessages.reportBugToAWS())
+                AmplifyErrorMessages.reportBugToAWS()
+            )
         }
 
     }

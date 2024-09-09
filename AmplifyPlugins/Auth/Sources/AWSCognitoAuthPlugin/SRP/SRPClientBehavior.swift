@@ -14,24 +14,29 @@ protocol SRPClientBehavior {
 
     func generateClientKeyPair() -> SRPKeys
 
-    func calculateSharedSecret(username: String,
-                               password: String,
-                               saltHexValue: String,
-                               clientPrivateKeyHexValue: String,
-                               clientPublicKeyHexValue: String,
-                               serverPublicKeyHexValue: String) throws -> String
+    func calculateSharedSecret(
+        username: String,
+        password: String,
+        saltHexValue: String,
+        clientPrivateKeyHexValue: String,
+        clientPublicKeyHexValue: String,
+        serverPublicKeyHexValue: String
+    ) throws -> String
 
     static func calculateUHexValue(
         clientPublicKeyHexValue: String,
-        serverPublicKeyHexValue: String) throws -> String
+        serverPublicKeyHexValue: String
+    ) throws -> String
 
     static func generateAuthenticationKey(
-        sharedSecretHexValue: String, uHexValue: String) throws -> Data
+        sharedSecretHexValue: String, uHexValue: String
+    ) throws -> Data
 
     func generateDevicePasswordVerifier(
         deviceGroupKey: String,
         deviceKey: String,
-        password: String) -> (salt: Data, passwordVerifier: Data)
+        password: String
+    ) -> (salt: Data, passwordVerifier: Data)
 }
 
 enum SRPError: Error {

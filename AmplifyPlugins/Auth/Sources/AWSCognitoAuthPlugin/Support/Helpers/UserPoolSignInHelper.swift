@@ -17,56 +17,49 @@ struct UserPoolSignInHelper: DefaultLogger {
         log.verbose("Checking next step for: \(signInState)")
 
         if case .signingInWithSRP(let srpState, _) = signInState,
-           case .error(let signInError) = srpState
-        {
+           case .error(let signInError) = srpState {
             return try validateError(signInError: signInError)
 
         } else if case .signingInWithSRPCustom(let srpState, _) = signInState,
-                  case .error(let signInError) = srpState
-        {
+                  case .error(let signInError) = srpState {
             return try validateError(signInError: signInError)
 
         } else if case .signingInViaMigrateAuth(let migratedAuthState, _) = signInState,
-                  case .error(let signInError) = migratedAuthState
-        {
+                  case .error(let signInError) = migratedAuthState {
             return try validateError(signInError: signInError)
 
         } else if case .signingInWithCustom(let customAuthState, _) = signInState,
-                  case .error(let signInError) = customAuthState
-        {
+                  case .error(let signInError) = customAuthState {
             return try validateError(signInError: signInError)
 
         } else if case .signingInWithHostedUI(let hostedUIState) = signInState,
-                  case .error(let hostedUIError) = hostedUIState
-        {
+                  case .error(let hostedUIError) = hostedUIState {
             return try validateError(signInError: hostedUIError)
 
         } else if case .resolvingChallenge(let challengeState, _, _) = signInState,
-                  case .error(_, _, let signInError) = challengeState
-        {
+                  case .error(_, _, let signInError) = challengeState {
             return try validateError(signInError: signInError)
 
         } else if case .resolvingChallenge(let challengeState, let challengeType, _) = signInState,
-                  case .waitingForAnswer(let challenge, _) = challengeState
-        {
+                  case .waitingForAnswer(let challenge, _) = challengeState {
             return try validateResult(for: challengeType, with: challenge)
 
         } else if case .resolvingTOTPSetup(let totpSetupState, _) = signInState,
-                  case .error(_, let signInError) = totpSetupState
-        {
+                  case .error(_, let signInError) = totpSetupState {
             return try validateError(signInError: signInError)
 
         } else if case .resolvingTOTPSetup(let totpSetupState, _) = signInState,
-                  case .waitingForAnswer(let totpSetupData) = totpSetupState
-        {
+                  case .waitingForAnswer(let totpSetupData) = totpSetupState {
             return .init(nextStep: .continueSignInWithTOTPSetup(
                 .init(sharedSecret: totpSetupData.secretCode, username: totpSetupData.username)))
         }
         return nil
     }
 
-    private static func validateResult(for challengeType: AuthChallengeType,
-                                       with challenge: RespondToAuthChallenge)
+    private static func validateResult(
+        for challengeType: AuthChallengeType,
+        with challenge: RespondToAuthChallenge
+    )
     throws -> AuthSignInResult {
         switch challengeType {
         case .smsMfa:
@@ -101,7 +94,8 @@ struct UserPoolSignInHelper: DefaultLogger {
         request: RespondToAuthChallengeInput,
         for username: String,
         signInMethod: SignInMethod,
-        environment: UserPoolEnvironment) async throws -> StateMachineEvent {
+        environment: UserPoolEnvironment
+    ) async throws -> StateMachineEvent {
 
             let client = try environment.cognitoUserPoolFactory()
             let response = try await client.respondToAuthChallenge(input: request)
@@ -112,23 +106,26 @@ struct UserPoolSignInHelper: DefaultLogger {
     static func parseResponse(
         _ response: SignInResponseBehavior,
         for username: String,
-        signInMethod: SignInMethod) -> StateMachineEvent {
+        signInMethod: SignInMethod
+    ) -> StateMachineEvent {
 
             if let authenticationResult = response.authenticationResult,
                let idToken = authenticationResult.idToken,
                let accessToken = authenticationResult.accessToken,
-               let refreshToken = authenticationResult.refreshToken
-            {
+               let refreshToken = authenticationResult.refreshToken {
 
-                let userPoolTokens = AWSCognitoUserPoolTokens(idToken: idToken,
-                                                              accessToken: accessToken,
-                                                              refreshToken: refreshToken,
-                                                              expiresIn: authenticationResult.expiresIn)
+                let userPoolTokens = AWSCognitoUserPoolTokens(
+                    idToken: idToken,
+                    accessToken: accessToken,
+                    refreshToken: refreshToken,
+                    expiresIn: authenticationResult.expiresIn
+                )
                 let signedInData = SignedInData(
                     signedInDate: Date(),
                     signInMethod: signInMethod,
                     deviceMetadata: authenticationResult.deviceMetadata,
-                    cognitoUserPoolTokens: userPoolTokens)
+                    cognitoUserPoolTokens: userPoolTokens
+                )
 
                 switch signedInData.deviceMetadata {
                 case .noData:
@@ -143,7 +140,8 @@ struct UserPoolSignInHelper: DefaultLogger {
                     challenge: challengeName,
                     username: username,
                     session: response.session,
-                    parameters: parameters)
+                    parameters: parameters
+                )
 
                 switch challengeName {
                 case .smsMfa, .customChallenge, .newPasswordRequired, .softwareTokenMfa, .selectMfaType:

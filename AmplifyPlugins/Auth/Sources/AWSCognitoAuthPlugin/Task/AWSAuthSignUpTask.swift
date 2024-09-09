@@ -36,19 +36,21 @@ class AWSAuthSignUpTask: AuthSignUpTask, DefaultLogger {
             let client = try userPoolEnvironment.cognitoUserPoolFactory()
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: request.username,
-                credentialStoreClient: authEnvironment.credentialsClient)
+                credentialStoreClient: authEnvironment.credentialsClient
+            )
             let attributes = request.options.userAttributes?.reduce(
-                into: [String: String]())
-                {
+                into: [String: String]()) {
                     $0[$1.key.rawValue] = $1.value
                 } ?? [:]
-            let input = await SignUpInput(username: request.username,
-                                    password: request.password!,
-                                    clientMetadata: metaData,
-                                    validationData: validationData,
-                                    attributes: attributes,
-                                    asfDeviceId: asfDeviceId,
-                                    environment: userPoolEnvironment)
+            let input = await SignUpInput(
+                username: request.username,
+                password: request.password!,
+                clientMetadata: metaData,
+                validationData: validationData,
+                attributes: attributes,
+                asfDeviceId: asfDeviceId,
+                environment: userPoolEnvironment
+            )
 
             let response = try await client.signUp(input: input)
             log.verbose("Received result")

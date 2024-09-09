@@ -22,9 +22,10 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask, DefaultLogger {
         HubPayload.EventName.Auth.changePasswordAPI
     }
 
-    init(_ request: AuthChangePasswordRequest,
-         authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory
+    init(
+        _ request: AuthChangePasswordRequest,
+        authStateMachine: AuthStateMachine,
+        userPoolFactory: @escaping CognitoUserPoolFactory
     ) {
         self.request = request
         self.authStateMachine = authStateMachine
@@ -52,9 +53,11 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask, DefaultLogger {
 
     func changePassword(with accessToken: String) async throws {
         let userPoolService = try userPoolFactory()
-        let input = ChangePasswordInput(accessToken: accessToken,
-                                        previousPassword: request.oldPassword,
-                                        proposedPassword: request.newPassword)
+        let input = ChangePasswordInput(
+            accessToken: accessToken,
+            previousPassword: request.oldPassword,
+            proposedPassword: request.newPassword
+        )
         _ = try await userPoolService.changePassword(input: input)
     }
 

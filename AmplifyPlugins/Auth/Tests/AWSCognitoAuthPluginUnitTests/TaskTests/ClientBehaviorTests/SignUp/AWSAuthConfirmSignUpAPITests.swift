@@ -34,7 +34,8 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         let result = try await plugin.confirmSignUp(
             for: "jeffb",
             confirmationCode: "123456",
-            options: options)
+            options: options
+        )
 
         guard case .done = result.nextStep else {
             XCTFail("Result should be .done for next step")
@@ -56,12 +57,14 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
         let pluginOptions = AWSAuthConfirmSignUpOptions(
             metadata: ["key": "value"],
-            forceAliasCreation: true)
+            forceAliasCreation: true
+        )
         let options = AuthConfirmSignUpRequest.Options(pluginOptions: pluginOptions)
         let result = try await plugin.confirmSignUp(
             for: "jeffb",
             confirmationCode: "123456",
-            options: options)
+            options: options
+        )
 
         guard case .done = result.nextStep else {
             XCTFail("Result should be .done for next step")
@@ -83,7 +86,8 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
             let _ = try await plugin.confirmSignUp(
                 for: "",
                 confirmationCode: "123456",
-                options: options)
+                options: options
+            )
 
         } catch {
             guard let authError = error as? AuthError else {
@@ -107,7 +111,8 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
             let _ = try await plugin.confirmSignUp(
                 for: "jeffb",
                 confirmationCode: "",
-                options: options)
+                options: options
+            )
 
         } catch {
             guard let authError = error as? AuthError else {
@@ -137,7 +142,8 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         for errorToTest in errorsToTest {
             await validateConfirmSignUpServiceErrors(
                 confirmSignUpOutputError: errorToTest.confirmSignUpOutputError,
-                expectedCognitoError: errorToTest.cognitoError)
+                expectedCognitoError: errorToTest.cognitoError
+            )
         }
     }
 
@@ -153,16 +159,19 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
             let _ = try await plugin.confirmSignUp(
                 for: "jeffb",
                 confirmationCode: "12345",
-                options: options)
+                options: options
+            )
         } catch {
             guard let authError = error as? AuthError else {
                 XCTFail("Should throw Auth error")
                 return
             }
 
-            guard case .notAuthorized(let errorDescription,
-                                      let recoverySuggestion,
-                                      let notAuthorizedError) = authError
+            guard case .notAuthorized(
+                let errorDescription,
+                let recoverySuggestion,
+                let notAuthorizedError
+            ) = authError
             else {
                 XCTFail("Auth error should be of type notAuthorized")
                 return
@@ -188,7 +197,8 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
             let _ = try await plugin.confirmSignUp(
                 for: "jeffb",
                 confirmationCode: "12345",
-                options: options)
+                options: options
+            )
         } catch {
             guard let authError = error as? AuthError else {
                 XCTFail("Should throw Auth error")
@@ -221,7 +231,8 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
             let _ = try await plugin.confirmSignUp(
                 for: "jeffb",
                 confirmationCode: "12345",
-                options: options)
+                options: options
+            )
         } catch {
             guard let authError = error as? AuthError else {
                 XCTFail("Should throw Auth error")
@@ -239,7 +250,8 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
     func validateConfirmSignUpServiceErrors(
         confirmSignUpOutputError: Error,
-        expectedCognitoError: AWSCognitoAuthError) async {
+        expectedCognitoError: AWSCognitoAuthError
+    ) async {
             mockIdentityProvider = MockIdentityProvider(
                 mockConfirmSignUpResponse: { _ in
                     throw confirmSignUpOutputError
@@ -250,16 +262,19 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
                 let _ = try await plugin.confirmSignUp(
                     for: "jeffb",
                     confirmationCode: "12345",
-                    options: options)
+                    options: options
+                )
             } catch {
                 guard let authError = error as? AuthError else {
                     XCTFail("Should throw Auth error")
                     return
                 }
 
-                guard case .service(let errorMessage,
-                                    let recovery,
-                                    let serviceError) = authError
+                guard case .service(
+                    let errorMessage,
+                    let recovery,
+                    let serviceError
+                ) = authError
                 else {
                     XCTFail("Auth error should be of type service error")
                     return

@@ -38,9 +38,11 @@ final class AuthStressTests: AuthStressBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
-                                               password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let fetchUserAttributesExpectation = expectation(description: "Fetch user attributes was successful")
@@ -73,8 +75,11 @@ final class AuthStressTests: AuthStressBaseTest {
     func testMultipleFetchAuthSessionAfterSignIn() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let fetchAuthSessionExpectation = expectation(description: "Fetch auth session was successful")
@@ -177,7 +182,8 @@ final class AuthStressTests: AuthStressBaseTest {
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: defaultTestEmail
+        )
 
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 

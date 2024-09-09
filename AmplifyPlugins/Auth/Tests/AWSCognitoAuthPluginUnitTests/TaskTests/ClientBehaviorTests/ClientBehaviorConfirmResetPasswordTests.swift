@@ -113,10 +113,12 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
             }
         )
         let pluginOptions = AWSAuthConfirmResetPasswordOptions(metadata: ["key": "value"])
-        try await plugin.confirmResetPassword(for: "username",
-                                              with: "newpassword",
-                                              confirmationCode: "code",
-                                              options: .init(pluginOptions: pluginOptions))
+        try await plugin.confirmResetPassword(
+            for: "username",
+            with: "newpassword",
+            confirmationCode: "code",
+            options: .init(pluginOptions: pluginOptions)
+        )
     }
 
     /// Test a confirmResetPassword call with empty new password

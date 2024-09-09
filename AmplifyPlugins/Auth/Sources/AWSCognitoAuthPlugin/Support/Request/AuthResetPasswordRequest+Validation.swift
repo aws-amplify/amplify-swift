@@ -14,7 +14,8 @@ extension AuthResetPasswordRequest {
             return AuthError.validation(
                 AuthPluginErrorConstants.resetPasswordUsernameError.field,
                 AuthPluginErrorConstants.resetPasswordUsernameError.errorDescription,
-                AuthPluginErrorConstants.resetPasswordUsernameError.recoverySuggestion)
+                AuthPluginErrorConstants.resetPasswordUsernameError.recoverySuggestion
+            )
         }
         return nil
     }

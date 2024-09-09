@@ -12,9 +12,10 @@ import XCTest
 typealias AuthorizationStateSequence = StateSequence<AuthorizationState, AuthorizationEvent>
 
 extension AuthorizationStateSequence {
-    init(oldState: MyState,
-         event: MyEvent,
-         expected: MyState
+    init(
+        oldState: MyState,
+        event: MyEvent,
+        expected: MyState
     ) {
         self.resolver = AuthorizationState.Resolver().logging().eraseToAnyResolver()
         self.oldState = oldState
@@ -28,17 +29,23 @@ class AuthorizationStateResolverTests: XCTestCase {
         let authorizationError = AuthorizationError.configuration(message: "someError")
         let testCredentials = AmplifyCredentials.testData
         let validSequences: [AuthorizationStateSequence] = [
-            AuthorizationStateSequence(oldState: .notConfigured,
-                                       event: AuthorizationEvent(eventType: .configure),
-                                       expected: .configured),
-            AuthorizationStateSequence(oldState: .notConfigured,
-                                       event: AuthorizationEvent(
+            AuthorizationStateSequence(
+                oldState: .notConfigured,
+                event: AuthorizationEvent(eventType: .configure),
+                expected: .configured
+            ),
+            AuthorizationStateSequence(
+                oldState: .notConfigured,
+                event: AuthorizationEvent(
                                         eventType: .cachedCredentialsAvailable(testCredentials)),
-                                       expected: .sessionEstablished(testCredentials)),
-            AuthorizationStateSequence(oldState: .notConfigured,
-                                       event: AuthorizationEvent(
+                expected: .sessionEstablished(testCredentials)
+            ),
+            AuthorizationStateSequence(
+                oldState: .notConfigured,
+                event: AuthorizationEvent(
                                         eventType: .throwError(authorizationError)),
-                                       expected: .error(authorizationError))
+                expected: .error(authorizationError)
+            )
 
         ]
 
@@ -51,12 +58,16 @@ class AuthorizationStateResolverTests: XCTestCase {
         let authorizationError = AuthorizationError.configuration(message: "someError")
         let invalidSequences: [AuthorizationStateSequence] = [
 
-            AuthorizationStateSequence(oldState: .notConfigured,
-                                       event: AuthorizationEvent(eventType: .throwError(authorizationError)),
-                                       expected: .configured),
-            AuthorizationStateSequence(oldState: .configured,
-                                       event: AuthorizationEvent(eventType: .throwError(authorizationError)),
-                                       expected: .notConfigured)
+            AuthorizationStateSequence(
+                oldState: .notConfigured,
+                event: AuthorizationEvent(eventType: .throwError(authorizationError)),
+                expected: .configured
+            ),
+            AuthorizationStateSequence(
+                oldState: .configured,
+                event: AuthorizationEvent(eventType: .throwError(authorizationError)),
+                expected: .notConfigured
+            )
         ]
 
         for sequence in invalidSequences {

@@ -21,7 +21,8 @@ struct InitializeFederationToIdentityPool: Action {
             FetchAuthSessionEvent.init(
                 eventType: .fetchAWSCredentials(
                     developerProvidedIdentityId,
-                    authProviderLoginsMap))
+                    authProviderLoginsMap
+                ))
         } else {
             FetchAuthSessionEvent.init(
                 eventType: .fetchAuthenticatedIdentityID(authProviderLoginsMap))

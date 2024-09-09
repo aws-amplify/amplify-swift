@@ -24,14 +24,18 @@ class AWSAuthCognitoSessionTests: XCTestCase {
             "exp": String(Date(timeIntervalSinceNow: 121).timeIntervalSince1970)
         ]
         let error = AuthError.unknown("", nil)
-        let tokens = AWSCognitoUserPoolTokens(idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
-                                              accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
-                                              refreshToken: "refreshToken")
+        let tokens = AWSCognitoUserPoolTokens(
+            idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            refreshToken: "refreshToken"
+        )
 
-        let session = AWSAuthCognitoSession(isSignedIn: true,
-                                            identityIdResult: .failure(error),
-                                            awsCredentialsResult: .failure(error),
-                                            cognitoTokensResult: .success(tokens))
+        let session = AWSAuthCognitoSession(
+            isSignedIn: true,
+            identityIdResult: .failure(error),
+            awsCredentialsResult: .failure(error),
+            cognitoTokensResult: .success(tokens)
+        )
         let cognitoTokens = try! session.getCognitoTokens().get() as! AWSCognitoUserPoolTokens
         XCTAssertFalse(cognitoTokens.doesExpire(in: 120))
         XCTAssertTrue(cognitoTokens.doesExpire(in: 122))
@@ -50,14 +54,18 @@ class AWSAuthCognitoSessionTests: XCTestCase {
             "exp": String(Date(timeIntervalSinceNow: 1).timeIntervalSince1970)
         ]
         let error = AuthError.unknown("", nil)
-        let tokens = AWSCognitoUserPoolTokens(idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
-                                              accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
-                                              refreshToken: "refreshToken")
+        let tokens = AWSCognitoUserPoolTokens(
+            idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            refreshToken: "refreshToken"
+        )
 
-        let session = AWSAuthCognitoSession(isSignedIn: true,
-                                            identityIdResult: .failure(error),
-                                            awsCredentialsResult: .failure(error),
-                                            cognitoTokensResult: .success(tokens))
+        let session = AWSAuthCognitoSession(
+            isSignedIn: true,
+            identityIdResult: .failure(error),
+            awsCredentialsResult: .failure(error),
+            cognitoTokensResult: .success(tokens)
+        )
 
         let cognitoTokens = try! session.getCognitoTokens().get() as! AWSCognitoUserPoolTokens
         XCTAssertFalse(cognitoTokens.doesExpire())

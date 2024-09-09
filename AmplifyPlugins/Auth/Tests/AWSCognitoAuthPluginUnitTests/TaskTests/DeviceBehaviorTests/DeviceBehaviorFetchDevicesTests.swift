@@ -85,7 +85,8 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
                             deviceLastAuthenticatedDate: dateToTest,
                             deviceLastModifiedDate: dateToTest
                         )
-                    ], paginationToken: nil)
+                    ], paginationToken: nil
+                )
             }
         )
         let listDevicesResult = try await plugin.fetchDevices()

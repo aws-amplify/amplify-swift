@@ -19,8 +19,7 @@ public extension HubPayload.EventName.Auth {
 }
 
 public class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIdentityPoolTask,
-                                                       DefaultLogger
-{
+                                                       DefaultLogger {
     private let authStateMachine: AuthStateMachine
     private let clearFederationHelper: ClearFederationOperationHelper
     private let taskHelper: AWSAuthTaskHelper

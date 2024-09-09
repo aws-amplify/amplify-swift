@@ -52,7 +52,8 @@ class AuthForgetDeviceTests: AWSAuthBaseTest {
         _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: defaultTestEmail
+        )
         await fulfillment(of: [signInExpectation], timeout: networkTimeout)
 
         _ = try await Amplify.Auth.rememberDevice()

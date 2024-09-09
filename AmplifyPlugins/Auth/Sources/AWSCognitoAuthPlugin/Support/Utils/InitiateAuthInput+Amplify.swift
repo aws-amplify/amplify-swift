@@ -10,14 +10,15 @@ import Foundation
 
 extension InitiateAuthInput {
 
-    static func srpInput(username: String,
-                         publicSRPAHexValue: String,
-                         authFlowType: AuthFlowType,
-                         clientMetadata: [String: String],
-                         asfDeviceId: String,
-                         deviceMetadata: DeviceMetadata,
-                         environment: UserPoolEnvironment) async -> InitiateAuthInput
-    {
+    static func srpInput(
+        username: String,
+        publicSRPAHexValue: String,
+        authFlowType: AuthFlowType,
+        clientMetadata: [String: String],
+        asfDeviceId: String,
+        deviceMetadata: DeviceMetadata,
+        environment: UserPoolEnvironment
+    ) async -> InitiateAuthInput {
         var authParameters = [
             "USERNAME": username,
             "SRP_A": publicSRPAHexValue
@@ -29,85 +30,97 @@ extension InitiateAuthInput {
             authParameters["CHALLENGE_NAME"] = "SRP_A"
         }
 
-        return await buildInput(username: username,
-                          authFlowType: authFlowType.getClientFlowType(),
-                          authParameters: authParameters,
-                          clientMetadata: clientMetadata,
-                          asfDeviceId: asfDeviceId,
-                          deviceMetadata: deviceMetadata,
-                          environment: environment)
+        return await buildInput(
+            username: username,
+            authFlowType: authFlowType.getClientFlowType(),
+            authParameters: authParameters,
+            clientMetadata: clientMetadata,
+            asfDeviceId: asfDeviceId,
+            deviceMetadata: deviceMetadata,
+            environment: environment
+        )
     }
 
-    static func customAuth(username: String,
-                           clientMetadata: [String: String],
-                           asfDeviceId: String,
-                           deviceMetadata: DeviceMetadata,
-                           environment: UserPoolEnvironment) async -> InitiateAuthInput
-    {
+    static func customAuth(
+        username: String,
+        clientMetadata: [String: String],
+        asfDeviceId: String,
+        deviceMetadata: DeviceMetadata,
+        environment: UserPoolEnvironment
+    ) async -> InitiateAuthInput {
         let authParameters = [
             "USERNAME": username
         ]
 
-        return await buildInput(username: username,
-                          authFlowType: .customAuth,
-                          authParameters: authParameters,
-                          clientMetadata: clientMetadata,
-                          asfDeviceId: asfDeviceId,
-                          deviceMetadata: deviceMetadata,
-                          environment: environment)
+        return await buildInput(
+            username: username,
+            authFlowType: .customAuth,
+            authParameters: authParameters,
+            clientMetadata: clientMetadata,
+            asfDeviceId: asfDeviceId,
+            deviceMetadata: deviceMetadata,
+            environment: environment
+        )
     }
 
-    static func migrateAuth(username: String,
-                            password: String,
-                            clientMetadata: [String: String],
-                            asfDeviceId: String,
-                            deviceMetadata: DeviceMetadata,
-                            environment: UserPoolEnvironment) async -> InitiateAuthInput
-    {
+    static func migrateAuth(
+        username: String,
+        password: String,
+        clientMetadata: [String: String],
+        asfDeviceId: String,
+        deviceMetadata: DeviceMetadata,
+        environment: UserPoolEnvironment
+    ) async -> InitiateAuthInput {
         let authParameters = [
             "USERNAME": username,
             "PASSWORD": password
         ]
 
-        return await buildInput(username: username,
-                          authFlowType: .userPasswordAuth,
-                          authParameters: authParameters,
-                          clientMetadata: clientMetadata,
-                          asfDeviceId: asfDeviceId,
-                          deviceMetadata: deviceMetadata,
-                          environment: environment)
+        return await buildInput(
+            username: username,
+            authFlowType: .userPasswordAuth,
+            authParameters: authParameters,
+            clientMetadata: clientMetadata,
+            asfDeviceId: asfDeviceId,
+            deviceMetadata: deviceMetadata,
+            environment: environment
+        )
     }
 
-    static func refreshAuthInput(username: String,
-                                 refreshToken: String,
-                                 clientMetadata: [String: String],
-                                 asfDeviceId: String,
-                                 deviceMetadata: DeviceMetadata,
-                                 environment: UserPoolEnvironment) async -> InitiateAuthInput
-    {
+    static func refreshAuthInput(
+        username: String,
+        refreshToken: String,
+        clientMetadata: [String: String],
+        asfDeviceId: String,
+        deviceMetadata: DeviceMetadata,
+        environment: UserPoolEnvironment
+    ) async -> InitiateAuthInput {
 
         let authParameters = [
             "REFRESH_TOKEN": refreshToken
         ]
 
-        return await buildInput(username: username,
-                          authFlowType: .refreshTokenAuth,
-                          authParameters: authParameters,
-                          clientMetadata: clientMetadata,
-                          asfDeviceId: asfDeviceId,
-                          deviceMetadata: deviceMetadata,
-                          environment: environment)
+        return await buildInput(
+            username: username,
+            authFlowType: .refreshTokenAuth,
+            authParameters: authParameters,
+            clientMetadata: clientMetadata,
+            asfDeviceId: asfDeviceId,
+            deviceMetadata: deviceMetadata,
+            environment: environment
+        )
 
     }
 
-    static func buildInput(username: String,
-                           authFlowType: CognitoIdentityProviderClientTypes.AuthFlowType,
-                           authParameters: [String: String],
-                           clientMetadata: [String: String],
-                           asfDeviceId: String?,
-                           deviceMetadata: DeviceMetadata,
-                           environment: UserPoolEnvironment) async -> InitiateAuthInput
-    {
+    static func buildInput(
+        username: String,
+        authFlowType: CognitoIdentityProviderClientTypes.AuthFlowType,
+        authParameters: [String: String],
+        clientMetadata: [String: String],
+        asfDeviceId: String?,
+        deviceMetadata: DeviceMetadata,
+        environment: UserPoolEnvironment
+    ) async -> InitiateAuthInput {
 
         var authParameters = authParameters
         let configuration = environment.userPoolConfiguration
@@ -129,11 +142,11 @@ extension InitiateAuthInput {
         var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
         if let asfDeviceId,
            let encodedData = await CognitoUserPoolASF.encodedContext(
-            username: username,
-            asfDeviceId: asfDeviceId,
-            asfClient: environment.cognitoUserPoolASFFactory(),
-            userPoolConfiguration: environment.userPoolConfiguration)
-        {
+               username: username,
+               asfDeviceId: asfDeviceId,
+               asfClient: environment.cognitoUserPoolASFFactory(),
+               userPoolConfiguration: environment.userPoolConfiguration
+           ) {
             userContextData = .init(encodedData: encodedData)
         }
         let analyticsMetadata = environment
@@ -146,6 +159,7 @@ extension InitiateAuthInput {
             authParameters: authParameters,
             clientId: userPoolClientId,
             clientMetadata: clientMetadata,
-            userContextData: userContextData)
+            userContextData: userContextData
+        )
     }
 }

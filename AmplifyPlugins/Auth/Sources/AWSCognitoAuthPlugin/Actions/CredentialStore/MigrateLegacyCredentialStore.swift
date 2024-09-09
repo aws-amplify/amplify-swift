@@ -57,62 +57,71 @@ struct MigrateLegacyCredentialStore: Action {
 
         var identityId: String?
         var awsCredentials: AuthAWSCognitoCredentials?
-        migrateDeviceDetails(from: credentialStoreEnvironment,
-                             with: authConfiguration)
-        let userPoolTokens = try? getUserPoolTokens(from: credentialStoreEnvironment,
-                                                    with: authConfiguration)
+        migrateDeviceDetails(
+            from: credentialStoreEnvironment,
+            with: authConfiguration
+        )
+        let userPoolTokens = try? getUserPoolTokens(
+            from: credentialStoreEnvironment,
+            with: authConfiguration
+        )
 
         // IdentityId and AWSCredentials should exist together
-        if let (storedIdentityId,
-                storedAWSCredentials) = try? getIdentityIdAndAWSCredentials(
-                    from: credentialStoreEnvironment,
-                    with: authConfiguration)
-        {
+        if let (
+            storedIdentityId,
+            storedAWSCredentials
+        ) = try? getIdentityIdAndAWSCredentials(
+            from: credentialStoreEnvironment,
+            with: authConfiguration
+        ) {
             identityId = storedIdentityId
             awsCredentials = storedAWSCredentials
         }
         let loginsMap = getCachedLoginMaps(from: credentialStoreEnvironment)
-        let signInMethod = (try? getSignInMethod(from: credentialStoreEnvironment,
-                                                 with: authConfiguration)) ?? .apiBased(.userSRP)
+        let signInMethod = (try? getSignInMethod(
+            from: credentialStoreEnvironment,
+            with: authConfiguration
+        )) ?? .apiBased(.userSRP)
         do {
             if let identityId,
                let awsCredentials,
-               userPoolTokens == nil
-            {
+               userPoolTokens == nil {
 
                 if !loginsMap.isEmpty,
                    let providerName = loginsMap.first?.key,
-                   let providerToken = loginsMap.first?.value
-                {
+                   let providerToken = loginsMap.first?.value {
                     logVerbose("\(#fileID) Federated signIn", environment: environment)
                     let provider = AuthProvider(identityPoolProviderName: providerName)
                     let credentials = AmplifyCredentials.identityPoolWithFederation(
                         federatedToken: .init(token: providerToken, provider: provider),
                         identityID: identityId,
-                        credentials: awsCredentials)
+                        credentials: awsCredentials
+                    )
                     try amplifyCredentialStore.saveCredential(credentials)
 
                 } else {
                     logVerbose("\(#fileID) Guest user", environment: environment)
                     let credentials = AmplifyCredentials.identityPoolOnly(
                         identityID: identityId,
-                        credentials: awsCredentials)
+                        credentials: awsCredentials
+                    )
                     try amplifyCredentialStore.saveCredential(credentials)
                 }
 
             } else if let identityId,
                       let awsCredentials,
-                      let userPoolTokens
-            {
+                      let userPoolTokens {
                 logVerbose("\(#fileID) User pool with identity pool", environment: environment)
                 let signedInData = SignedInData(
                     signedInDate: Date.distantPast,
                     signInMethod: signInMethod,
-                    cognitoUserPoolTokens: userPoolTokens)
+                    cognitoUserPoolTokens: userPoolTokens
+                )
                 let credentials = AmplifyCredentials.userPoolAndIdentityPool(
                     signedInData: signedInData,
                     identityID: identityId,
-                    credentials: awsCredentials)
+                    credentials: awsCredentials
+                )
                 try amplifyCredentialStore.saveCredential(credentials)
 
             } else if let userPoolTokens {
@@ -120,7 +129,8 @@ struct MigrateLegacyCredentialStore: Action {
                 let signedInData = SignedInData(
                     signedInDate: Date.distantPast,
                     signInMethod: signInMethod,
-                    cognitoUserPoolTokens: userPoolTokens)
+                    cognitoUserPoolTokens: userPoolTokens
+                )
                 let credentials = AmplifyCredentials.userPoolOnly(signedInData: signedInData)
                 try amplifyCredentialStore.saveCredential(credentials)
             }
@@ -143,7 +153,8 @@ struct MigrateLegacyCredentialStore: Action {
 
     private func migrateDeviceDetails(
         from credentialStoreEnvironment: CredentialStoreEnvironment,
-        with authConfiguration: AuthConfiguration) {
+        with authConfiguration: AuthConfiguration
+    ) {
             guard let bundleIdentifier = Bundle.main.bundleIdentifier,
                   let userPoolConfig = authConfiguration.getUserPoolConfiguration()
             else {
@@ -193,11 +204,12 @@ struct MigrateLegacyCredentialStore: Action {
             let amplifyCredentialStore = credentialStoreEnvironment.amplifyCredentialStoreFactory()
             if let deviceId,
                let deviceSecret,
-               let deviceGroup
-            {
-                let deviceMetaData = DeviceMetadata.metadata(.init(deviceKey: deviceId,
-                                                                   deviceGroupKey: deviceGroup,
-                                                                   deviceSecret: deviceSecret))
+               let deviceGroup {
+                let deviceMetaData = DeviceMetadata.metadata(.init(
+                    deviceKey: deviceId,
+                    deviceGroupKey: deviceGroup,
+                    deviceSecret: deviceSecret
+                ))
                 try? amplifyCredentialStore.saveDevice(deviceMetaData, for: currentUsername)
             }
 
@@ -208,7 +220,8 @@ struct MigrateLegacyCredentialStore: Action {
 
     private func getUserPoolTokens(
         from credentialStoreEnvironment: CredentialStoreEnvironment,
-        with authConfiguration: AuthConfiguration) throws -> AWSCognitoUserPoolTokens {
+        with authConfiguration: AuthConfiguration
+    ) throws -> AWSCognitoUserPoolTokens {
 
             guard let bundleIdentifier = Bundle.main.bundleIdentifier,
                   let userPoolConfig = authConfiguration.getUserPoolConfiguration()
@@ -256,10 +269,12 @@ struct MigrateLegacyCredentialStore: Action {
             // If the token expiration can't be converted to a date, chose a date in the past
             let pastDate = Date.init(timeIntervalSince1970: 0)
             let tokenExpiration = dateFormatter().date(from: tokenExpirationString) ?? pastDate
-            return AWSCognitoUserPoolTokens(idToken: idToken,
-                                            accessToken: accessToken,
-                                            refreshToken: refreshToken,
-                                            expiration: tokenExpiration)
+            return AWSCognitoUserPoolTokens(
+                idToken: idToken,
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+                expiration: tokenExpiration
+            )
         }
 
     private func getCachedLoginMaps(
@@ -281,7 +296,8 @@ struct MigrateLegacyCredentialStore: Action {
 
     private func getSignInMethod(
         from credentialStoreEnvironment: CredentialStoreEnvironment,
-        with authConfiguration: AuthConfiguration) throws -> SignInMethod {
+        with authConfiguration: AuthConfiguration
+    ) throws -> SignInMethod {
 
             let serviceKey = "\(String.init(describing: Bundle.main.bundleIdentifier)).AWSMobileClient"
             let legacyKeychainStore = credentialStoreEnvironment.legacyKeychainStoreFactory(serviceKey)
@@ -292,34 +308,41 @@ struct MigrateLegacyCredentialStore: Action {
             case "hostedUI":
                 let userPoolConfig = authConfiguration.getUserPoolConfiguration()
                 let scopes = userPoolConfig?.hostedUIConfig?.oauth.scopes
-                let provider = HostedUIProviderInfo(authProvider: nil,
-                                                    idpIdentifier: nil)
-                return .hostedUI(.init(scopes: scopes ?? [],
-                                       providerInfo: provider,
-                                       presentationAnchor: nil,
-                                       preferPrivateSession: false))
+                let provider = HostedUIProviderInfo(
+                    authProvider: nil,
+                    idpIdentifier: nil
+                )
+                return .hostedUI(.init(
+                    scopes: scopes ?? [],
+                    providerInfo: provider,
+                    presentationAnchor: nil,
+                    preferPrivateSession: false
+                ))
             default:
                 return .apiBased(.userSRP)
             }
 
         }
 
-    private func userPoolNamespace(userPoolConfig: UserPoolConfigurationData,
-                                   for key: String) -> String
-    {
+    private func userPoolNamespace(
+        userPoolConfig: UserPoolConfigurationData,
+        for key: String
+    ) -> String {
         return "\(userPoolConfig.clientId).\(key)"
     }
 
-    private func userPoolNamespace(withUser userName: String,
-                                   userPoolConfig: UserPoolConfigurationData,
-                                   for key: String) -> String
-    {
+    private func userPoolNamespace(
+        withUser userName: String,
+        userPoolConfig: UserPoolConfigurationData,
+        for key: String
+    ) -> String {
         return "\(userPoolConfig.poolId).\(userName).\(key)"
     }
 
     private func getIdentityIdAndAWSCredentials(
         from credentialStoreEnvironment: CredentialStoreEnvironment,
-        with authConfiguration: AuthConfiguration) throws
+        with authConfiguration: AuthConfiguration
+    ) throws
     -> (identityId: String, awsCredentials: AuthAWSCognitoCredentials) {
 
         guard let bundleIdentifier = Bundle.main.bundleIdentifier,

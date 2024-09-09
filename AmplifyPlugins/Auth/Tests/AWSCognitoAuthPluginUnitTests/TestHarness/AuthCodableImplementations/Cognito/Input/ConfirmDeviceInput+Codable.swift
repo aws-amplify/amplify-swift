@@ -33,7 +33,8 @@ extension ConfirmDeviceInput: Decodable {
             deviceName: deviceName,
             deviceSecretVerifierConfig: .init(
                 passwordVerifier: passwordVerifier,
-                salt: salt)
+                salt: salt
+            )
         )
     }
 }

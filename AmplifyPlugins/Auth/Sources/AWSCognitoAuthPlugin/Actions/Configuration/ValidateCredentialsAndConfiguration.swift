@@ -20,11 +20,15 @@ struct ValidateCredentialsAndConfiguration: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         var event: StateMachineEvent = switch authConfiguration {
         case .identityPools:
-            AuthEvent(eventType: .configureAuthorization(authConfiguration,
-                                                                 cachedCredentials))
+            AuthEvent(eventType: .configureAuthorization(
+                authConfiguration,
+                cachedCredentials
+            ))
         default:
-            AuthEvent(eventType: .configureAuthentication(authConfiguration,
-                                                                  cachedCredentials))
+            AuthEvent(eventType: .configureAuthentication(
+                authConfiguration,
+                cachedCredentials
+            ))
         }
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         await dispatcher.send(event)

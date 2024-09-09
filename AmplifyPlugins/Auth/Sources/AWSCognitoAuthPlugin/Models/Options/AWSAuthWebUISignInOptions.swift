@@ -27,9 +27,10 @@ public struct AWSAuthWebUISignInOptions {
     /// Safari always honors the request.
     public let preferPrivateSession: Bool
 
-    public init(idpIdentifier: String? = nil,
-                preferPrivateSession: Bool = false)
-    {
+    public init(
+        idpIdentifier: String? = nil,
+        preferPrivateSession: Bool = false
+    ) {
         self.idpIdentifier = idpIdentifier
         self.preferPrivateSession = preferPrivateSession
     }

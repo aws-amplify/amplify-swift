@@ -28,9 +28,13 @@ struct ASFDeviceInfo: ASFDeviceBehavior {
     var type: String {
         var systemInfo = utsname()
         uname(&systemInfo)
-        return String(bytes: Data(bytes: &systemInfo.machine,
-                                  count: Int(_SYS_NAMELEN)),
-                      encoding: .utf8) ?? DeviceInfo.current.hostName
+        return String(
+            bytes: Data(
+                bytes: &systemInfo.machine,
+                count: Int(_SYS_NAMELEN)
+            ),
+            encoding: .utf8
+        ) ?? DeviceInfo.current.hostName
     }
 
     var platform: String {

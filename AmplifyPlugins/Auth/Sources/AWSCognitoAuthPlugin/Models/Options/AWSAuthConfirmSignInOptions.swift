@@ -20,7 +20,8 @@ public struct AWSAuthConfirmSignInOptions {
     public init(
         userAttributes: [AuthUserAttribute]? = nil,
         metadata: [String: String]? = nil,
-        friendlyDeviceName: String? = nil) {
+        friendlyDeviceName: String? = nil
+    ) {
             self.userAttributes = userAttributes
             self.metadata = metadata
             self.friendlyDeviceName = friendlyDeviceName

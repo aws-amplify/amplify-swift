@@ -50,7 +50,8 @@ class AuthTestHarness {
             authConfiguration: authConfiguration,
             initialAuthState: testHarnessInput.initialAuthState,
             mockIdentityProvider: testHarnessInput.getMockIdentityProvider(),
-            mockIdentity: testHarnessInput.getMockIdentity())
+            mockIdentity: testHarnessInput.getMockIdentity()
+        )
     }
 
 }

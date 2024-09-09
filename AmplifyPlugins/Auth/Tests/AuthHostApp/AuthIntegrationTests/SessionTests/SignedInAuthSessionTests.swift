@@ -33,26 +33,33 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     func testSuccessfulForceSessionFetch() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let firstCognitoSession = try await AuthSessionHelper.getCurrentAmplifySession(
             for: self,
-            with: networkTimeout)
+            with: networkTimeout
+        )
 
         let secondCognitoSession = try await AuthSessionHelper.getCurrentAmplifySession(
             for: self,
-            with: networkTimeout)
+            with: networkTimeout
+        )
 
         let thirdCognitoSession = try await AuthSessionHelper.getCurrentAmplifySession(
             shouldForceRefresh: true,
             for: self,
-            with: networkTimeout)
+            with: networkTimeout
+        )
 
         let fourthCognitoSession = try await AuthSessionHelper.getCurrentAmplifySession(
             for: self,
-            with: networkTimeout)
+            with: networkTimeout
+        )
 
         // First 2 sessions should match
         XCTAssertEqual(firstCognitoSession, secondCognitoSession)
@@ -75,8 +82,11 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     func testSuccessfulSessionFetch() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let session = try await Amplify.Auth.fetchAuthSession()
@@ -95,8 +105,11 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         throw XCTSkip("TODO: fix this test. We need to find a way to mock credential store")
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let session = try await Amplify.Auth.fetchAuthSession()
@@ -136,8 +149,11 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         throw XCTSkip("TODO: fix this test. We need to find a way to mock credential store")
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let session = try await Amplify.Auth.fetchAuthSession()
@@ -175,8 +191,11 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     func testMultipleSuccessfulSessionFetch() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let firstSession = try await Amplify.Auth.fetchAuthSession()
@@ -268,7 +287,8 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         session = try await Amplify.Auth.fetchAuthSession()

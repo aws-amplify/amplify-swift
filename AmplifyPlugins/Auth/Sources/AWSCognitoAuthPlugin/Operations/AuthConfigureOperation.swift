@@ -14,7 +14,8 @@ import ClientRuntime
 typealias ConfigureOperation = AmplifyOperation<
     AuthConfigureRequest,
     Void,
-    AuthError>
+    AuthError
+>
 
 class AuthConfigureOperation: ConfigureOperation {
 
@@ -22,17 +23,20 @@ class AuthConfigureOperation: ConfigureOperation {
     let authStateMachine: AuthStateMachine
     let credentialStoreStateMachine: CredentialStoreStateMachine
 
-    init(request: AuthConfigureRequest,
-         authStateMachine: AuthStateMachine,
-         credentialStoreStateMachine: CredentialStoreStateMachine)
-    {
+    init(
+        request: AuthConfigureRequest,
+        authStateMachine: AuthStateMachine,
+        credentialStoreStateMachine: CredentialStoreStateMachine
+    ) {
 
         self.authConfiguration = request.authConfiguration
         self.authStateMachine = authStateMachine
         self.credentialStoreStateMachine = credentialStoreStateMachine
-        super.init(categoryType: .auth,
-                   eventName: "InternalConfigureAuth",
-                   request: request)
+        super.init(
+            categoryType: .auth,
+            eventName: "InternalConfigureAuth",
+            request: request
+        )
     }
 
     override public func main() {

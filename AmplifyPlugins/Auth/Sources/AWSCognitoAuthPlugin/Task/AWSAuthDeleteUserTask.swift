@@ -18,9 +18,10 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger {
         HubPayload.EventName.Auth.deleteUserAPI
     }
 
-    init(authStateMachine: AuthStateMachine,
-         authConfiguraiton: AuthConfiguration)
-    {
+    init(
+        authStateMachine: AuthStateMachine,
+        authConfiguraiton: AuthConfiguration
+    ) {
         self.authStateMachine = authStateMachine
         self.configuration = authConfiguraiton
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
@@ -52,7 +53,8 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger {
                 let error = AuthError.invalidState(
                     "Auth state should be in configured state and authentication state should be in deleting user state",
                     AuthPluginErrorConstants.invalidStateError,
-                    nil)
+                    nil
+                )
                 throw error
             }
 

@@ -40,32 +40,38 @@ enum TestHarnessAPIDecoder {
                 return signInAPI(
                     params: specification.api.params,
                     responseType: responseType,
-                    data: data)
+                    data: data
+                )
             case .signUp:
                 return signUpAPI(
                     params: specification.api.params,
                     responseType: responseType,
-                    data: data)
+                    data: data
+                )
             case .deleteUser:
                 return deleteUserAPI(
                     params: specification.api.params,
                     responseType: responseType,
-                    data: data)
+                    data: data
+                )
             case .confirmSignIn:
                 return confirmSignInAPI(
                     params: specification.api.params,
                     responseType: responseType,
-                    data: data)
+                    data: data
+                )
             case .fetchAuthSession:
                 return fetchAuthSession(
                     params: specification.api.params,
                     responseType: responseType,
-                    data: data)
+                    data: data
+                )
             case .signOut:
                 return signOutApi(
                     options: specification.api.options,
                     responseType: responseType,
-                    data: data)
+                    data: data
+                )
             default:
                 fatalError()
             }
@@ -86,8 +92,10 @@ enum TestHarnessAPIDecoder {
         return .signIn(
             input: .init(
                 username: username,
-                password: inputPassword, options: .init()),
-            expectedOutput: generateResult(responseType: responseType, data: data))
+                password: inputPassword, options: .init()
+            ),
+            expectedOutput: generateResult(responseType: responseType, data: data)
+        )
     }
 
     private static func signUpAPI(
@@ -105,8 +113,10 @@ enum TestHarnessAPIDecoder {
         return .signUp(
             input: .init(
                 username: username,
-                password: inputPassword, options: .init()),
-            expectedOutput: generateResult(responseType: responseType, data: data))
+                password: inputPassword, options: .init()
+            ),
+            expectedOutput: generateResult(responseType: responseType, data: data)
+        )
     }
 
     private static func resetPasswordAPI(
@@ -118,9 +128,12 @@ enum TestHarnessAPIDecoder {
             fatalError("missing username parameter")
         }
         return .resetPassword(
-            input: .init(username: username,
-                         options: .init()),
-            expectedOutput: generateResult(responseType: responseType, data: data))
+            input: .init(
+                username: username,
+                options: .init()
+            ),
+            expectedOutput: generateResult(responseType: responseType, data: data)
+        )
     }
 
     private static func confirmSignInAPI(
@@ -133,7 +146,8 @@ enum TestHarnessAPIDecoder {
         }
         return .confirmSignIn(
             input: .init(challengeResponse: challengeResponse, options: .init()),
-            expectedOutput: generateResult(responseType: responseType, data: data))
+            expectedOutput: generateResult(responseType: responseType, data: data)
+        )
     }
 
     private static func fetchAuthSession(
@@ -143,11 +157,13 @@ enum TestHarnessAPIDecoder {
     ) -> AmplifyAPI {
 
         let result: Result<AWSAuthCognitoSession, AuthError>? = generateResult(
-            responseType: responseType, data: data)
+            responseType: responseType, data: data
+        )
 
         return .fetchAuthSession(
             input: .init(options: .init()),
-            expectedOutput: result)
+            expectedOutput: result
+        )
     }
 
     private static func signOutApi(
@@ -162,11 +178,13 @@ enum TestHarnessAPIDecoder {
         }
 
         let result: Result<AWSCognitoSignOutResult, AuthError>? = generateResult(
-            responseType: responseType, data: data)
+            responseType: responseType, data: data
+        )
 
         return .signOut(
             input: .init(options: .init(globalSignOut: globalSignOut)),
-            expectedOutput: result)
+            expectedOutput: result
+        )
     }
 
     private static func deleteUserAPI(
@@ -178,7 +196,8 @@ enum TestHarnessAPIDecoder {
         guard let responseType, let data else {
             return .deleteUser(
                 input: (),
-                expectedOutput: nil)
+                expectedOutput: nil
+            )
         }
 
         let result: Result<Void, AuthError>
@@ -186,7 +205,8 @@ enum TestHarnessAPIDecoder {
         switch responseType {
         case "failure":
             let authError = try! JSONDecoder().decode(
-                AuthError.self, from: data)
+                AuthError.self, from: data
+            )
             result = .failure(authError)
         case "success":
             result = .success(())
@@ -195,11 +215,13 @@ enum TestHarnessAPIDecoder {
         }
         return .deleteUser(
             input: (),
-            expectedOutput: result)
+            expectedOutput: result
+        )
     }
 
     private static func generateResult<Output: Decodable>(
-        responseType: String?, data: Data?) -> Result<Output, AuthError>? {
+        responseType: String?, data: Data?
+    ) -> Result<Output, AuthError>? {
 
             guard let responseType, let data else {
                 return nil
@@ -210,11 +232,13 @@ enum TestHarnessAPIDecoder {
             switch responseType {
             case "failure":
                 let authError = try! JSONDecoder().decode(
-                    AuthError.self, from: data)
+                    AuthError.self, from: data
+                )
                 result = .failure(authError)
             case "success":
                 let output = try! JSONDecoder().decode(
-                    Output.self, from: data)
+                    Output.self, from: data
+                )
                 result = .success(output)
             default:
                 fatalError("invalid response type")

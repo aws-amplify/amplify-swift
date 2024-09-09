@@ -23,9 +23,10 @@ class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
         HubPayload.EventName.Auth.setUpTOTPAPI
     }
 
-    init(authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory)
-    {
+    init(
+        authStateMachine: AuthStateMachine,
+        userPoolFactory: @escaping CognitoUserPoolFactory
+    ) {
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
@@ -57,17 +58,19 @@ class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
 
         let currentState = await authStateMachine.currentState
         if case .configured(let authNState, _) = currentState,
-           case .signedIn(let signInData) = authNState
-        {
+           case .signedIn(let signInData) = authNState {
             authUser = AWSAuthUser(username: signInData.username, userId: signInData.userId)
         } else {
             throw AuthError.invalidState(
                 "Auth State not in a valid state for the user",
                 AuthPluginErrorConstants.invalidStateError,
-                nil)
+                nil
+            )
         }
-        return .init(sharedSecret: secretCode,
-                     username: authUser.username)
+        return .init(
+            sharedSecret: secretCode,
+            username: authUser.username
+        )
 
     }
 }

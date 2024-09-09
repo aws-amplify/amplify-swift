@@ -48,7 +48,8 @@ class AWSAuthConfirmUserAttributeTask: AuthConfirmUserAttributeTask, DefaultLogg
         let input = VerifyUserAttributeInput(
             accessToken: accessToken,
             attributeName: request.attributeKey.rawValue,
-            code: request.confirmationCode)
+            code: request.confirmationCode
+        )
 
         _ = try await userPoolService.verifyUserAttribute(input: input)
     }

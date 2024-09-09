@@ -9,7 +9,9 @@ import Foundation
 
 typealias AuthStateMachine = StateMachine<
     AuthState,
-    AuthEnvironment>
+    AuthEnvironment
+>
 typealias CredentialStoreStateMachine = StateMachine<
     CredentialStoreState,
-    CredentialEnvironment>
+    CredentialEnvironment
+>

@@ -27,6 +27,7 @@ extension InitiateAuthInput: Decodable {
             authFlow: authFlow,
             authParameters: authParameters,
             clientId: clientId,
-            clientMetadata: clientMetadata)
+            clientMetadata: clientMetadata
+        )
     }
 }

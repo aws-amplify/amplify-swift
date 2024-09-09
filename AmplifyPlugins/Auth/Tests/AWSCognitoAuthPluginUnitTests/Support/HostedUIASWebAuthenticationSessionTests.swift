@@ -190,7 +190,8 @@ extension HostedUIASWebAuthenticationSession {
             url: URL(string: "https://test.com")!,
             callbackScheme: "https",
             inPrivate: false,
-            presentationAnchor: nil)
+            presentationAnchor: nil
+        )
     }
 }
 #else
@@ -206,7 +207,8 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase {
                 url: URL(string: "https://test.com")!,
                 callbackScheme: "https",
                 inPrivate: false,
-                presentationAnchor: nil)
+                presentationAnchor: nil
+            )
         } catch let error as HostedUIError {
             if case .serviceMessage(let message) = error {
                 XCTAssertEqual(message, "HostedUI is only available in iOS and macOS")

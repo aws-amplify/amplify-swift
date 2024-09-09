@@ -25,8 +25,10 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
                         .apiBased(.userSRP)
                     ),
                     .selectMFAType,
-                    .apiBased(.userSRP))),
-            AuthorizationState.sessionEstablished(.testData))
+                    .apiBased(.userSRP)
+                )),
+            AuthorizationState.sessionEstablished(.testData)
+        )
     }
 
     /// Test a successful confirmSignIn call with .confirmSignInWithSMSMFACode as next step
@@ -540,7 +542,8 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
         let identityPoolConfigData = Defaults.makeIdentityConfigData()
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: identityPoolConfigData,
-            cognitoIdentityFactory: Defaults.makeIdentity)
+            cognitoIdentityFactory: Defaults.makeIdentity
+        )
         let environment = AuthEnvironment(
             configuration: .identityPools(identityPoolConfigData),
             userPoolConfigData: nil,
@@ -550,8 +553,10 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
             credentialsClient: Defaults.makeCredentialStoreOperationBehavior(),
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
-        let stateMachine = Defaults.authStateMachineWith(environment: environment,
-                                                         initialState: .notConfigured)
+        let stateMachine = Defaults.authStateMachineWith(
+            environment: environment,
+            initialState: .notConfigured
+        )
         let plugin = AWSCognitoAuthPlugin()
         plugin.configure(
             authConfiguration: .identityPools(identityPoolConfigData),
@@ -559,7 +564,8 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
             authStateMachine: stateMachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior(),
-            analyticsHandler: MockAnalyticsHandler())
+            analyticsHandler: MockAnalyticsHandler()
+        )
 
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: MFAType.totp.challengeResponse)

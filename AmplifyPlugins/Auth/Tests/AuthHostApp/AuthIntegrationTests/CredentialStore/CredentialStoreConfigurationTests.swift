@@ -34,7 +34,8 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         let awsCredentials = AuthAWSCognitoCredentials.testData
         let initialCognitoCredentials = AmplifyCredentials.identityPoolOnly(
             identityID: identityId,
-            credentials: awsCredentials)
+            credentials: awsCredentials
+        )
         let configData = Defaults.makeIdentityConfigData()
         let initialAuthConfig = AuthConfiguration.identityPools(configData)
         let credentialStore = AWSCognitoAuthCredentialStore(authConfiguration: initialAuthConfig)
@@ -46,8 +47,10 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
 
         // When configuration changed
         let userPoolConfiguration = Defaults.makeDefaultUserPoolConfigData()
-        let newAuthConfig = AuthConfiguration.userPoolsAndIdentityPools(userPoolConfiguration,
-                                                                        configData)
+        let newAuthConfig = AuthConfiguration.userPoolsAndIdentityPools(
+            userPoolConfiguration,
+            configData
+        )
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: newAuthConfig)
 
         // Then
@@ -79,10 +82,12 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         let initialCognitoCredentials = AmplifyCredentials.userPoolAndIdentityPool(
             signedInData: .testData,
             identityID: identityId,
-            credentials: awsCredentials)
+            credentials: awsCredentials
+        )
         let initialAuthConfig = AuthConfiguration.userPoolsAndIdentityPools(
             Defaults.makeDefaultUserPoolConfigData(),
-            Defaults.makeIdentityConfigData())
+            Defaults.makeIdentityConfigData()
+        )
         let credentialStore = AWSCognitoAuthCredentialStore(authConfiguration: initialAuthConfig)
         do {
             try credentialStore.saveCredential(initialCognitoCredentials)
@@ -95,9 +100,11 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
 
         // Then
         guard let credentials = try? newCredentialStore.retrieveCredential(),
-              case .userPoolAndIdentityPool(let retrievedTokens,
-                                            let retrievedIdentityID,
-                                            let retrievedCredentials) = credentials
+              case .userPoolAndIdentityPool(
+                  let retrievedTokens,
+                  let retrievedIdentityID,
+                  let retrievedCredentials
+              ) = credentials
         else {
             XCTFail("Unable to retrieve Credentials")
             return
@@ -124,7 +131,8 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         let awsCredentials = AuthAWSCognitoCredentials.testData
         let initialCognitoCredentials = AmplifyCredentials.identityPoolOnly(
             identityID: identityId,
-            credentials: awsCredentials)
+            credentials: awsCredentials
+        )
         let initialAuthConfig = AuthConfiguration.userPools(Defaults.makeDefaultUserPoolConfigData())
         let credentialStore = AWSCognitoAuthCredentialStore(authConfiguration: initialAuthConfig)
         do {
@@ -136,7 +144,8 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         // When configuration changed
         let newAuthConfig = AuthConfiguration.userPoolsAndIdentityPools(
             Defaults.makeDefaultUserPoolConfigData(),
-            Defaults.makeIdentityConfigData())
+            Defaults.makeIdentityConfigData()
+        )
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: newAuthConfig)
 
         // Then
@@ -158,7 +167,8 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         let awsCredentials = AuthAWSCognitoCredentials.testData
         let initialCognitoCredentials = AmplifyCredentials.identityPoolOnly(
             identityID: identityId,
-            credentials: awsCredentials)
+            credentials: awsCredentials
+        )
 
         let initialAuthConfig = AuthConfiguration.identityPools(Defaults.makeIdentityConfigData())
         let credentialStore = AWSCognitoAuthCredentialStore(authConfiguration: initialAuthConfig)
@@ -169,8 +179,10 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         }
 
         // When configuration changed
-        let newAuthConfig = AuthConfiguration.identityPools(IdentityPoolConfigurationData(poolId: "changed",
-                                                                                          region: "changed"))
+        let newAuthConfig = AuthConfiguration.identityPools(IdentityPoolConfigurationData(
+            poolId: "changed",
+            region: "changed"
+        ))
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: newAuthConfig)
 
         // Then
@@ -193,10 +205,12 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         let initialCognitoCredentials = AmplifyCredentials.userPoolAndIdentityPool(
             signedInData: .testData,
             identityID: identityId,
-            credentials: awsCredentials)
+            credentials: awsCredentials
+        )
         let initialAuthConfig = AuthConfiguration.userPoolsAndIdentityPools(
             Defaults.makeDefaultUserPoolConfigData(),
-            Defaults.makeIdentityConfigData())
+            Defaults.makeIdentityConfigData()
+        )
         let credentialStore = AWSCognitoAuthCredentialStore(authConfiguration: initialAuthConfig)
         do {
             try credentialStore.saveCredential(initialCognitoCredentials)

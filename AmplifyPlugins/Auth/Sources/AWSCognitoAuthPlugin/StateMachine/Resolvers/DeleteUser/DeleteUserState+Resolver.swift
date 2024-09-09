@@ -16,9 +16,10 @@ extension DeleteUserState {
 
         let signedInData: SignedInData
 
-        func resolve(oldState: DeleteUserState,
-                     byApplying event: StateMachineEvent) -> StateResolution<DeleteUserState>
-        {
+        func resolve(
+            oldState: DeleteUserState,
+            byApplying event: StateMachineEvent
+        ) -> StateResolution<DeleteUserState> {
 
             switch oldState {
 

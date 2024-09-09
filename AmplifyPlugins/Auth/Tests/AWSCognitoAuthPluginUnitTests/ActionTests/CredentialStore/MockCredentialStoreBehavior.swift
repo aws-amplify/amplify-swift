@@ -17,9 +17,10 @@ class MockKeychainStoreBehavior: KeychainStoreBehavior {
     let data: String
     let removeAllHandler: VoidHandler?
 
-    init(data: String,
-         removeAllHandler: VoidHandler? = nil)
-    {
+    init(
+        data: String,
+        removeAllHandler: VoidHandler? = nil
+    ) {
         self.data = data
         self.removeAllHandler = removeAllHandler
     }

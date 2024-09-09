@@ -19,10 +19,11 @@ struct InitiateSignOut: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         let event = if case .hostedUI(let options) = signedInData.signInMethod,
-           options.preferPrivateSession == false
-        {
-            SignOutEvent(eventType: .invokeHostedUISignOut(signOutEventData,
-                                                                   signedInData))
+           options.preferPrivateSession == false {
+            SignOutEvent(eventType: .invokeHostedUISignOut(
+                signOutEventData,
+                signedInData
+            ))
         } else if signOutEventData.globalSignOut {
             SignOutEvent(eventType: .signOutGlobally(signedInData))
         } else {

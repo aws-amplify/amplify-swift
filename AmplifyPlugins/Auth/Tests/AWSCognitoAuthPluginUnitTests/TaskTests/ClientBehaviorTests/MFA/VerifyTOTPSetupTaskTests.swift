@@ -37,7 +37,8 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
         do {
             let pluginOptions = VerifyTOTPSetupOptions(friendlyDeviceName: "device")
             try await plugin.verifyTOTPSetup(
-                code: "123456", options: .init(pluginOptions: pluginOptions))
+                code: "123456", options: .init(pluginOptions: pluginOptions)
+            )
         } catch {
             XCTFail("Received failure with error \(error)")
         }

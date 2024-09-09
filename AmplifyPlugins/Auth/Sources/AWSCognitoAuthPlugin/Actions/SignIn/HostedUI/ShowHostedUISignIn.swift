@@ -53,7 +53,8 @@ class ShowHostedUISignIn: NSObject, Action {
                 url: url,
                 callbackScheme: callbackURLScheme,
                 inPrivate: signingInData.options.preferPrivateSession,
-                presentationAnchor: signingInData.presentationAnchor)
+                presentationAnchor: signingInData.presentationAnchor
+            )
 
             guard let code = queryItems.first(where: { $0.name == "code" })?.value,
                   let state = queryItems.first(where: { $0.name == "state" })?.value,
@@ -66,10 +67,12 @@ class ShowHostedUISignIn: NSObject, Action {
                 return
             }
 
-            let result = HostedUIResult(code: code,
-                                        state: state,
-                                        codeVerifier: signingInData.codeChallenge,
-                                        options: signingInData.options)
+            let result = HostedUIResult(
+                code: code,
+                state: state,
+                codeVerifier: signingInData.codeChallenge,
+                options: signingInData.options
+            )
             let event = HostedUIEvent(eventType: .fetchToken(result))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             await dispatcher.send(event)

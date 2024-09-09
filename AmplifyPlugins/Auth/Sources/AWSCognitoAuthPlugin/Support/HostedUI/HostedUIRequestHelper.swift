@@ -10,12 +10,13 @@ import Foundation
 
 enum HostedUIRequestHelper {
 
-    static func createSignInURL(state: String,
-                                proofKey: String,
-                                userContextData: String?,
-                                configuration: HostedUIConfigurationData,
-                                options: HostedUIOptions) throws -> URL
-    {
+    static func createSignInURL(
+        state: String,
+        proofKey: String,
+        userContextData: String?,
+        configuration: HostedUIConfigurationData,
+        options: HostedUIOptions
+    ) throws -> URL {
 
         guard let proofData = proofKey.data(using: .ascii) else {
             throw HostedUIError.proofCalculation
@@ -84,9 +85,10 @@ enum HostedUIRequestHelper {
         return logoutURL
     }
 
-    static func createTokenRequest(configuration: HostedUIConfigurationData,
-                                   result: HostedUIResult) throws -> URLRequest
-    {
+    static func createTokenRequest(
+        configuration: HostedUIConfigurationData,
+        result: HostedUIResult
+    ) throws -> URLRequest {
 
         guard let signInRedirectURI = configuration.oauth
             .signInRedirectURI
@@ -110,7 +112,8 @@ enum HostedUIRequestHelper {
             .init(name: "client_id", value: configuration.clientId),
             .init(name: "code", value: result.code),
             .init(name: "redirect_uri", value: signInRedirectURI),
-            .init(name: "code_verifier", value: result.codeVerifier)]
+            .init(name: "code_verifier", value: result.codeVerifier)
+        ]
 
         guard let body = queryComponents.query else {
             throw HostedUIError.tokenURI

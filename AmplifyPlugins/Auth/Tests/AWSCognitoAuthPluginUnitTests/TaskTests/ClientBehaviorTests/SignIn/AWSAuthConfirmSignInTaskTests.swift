@@ -19,9 +19,13 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     override var initialState: AuthState {
         AuthState.configured(
             AuthenticationState.signingIn(
-                .resolvingChallenge(.waitingForAnswer(.testData(), .apiBased(.userSRP)),
-                                    .smsMfa, .apiBased(.userSRP))),
-            AuthorizationState.sessionEstablished(.testData))
+                .resolvingChallenge(
+                    .waitingForAnswer(.testData(), .apiBased(.userSRP)),
+                    .smsMfa,
+                    .apiBased(.userSRP)
+                )),
+            AuthorizationState.sessionEstablished(.testData)
+        )
     }
 
     /// Test a successful confirmSignIn call with .done as next step
@@ -125,7 +129,8 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
 
         let confirmSignInOptions = AWSAuthConfirmSignInOptions(
             userAttributes: [.init(.email, value: "some@some.com")],
-            metadata: ["metadata": "test"])
+            metadata: ["metadata": "test"]
+        )
 
 
         mockIdentityProvider = MockIdentityProvider(
@@ -138,7 +143,8 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         do {
             let confirmSignInResult = try await plugin.confirmSignIn(
                 challengeResponse: "code",
-                options: .init(pluginOptions: confirmSignInOptions))
+                options: .init(pluginOptions: confirmSignInOptions)
+            )
             guard case .done = confirmSignInResult.nextStep else {
                 XCTFail("Result should be .done for next step")
                 return
@@ -486,7 +492,8 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         let identityPoolConfigData = Defaults.makeIdentityConfigData()
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: identityPoolConfigData,
-            cognitoIdentityFactory: Defaults.makeIdentity)
+            cognitoIdentityFactory: Defaults.makeIdentity
+        )
         let environment = AuthEnvironment(
             configuration: .identityPools(identityPoolConfigData),
             userPoolConfigData: nil,
@@ -496,8 +503,10 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             credentialsClient: Defaults.makeCredentialStoreOperationBehavior(),
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
-        let stateMachine = Defaults.authStateMachineWith(environment: environment,
-                                                         initialState: .notConfigured)
+        let stateMachine = Defaults.authStateMachineWith(
+            environment: environment,
+            initialState: .notConfigured
+        )
         let plugin = AWSCognitoAuthPlugin()
         plugin.configure(
             authConfiguration: .identityPools(identityPoolConfigData),
@@ -505,7 +514,8 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             authStateMachine: stateMachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior(),
-            analyticsHandler: MockAnalyticsHandler())
+            analyticsHandler: MockAnalyticsHandler()
+        )
 
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")

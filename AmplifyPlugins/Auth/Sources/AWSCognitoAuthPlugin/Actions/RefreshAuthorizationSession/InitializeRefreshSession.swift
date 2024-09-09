@@ -40,17 +40,20 @@ struct InitializeRefreshSession: Action {
                 return
             }
             let tokens = signedInData.cognitoUserPoolTokens
-            let provider = CognitoUserPoolLoginsMap(idToken: tokens.idToken,
-                                                    region: config.region,
-                                                    poolId: config.poolId)
+            let provider = CognitoUserPoolLoginsMap(
+                idToken: tokens.idToken,
+                region: config.region,
+                poolId: config.poolId
+            )
             if isForceRefresh ||
-                tokens.doesExpire(in: AmplifyCredentials.expiryBufferInSeconds)
-            {
+                tokens.doesExpire(in: AmplifyCredentials.expiryBufferInSeconds) {
                 event = .init(eventType: .refreshCognitoUserPoolWithIdentityId(signedInData, identityID))
             } else {
-                event = .init(eventType: .refreshAWSCredentialsWithUserPool(identityID,
-                                                                            signedInData,
-                                                                            provider))
+                event = .init(eventType: .refreshAWSCredentialsWithUserPool(
+                    identityID,
+                    signedInData,
+                    provider
+                ))
             }
         case .noCredentials:
             event = .init(eventType: .throwError(.noCredentialsToRefresh))

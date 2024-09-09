@@ -27,8 +27,10 @@ extension RespondToAuthChallenge {
         guard let parameters,
               let medium = parameters["CODE_DELIVERY_DELIVERY_MEDIUM"]
         else {
-            return AuthCodeDeliveryDetails(destination: .unknown(nil),
-                                           attributeKey: nil)
+            return AuthCodeDeliveryDetails(
+                destination: .unknown(nil),
+                attributeKey: nil
+            )
         }
 
         var deliveryDestination = DeliveryDestination.unknown(nil)
@@ -36,8 +38,10 @@ extension RespondToAuthChallenge {
         if medium == "SMS" {
             deliveryDestination = .sms(destination)
         }
-        return AuthCodeDeliveryDetails(destination: deliveryDestination,
-                                       attributeKey: nil)
+        return AuthCodeDeliveryDetails(
+            destination: deliveryDestination,
+            attributeKey: nil
+        )
     }
 
     var getAllowedMFATypesForSelection: Set<MFAType> {
@@ -52,8 +56,8 @@ extension RespondToAuthChallenge {
     private func getMFATypes(forKey key: String) -> Set<MFAType> {
         guard let mfaTypeParameters = parameters?[key],
               let mfaTypesArray = try? JSONDecoder().decode(
-                [String].self,
-                from: Data(mfaTypeParameters.utf8)
+                  [String].self,
+                  from: Data(mfaTypeParameters.utf8)
               )
         else { return .init() }
 
@@ -62,8 +66,10 @@ extension RespondToAuthChallenge {
     }
 
     var debugDictionary: [String: Any] {
-        return ["challenge": challenge,
-                "username": username.masked()]
+        return [
+            "challenge": challenge,
+            "username": username.masked()
+        ]
     }
 
     func getChallengeKey() throws -> String {

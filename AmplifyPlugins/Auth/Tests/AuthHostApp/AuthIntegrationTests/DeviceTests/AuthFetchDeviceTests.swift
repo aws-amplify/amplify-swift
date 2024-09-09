@@ -52,7 +52,8 @@ class AuthFetchDeviceTests: AWSAuthBaseTest {
             _ = try await AuthSignInHelper.registerAndSignInUser(
                 username: username,
                 password: password,
-                email: defaultTestEmail)
+                email: defaultTestEmail
+            )
         } catch {
             print(error)
         }

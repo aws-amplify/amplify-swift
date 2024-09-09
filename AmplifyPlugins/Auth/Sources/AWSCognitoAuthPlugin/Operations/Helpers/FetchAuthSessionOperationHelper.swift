@@ -12,9 +12,10 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
 
     typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> Void
 
-    func fetch(_ authStateMachine: AuthStateMachine,
-               forceRefresh: Bool = false) async throws -> AuthSession
-    {
+    func fetch(
+        _ authStateMachine: AuthStateMachine,
+        forceRefresh: Bool = false
+    ) async throws -> AuthSession {
         let state = await authStateMachine.currentState
         guard case .configured(_, let authorizationState) = state  else {
             let message = "Auth state machine not in configured state: \(state)"
@@ -37,7 +38,8 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
             return try await refreshIfRequired(
                 existingCredentials: credentials,
                 authStateMachine: authStateMachine,
-                forceRefresh: forceRefresh)
+                forceRefresh: forceRefresh
+            )
 
         case .error(let error):
             if case .sessionExpired(let error) = error {
@@ -49,7 +51,8 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
                 return try await refreshIfRequired(
                     existingCredentials: credentials,
                     authStateMachine: authStateMachine,
-                    forceRefresh: forceRefresh)
+                    forceRefresh: forceRefresh
+                )
             } else {
                 log.verbose("Session is in error state \(error)")
                 let event = AuthorizationEvent(eventType: .fetchUnAuthSession)
@@ -65,7 +68,8 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
     func refreshIfRequired(
         existingCredentials credentials: AmplifyCredentials,
         authStateMachine: AuthStateMachine,
-        forceRefresh: Bool) async throws -> AuthSession {
+        forceRefresh: Bool
+    ) async throws -> AuthSession {
 
             if forceRefresh || !credentials.areValid() {
                 var event = switch credentials {
@@ -100,16 +104,21 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
             case .error(let authorizationError):
                 return try sessionResultWithError(
                     authorizationError,
-                    authenticationState: authenticationState)
+                    authenticationState: authenticationState
+                )
             default: continue
             }
         }
-        throw AuthError.invalidState("Could not fetch session due to internal error",
-                                     "Auth plugin is in an invalid state")
+        throw AuthError.invalidState(
+            "Could not fetch session due to internal error",
+            "Auth plugin is in an invalid state"
+        )
     }
 
-    func sessionResultWithError(_ error: AuthorizationError,
-                                authenticationState: AuthenticationState)
+    func sessionResultWithError(
+        _ error: AuthorizationError,
+        authenticationState: AuthenticationState
+    )
     throws -> AuthSession {
         log.verbose("Received error - \(error)")
 
@@ -119,9 +128,11 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
         }
         switch error {
         case .sessionError(let fetchError, let credentials):
-            return try sessionResultWithFetchError(fetchError,
-                                                   authenticationState: authenticationState,
-                                                   existingCredentials: credentials)
+            return try sessionResultWithFetchError(
+                fetchError,
+                authenticationState: authenticationState,
+                existingCredentials: credentials
+            )
         case .sessionExpired(let error):
             let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession(
                 underlyingError: error)
@@ -129,17 +140,21 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
         default:
             let message = "Unknown error occurred"
             let error = AuthError.unknown(message)
-            let session = AWSAuthCognitoSession(isSignedIn: isSignedIn,
-                                                identityIdResult: .failure(error),
-                                                awsCredentialsResult: .failure(error),
-                                                cognitoTokensResult: .failure(error))
+            let session = AWSAuthCognitoSession(
+                isSignedIn: isSignedIn,
+                identityIdResult: .failure(error),
+                awsCredentialsResult: .failure(error),
+                cognitoTokensResult: .failure(error)
+            )
             return session
         }
     }
 
-    func sessionResultWithFetchError(_ error: FetchSessionError,
-                                     authenticationState: AuthenticationState,
-                                     existingCredentials: AmplifyCredentials)
+    func sessionResultWithFetchError(
+        _ error: FetchSessionError,
+        authenticationState: AuthenticationState,
+        existingCredentials: AmplifyCredentials
+    )
     throws -> AuthSession {
 
         var isSignedIn = false
@@ -161,23 +176,27 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
                 AuthError.service(
                     "Unknown service error occurred",
                     "See the attached error for more details",
-                    error)
+                    error
+                )
             }
             let session = AWSAuthCognitoSession(
                 isSignedIn: isSignedIn,
                 identityIdResult: .failure(authError),
                 awsCredentialsResult: .failure(authError),
-                cognitoTokensResult: .failure(authError))
+                cognitoTokensResult: .failure(authError)
+            )
             return session
         default: break
 
         }
         let message = "Unknown error occurred"
         let error = AuthError.unknown(message)
-        let session = AWSAuthCognitoSession(isSignedIn: isSignedIn,
-                                            identityIdResult: .failure(error),
-                                            awsCredentialsResult: .failure(error),
-                                            cognitoTokensResult: .failure(error))
+        let session = AWSAuthCognitoSession(
+            isSignedIn: isSignedIn,
+            identityIdResult: .failure(error),
+            awsCredentialsResult: .failure(error),
+            cognitoTokensResult: .failure(error)
+        )
         return session
     }
 

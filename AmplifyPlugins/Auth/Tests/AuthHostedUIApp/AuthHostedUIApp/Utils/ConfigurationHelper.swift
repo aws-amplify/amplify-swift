@@ -42,7 +42,8 @@ class ConfigurationHelper {
                         "AppClientId": userPooldAppClientID,
                         "Region": region
                     ]
-                ]]]
+                ]]
+        ]
         )
         return AmplifyConfiguration(auth: authConfiguration)
     }

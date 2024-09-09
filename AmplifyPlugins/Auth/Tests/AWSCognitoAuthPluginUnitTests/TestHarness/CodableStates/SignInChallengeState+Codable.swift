@@ -30,8 +30,10 @@ extension SignInChallengeState: Codable {
                     challenge: nestedContainerValue.decode(CognitoIdentityProviderClientTypes.ChallengeNameType.self, forKey: .challengeName),
                     username: nestedContainerValue.decode(String.self, forKey: .username),
                     session: nestedContainerValue.decode(String.self, forKey: .session),
-                    parameters: nestedContainerValue.decode([String: String].self, forKey: .parameters)),
-                .apiBased(.userSRP))
+                    parameters: nestedContainerValue.decode([String: String].self, forKey: .parameters)
+                ),
+                .apiBased(.userSRP)
+            )
         } else {
             fatalError("Decoding not supported")
         }

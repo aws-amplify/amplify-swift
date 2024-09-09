@@ -12,8 +12,7 @@ import Foundation
 public struct AWSAuthCognitoSession: AuthSession,
                                      AuthAWSCredentialsProvider,
                                      AuthCognitoTokensProvider,
-                                     AuthCognitoIdentityProvider
-{
+                                     AuthCognitoIdentityProvider {
 
     /// Indicates whether the user is signedIn or not
     public var isSignedIn: Bool
@@ -28,11 +27,12 @@ public struct AWSAuthCognitoSession: AuthSession,
 
     public let userPoolTokensResult: Result<AuthCognitoTokens, AuthError>
 
-    init(isSignedIn: Bool,
-         identityIdResult: Result<String, AuthError>,
-         awsCredentialsResult: Result<AWSCredentials, AuthError>,
-         cognitoTokensResult: Result<AuthCognitoTokens, AuthError>)
-    {
+    init(
+        isSignedIn: Bool,
+        identityIdResult: Result<String, AuthError>,
+        awsCredentialsResult: Result<AWSCredentials, AuthError>,
+        cognitoTokensResult: Result<AuthCognitoTokens, AuthError>
+    ) {
         self.isSignedIn = isSignedIn
         self.identityIdResult = identityIdResult
         self.awsCredentialsResult = awsCredentialsResult
@@ -64,8 +64,9 @@ public struct AWSAuthCognitoSession: AuthSession,
             return .success(userSub)
         } catch AuthError.signedOut {
             return .failure(AuthError.signedOut(
-                            AuthPluginErrorConstants.userSubSignOutError.errorDescription,
-                            AuthPluginErrorConstants.userSubSignOutError.recoverySuggestion))
+                AuthPluginErrorConstants.userSubSignOutError.errorDescription,
+                AuthPluginErrorConstants.userSubSignOutError.recoverySuggestion
+            ))
         } catch let error as AuthError {
             return .failure(error)
         } catch {

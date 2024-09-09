@@ -14,19 +14,22 @@ extension AuthConfirmResetPasswordRequest {
             return AuthError.validation(
                 AuthPluginErrorConstants.confirmResetPasswordUsernameError.field,
                 AuthPluginErrorConstants.confirmResetPasswordUsernameError.errorDescription,
-                AuthPluginErrorConstants.confirmResetPasswordUsernameError.recoverySuggestion)
+                AuthPluginErrorConstants.confirmResetPasswordUsernameError.recoverySuggestion
+            )
         }
         guard !newPassword.isEmpty else {
             return AuthError.validation(
                 AuthPluginErrorConstants.confirmResetPasswordNewPasswordError.field,
                 AuthPluginErrorConstants.confirmResetPasswordNewPasswordError.errorDescription,
-                AuthPluginErrorConstants.confirmResetPasswordNewPasswordError.recoverySuggestion)
+                AuthPluginErrorConstants.confirmResetPasswordNewPasswordError.recoverySuggestion
+            )
         }
         guard !confirmationCode.isEmpty else {
             return AuthError.validation(
                 AuthPluginErrorConstants.confirmResetPasswordCodeError.field,
                 AuthPluginErrorConstants.confirmResetPasswordCodeError.errorDescription,
-                AuthPluginErrorConstants.confirmResetPasswordCodeError.recoverySuggestion)
+                AuthPluginErrorConstants.confirmResetPasswordCodeError.recoverySuggestion
+            )
         }
         return nil
     }

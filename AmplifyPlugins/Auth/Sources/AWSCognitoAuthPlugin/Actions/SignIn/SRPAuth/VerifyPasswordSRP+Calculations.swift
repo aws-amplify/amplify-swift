@@ -11,20 +11,22 @@ import Foundation
 extension VerifyPasswordSRP {
 
     // swiftlint:disable:next function_parameter_count
-    func signature(userIdForSRP: String,
-                   saltHex: String,
-                   secretBlock: Data,
-                   serverPublicBHexString: String,
-                   srpClient: SRPClientBehavior,
-                   poolId: String) throws -> String
-    {
+    func signature(
+        userIdForSRP: String,
+        saltHex: String,
+        secretBlock: Data,
+        serverPublicBHexString: String,
+        srpClient: SRPClientBehavior,
+        poolId: String
+    ) throws -> String {
 
         let sharedSecret = try sharedSecret(
             userIdForSRP: userIdForSRP,
             saltHex: saltHex,
             serverPublicBHexString: serverPublicBHexString,
             srpClient: srpClient,
-            poolId: poolId)
+            poolId: poolId
+        )
 
         do {
             let strippedPoolId =  strippedPoolId(poolId)
@@ -33,11 +35,13 @@ extension VerifyPasswordSRP {
             // swiftlint:disable:next identifier_name
             let u = try clientClass.calculateUHexValue(
                 clientPublicKeyHexValue: stateData.srpKeyPair.publicKeyHexValue,
-                serverPublicKeyHexValue: serverPublicBHexString)
+                serverPublicKeyHexValue: serverPublicBHexString
+            )
             // HKDF
             let authenticationkey = try clientClass.generateAuthenticationKey(
                 sharedSecretHexValue: sharedSecret,
-                uHexValue: u)
+                uHexValue: u
+            )
 
             // Signature
             let signature = generateSignature(
@@ -45,7 +49,8 @@ extension VerifyPasswordSRP {
                 authenticationKey: authenticationkey,
                 srpUserName: userIdForSRP,
                 poolName: strippedPoolId,
-                serviceSecretBlock: secretBlock)
+                serviceSecretBlock: secretBlock
+            )
 
             return signature.base64EncodedString()
         } catch let error as SRPError {
@@ -58,12 +63,13 @@ extension VerifyPasswordSRP {
         }
     }
 
-    func sharedSecret(userIdForSRP: String,
-                      saltHex: String,
-                      serverPublicBHexString: String,
-                      srpClient: SRPClientBehavior,
-                      poolId: String) throws -> String
-    {
+    func sharedSecret(
+        userIdForSRP: String,
+        saltHex: String,
+        serverPublicBHexString: String,
+        srpClient: SRPClientBehavior,
+        poolId: String
+    ) throws -> String {
         let strippedPoolId =  strippedPoolId(poolId)
         let usernameForS = "\(strippedPoolId)\(userIdForSRP)"
         do {
@@ -74,7 +80,8 @@ extension VerifyPasswordSRP {
                 saltHexValue: saltHex,
                 clientPrivateKeyHexValue: srpKeyPair.privateKeyHexValue,
                 clientPublicKeyHexValue: srpKeyPair.publicKeyHexValue,
-                serverPublicKeyHexValue: serverPublicBHexString)
+                serverPublicKeyHexValue: serverPublicBHexString
+            )
         } catch let error as SRPError {
             let authError = SignInError.calculation(error)
             throw authError
@@ -90,12 +97,13 @@ extension VerifyPasswordSRP {
         return String(poolId[poolId.index(index, offsetBy: 1)...])
     }
 
-    func generateSignature(srpTimeStamp: String,
-                           authenticationKey: Data,
-                           srpUserName: String,
-                           poolName: String,
-                           serviceSecretBlock: Data) -> Data
-    {
+    func generateSignature(
+        srpTimeStamp: String,
+        authenticationKey: Data,
+        srpUserName: String,
+        poolName: String,
+        serviceSecretBlock: Data
+    ) -> Data {
         let key = SymmetricKey(data: authenticationKey)
         var hmac = HMAC<SHA256>.init(key: key)
         hmac.update(data: Data(poolName.utf8))

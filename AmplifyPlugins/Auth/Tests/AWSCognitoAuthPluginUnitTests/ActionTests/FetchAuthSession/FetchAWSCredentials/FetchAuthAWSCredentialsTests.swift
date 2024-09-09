@@ -47,7 +47,8 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: IdentityPoolConfigurationData.testData,
-            cognitoIdentityFactory: identityProviderFactory)
+            cognitoIdentityFactory: identityProviderFactory
+        )
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             authZEnvironment: authorizationEnvironment)
 
@@ -80,7 +81,8 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: IdentityPoolConfigurationData.testData,
-            cognitoIdentityFactory: identityProviderFactory)
+            cognitoIdentityFactory: identityProviderFactory
+        )
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             authZEnvironment: authorizationEnvironment)
 
@@ -122,13 +124,16 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
                         accessKeyId: expectedAccessKey,
                         expiration: Date(),
                         secretKey: expectedSecretKey,
-                        sessionToken: expectedSessionToken),
-                    identityId: expectedIdentityId)
+                        sessionToken: expectedSessionToken
+                    ),
+                    identityId: expectedIdentityId
+                )
             })
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: IdentityPoolConfigurationData.testData,
-            cognitoIdentityFactory: identityProviderFactory)
+            cognitoIdentityFactory: identityProviderFactory
+        )
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             authZEnvironment: authorizationEnvironment)
 
@@ -138,8 +143,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
             withDispatcher: MockDispatcher { event in
 
                 if let event = event as? FetchAuthSessionEvent,
-                   case .fetchedAWSCredentials = event.eventType
-                {
+                   case .fetchedAWSCredentials = event.eventType {
                     credentialValidExpectation.fulfill()
                 }
             },
@@ -163,7 +167,8 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: IdentityPoolConfigurationData.testData,
-            cognitoIdentityFactory: identityProviderFactory)
+            cognitoIdentityFactory: identityProviderFactory
+        )
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             authZEnvironment: authorizationEnvironment)
 
@@ -173,8 +178,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
             withDispatcher: MockDispatcher { event in
 
                 if let fetchAWSCredentialEvent = event as? FetchAuthSessionEvent,
-                   case let .throwError(error) = fetchAWSCredentialEvent.eventType
-                {
+                   case let .throwError(error) = fetchAWSCredentialEvent.eventType {
                     XCTAssertNotNil(error)
                     XCTAssertEqual(error, .service(testError))
                     expectation.fulfill()

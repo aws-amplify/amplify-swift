@@ -33,11 +33,13 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             return .init(secretCode: "sharedSecret", session: "newSession")
         })
@@ -47,7 +49,8 @@ class SignInSetUpTOTPTests: BasePluginTest {
             let result = try await plugin.signIn(
                 username: "username",
                 password: "password",
-                options: options)
+                options: options
+            )
             guard case .continueSignInWithTOTPSetup(let totpDetails) = result.nextStep else {
                 XCTFail("Result should be .continueSignInWithTOTPSetup for next step")
                 return
@@ -67,13 +70,15 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\"]"],
-                session: "session")
+                session: "session"
+            )
         }, mockAssociateSoftwareTokenResponse: { _ in
             return .init(secretCode: "123456", session: "session")
         } )
@@ -106,11 +111,13 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-            session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: [:])
+                challengeParameters: [:]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             return .init(secretCode: "sharedSecret", session: "newSession")
         })
@@ -120,7 +127,8 @@ class SignInSetUpTOTPTests: BasePluginTest {
             _ = try await plugin.signIn(
                 username: "username",
                 password: "password",
-                options: options)
+                options: options
+            )
             XCTFail("Should throw an error")
         } catch {
             guard case AuthError.service(_, _, _) = error else {
@@ -147,11 +155,13 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: [:])
+                challengeParameters: [:]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             return .init()
         })
@@ -161,7 +171,8 @@ class SignInSetUpTOTPTests: BasePluginTest {
             _ = try await plugin.signIn(
                 username: "username",
                 password: "password",
-                options: options)
+                options: options
+            )
             XCTFail("Should throw an error")
         } catch {
             guard case AuthError.service(_, _, _) = error else {
@@ -187,11 +198,13 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             return .init()
         })
@@ -205,11 +218,13 @@ class SignInSetUpTOTPTests: BasePluginTest {
                     authenticationResult: .none,
                     challengeName: .passwordVerifier,
                     challengeParameters: InitiateAuthOutput.validChalengeParams,
-                    session: "someSession")
+                    session: "someSession"
+                )
             }, mockRespondToAuthChallengeResponse: { input in
                 return .testData(
                     challenge: .mfaSetup,
-                    challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                    challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+                )
             }, mockAssociateSoftwareTokenResponse: { input in
                 return .init(secretCode: "sharedSecret", session: "newSession")
             })
@@ -248,11 +263,13 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             throw AWSCognitoIdentityProvider.InternalErrorException()
         })
@@ -286,11 +303,13 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             throw AWSCognitoIdentityProvider.InvalidParameterException()
         })
@@ -326,11 +345,13 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             throw AWSCognitoIdentityProvider.NotAuthorizedException()
         })
@@ -364,11 +385,13 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             throw AWSCognitoIdentityProvider.ResourceNotFoundException()
         })
@@ -404,11 +427,13 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             throw AWSCognitoIdentityProvider.ConcurrentModificationException()
         })
@@ -442,11 +467,13 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             throw AWSCognitoIdentityProvider.ForbiddenException()
         })
@@ -480,11 +507,13 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException()
         })
@@ -520,11 +549,13 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             throw AWSClientRuntime.UnknownAWSHTTPServiceError(
                 httpResponse: .init(body: .empty, statusCode: .ok),

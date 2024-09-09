@@ -37,25 +37,32 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testData))
+                AmplifyCredentials.testData)
+        )
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
         }
 
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
-                                                                     expiration: Date(),
-                                                                     secretKey: "secret",
-                                                                     sessionToken: "session")
+            let credentials = CognitoIdentityClientTypes.Credentials(
+                accessKeyId: "accessKey",
+                expiration: Date(),
+                secretKey: "secret",
+                sessionToken: "session"
+            )
             return .init(credentials: credentials, identityId: "responseIdentityID")
         }
 
-        let plugin = configurePluginWith(identityPool: {
-            MockIdentity(mockGetIdResponse: getId,
-                         mockGetCredentialsResponse: getCredentials)
+        let plugin = configurePluginWith(
+            identityPool: {
+            MockIdentity(
+                mockGetIdResponse: getId,
+                mockGetCredentialsResponse: getCredentials
+            )
         },
-                                         initialState: initialState)
+            initialState: initialState
+        )
 
         let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
         XCTAssertTrue(session.isSignedIn)
@@ -93,14 +100,16 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testData))
+                AmplifyCredentials.testData)
+        )
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             resultExpectation.fulfill()
             return InitiateAuthOutput(authenticationResult: .init(
                 accessToken: "accessToken",
                 expiresIn: 1_000,
                 idToken: "idToken",
-                refreshToken: "refreshToke"))
+                refreshToken: "refreshToke"
+            ))
         }
 
         let awsCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
@@ -109,14 +118,16 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
                 accessKeyId: "accessKey",
                 expiration: Date(),
                 secretKey: "secret",
-                sessionToken: "session")
+                sessionToken: "session"
+            )
             return .init(credentials: credentials, identityId: "responseIdentityID")
         }
 
         let plugin = configurePluginWith(
             userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
             identityPool: { MockIdentity(mockGetCredentialsResponse: awsCredentials) },
-            initialState: initialState)
+            initialState: initialState
+        )
         let session = try await plugin.fetchAuthSession(options: .forceRefresh())
         resultExpectation.fulfill()
         XCTAssertTrue(session.isSignedIn)
@@ -153,25 +164,32 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedOut(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataIdentityPoolWithExpiredTokens))
+                AmplifyCredentials.testDataIdentityPoolWithExpiredTokens)
+        )
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
         }
 
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
-                                                                     expiration: Date(),
-                                                                     secretKey: "secret",
-                                                                     sessionToken: "session")
+            let credentials = CognitoIdentityClientTypes.Credentials(
+                accessKeyId: "accessKey",
+                expiration: Date(),
+                secretKey: "secret",
+                sessionToken: "session"
+            )
             return .init(credentials: credentials, identityId: "responseIdentityID")
         }
 
-        let plugin = configurePluginWith(identityPool: {
-            MockIdentity(mockGetIdResponse: getId,
-                         mockGetCredentialsResponse: getCredentials)
+        let plugin = configurePluginWith(
+            identityPool: {
+            MockIdentity(
+                mockGetIdResponse: getId,
+                mockGetCredentialsResponse: getCredentials
+            )
         },
-                                         initialState: initialState)
+            initialState: initialState
+        )
 
         let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
         XCTAssertFalse(session.isSignedIn)
@@ -209,7 +227,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataWithExpiredTokens))
+                AmplifyCredentials.testDataWithExpiredTokens)
+        )
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             throw try await AWSCognitoIdentityProvider.NotAuthorizedException(
@@ -261,13 +280,16 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataWithExpiredTokens))
+                AmplifyCredentials.testDataWithExpiredTokens)
+        )
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
-            return InitiateAuthOutput(authenticationResult: .init(accessToken: "accessToken",
-                                                                          expiresIn: 1_000,
-                                                                          idToken: "idToken",
-                                                                          refreshToken: "refreshToke"))
+            return InitiateAuthOutput(authenticationResult: .init(
+                accessToken: "accessToken",
+                expiresIn: 1_000,
+                idToken: "idToken",
+                refreshToken: "refreshToke"
+            ))
         }
 
         let awsCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
@@ -279,7 +301,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let plugin = configurePluginWith(
             userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
             identityPool: { MockIdentity(mockGetCredentialsResponse: awsCredentials) },
-            initialState: initialState)
+            initialState: initialState
+        )
 
         let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
 
@@ -497,18 +520,22 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataWithExpiredTokens))
+                AmplifyCredentials.testDataWithExpiredTokens)
+        )
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
-            return InitiateAuthOutput(authenticationResult: .init(accessToken: nil,
-                                                                          expiresIn: 1_000,
-                                                                          idToken: "idToken",
-                                                                          refreshToken: "refreshToke"))
+            return InitiateAuthOutput(authenticationResult: .init(
+                accessToken: nil,
+                expiresIn: 1_000,
+                idToken: "idToken",
+                refreshToken: "refreshToke"
+            ))
         }
 
         let plugin = configurePluginWith(
             userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
-            initialState: initialState)
+            initialState: initialState
+        )
 
         let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
 
@@ -552,13 +579,16 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataWithExpiredTokens))
+                AmplifyCredentials.testDataWithExpiredTokens)
+        )
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
-            return InitiateAuthOutput(authenticationResult: .init(accessToken: "accessToken",
-                                                                          expiresIn: 1_000,
-                                                                          idToken: "idToken",
-                                                                          refreshToken: "refreshToke"))
+            return InitiateAuthOutput(authenticationResult: .init(
+                accessToken: "accessToken",
+                expiresIn: 1_000,
+                idToken: "idToken",
+                refreshToken: "refreshToke"
+            ))
         }
 
         let awsCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
@@ -567,7 +597,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let plugin = configurePluginWith(
             userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
             identityPool: { MockIdentity(mockGetCredentialsResponse: awsCredentials) },
-            initialState: initialState)
+            initialState: initialState
+        )
 
         let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
 
@@ -611,25 +642,32 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
 
         let initialState = AuthState.configured(
             AuthenticationState.signedOut(.testData),
-            AuthorizationState.error(.sessionError(.service(AuthError.unknown("error")), .noCredentials)))
+            AuthorizationState.error(.sessionError(.service(AuthError.unknown("error")), .noCredentials))
+        )
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
         }
 
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
-                                                                     expiration: Date(),
-                                                                     secretKey: "secret",
-                                                                     sessionToken: "session")
+            let credentials = CognitoIdentityClientTypes.Credentials(
+                accessKeyId: "accessKey",
+                expiration: Date(),
+                secretKey: "secret",
+                sessionToken: "session"
+            )
             return .init(credentials: credentials, identityId: "responseIdentityID")
         }
 
-        let plugin = configurePluginWith(identityPool: {
-            MockIdentity(mockGetIdResponse: getId,
-                         mockGetCredentialsResponse: getCredentials)
+        let plugin = configurePluginWith(
+            identityPool: {
+            MockIdentity(
+                mockGetIdResponse: getId,
+                mockGetCredentialsResponse: getCredentials
+            )
         },
-                                         initialState: initialState)
+            initialState: initialState
+        )
 
         let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
         XCTAssertFalse(session.isSignedIn)
@@ -667,19 +705,25 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedOut(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataIdentityPoolWithExpiredTokens))
+                AmplifyCredentials.testDataIdentityPoolWithExpiredTokens)
+        )
 
         let awsCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
-                                                                     expiration: Date(),
-                                                                     secretKey: "secret",
-                                                                     sessionToken: "session")
-            return GetCredentialsForIdentityOutput(credentials: credentials,
-                                                           identityId: "ss")
+            let credentials = CognitoIdentityClientTypes.Credentials(
+                accessKeyId: "accessKey",
+                expiration: Date(),
+                secretKey: "secret",
+                sessionToken: "session"
+            )
+            return GetCredentialsForIdentityOutput(
+                credentials: credentials,
+                identityId: "ss"
+            )
         }
         let plugin = configurePluginWith(
             identityPool: { MockIdentity(mockGetCredentialsResponse: awsCredentials) },
-            initialState: initialState)
+            initialState: initialState
+        )
 
         let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
         XCTAssertFalse(session.isSignedIn)
@@ -720,7 +764,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataWithExpiredTokens))
+                AmplifyCredentials.testDataWithExpiredTokens)
+        )
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             throw AWSCognitoIdentityProvider.NotAuthorizedException(message: "NotAuthorized")
@@ -728,7 +773,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
 
         let plugin = configurePluginWith(
             userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
-            initialState: initialState)
+            initialState: initialState
+        )
 
         let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
 
@@ -784,18 +830,24 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         }
 
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
-                                                                     expiration: Date(),
-                                                                     secretKey: "secret",
-                                                                     sessionToken: "session")
+            let credentials = CognitoIdentityClientTypes.Credentials(
+                accessKeyId: "accessKey",
+                expiration: Date(),
+                secretKey: "secret",
+                sessionToken: "session"
+            )
             return .init(credentials: credentials, identityId: "responseIdentityID")
         }
 
-        let plugin = configurePluginWith(identityPool: {
-            MockIdentity(mockGetIdResponse: getId,
-                         mockGetCredentialsResponse: getCredentials)
+        let plugin = configurePluginWith(
+            identityPool: {
+            MockIdentity(
+                mockGetIdResponse: getId,
+                mockGetCredentialsResponse: getCredentials
+            )
         },
-                                         initialState: initialState)
+            initialState: initialState
+        )
 
         let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
         XCTAssertFalse(session.isSignedIn)
@@ -824,13 +876,16 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataWithExpiredTokens))
+                AmplifyCredentials.testDataWithExpiredTokens)
+        )
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
-            return InitiateAuthOutput(authenticationResult: .init(accessToken: "accessToken",
-                                                                  expiresIn: 1_000,
-                                                                  idToken: "idToken",
-                                                                  refreshToken: "refreshToke"))
+            return InitiateAuthOutput(authenticationResult: .init(
+                accessToken: "accessToken",
+                expiresIn: 1_000,
+                idToken: "idToken",
+                refreshToken: "refreshToke"
+            ))
         }
 
         let awsCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
@@ -839,7 +894,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let plugin = configurePluginWith(
             userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
             identityPool: { MockIdentity(mockGetCredentialsResponse: awsCredentials) },
-            initialState: initialState)
+            initialState: initialState
+        )
 
         let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
 

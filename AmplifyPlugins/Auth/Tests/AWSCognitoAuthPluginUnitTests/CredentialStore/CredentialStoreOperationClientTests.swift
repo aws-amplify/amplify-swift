@@ -27,7 +27,8 @@ class CredentialStoreOperationClientTests: XCTestCase {
         let credentialStateMachine = CredentialStoreStateMachine(
             resolver: CredentialStoreState.Resolver(),
             environment: credentialEnvironment,
-            initialState: .idle)
+            initialState: .idle
+        )
 
         credentialClient = CredentialStoreOperationClient(
             credentialStoreStateMachine: credentialStateMachine)

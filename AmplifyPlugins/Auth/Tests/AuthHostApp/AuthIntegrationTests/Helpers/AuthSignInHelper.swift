@@ -21,7 +21,8 @@ enum AuthSignInHelper {
         username: String,
         password: String,
         email: String,
-        phoneNumber: String? = nil) async throws -> Bool {
+        phoneNumber: String? = nil
+    ) async throws -> Bool {
 
             var userAttributes = [
                 AuthUserAttribute(.email, value: email)
@@ -45,12 +46,14 @@ enum AuthSignInHelper {
         username: String,
         password: String,
         email: String,
-        phoneNumber: String? = nil) async throws -> Bool {
+        phoneNumber: String? = nil
+    ) async throws -> Bool {
             let signedUp = try await AuthSignInHelper.signUpUser(
                 username: username,
                 password: password,
                 email: email,
-                phoneNumber: phoneNumber)
+                phoneNumber: phoneNumber
+            )
             guard signedUp else {
                 throw AuthError.invalidState("Auth sign up failed", "", nil)
             }

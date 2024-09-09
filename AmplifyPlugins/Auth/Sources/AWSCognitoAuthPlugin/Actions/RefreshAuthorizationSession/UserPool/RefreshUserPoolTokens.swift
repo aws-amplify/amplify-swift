@@ -35,11 +35,13 @@ struct RefreshUserPoolTokens: Action {
 
             let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: existingSignedIndata.username,
-                with: environment)
+                with: environment
+            )
 
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: existingSignedIndata.username,
-                credentialStoreClient: authEnv.credentialsClient)
+                credentialStoreClient: authEnv.credentialsClient
+            )
 
             let input = await InitiateAuthInput.refreshAuthInput(
                 username: existingSignedIndata.username,
@@ -47,7 +49,8 @@ struct RefreshUserPoolTokens: Action {
                 clientMetadata: [:],
                 asfDeviceId: asfDeviceId,
                 deviceMetadata: deviceMetadata,
-                environment: environment)
+                environment: environment
+            )
 
             logVerbose("\(#fileID) Starting initiate auth refresh token", environment: environment)
 
@@ -75,14 +78,16 @@ struct RefreshUserPoolTokens: Action {
             let signedInData = SignedInData(
                 signedInDate: existingSignedIndata.signedInDate,
                 signInMethod: existingSignedIndata.signInMethod,
-                cognitoUserPoolTokens: userPoolTokens)
+                cognitoUserPoolTokens: userPoolTokens
+            )
             let event: RefreshSessionEvent
 
             if ((environment as? AuthEnvironment)?.identityPoolConfigData) != nil {
                 let provider = CognitoUserPoolLoginsMap(
                     idToken: idToken,
                     region: config.region,
-                    poolId: config.poolId)
+                    poolId: config.poolId
+                )
                 event = .init(eventType: .refreshIdentityInfo(signedInData, provider))
             } else {
                 event = .init(eventType: .refreshedCognitoUserPool(signedInData))

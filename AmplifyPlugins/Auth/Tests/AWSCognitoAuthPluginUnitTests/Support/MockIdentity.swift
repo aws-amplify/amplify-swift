@@ -19,9 +19,10 @@ struct MockIdentity: CognitoIdentityBehavior {
     let mockGetIdResponse: MockGetIdResponse?
     let mockGetCredentialsResponse: MockGetCredentialsResponse?
 
-    init(mockGetIdResponse: MockGetIdResponse? = nil,
-         mockGetCredentialsResponse: MockGetCredentialsResponse? = nil)
-    {
+    init(
+        mockGetIdResponse: MockGetIdResponse? = nil,
+        mockGetCredentialsResponse: MockGetCredentialsResponse? = nil
+    ) {
         self.mockGetIdResponse = mockGetIdResponse
         self.mockGetCredentialsResponse = mockGetCredentialsResponse
     }

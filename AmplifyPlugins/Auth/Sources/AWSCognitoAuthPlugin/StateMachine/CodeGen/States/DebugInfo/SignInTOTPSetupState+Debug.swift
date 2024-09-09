@@ -16,7 +16,8 @@ extension SignInTOTPSetupState: CustomDebugDictionaryConvertible {
         case .verifying(let signInSetupData, let confirmSignInEventData):
             confirmSignInEventData.debugDictionary.merging(
                 signInSetupData.debugDictionary,
-                uniquingKeysWith: {$1})
+                uniquingKeysWith: {$1}
+            )
         case .error(let data, let error):
             [
                 "totpSetupData": data ?? "Nil",

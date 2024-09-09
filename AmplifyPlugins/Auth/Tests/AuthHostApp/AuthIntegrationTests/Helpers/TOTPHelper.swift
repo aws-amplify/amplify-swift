@@ -28,7 +28,8 @@ enum TOTPHelper {
         let counterBytes = (0 ..< 8).reversed().map { UInt8(counter >> (8 * $0) & 0xff) }
         let hash = HMAC<Insecure.SHA1>.authenticationCode(
             for: counterBytes,
-            using: SymmetricKey(data: secret))
+            using: SymmetricKey(data: secret)
+        )
         let offset = Int(hash.suffix(1)[0] & 0x0f)
         let hash32 = hash
             .dropFirst(offset)

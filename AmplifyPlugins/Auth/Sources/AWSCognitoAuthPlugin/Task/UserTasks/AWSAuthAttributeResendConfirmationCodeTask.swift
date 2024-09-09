@@ -53,7 +53,8 @@ class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfirmatio
         let input = GetUserAttributeVerificationCodeInput(
             accessToken: accessToken,
             attributeName: request.attributeKey.rawValue,
-            clientMetadata: clientMetaData)
+            clientMetadata: clientMetaData
+        )
 
         let result = try await userPoolService.getUserAttributeVerificationCode(input: input)
         guard let deliveryDetails = result.codeDeliveryDetails?.toAuthCodeDeliveryDetails() else {

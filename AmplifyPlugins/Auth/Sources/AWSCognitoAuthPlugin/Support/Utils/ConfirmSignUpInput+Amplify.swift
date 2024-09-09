@@ -9,26 +9,28 @@ import AWSCognitoIdentityProvider
 import Foundation
 
 extension ConfirmSignUpInput {
-    init(username: String,
-         confirmationCode: String,
-         clientMetadata: [String: String]?,
-         asfDeviceId: String?,
-         forceAliasCreation: Bool?,
-         environment: UserPoolEnvironment
+    init(
+        username: String,
+        confirmationCode: String,
+        clientMetadata: [String: String]?,
+        asfDeviceId: String?,
+        forceAliasCreation: Bool?,
+        environment: UserPoolEnvironment
     ) async {
 
         let configuration = environment.userPoolConfiguration
         let secretHash = ClientSecretHelper.calculateSecretHash(
             username: username,
-            userPoolConfiguration: configuration)
+            userPoolConfiguration: configuration
+        )
         var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
         if let asfDeviceId,
            let encodedData = await CognitoUserPoolASF.encodedContext(
-            username: username,
-            asfDeviceId: asfDeviceId,
-            asfClient: environment.cognitoUserPoolASFFactory(),
-            userPoolConfiguration: environment.userPoolConfiguration)
-        {
+               username: username,
+               asfDeviceId: asfDeviceId,
+               asfClient: environment.cognitoUserPoolASFFactory(),
+               userPoolConfiguration: environment.userPoolConfiguration
+           ) {
             userContextData = .init(encodedData: encodedData)
         }
         let analyticsMetadata = environment
@@ -42,6 +44,7 @@ extension ConfirmSignUpInput {
             forceAliasCreation: forceAliasCreation,
             secretHash: secretHash,
             userContextData: userContextData,
-            username: username)
+            username: username
+        )
     }
 }

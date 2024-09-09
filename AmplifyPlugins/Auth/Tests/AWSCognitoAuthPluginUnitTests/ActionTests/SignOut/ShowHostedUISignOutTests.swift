@@ -382,7 +382,8 @@ class ShowHostedUISignOutTests: XCTestCase {
                         accessToken: "accessTokenNew",
                         expiresIn: 100,
                         idToken: "idTokenNew",
-                        refreshToken: "refreshTokenNew")
+                        refreshToken: "refreshTokenNew"
+                    )
                 )
             }
         )

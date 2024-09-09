@@ -29,9 +29,11 @@ class RevokeTokenTests: XCTestCase {
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
             cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics
         )
-        let action = RevokeToken(signedInData: .testData,
-                                 hostedUIError: nil,
-                                 globalSignOutError: nil)
+        let action = RevokeToken(
+            signedInData: .testData,
+            hostedUIError: nil,
+            globalSignOutError: nil
+        )
 
         await action.execute(
             withDispatcher: MockDispatcher { _ in },
@@ -60,9 +62,11 @@ class RevokeTokenTests: XCTestCase {
             cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics
         )
 
-        let action = RevokeToken(signedInData: .testData,
-                                  hostedUIError: nil,
-                                  globalSignOutError: nil)
+        let action = RevokeToken(
+            signedInData: .testData,
+            hostedUIError: nil,
+            globalSignOutError: nil
+        )
 
         let clearCredentialStoreEventSent = expectation(description: "clearCredentialStoreEventSent")
         let dispatcher = MockDispatcher { event in
@@ -104,9 +108,11 @@ class RevokeTokenTests: XCTestCase {
             cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics
         )
 
-        let action = RevokeToken(signedInData: .testData,
-                                 hostedUIError: nil,
-                                 globalSignOutError: nil)
+        let action = RevokeToken(
+            signedInData: .testData,
+            hostedUIError: nil,
+            globalSignOutError: nil
+        )
 
         let clearCredentialStoreEventSent = expectation(description: "clearCredentialStoreEventSent")
         let dispatcher = MockDispatcher { event in

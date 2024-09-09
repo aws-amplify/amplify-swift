@@ -102,7 +102,8 @@ class AWSAuthBaseTest: XCTestCase {
                             "AppClientId": userPooldAppClientID,
                             "Region": region
                         ]
-                    ]]]
+                    ]]
+            ]
             )
             let configuration = AmplifyConfiguration(auth: authConfiguration)
             let authPlugin = AWSCognitoAuthPlugin()

@@ -24,8 +24,10 @@ struct BasicSRPAuthEnvironment: SRPAuthEnvironment {
         cognitoUserPoolFactory: @escaping CognitoUserPoolFactory,
         eventIDFactory: @escaping EventIDFactory = UUIDFactory.factory,
         srpClientFactory: @escaping SRPClientFactory = AmplifySRPClient.init(NHexValue:gHexValue:),
-        srpConfiguration: (nHexValue: String, gHexValue: String) = (nHexValue: SRPCommonConfig.nHexValue,
-                                                                    gHexValue: SRPCommonConfig.gHexValue)
+        srpConfiguration: (nHexValue: String, gHexValue: String) = (
+            nHexValue: SRPCommonConfig.nHexValue,
+            gHexValue: SRPCommonConfig.gHexValue
+        )
     ) {
         self.userPoolConfiguration = userPoolConfiguration
         self.cognitoUserPoolFactory = cognitoUserPoolFactory
