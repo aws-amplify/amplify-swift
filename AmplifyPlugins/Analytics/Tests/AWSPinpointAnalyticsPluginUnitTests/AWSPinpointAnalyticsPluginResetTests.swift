@@ -7,8 +7,8 @@
 
 import Amplify
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint
-@testable import AWSPinpointAnalyticsPlugin
 import XCTest
+@testable import AWSPinpointAnalyticsPlugin
 
 class AWSPinpointAnalyticsPluginResetTests: AWSPinpointAnalyticsPluginTestBase {
     func testReset() async {

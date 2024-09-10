@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPinpoint
 import ClientRuntime
+import Foundation
 
 extension AWSPinpoint.BadRequestException: AnalyticsErrorConvertible {
     var analyticsError: AnalyticsError {

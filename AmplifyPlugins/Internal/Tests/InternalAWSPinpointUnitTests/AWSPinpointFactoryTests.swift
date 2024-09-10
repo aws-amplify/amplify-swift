@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import XCTest
 @testable import AmplifyTestCommon
 @_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
 import XCTest

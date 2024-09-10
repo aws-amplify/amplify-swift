@@ -50,14 +50,16 @@ extension FileManager: FileManagerBehaviour, DefaultLogger {
     }
 
     func createDirectory(atPath path: String, withIntermediateDirectories createIntermediates: Bool) throws {
-        try createDirectory(atPath: path,
-                        withIntermediateDirectories: createIntermediates,
-                        attributes: nil)
+        try createDirectory(
+            atPath: path,
+            withIntermediateDirectories: createIntermediates,
+            attributes: nil
+        )
     }
 
     func fileSize(for url: URL) -> Byte {
         do {
-            let attributes = try self.attributesOfItem(atPath: url.path)
+            let attributes = try attributesOfItem(atPath: url.path)
             return attributes[.size] as? Byte ?? 0
         } catch {
             log.error("Error getting file size with error \(error)")
@@ -110,58 +112,76 @@ class PinpointContext {
     private let configuration: PinpointContextConfiguration
     private let storage: PinpointContextStorage
 
-    init(with configuration: PinpointContextConfiguration,
-         endpointInformationProvider: EndpointInformationProvider = DefaultEndpointInformationProvider(),
-         userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
-         keychainStore: KeychainStoreBehavior = KeychainStore(service: PinpointContext.Constants.Keychain.service),
-         fileManager: FileManagerBehaviour = FileManager.default,
-         archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
-         remoteNotificationsHelper: RemoteNotificationsBehaviour = .default) throws {
+    init(
+        with configuration: PinpointContextConfiguration,
+        endpointInformationProvider: EndpointInformationProvider = DefaultEndpointInformationProvider(),
+        userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
+        keychainStore: KeychainStoreBehavior = KeychainStore(service: PinpointContext.Constants.Keychain.service),
+        fileManager: FileManagerBehaviour = FileManager.default,
+        archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
+        remoteNotificationsHelper: RemoteNotificationsBehaviour = .default
+    ) throws {
         self.configuration = configuration
-        storage = PinpointContextStorage(userDefaults: userDefaults,
-                                         keychainStore: keychainStore,
-                                         fileManager: fileManager,
-                                         archiver: archiver)
-        uniqueId = Self.retrieveUniqueId(applicationId: configuration.appId, storage: storage)
+        self.storage = PinpointContextStorage(
+            userDefaults: userDefaults,
+            keychainStore: keychainStore,
+            fileManager: fileManager,
+            archiver: archiver
+        )
+        self.uniqueId = Self.retrieveUniqueId(applicationId: configuration.appId, storage: storage)
 
         let pinpointClient = try PinpointClient(region: configuration.region,
                                                 credentialIdentityResolver: configuration.credentialIdentityResolver)
 
-        endpointClient = EndpointClient(configuration: .init(appId: configuration.appId,
-                                                             uniqueDeviceId: uniqueId,
-                                                             isDebug: configuration.isDebug),
-                                        pinpointClient: pinpointClient,
-                                        endpointInformationProvider: endpointInformationProvider,
-                                        userDefaults: userDefaults,
-                                        keychain: keychainStore,
-                                        remoteNotificationsHelper: remoteNotificationsHelper)
+        self.endpointClient = EndpointClient(
+            configuration: .init(
+                appId: configuration.appId,
+                uniqueDeviceId: uniqueId,
+                isDebug: configuration.isDebug
+            ),
+            pinpointClient: pinpointClient,
+            endpointInformationProvider: endpointInformationProvider,
+            userDefaults: userDefaults,
+            keychain: keychainStore,
+            remoteNotificationsHelper: remoteNotificationsHelper
+        )
 
-        sessionClient = SessionClient(archiver: archiver,
-                                      configuration: .init(appId: configuration.appId,
-                                                           uniqueDeviceId: uniqueId),
-                                      endpointClient: endpointClient,
-                                      userDefaults: userDefaults)
+        self.sessionClient = SessionClient(
+            archiver: archiver,
+            configuration: .init(
+                appId: configuration.appId,
+                uniqueDeviceId: uniqueId
+            ),
+            endpointClient: endpointClient,
+            userDefaults: userDefaults
+        )
 
         let sessionProvider: () -> PinpointSession = { [weak sessionClient] in
-            guard let sessionClient = sessionClient else {
+            guard let sessionClient else {
                 fatalError("SessionClient was deallocated")
             }
             return sessionClient.currentSession
         }
 
-        analyticsClient = try AnalyticsClient(applicationId: configuration.appId,
-                                              pinpointClient: pinpointClient,
-                                              endpointClient: endpointClient,
-                                              sessionProvider: sessionProvider)
+        self.analyticsClient = try AnalyticsClient(
+            applicationId: configuration.appId,
+            pinpointClient: pinpointClient,
+            endpointClient: endpointClient,
+            sessionProvider: sessionProvider
+        )
         sessionClient.analyticsClient = analyticsClient
         sessionClient.startPinpointSession()
         setAutomaticSubmitEventsInterval(Constants.defaultAutomaticSubmissionInterval)
     }
 
-    private static func legacyPreferencesFilePath(applicationId: String,
-                                                  storage: PinpointContextStorage) -> String? {
-        let applicationSupportDirectoryUrls = storage.fileManager.urls(for: .applicationSupportDirectory,
-                                                                       in: .userDomainMask)
+    private static func legacyPreferencesFilePath(
+        applicationId: String,
+        storage: PinpointContextStorage
+    ) -> String? {
+        let applicationSupportDirectoryUrls = storage.fileManager.urls(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask
+        )
         let preferencesFileUrl = applicationSupportDirectoryUrls.first?
             .appendingPathComponent(Constants.Preferences.mobileAnalyticsRoot)
             .appendingPathComponent(applicationId)
@@ -170,10 +190,15 @@ class PinpointContext {
         return preferencesFileUrl?.path
     }
 
-    private static func removeLegacyPreferencesFile(applicationId: String,
-                                                    storage: PinpointContextStorage) {
-        guard let preferencesPath = legacyPreferencesFilePath(applicationId: applicationId,
-                                                              storage: storage) else {
+    private static func removeLegacyPreferencesFile(
+        applicationId: String,
+        storage: PinpointContextStorage
+    ) {
+        guard let preferencesPath = legacyPreferencesFilePath(
+            applicationId: applicationId,
+            storage: storage
+        )
+        else {
             return
         }
 
@@ -184,13 +209,20 @@ class PinpointContext {
         }
     }
 
-    private static func legacyUniqueId(applicationId: String,
-                                       storage: PinpointContextStorage) -> String? {
-        guard let preferencesPath = legacyPreferencesFilePath(applicationId: applicationId,
-                                                              storage: storage),
+    private static func legacyUniqueId(
+        applicationId: String,
+        storage: PinpointContextStorage
+    ) -> String? {
+        guard let preferencesPath = legacyPreferencesFilePath(
+            applicationId: applicationId,
+            storage: storage
+        ),
               storage.fileManager.fileExists(atPath: preferencesPath),
-              let preferencesJson = try? JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: preferencesPath)),
-                                                                      options: .mutableContainers) as? [String: String] else {
+              let preferencesJson = try? JSONSerialization.jsonObject(
+                  with: Data(contentsOf: URL(fileURLWithPath: preferencesPath)),
+                  options: .mutableContainers
+              ) as? [String: String]
+        else {
             return nil
         }
 
@@ -199,20 +231,22 @@ class PinpointContext {
 
     /**
      Attempts to retrieve a previously generated Device Unique ID.
-     
+
      This value can be present in 3 places:
      1. In a preferences file stored in disk
      2. In UserDefauls
      3. In the Keychain
-     
+
      1 and 2 are legacy storage options that are supportted for backwards compability, but once retrieved those values will be migrated to the Keychain.
-     
+
      If no existing Device Unique ID is found, a new one will be generated and stored in the Keychain.
-     
+
      - Returns: A string representing the Device Unique ID
      */
-    private static func retrieveUniqueId(applicationId: String,
-                                         storage: PinpointContextStorage) -> String {
+    private static func retrieveUniqueId(
+        applicationId: String,
+        storage: PinpointContextStorage
+    ) -> String {
         // 1. Look for the UniqueId in the Keychain
         if let deviceUniqueId = try? storage.keychainStore._getString(Constants.Keychain.uniqueIdKey) {
             return deviceUniqueId
@@ -283,15 +317,15 @@ extension PinpointContext: DefaultLogger {
 }
 
 extension PinpointContext {
-    struct Constants {
+    enum Constants {
         static let defaultAutomaticSubmissionInterval: TimeInterval = 60
-        struct Preferences {
+        enum Preferences {
             static let mobileAnalyticsRoot = "com.amazonaws.MobileAnalytics"
             static let fileName = "preferences"
             static let uniqueIdKey = "UniqueId"
         }
 
-        struct Keychain {
+        enum Keychain {
             static let service = "com.amazonaws.AWSPinpointContext"
             static let uniqueIdKey = "com.amazonaws.AWSPinpointContextKeychainUniqueIdKey"
         }
