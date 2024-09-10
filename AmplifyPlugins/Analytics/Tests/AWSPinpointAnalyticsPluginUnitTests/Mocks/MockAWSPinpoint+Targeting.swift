@@ -10,7 +10,7 @@ import Foundation
 @testable import AWSPinpointAnalyticsPlugin
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
-public extension MockAWSPinpoint {
+extension MockAWSPinpoint {
     func currentEndpointProfile() -> PinpointEndpointProfile {
         currentEndpointProfileCalled += 1
 

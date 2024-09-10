@@ -12,7 +12,7 @@ import StoreKit
 @testable import AWSPinpointAnalyticsPlugin
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
-public extension MockAWSPinpoint {
+extension MockAWSPinpoint {
     func addGlobalProperty(_ value: AnalyticsPropertyValue, forKey: String) {
         if let value = value as? String {
             addGlobalAttribute(value, forKey: forKey)
@@ -164,7 +164,7 @@ public extension MockAWSPinpoint {
 
     }
 
-    internal func setRemoteGlobalAttributes(_ attributes: [String: String]) async {
+    func setRemoteGlobalAttributes(_ attributes: [String: String]) async {
 
     }
 }
