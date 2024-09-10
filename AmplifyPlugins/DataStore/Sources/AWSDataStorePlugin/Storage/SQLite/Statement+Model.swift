@@ -186,7 +186,7 @@ extension Statement: StatementModelConvertible {
             if associatedFieldNames.count <= 1, let associatedFieldName {
                 let primaryKeyName = schema.primaryKey.isCompositeKey
                     ? ModelIdentifierFormat.Custom.sqlColumnName
-                    : schema.primaryKey.fields.first.flatMap(\.name)
+                : schema.primaryKey.fields.first.flatMap{ $0.name }
                 let primaryKeyValue = primaryKeyName.flatMap { getValue(from: element, by: path + [$0]) }
 
                 return primaryKeyValue.map {

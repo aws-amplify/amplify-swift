@@ -108,7 +108,7 @@ class SyncEngineTestBase: XCTestCase {
         }
 
         storageAdapter = try SQLiteStorageEngineAdapter(connection: resolvedConnection)
-        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + models.map(\.schema))
+        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + models.map{ $0.schema })
     }
 
     /// Sets up a DataStorePlugin backed by the storageAdapter created in `setUpStorageAdapter()`, and an optional

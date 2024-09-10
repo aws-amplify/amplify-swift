@@ -116,9 +116,10 @@ extension ModelSchema {
                     return false
                 }
             case .enum:
+                // swiftformat:disable typeSugar
                 // swiftlint:disable syntactic_sugar
-                guard case .some(Any?.some(let value1Optional)) = value1,
-                      case .some(Any?.some(let value2Optional)) = value2
+                guard case .some(Optional<Any>.some(let value1Optional)) = value1,
+                      case .some(Optional<Any>.some(let value2Optional)) = value2
                 else {
                     if value1 == nil && value2 == nil {
                         continue
@@ -126,6 +127,7 @@ extension ModelSchema {
                     return false
                 }
                 // swiftlint:enable syntactic_sugar
+                // swiftformat:enable typeSugar
                 let enumValue1Optional = (value1Optional as? EnumPersistable)?.rawValue
                 let enumValue2Optional = (value2Optional as? EnumPersistable)?.rawValue
                 if !compare(enumValue1Optional, enumValue2Optional) {

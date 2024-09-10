@@ -174,8 +174,9 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         }
 
         let modelIds = queriedModels.map { $0.identifier(schema: self.modelSchema).stringValue }
-        logMessage("[CascadeDelete.1] Deleting \(modelSchema.name) with identifiers: \(modelIds)")
-
+        // swiftformat:disable redundantSelf
+        logMessage("[CascadeDelete.1] Deleting \(self.modelSchema.name) with identifiers: \(modelIds)")
+        // swiftformat:enable redundantSelf
         associatedModels = await recurseQueryAssociatedModels(modelSchema: modelSchema, ids: modelIds)
 
         deletedResult = await withCheckedContinuation { continuation in
@@ -281,7 +282,9 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 
             switch deleteResult {
             case .success:
-                logMessage("[CascadeDelete.3] Local cascade delete of \(modelSchema.name) successful!")
+                // swiftformat:disable redundantSelf
+                logMessage("[CascadeDelete.3] Local cascade delete of \(self.modelSchema.name) successful!")
+                // swiftformat:enable redundantSelf
                 return .success(QueryAndDeleteResult(
                     deletedModels: models,
                     associatedModels: associatedModels
@@ -486,7 +489,9 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         dataStoreError: DataStoreError?,
         completion: @escaping DataStoreCallback<Void>
     ) {
-        logMessage("[CascadeDelete.4] Begin syncing \(models.count) \(modelSchema.name) model for deletion")
+        // swiftformat:disable redundantSelf
+        logMessage("[CascadeDelete.4] Begin syncing \(models.count) \(self.modelSchema.name) model for deletion")
+        // swiftformat:enable redundantSelf
         var graphQLFilterJSON: String?
         if let predicate {
             do {
