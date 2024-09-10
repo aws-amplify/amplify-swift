@@ -35,13 +35,15 @@ public struct GraphQLRequest<R: Decodable> {
     /// Options to adjust the behavior of this request, including plugin-options
     public var options: Options?
 
-    public init(apiName: String? = nil,
-                document: String,
-                variables: [String: Any]? = nil,
-                responseType: R.Type,
-                decodePath: String? = nil,
-                authMode: AuthorizationMode? = nil,
-                options: GraphQLRequest<R>.Options? = nil) {
+    public init(
+        apiName: String? = nil,
+        document: String,
+        variables: [String: Any]? = nil,
+        responseType: R.Type,
+        decodePath: String? = nil,
+        authMode: AuthorizationMode? = nil,
+        options: GraphQLRequest<R>.Options? = nil
+    ) {
         self.apiName = apiName
         self.document = document
         self.variables = variables

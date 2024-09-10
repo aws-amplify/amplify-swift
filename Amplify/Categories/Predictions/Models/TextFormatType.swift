@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Predictions {
+public extension Predictions {
     /// Describes different text formats passed a type parameter
     /// to identify().
     public struct TextFormatType: Equatable, @unchecked Sendable {

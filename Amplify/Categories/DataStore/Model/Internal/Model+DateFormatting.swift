@@ -11,7 +11,7 @@ import Foundation
 ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
 ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
 ///   breaking change.
-public struct ModelDateFormatting {
+public enum ModelDateFormatting {
 
     public static let decodingStrategy: JSONDecoder.DateDecodingStrategy = {
         let strategy = JSONDecoder.DateDecodingStrategy.custom { decoder -> Date in

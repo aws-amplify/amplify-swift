@@ -20,13 +20,13 @@ public class AmplifyOperationTaskAdapter<Request: AmplifyOperationRequest,
     public init(operation: AmplifyOperation<Request, Success, Failure>) {
         self.operation = operation
         self.childTask = ChildTask(parent: operation)
-        resultToken = operation.subscribe { [weak self] in
+        self.resultToken = operation.subscribe { [weak self] in
             self?.resultListener($0)
         }
     }
 
     deinit {
-        if let resultToken = resultToken {
+        if let resultToken {
             Amplify.Hub.removeListener(resultToken)
         }
     }
@@ -76,21 +76,21 @@ public class AmplifyInProcessReportingOperationTaskAdapter<Request: AmplifyOpera
     public init(operation: AmplifyInProcessReportingOperation<Request, InProcess, Success, Failure>) {
         self.operation = operation
         self.childTask = ChildTask(parent: operation)
-        resultToken = operation.subscribe(resultListener: { [weak self] result in
-            guard let self = self else { return }
-            self.resultListener(result)
+        self.resultToken = operation.subscribe(resultListener: { [weak self] result in
+            guard let self else { return }
+            resultListener(result)
         })
-        inProcessToken = operation.subscribe(inProcessListener: { [weak self] inProcess in
-            guard let self = self else { return }
-            self.inProcessListener(inProcess)
+        self.inProcessToken = operation.subscribe(inProcessListener: { [weak self] inProcess in
+            guard let self else { return }
+            inProcessListener(inProcess)
         })
     }
 
     deinit {
-        if let resultToken = resultToken {
+        if let resultToken {
             Amplify.Hub.removeListener(resultToken)
         }
-        if let inProcessToken = inProcessToken {
+        if let inProcessToken {
             Amplify.Hub.removeListener(inProcessToken)
         }
     }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-final public class DataStoreCategory: Category {
+public final class DataStoreCategory: Category {
 
     /// Always .dataStore
     public let categoryType: CategoryType = .dataStore
@@ -54,8 +54,10 @@ final public class DataStoreCategory: Category {
         let key = plugin.key
         guard !key.isEmpty else {
             let pluginDescription = String(describing: plugin)
-            let error = DataStoreError.configuration("Plugin \(pluginDescription) has an empty `key`.",
-                "Set the `key` property for \(String(describing: plugin))")
+            let error = DataStoreError.configuration(
+                "Plugin \(pluginDescription) has an empty `key`.",
+                "Set the `key` property for \(String(describing: plugin))"
+            )
             throw error
         }
 
@@ -78,8 +80,10 @@ final public class DataStoreCategory: Category {
     public func getPlugin(for key: PluginKey) throws -> DataStoreCategoryPlugin {
         guard let plugin = plugins[key] else {
             let keys = plugins.keys.joined(separator: ", ")
-            let error = DataStoreError.configuration("No plugin has been added for '\(key)'.",
-                "Either add a plugin for '\(key)', or use one of the known keys: \(keys)")
+            let error = DataStoreError.configuration(
+                "No plugin has been added for '\(key)'.",
+                "Either add a plugin for '\(key)', or use one of the known keys: \(keys)"
+            )
             throw error
         }
         return plugin

@@ -16,8 +16,8 @@ extension PredictionsCategory: PredictionsCategoryBehavior {
         try await plugin.identify(request, in: image, options: options)
     }
 
-    public func convert<Input, Options, Output>(
-        _ request: Predictions.Convert.Request<Input, Options, Output>,
+    public func convert<Options, Output>(
+        _ request: Predictions.Convert.Request<some Any, Options, Output>,
         options: Options? = nil
     ) async throws -> Output {
         try await plugin.convert(request, options: options)

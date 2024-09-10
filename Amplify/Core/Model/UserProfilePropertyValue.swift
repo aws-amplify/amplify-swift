@@ -20,4 +20,4 @@ extension String: UserProfilePropertyValue {}
 extension Int: UserProfilePropertyValue {}
 extension Double: UserProfilePropertyValue {}
 extension Bool: UserProfilePropertyValue {}
-extension Array: UserProfilePropertyValue where Element == String {}
+extension [String]: UserProfilePropertyValue {}

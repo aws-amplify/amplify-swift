@@ -30,18 +30,22 @@ final class OSLogWrapper: Logger {
 
     public func error(_ message: @autoclosure () -> String) {
         guard enabled, logLevel.rawValue >= LogLevel.error.rawValue else { return }
-        os_log("%@",
-               log: osLog,
-               type: OSLogType.error,
-               message())
+        os_log(
+            "%@",
+            log: osLog,
+            type: OSLogType.error,
+            message()
+        )
     }
 
     public func error(error: Error) {
         guard enabled, logLevel.rawValue >= LogLevel.error.rawValue else { return }
-        os_log("%@",
-               log: osLog,
-               type: OSLogType.error,
-               error.localizedDescription)
+        os_log(
+            "%@",
+            log: osLog,
+            type: OSLogType.error,
+            error.localizedDescription
+        )
     }
 
     public func warn(_ message: @autoclosure () -> String) {
@@ -49,10 +53,12 @@ final class OSLogWrapper: Logger {
             return
         }
 
-        os_log("%@",
-               log: osLog,
-               type: OSLogType.info,
-               message())
+        os_log(
+            "%@",
+            log: osLog,
+            type: OSLogType.info,
+            message()
+        )
     }
 
     public func info(_ message: @autoclosure () -> String) {
@@ -60,10 +66,12 @@ final class OSLogWrapper: Logger {
             return
         }
 
-        os_log("%@",
-               log: osLog,
-               type: OSLogType.info,
-               message())
+        os_log(
+            "%@",
+            log: osLog,
+            type: OSLogType.info,
+            message()
+        )
     }
 
     public func debug(_ message: @autoclosure () -> String) {
@@ -71,10 +79,12 @@ final class OSLogWrapper: Logger {
             return
         }
 
-        os_log("%@",
-               log: osLog,
-               type: OSLogType.debug,
-               message())
+        os_log(
+            "%@",
+            log: osLog,
+            type: OSLogType.debug,
+            message()
+        )
     }
 
     public func verbose(_ message: @autoclosure () -> String) {
@@ -82,9 +92,11 @@ final class OSLogWrapper: Logger {
             return
         }
 
-        os_log("%@",
-               log: osLog,
-               type: OSLogType.debug,
-               message())
+        os_log(
+            "%@",
+            log: osLog,
+            type: OSLogType.debug,
+            message()
+        )
     }
 }

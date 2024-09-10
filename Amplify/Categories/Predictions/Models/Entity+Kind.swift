@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Predictions.Entity {
+public extension Predictions.Entity {
     /// Different entity types detected in a text as a result of
     /// interpret() API
     public struct Kind: Equatable, Hashable, @unchecked Sendable {

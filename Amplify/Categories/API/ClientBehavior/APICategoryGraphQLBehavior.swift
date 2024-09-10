@@ -35,7 +35,7 @@ public protocol APICategoryGraphQLBehavior: AnyObject {
     ///   - request: The GraphQL request containing apiName, document, variables, and responseType
     ///   - valueListener: Invoked when the GraphQL subscription receives a new value from the service
     ///   - completionListener: Invoked when the subscription has terminated
-    /// - Returns: The AmplifyInProcessReportingOperation being enqueued    
+    /// - Returns: The AmplifyInProcessReportingOperation being enqueued
     func subscribe<R: Decodable>(
         request: GraphQLRequest<R>
     ) -> AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<R>>

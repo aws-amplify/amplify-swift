@@ -102,7 +102,7 @@ public class Amplify: @unchecked Sendable {
     /// methods during setup & teardown of tests
     ///
     /// - Tag: Amplify.Logging
-    public static internal(set) var Logging: LoggingCategory {
+    public internal(set) static var Logging: LoggingCategory {
         get {
             loggingAtomic.get()
         }
@@ -112,13 +112,15 @@ public class Amplify: @unchecked Sendable {
     }
     private static let loggingAtomic = AtomicValue<LoggingCategory>(initialValue: LoggingCategory())
 
+    // swiftlint:disable cyclomatic_complexity
+
     /// Adds `plugin` to the category
     ///
     /// See: [Category.removePlugin(for:)](x-source-tag://Category.removePlugin)
     ///
     /// - Parameter plugin: The plugin to add
     /// - Tag: Amplify.add_plugin
-    public static func add<P: Plugin>(plugin: P) throws {
+    public static func add(plugin: some Plugin) throws {
         log.debug("Adding plugin: \(plugin))")
         switch plugin {
         case let plugin as AnalyticsCategoryPlugin:
@@ -144,8 +146,11 @@ public class Amplify: @unchecked Sendable {
         default:
             throw PluginError.pluginConfigurationError(
                 "Plugin category does not exist.",
-                "Verify that the library version is correct and supports the plugin's category.")
+                "Verify that the library version is correct and supports the plugin's category."
+            )
         }
+
+        // swiftlint:enable cyclomatic_complexity
     }
 }
 

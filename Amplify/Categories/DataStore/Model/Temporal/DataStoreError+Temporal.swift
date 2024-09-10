@@ -7,9 +7,9 @@
 
 import Foundation
 
-extension DataStoreError {
+public extension DataStoreError {
 
-    public static func invalidDateFormat(_ value: String) -> DataStoreError {
+    static func invalidDateFormat(_ value: String) -> DataStoreError {
         return DataStoreError.decodingError(
             """
             Could not parse \(value) as a Date using the ISO8601 format.
@@ -17,7 +17,8 @@ extension DataStoreError {
             """
             Check if the format used to parse the date is the correct one. Check
             `TemporalFormat` for all the options.
-            """)
+            """
+        )
     }
 
 }

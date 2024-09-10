@@ -33,8 +33,8 @@ extension ModelProviderRegistry {
 public extension ModelProviderRegistry {
 
     /// Static decoder sources that will be referenced to initialize different type of decoders having source as
-    /// a metadata. 
-    struct DecoderSource {
+    /// a metadata.
+    enum DecoderSource {
         public static let dataStore = "DataStore"
         public static let appSync = "AppSync"
     }

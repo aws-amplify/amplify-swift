@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Predictions {
+public extension Predictions {
     /// Describes gender of an entity identified as a result of
     /// identify() API
     public struct Gender: @unchecked Sendable {

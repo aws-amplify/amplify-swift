@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Temporal {
+public extension Temporal {
 
     /// `Temporal.Date` represents a `Date` with specific allowable formats.
     ///
@@ -17,7 +17,7 @@ extension Temporal {
     ///  * `.full` => `yyyy-MM-ddZZZZZ`
     ///
     ///  - Note: `.medium`, `.long`, and `.full` are the same date format.
-    public struct Date: TemporalSpec {
+    struct Date: TemporalSpec {
 
         // Inherits documentation from `TemporalSpec`
         public let foundationDate: Foundation.Date

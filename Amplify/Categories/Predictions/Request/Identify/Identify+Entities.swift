@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension Predictions.Identify {
-    public enum Entities {}
+public extension Predictions.Identify {
+    enum Entities {}
 }
 
 extension Predictions.Identify.Request where Output == Predictions.Identify.Entities.Result {

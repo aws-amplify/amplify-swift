@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Predictions {
+public extension Predictions {
     /// Describes the pose of a person identified in an image from identify() API
-    public struct Pose {
+    struct Pose {
         public let pitch: Double
         public let roll: Double
         public let yaw: Double

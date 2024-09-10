@@ -66,9 +66,11 @@ struct IssueReporter: View {
                     .border(Color.blue)
                     .padding(.bottom)
                     .alert(isPresented: $showAlertIfInvalidURL) {
-                        Alert(title: Text(githubURLErrorTitle),
-                              message: Text(githubURLErrorMessage),
-                              dismissButton: .default(Text("OK")))
+                        Alert(
+                            title: Text(githubURLErrorTitle),
+                            message: Text(githubURLErrorMessage),
+                            dismissButton: .default(Text("OK"))
+                        )
                     }
                     .disabled(shouldDisableReporting())
 
@@ -164,8 +166,12 @@ final class MultilineTextField: UIViewRepresentable {
         /// add a dismiss button in UIToolbar for keyboard
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
         let emptySpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let dismissButton = UIBarButtonItem(title: "Dismiss", style: .done,
-                                            target: self, action: #selector(dismissKeyboard))
+        let dismissButton = UIBarButtonItem(
+            title: "Dismiss",
+            style: .done,
+            target: self,
+            action: #selector(dismissKeyboard)
+        )
         toolbar.setItems([emptySpace, dismissButton], animated: false)
         toolbar.sizeToFit()
 
@@ -175,8 +181,12 @@ final class MultilineTextField: UIViewRepresentable {
 
     @MainActor
     @objc func dismissKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
-                                        to: nil, from: nil, for: nil)
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder),
+            to: nil,
+            from: nil,
+            for: nil
+        )
     }
 
     func updateUIView(_ uiView: UITextView, context: Context) {

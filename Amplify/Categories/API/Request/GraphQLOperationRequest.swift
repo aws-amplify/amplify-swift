@@ -32,14 +32,16 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
     public let options: Options
 
     /// Initializer for GraphQLOperationRequest
-    public init(apiName: String?,
-                operationType: GraphQLOperationType,
-                document: String,
-                variables: [String: Any]? = nil,
-                responseType: R.Type,
-                decodePath: String? = nil,
-                authMode: AuthorizationMode? = nil,
-                options: Options) {
+    public init(
+        apiName: String?,
+        operationType: GraphQLOperationType,
+        document: String,
+        variables: [String: Any]? = nil,
+        responseType: R.Type,
+        decodePath: String? = nil,
+        authMode: AuthorizationMode? = nil,
+        options: Options
+    ) {
         self.apiName = apiName
         self.operationType = operationType
         self.document = document

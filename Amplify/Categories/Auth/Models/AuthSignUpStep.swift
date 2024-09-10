@@ -15,7 +15,8 @@ public enum AuthSignUpStep {
     case confirmUser(
         AuthCodeDeliveryDetails? = nil,
         AdditionalInfo? = nil,
-        UserId? = nil)
+        UserId? = nil
+    )
 
     /// Sign Up successfully completed  
     /// The customers can use this step to determine if they want to complete sign in

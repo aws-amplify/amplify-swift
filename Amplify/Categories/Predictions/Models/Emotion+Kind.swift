@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Predictions.Emotion {
+public extension Predictions.Emotion {
     /// Different emotion types returned as a result of
     /// identify() API call
     public struct Kind: Equatable, @unchecked Sendable {

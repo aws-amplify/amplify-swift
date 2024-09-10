@@ -7,10 +7,10 @@
 
 import CoreGraphics
 
-extension Predictions.Entity {
+public extension Predictions.Entity {
     /// Describes the result for an entity matched in an entity collection
     /// created on AWS Rekogniton and detected from identify() API call
-    public struct Match {
+    struct Match {
         public let boundingBox: CGRect
         public let metadata: Metadata
 
@@ -23,8 +23,8 @@ extension Predictions.Entity {
         }
     }
 }
-extension Predictions.Entity.Match {
-    public struct Metadata {
+public extension Predictions.Entity.Match {
+    struct Metadata {
         public let externalImageId: String?
         public let similarity: Double
 

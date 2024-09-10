@@ -21,7 +21,7 @@ import Foundation
 ///
 /// Instead, messages and listener states are guaranteed to be independently self-consistent. Callers can use
 /// `hasListener(withToken:)` to check that a listener has been registered.
-final public class AWSHubPlugin: HubCategoryPlugin {
+public final class AWSHubPlugin: HubCategoryPlugin {
     /// Convenience property. Each instance of `AWSHubPlugin` has the same key
     public static var key: String {
         return "awsHubPlugin"
@@ -49,16 +49,20 @@ final public class AWSHubPlugin: HubCategoryPlugin {
         dispatcher.dispatch(to: channel, payload: payload)
     }
 
-    public func listen(to channel: HubChannel,
-                       eventName: HubPayloadEventName,
-                       listener: @escaping HubListener) -> UnsubscribeToken {
+    public func listen(
+        to channel: HubChannel,
+        eventName: HubPayloadEventName,
+        listener: @escaping HubListener
+    ) -> UnsubscribeToken {
         let filter = HubFilters.forEventName(eventName)
         return listen(to: channel, isIncluded: filter, listener: listener)
     }
 
-    public func listen(to channel: HubChannel,
-                       isIncluded filter: HubFilter? = nil,
-                       listener: @escaping HubListener) -> UnsubscribeToken {
+    public func listen(
+        to channel: HubChannel,
+        isIncluded filter: HubFilter? = nil,
+        listener: @escaping HubListener
+    ) -> UnsubscribeToken {
         let filteredListener = FilteredListener(for: channel, filter: filter, listener: listener)
         dispatcher.insert(filteredListener)
 

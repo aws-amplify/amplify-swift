@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension Predictions {
-    public enum Interpret {}
+public extension Predictions {
+    enum Interpret {}
 }
 
 public extension Predictions.Interpret {
@@ -21,8 +21,10 @@ public extension Predictions.Interpret {
         /// key/values
         public let pluginOptions: Any?
 
-        public init(defaultNetworkPolicy: DefaultNetworkPolicy = .auto,
-                    pluginOptions: Any? = nil) {
+        public init(
+            defaultNetworkPolicy: DefaultNetworkPolicy = .auto,
+            pluginOptions: Any? = nil
+        ) {
             self.defaultNetworkPolicy = defaultNetworkPolicy
             self.pluginOptions = pluginOptions
         }

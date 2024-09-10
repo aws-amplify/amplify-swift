@@ -21,10 +21,12 @@ public extension Geo {
         /// functionality. See plugin documentation for expected key/values.
         public var pluginOptions: Any?
 
-        public init(area: Geo.SearchArea? = nil,
-                    countries: [Geo.Country]? = nil,
-                    maxResults: Int? = nil,
-                    pluginOptions: Any? = nil) {
+        public init(
+            area: Geo.SearchArea? = nil,
+            countries: [Geo.Country]? = nil,
+            maxResults: Int? = nil,
+            pluginOptions: Any? = nil
+        ) {
             self.area = area
             self.countries = countries
             self.maxResults = maxResults
@@ -43,8 +45,10 @@ public extension Geo {
         /// functionality. See plugin documentation for expected key/values.
         public var pluginOptions: Any?
 
-        public init(maxResults: Int? = nil,
-                    pluginOptions: Any? = nil) {
+        public init(
+            maxResults: Int? = nil,
+            pluginOptions: Any? = nil
+        ) {
             self.maxResults = maxResults
             self.pluginOptions = pluginOptions
         }

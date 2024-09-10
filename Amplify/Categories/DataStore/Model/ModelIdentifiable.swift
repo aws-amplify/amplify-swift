@@ -62,11 +62,11 @@ public extension ModelIdentifierProtocol {
     }
 
     var keys: [String] {
-        fields.map { $0.name }
+        fields.map(\.name)
     }
 
     var values: [Persistable] {
-        fields.map { $0.value }
+        fields.map(\.value)
     }
 
     var predicate: QueryPredicate {
@@ -97,11 +97,11 @@ public extension ModelIdentifier where F == ModelIdentifierFormat.Custom {
 /// Convenience type for a ModelIdentifier with a `ModelIdentifierFormat.Default` format
 public typealias DefaultModelIdentifier<M: Model> = ModelIdentifier<M, ModelIdentifierFormat.Default>
 
-extension DefaultModelIdentifier {
+public extension DefaultModelIdentifier {
     /// Factory to instantiate a `DefaultModelIdentifier`.
     /// - Parameter id: model id value
     /// - Returns: an instance of `ModelIdentifier` for the given model type
-    public static func makeDefault(id: String) -> ModelIdentifier<M, ModelIdentifierFormat.Default> {
+    static func makeDefault(id: String) -> ModelIdentifier<M, ModelIdentifierFormat.Default> {
         ModelIdentifier<M, ModelIdentifierFormat.Default>(fields: [
             (name: ModelIdentifierFormat.Default.name, value: id)
         ])
@@ -110,7 +110,7 @@ extension DefaultModelIdentifier {
     /// Convenience factory to instantiate a `DefaultModelIdentifier` from a given model
     /// - Parameter model: model
     /// - Returns: an instance of `ModelIdentifier` for the given model type
-    public static func makeDefault(fromModel model: M) -> ModelIdentifier<M, ModelIdentifierFormat.Default> {
+    static func makeDefault(fromModel model: M) -> ModelIdentifier<M, ModelIdentifierFormat.Default> {
         guard let idValue = model[ModelIdentifierFormat.Default.name] as? String else {
             fatalError("Couldn't find default identifier for model \(model)")
         }
@@ -121,19 +121,18 @@ extension DefaultModelIdentifier {
 // MARK: - Persistable + stringValue
 private extension Persistable {
     var stringValue: String {
-        var value: String
-        switch self {
+        var value: String = switch self {
         case let self as Temporal.Date:
-            value = self.iso8601String
+            self.iso8601String
 
         case let self as Temporal.DateTime:
-            value = self.iso8601String
+            self.iso8601String
 
         case let self as Temporal.Time:
-            value = self.iso8601String
+            self.iso8601String
 
         default:
-            value = "\(self)"
+            "\(self)"
         }
         return value
     }
