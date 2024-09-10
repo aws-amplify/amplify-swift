@@ -24,6 +24,7 @@ enum StorageMultipartUploadBehavior {
     case progressive
 }
 
+// swiftlint:disable type_body_length
 class StorageMultipartUploadSession {
     enum Failure: Error {
         case invalidStateTransition
