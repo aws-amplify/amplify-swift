@@ -64,7 +64,7 @@ extension SignUpInput {
         if let devProvidedData {
             return devProvidedData.compactMap { key, value in
                 return CognitoIdentityProviderClientTypes.AttributeType(name: key, value: value)
-            } await + cognitoValidationData ?? []
+            } + (await cognitoValidationData ?? [])
         }
         return await cognitoValidationData
     }
