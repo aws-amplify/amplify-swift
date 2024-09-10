@@ -61,11 +61,13 @@ extension SignUpInput {
     private static func getValidationData(with devProvidedData: [String: String]?)
     async -> [CognitoIdentityProviderClientTypes.AttributeType]? {
 
+        // swiftformat:disable all
         if let devProvidedData {
             return devProvidedData.compactMap { key, value in
                 return CognitoIdentityProviderClientTypes.AttributeType(name: key, value: value)
             } + (await cognitoValidationData ?? [])
         }
+        // swiftformat:enable all
         return await cognitoValidationData
     }
 
