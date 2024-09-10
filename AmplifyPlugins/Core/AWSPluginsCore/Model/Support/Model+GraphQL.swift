@@ -133,11 +133,11 @@ extension Model {
             return nil
         }
 
-        // swiftlint:disable:next syntactic_sugar
-        guard case .some(Any?.some(let value)) = fieldValue else {
+        // swiftformat:disable all
+        guard case .some(Optional<Any>.some(let value)) = fieldValue else {
             return nil
         }
-
+        // swiftformat:enable all
         switch modelField.type {
         case .date, .dateTime, .time:
             if let date = value as? TemporalSpec {
