@@ -41,7 +41,10 @@ extension CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType: Decodable 
         let container = try decoder.container(keyedBy: CodingKeys.self)
         try self.init(
             attributeName: container.decodeIfPresent(String.self, forKey: .attributeName),
-            deliveryMedium: container.decodeIfPresent(CognitoIdentityProviderClientTypes.DeliveryMediumType.self, forKey: .deliveryMedium),
+            deliveryMedium: container.decodeIfPresent(
+                CognitoIdentityProviderClientTypes.DeliveryMediumType.self,
+                forKey: .deliveryMedium
+            ),
             destination: container.decodeIfPresent(String.self, forKey: .destination)
         )
     }

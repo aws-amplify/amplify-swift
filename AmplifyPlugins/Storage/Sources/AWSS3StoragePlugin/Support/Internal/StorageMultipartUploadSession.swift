@@ -44,7 +44,7 @@ class StorageMultipartUploadSession {
     private let onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler
 
     private let transferTask: StorageTransferTask
-    private var cancelationFailure: (any Error)?
+    private var cancelationError: (any Error)? = nil
 
     init(client: StorageMultipartUploadClient,
          bucket: String,
@@ -247,14 +247,10 @@ class StorageMultipartUploadSession {
             case .completed:
                 onEvent(.completed(()))
             case .aborting(_, let error):
-                cancelationFailure = error
+                cancelationError = error
                 try abort()
             case .aborted(_, let error):
-                if let cancelationFailure {
-                    onEvent(.failed(StorageError(error: cancelationFailure)))
-                } else {
-                    onEvent(.failed(StorageError.unknown("Unable to upload", error)))
-                }
+                onEvent(.failed(StorageError.unknown("Unable to upload", cancelationError ?? error)))
             case .failed(_, _, let error):
                 onEvent(.failed(StorageError(error: error)))
             default:

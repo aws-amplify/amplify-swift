@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSTranscribeStreaming
+import Foundation
 
 extension TranscribeStreamingClientTypes.TranscriptEvent: Decodable {
     private enum CodingKeys: String, CodingKey {
@@ -16,7 +16,10 @@ extension TranscribeStreamingClientTypes.TranscriptEvent: Decodable {
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         try self.init(
-            transcript: container.decode(TranscribeStreamingClientTypes.Transcript.self, forKey: .transcript)
+            transcript: container.decode(
+                TranscribeStreamingClientTypes.Transcript.self,
+                forKey: .transcript
+            )
         )
     }
 }
@@ -49,12 +52,21 @@ extension TranscribeStreamingClientTypes.Result: Decodable {
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         try self.init(
-            alternatives: container.decodeIfPresent([TranscribeStreamingClientTypes.Alternative].self, forKey: .alternatives),
+            alternatives: container.decodeIfPresent(
+                [TranscribeStreamingClientTypes.Alternative].self,
+                forKey: .alternatives
+            ),
             channelId: container.decodeIfPresent(String.self, forKey: .channelId),
             endTime: container.decode(Double.self, forKey: .endTime),
             isPartial: container.decode(Bool.self, forKey: .isPartial),
-            languageCode: container.decodeIfPresent(TranscribeStreamingClientTypes.LanguageCode.self, forKey: .languageCode),
-            languageIdentification: container.decodeIfPresent([TranscribeStreamingClientTypes.LanguageWithScore].self, forKey: .languageIdentification),
+            languageCode: container.decodeIfPresent(
+                TranscribeStreamingClientTypes.LanguageCode.self,
+                forKey: .languageCode
+            ),
+            languageIdentification: container.decodeIfPresent(
+                [TranscribeStreamingClientTypes.LanguageWithScore].self,
+                forKey: .languageIdentification
+            ),
             resultId: container.decodeIfPresent(String.self, forKey: .resultId),
             startTime: container.decode(Double.self, forKey: .startTime)
         )
@@ -71,8 +83,14 @@ extension TranscribeStreamingClientTypes.Alternative: Decodable {
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         try self.init(
-            entities: container.decodeIfPresent([TranscribeStreamingClientTypes.Entity].self, forKey: .entities),
-            items: container.decodeIfPresent([TranscribeStreamingClientTypes.Item].self, forKey: .items),
+            entities: container.decodeIfPresent(
+                [TranscribeStreamingClientTypes.Entity].self,
+                forKey: .entities
+            ),
+            items: container.decodeIfPresent(
+                [TranscribeStreamingClientTypes.Item].self,
+                forKey: .items
+            ),
             transcript: container.decodeIfPresent(String.self, forKey: .transcript)
         )
     }
@@ -137,7 +155,10 @@ extension TranscribeStreamingClientTypes.LanguageWithScore: Decodable {
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         try self.init(
-            languageCode: container.decodeIfPresent(TranscribeStreamingClientTypes.LanguageCode.self, forKey: .languageCode),
+            languageCode: container.decodeIfPresent(
+                TranscribeStreamingClientTypes.LanguageCode.self,
+                forKey: .languageCode
+            ),
             score: container.decode(Double.self, forKey: .score)
         )
     }

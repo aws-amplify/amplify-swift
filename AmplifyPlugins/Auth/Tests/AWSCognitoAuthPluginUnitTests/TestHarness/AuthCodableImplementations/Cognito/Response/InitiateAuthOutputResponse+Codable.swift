@@ -61,7 +61,10 @@ extension CognitoIdentityProviderClientTypes.AuthenticationResultType: Decodable
             accessToken: container.decodeIfPresent(String.self, forKey: .accessToken),
             expiresIn: container.decode(Int.self, forKey: .expiresIn),
             idToken: container.decodeIfPresent(String.self, forKey: .idToken),
-            newDeviceMetadata: container.decodeIfPresent(CognitoIdentityProviderClientTypes.NewDeviceMetadataType.self, forKey: .newDeviceMetadata),
+            newDeviceMetadata: container.decodeIfPresent(
+                CognitoIdentityProviderClientTypes.NewDeviceMetadataType.self,
+                forKey: .newDeviceMetadata
+            ),
             refreshToken: container.decodeIfPresent(String.self, forKey: .refreshToken),
             tokenType: container.decodeIfPresent(String.self, forKey: .tokenType)
         )

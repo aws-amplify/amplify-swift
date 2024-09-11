@@ -120,7 +120,8 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
             if response.isErrorRetriable {
                 logURLSessionActivity("Task can be retried.")
             }
-            // For multipart uploads, we need to handle the upload part failure
+
+            // For multipart uploads, we need to handle the upload part failure when the session is not aborted
             if case .multiPartUploadPart(let uploadId, let partNumber) = transferTask.transferType,
                let multipartUploadSession = storageService.findMultipartUploadSession(uploadId: uploadId), 
                !multipartUploadSession.isAborted {

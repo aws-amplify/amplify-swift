@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Conforming to this protocol automatically adds support to "prettify" the type when printing its value.
 protocol AmplifyStringConvertible: CustomStringConvertible {}
 
 extension AmplifyStringConvertible {
@@ -14,13 +15,18 @@ extension AmplifyStringConvertible {
         return prettyDescription(for: self)
     }
 
-    private func prettyDescription(for object: Any, level: UInt = 1) -> String {
+    private func prettyDescription(
+        for object: Any,
+        level: UInt = 1
+    ) -> String {
         return prettyDescription(for: object, level: level) { result, indentation in
             switch object {
             case let dictionary as Dictionary<AnyHashable, Any>:
                 // Dictionaries follow the format: "<key>": <value>
                 for (key, value) in dictionary {
-                    result.append(contentsOf: "\n\(indentation)\"\(key)\": \(description(for: value, withLevel: level)),")
+                    result.append(
+                        contentsOf: "\n\(indentation)\"\(key)\": \(description(for: value, withLevel: level)),"
+                    )
                 }
             case let collection as any Collection:
                 // Other collections follow the format: <value_1>, <value_2>, ..., <value_n>
@@ -31,13 +37,19 @@ extension AmplifyStringConvertible {
                 // Other objects follow the format: <attribute>: <value>
                 for child in Mirror(reflecting: object).children {
                     guard let label = child.label else { continue }
-                    result.append(contentsOf: "\n\(indentation)\(label): \(description(for: child.value, withLevel: level)),")
+                    result.append(
+                        contentsOf: "\n\(indentation)\(label): \(description(for: child.value, withLevel: level)),"
+                    )
                 }
             }
         }
     }
 
-    private func prettyDescription(for object: Any, level: UInt = 1, contentsBuilder: (_ result: inout String, _ indentation: String) -> Void) -> String {
+    private func prettyDescription(
+        for object: Any,
+        level: UInt = 1,
+        contentsBuilder: (_ result: inout String, _ indentation: String) -> Void
+    ) -> String {
         var contents = ""
         contentsBuilder(&contents, indentation(forLevel: level))
         if contents.isEmpty {
@@ -52,8 +64,11 @@ extension AmplifyStringConvertible {
         )
     }
 
-    private func description(for value: Any, withLevel level: UInt) -> String {
-        let unwrappedValue = unwrappedValue(from: value) // This is to prevent Optionals from printing with the <Optional> prefix
+    private func description(
+        for value: Any,
+        withLevel level: UInt
+    ) -> String {
+        let unwrappedValue = unwrappedValue(from: value)
         switch unwrappedValue {
         case let stringValue as String:
             return stringValue.quoted
@@ -100,7 +115,11 @@ extension AmplifyStringConvertible {
         }
     }
 
-    private func appendClosingTag(_ tag: String, to value: String, currentLevel level: UInt) -> String {
+    private func appendClosingTag(
+        _ tag: String,
+        to value: String,
+        currentLevel level: UInt
+    ) -> String {
         // Remove the last comma
         let result = value.hasSuffix(",") ? String(value.dropLast()) : value
         // As we're adding a closing tag, reduce one indentation level

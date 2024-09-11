@@ -15,7 +15,10 @@ import SmithyRetries
 // swiftlint:disable identifier_name
 // swiftlint:disable line_length
 extension UploadPartInput {
-    public func customPresignURL(config: S3Client.S3ClientConfiguration, expiration: Foundation.TimeInterval) async throws -> Foundation.URL? {
+    func customPresignURL(
+        config: S3Client.S3ClientConfiguration,
+        expiration: Foundation.TimeInterval
+    ) async throws -> Foundation.URL? {
         let serviceName = "S3"
         let input = self
         let client: (SmithyHTTPAPI.HTTPRequest, Smithy.Context) async throws -> SmithyHTTPAPI.HTTPResponse = { (_, _) in
@@ -86,7 +89,11 @@ struct UploadPartPresignedMiddleware: Smithy.RequestMessageSerializer {
 
     let id: Swift.String = "UploadPartPresignedMiddleware"
 
-    func apply(input: InputType, builder: SmithyHTTPAPI.HTTPRequestBuilder, attributes: Smithy.Context) throws {
+    func apply(
+        input: InputType,
+        builder: SmithyHTTPAPI.HTTPRequestBuilder,
+        attributes: Smithy.Context
+    ) throws {
         builder.withQueryItem(.init(
             name: "x-id",
             value: "UploadPart")

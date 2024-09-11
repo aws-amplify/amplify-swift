@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSPinpoint
+import Foundation
 
 extension PinpointClientTypes.EndpointLocation: Codable, Equatable {
     private enum CodingKeys: CodingKey {
@@ -18,7 +18,10 @@ extension PinpointClientTypes.EndpointLocation: Codable, Equatable {
         case region
     }
 
-    public static func == (lhs: PinpointClientTypes.EndpointLocation, rhs: PinpointClientTypes.EndpointLocation) -> Bool {
+    public static func == (
+        lhs: PinpointClientTypes.EndpointLocation,
+        rhs: PinpointClientTypes.EndpointLocation
+    ) -> Bool {
         return lhs.city == rhs.city
             && lhs.country == rhs.country
             && lhs.latitude == rhs.latitude
@@ -62,7 +65,10 @@ extension PinpointClientTypes.EndpointDemographic: Codable, Equatable {
         case timezone
     }
 
-    public static func == (lhs: PinpointClientTypes.EndpointDemographic, rhs: PinpointClientTypes.EndpointDemographic) -> Bool {
+    public static func == (
+        lhs: PinpointClientTypes.EndpointDemographic,
+        rhs: PinpointClientTypes.EndpointDemographic
+    ) -> Bool {
         return lhs.appVersion == rhs.appVersion
             && lhs.locale == rhs.locale
             && lhs.make == rhs.make
@@ -97,7 +103,6 @@ extension PinpointClientTypes.EndpointDemographic: Codable, Equatable {
         try container.encodeIfPresent(platform, forKey: .platform)
         try container.encodeIfPresent(platformVersion, forKey: .platformVersion)
         try container.encodeIfPresent(timezone, forKey: .timezone)
-
     }
 }
 
@@ -107,7 +112,10 @@ extension PinpointClientTypes.EndpointUser: Codable, Equatable {
         case userId
     }
 
-    public static func == (lhs: PinpointClientTypes.EndpointUser, rhs: PinpointClientTypes.EndpointUser) -> Bool {
+    public static func == (
+        lhs: PinpointClientTypes.EndpointUser, 
+        rhs: PinpointClientTypes.EndpointUser
+    ) -> Bool {
         return lhs.userAttributes == rhs.userAttributes
             && lhs.userId == rhs.userId
     }
