@@ -26,6 +26,7 @@ class UpdateMFAPreferenceTask: AuthUpdateMFAPreferenceTask, DefaultLogger {
 
     private let smsPreference: MFAPreference?
     private let totpPreference: MFAPreference?
+    private let emailPreference: MFAPreference?
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private let taskHelper: AWSAuthTaskHelper
@@ -36,10 +37,12 @@ class UpdateMFAPreferenceTask: AuthUpdateMFAPreferenceTask, DefaultLogger {
 
     init(smsPreference: MFAPreference?,
          totpPreference: MFAPreference?,
+         emailPreference: MFAPreference?,
          authStateMachine: AuthStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory) {
         self.smsPreference = smsPreference
         self.totpPreference = totpPreference
+        self.emailPreference = emailPreference
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
@@ -63,6 +66,7 @@ class UpdateMFAPreferenceTask: AuthUpdateMFAPreferenceTask, DefaultLogger {
         let preferredMFAType = currentPreference.preferredMfaSetting.map(MFAType.init(rawValue:))
         let input = SetUserMFAPreferenceInput(
             accessToken: accessToken,
+            emailMfaSettings: emailPreference?.emailSetting(isCurrentlyPreferred: preferredMFAType == .email), 
             smsMfaSettings: smsPreference?.smsSetting(isCurrentlyPreferred: preferredMFAType == .sms),
             softwareTokenMfaSettings: totpPreference?.softwareTokenSetting(isCurrentlyPreferred: preferredMFAType == .totp))
         _ = try await userPoolService.setUserMFAPreference(input: input)

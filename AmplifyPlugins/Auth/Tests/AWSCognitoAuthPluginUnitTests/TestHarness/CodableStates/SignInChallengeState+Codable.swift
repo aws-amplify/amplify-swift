@@ -31,7 +31,7 @@ extension SignInChallengeState: Codable {
                     username: try nestedContainerValue.decode(String.self, forKey: .username),
                     session: try nestedContainerValue.decode(String.self, forKey: .session),
                     parameters: try nestedContainerValue.decode([String: String].self, forKey: .parameters)),
-                .apiBased(.userSRP))
+                .apiBased(.userSRP), .confirmSignInWithTOTPCode)
         } else {
             fatalError("Decoding not supported")
         }

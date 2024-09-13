@@ -19,12 +19,41 @@ struct VerifySignInChallenge: Action {
 
     let signInMethod: SignInMethod
 
+    let currentSignInStep: AuthSignInStep
+
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let username = challenge.username
         var deviceMetadata = DeviceMetadata.noData
 
         do {
+
+            if case .continueSignInWithMFASetupSelection(_) = currentSignInStep {
+                let newChallenge = RespondToAuthChallenge(
+                    challenge: .mfaSetup,
+                    username: challenge.username,
+                    session: challenge.session,
+                    parameters: ["MFAS_CAN_SETUP": "[\"\(confirmSignEventData.answer)\"]"])
+
+                let event: SignInEvent
+                guard let mfaType = MFAType(rawValue: confirmSignEventData.answer) else {
+                    throw SignInError.inputValidation(field: "Unknown MFA type")
+                }
+
+                switch mfaType {
+                case .email:
+                    event = SignInEvent(eventType: .receivedChallenge(newChallenge))
+                case .totp:
+                    event = SignInEvent(eventType: .initiateTOTPSetup(username, newChallenge))
+                default:
+                    throw SignInError.unknown(message: "MFA Type not supported for setup")
+                }
+
+                logVerbose("\(#fileID) Sending event \(event)", environment: environment)
+                await dispatcher.send(event)
+                return
+            }
+
             let userpoolEnv = try environment.userPoolEnvironment()
             let username = challenge.username
             let session = challenge.session
@@ -64,7 +93,7 @@ struct VerifySignInChallenge: Action {
             // Remove the saved device details and retry verify challenge
             await DeviceMetadataHelper.removeDeviceMetaData(for: username, with: environment)
             let event = SignInChallengeEvent(
-                eventType: .retryVerifyChallengeAnswer(confirmSignEventData)
+                eventType: .retryVerifyChallengeAnswer(confirmSignEventData, currentSignInStep)
             )
             logVerbose("\(#fileID) Sending event \(event)", environment: environment)
             await dispatcher.send(event)

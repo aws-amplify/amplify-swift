@@ -41,12 +41,14 @@ public extension AWSCognitoAuthPlugin {
     }
 
     func updateMFAPreference(
-        sms: MFAPreference?,
-        totp: MFAPreference?
+        sms: MFAPreference? = nil,
+        totp: MFAPreference? = nil,
+        email: MFAPreference? = nil
     ) async throws {
         let task = UpdateMFAPreferenceTask(
             smsPreference: sms,
             totpPreference: totp,
+            emailPreference: email,
             authStateMachine: authStateMachine,
             userPoolFactory: authEnvironment.cognitoUserPoolFactory)
         return try await task.value

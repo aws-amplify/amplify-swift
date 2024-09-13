@@ -21,34 +21,36 @@ extension SignInChallengeState {
             switch oldState {
             case .notStarted:
 
-                if case .waitForAnswer(let challenge, let signInMethod) = event.isChallengeEvent {
-                    return .init(newState: .waitingForAnswer(challenge, signInMethod))
+                if case .waitForAnswer(let challenge, let signInMethod, let signInStep) = event.isChallengeEvent {
+                    return .init(newState: .waitingForAnswer(challenge, signInMethod, signInStep))
                 }
                 return .from(oldState)
 
-            case .waitingForAnswer(let challenge, let signInMethod):
+            case .waitingForAnswer(let challenge, let signInMethod, let signInStep):
 
                 if case .verifyChallengeAnswer(let answerEventData) = event.isChallengeEvent {
                     let action = VerifySignInChallenge(
                         challenge: challenge,
                         confirmSignEventData: answerEventData,
-                        signInMethod: signInMethod)
+                        signInMethod: signInMethod,
+                        currentSignInStep: signInStep)
                     return .init(
-                        newState: .verifying(challenge, signInMethod, answerEventData.answer),
+                        newState: .verifying(challenge, signInMethod, answerEventData.answer, signInStep),
                         actions: [action]
                     )
                 }
                 return .from(oldState)
 
-            case .verifying(let challenge, let signInMethod, _):
+            case .verifying(let challenge, let signInMethod, _, let signInStep):
 
-                if case .retryVerifyChallengeAnswer(let answerEventData) = event.isChallengeEvent {
+                if case .retryVerifyChallengeAnswer(let answerEventData, let signInStep) = event.isChallengeEvent {
                     let action = VerifySignInChallenge(
                         challenge: challenge,
                         confirmSignEventData: answerEventData,
-                        signInMethod: signInMethod)
+                        signInMethod: signInMethod,
+                        currentSignInStep: signInStep)
                     return .init(
-                        newState: .verifying(challenge, signInMethod, answerEventData.answer),
+                        newState: .verifying(challenge, signInMethod, answerEventData.answer, signInStep),
                         actions: [action]
                     )
                 }
@@ -59,20 +61,21 @@ extension SignInChallengeState {
                 }
 
                 if case .throwAuthError(let error) = event.isSignInEvent {
-                    return .init(newState: .error(challenge, signInMethod, error))
+                    return .init(newState: .error(challenge, signInMethod, error, signInStep))
                 }
                 return .from(oldState)
 
-            case .error(let challenge, let signInMethod, _):
+            case .error(let challenge, let signInMethod, _, let signInStep):
                 // If a verifyChallengeAnswer is received on error state we allow
                 // to retry the challenge.
                 if case .verifyChallengeAnswer(let answerEventData) = event.isChallengeEvent {
                     let action = VerifySignInChallenge(
                         challenge: challenge,
                         confirmSignEventData: answerEventData,
-                        signInMethod: signInMethod)
+                        signInMethod: signInMethod,
+                        currentSignInStep: signInStep)
                     return .init(
-                        newState: .verifying(challenge, signInMethod, answerEventData.answer),
+                        newState: .verifying(challenge, signInMethod, answerEventData.answer, signInStep),
                         actions: [action]
                     )
                 }
