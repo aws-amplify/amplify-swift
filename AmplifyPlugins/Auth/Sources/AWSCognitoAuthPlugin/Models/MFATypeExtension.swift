@@ -15,6 +15,8 @@ extension MFAType: DefaultLogger {
             self = .sms
         } else if rawValue.caseInsensitiveCompare("SOFTWARE_TOKEN_MFA") == .orderedSame {
             self = .totp
+        } else if rawValue.caseInsensitiveCompare("EMAIL_OTP") == .orderedSame {
+            self = .email
         } else {
             Self.log.error("Tried to initialize an unsupported MFA type with value: \(rawValue) ")
             return nil
@@ -33,6 +35,8 @@ extension MFAType: DefaultLogger {
             return "SMS_MFA"
         case .totp:
             return "SOFTWARE_TOKEN_MFA"
+        case .email:
+            return "EMAIL_OTP"
         }
     }
 }

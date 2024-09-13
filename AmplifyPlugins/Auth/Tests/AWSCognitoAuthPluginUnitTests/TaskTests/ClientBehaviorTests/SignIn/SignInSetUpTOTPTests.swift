@@ -76,7 +76,7 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 session: "session")
         }, mockAssociateSoftwareTokenResponse: { _ in
             return .init(secretCode: "123456", session: "session")
-        } )
+        })
 
         let options = AuthSignInRequest.Options()
         do {
