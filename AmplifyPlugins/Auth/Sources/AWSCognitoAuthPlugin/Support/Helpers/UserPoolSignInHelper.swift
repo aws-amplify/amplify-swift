@@ -131,10 +131,6 @@ struct UserPoolSignInHelper: DefaultLogger {
                         let error = SignInError.invalidServiceResponse(message: message)
                         return SignInEvent(eventType: .throwAuthError(error))
                     }
-                case.sdkUnknown(let challengeType):
-                    let message = "Unsupported challenge response \(challengeName)"
-                    let error = SignInError.unknown(message: message)
-                    return SignInEvent(eventType: .throwAuthError(error))
                 default:
                     let message = "Unsupported challenge response \(challengeName)"
                     let error = SignInError.unknown(message: message)
