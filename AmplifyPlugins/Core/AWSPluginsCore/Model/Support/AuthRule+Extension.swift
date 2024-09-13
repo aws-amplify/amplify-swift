@@ -12,17 +12,18 @@ public extension AuthRuleProvider {
     /// Returns corresponding `AWSAuthorizationType` for each `AuthRuleProvider`
     /// - Returns: AWS authorization type
     func toAWSAuthorizationType() -> AWSAuthorizationType {
-        var authType: AWSAuthorizationType = switch self {
+        var authType: AWSAuthorizationType
+        switch self {
         case .apiKey:
-            .apiKey
+            authType = .apiKey
         case .oidc:
-            .openIDConnect
+            authType = .openIDConnect
         case .iam:
-            .awsIAM
+            authType = .awsIAM
         case .userPools:
-            .amazonCognitoUserPools
+            authType = .amazonCognitoUserPools
         case .function:
-            .function
+            authType = .function
         }
         return authType
     }

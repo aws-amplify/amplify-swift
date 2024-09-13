@@ -23,8 +23,7 @@ extension Model {
                   let fieldValue = getFieldValue(
                       for: field.name,
                       modelSchema: modelSchema
-                  )
-            else {
+                  ) else {
                 return nil
             }
             return (field, fieldValue)

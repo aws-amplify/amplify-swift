@@ -20,8 +20,7 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
             guard let value = model.graphQLInputForPrimaryKey(
                 modelFieldName: fieldName,
                 modelSchema: schema
-            )
-            else {
+            ) else {
                 return nil
             }
             if firstField {
