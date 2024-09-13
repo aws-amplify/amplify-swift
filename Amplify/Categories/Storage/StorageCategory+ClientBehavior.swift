@@ -9,6 +9,7 @@ import Foundation
 
 extension StorageCategory: StorageCategoryBehavior {
 
+    @available(*, deprecated, message: "Use getURL(path:options:)")
     @discardableResult
     public func getURL(
         key: String,
@@ -25,6 +26,7 @@ extension StorageCategory: StorageCategoryBehavior {
         try await plugin.getURL(path: path, options: options)
     }
 
+    @available(*, deprecated, message: "Use downloadData(path:options:)")
     @discardableResult
     public func downloadData(
         key: String,
@@ -41,6 +43,7 @@ extension StorageCategory: StorageCategoryBehavior {
         plugin.downloadData(path: path, options: options)
     }
 
+    @available(*, deprecated, message: "Use downloadFile(path:options:)")
     @discardableResult
     public func downloadFile(
         key: String,
@@ -59,6 +62,7 @@ extension StorageCategory: StorageCategoryBehavior {
         plugin.downloadFile(path: path, local: local, options: options)
     }
 
+    @available(*, deprecated, message: "Use uploadData(path:options:)")
     @discardableResult
     public func uploadData(
         key: String,
@@ -77,6 +81,7 @@ extension StorageCategory: StorageCategoryBehavior {
         plugin.uploadData(path: path, data: data, options: options)
     }
 
+    @available(*, deprecated, message: "Use uploadFile(path:options:)")
     @discardableResult
     public func uploadFile(
         key: String,
@@ -95,6 +100,7 @@ extension StorageCategory: StorageCategoryBehavior {
         plugin.uploadFile(path: path, local: local, options: options)
     }
 
+    @available(*, deprecated, message: "Use remove(path:options:)")
     @discardableResult
     public func remove(
         key: String,
@@ -111,6 +117,7 @@ extension StorageCategory: StorageCategoryBehavior {
         try await plugin.remove(path: path, options: options)
     }
 
+    @available(*, deprecated, message: "Use list(path:options:)")
     @discardableResult
     public func list(
         options: StorageListOperation.Request.Options? = nil
