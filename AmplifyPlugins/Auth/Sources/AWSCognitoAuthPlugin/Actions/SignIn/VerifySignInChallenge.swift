@@ -28,7 +28,7 @@ struct VerifySignInChallenge: Action {
 
         do {
 
-            if case .continueSignInWithMFASetupSelection(_) = currentSignInStep {
+            if case .continueSignInWithMFASetupSelection = currentSignInStep {
                 let newChallenge = RespondToAuthChallenge(
                     challenge: .mfaSetup,
                     username: challenge.username,
