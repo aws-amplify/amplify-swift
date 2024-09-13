@@ -49,8 +49,7 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
         /// Create order
         let customerOrder = CustomerOrder(orderId: UUID().uuidString, email: "test@abc.com")
         guard let createMutationSyncResult = createCustomerOrder(customerOrder: customerOrder),
-              let createdCustomerOrder = createMutationSyncResult.model.instance as? CustomerOrder
-        else {
+              let createdCustomerOrder = createMutationSyncResult.model.instance as? CustomerOrder else {
             XCTFail("Failed to create customer order")
             return
         }
@@ -61,8 +60,7 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
             byId: createdCustomerOrder.id,
             orderId: createdCustomerOrder.orderId
         ),
-              var queriedCustomerOrder = queryMutationSyncResult.model.instance as? CustomerOrder
-        else {
+              var queriedCustomerOrder = queryMutationSyncResult.model.instance as? CustomerOrder else {
             XCTFail("Failed to query customer order")
             return
         }
@@ -76,8 +74,7 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
             modelSchema: queriedCustomerOrder.schema,
             version: queryMutationSyncResult.syncMetadata.version
         ),
-              let updatedCustomerOrder = updateMutationSyncResult.model.instance as? CustomerOrder
-        else {
+              let updatedCustomerOrder = updateMutationSyncResult.model.instance as? CustomerOrder else {
             XCTFail("Failed to update customer order")
             return
         }
@@ -90,8 +87,7 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
             modelSchema: updatedCustomerOrder.schema,
             version: updateMutationSyncResult.syncMetadata.version
         ),
-              let deletedCustomerOrder = deleteMutationSyncResult.model.instance as? CustomerOrder
-        else {
+              let deletedCustomerOrder = deleteMutationSyncResult.model.instance as? CustomerOrder else {
             XCTFail("Failed to update customer order")
             return
         }
@@ -104,8 +100,7 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
             byId: deletedCustomerOrder.id,
             orderId: deletedCustomerOrder.orderId
         ),
-              let queryDeletedCustomerOrder = queryAfterDeleteMutationSyncResult.model.instance as? CustomerOrder
-        else {
+              let queryDeletedCustomerOrder = queryAfterDeleteMutationSyncResult.model.instance as? CustomerOrder else {
             XCTFail("Failed to query customer order")
             return
         }

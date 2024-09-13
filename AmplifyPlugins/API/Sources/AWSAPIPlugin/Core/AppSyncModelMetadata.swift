@@ -18,8 +18,7 @@ public enum AppSyncModelMetadataUtils {
     static func shouldAddMetadata(toModel graphQLData: JSONValue) -> Bool {
         guard case let .object(modelJSON) = graphQLData,
               case let .string(modelName) = modelJSON["__typename"],
-              ModelRegistry.modelSchema(from: modelName) != nil
-        else {
+              ModelRegistry.modelSchema(from: modelName) != nil else {
             return false
         }
 

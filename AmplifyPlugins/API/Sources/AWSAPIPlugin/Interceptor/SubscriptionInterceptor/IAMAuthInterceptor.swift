@@ -56,8 +56,7 @@ class IAMAuthInterceptor {
                 signingName: "appsync",
                 signingRegion: region,
                 date: Date()
-            )
-            else {
+            ) else {
                 Amplify.Logging.error("Unable to sign request")
                 return nil
             }

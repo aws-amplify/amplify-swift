@@ -37,8 +37,7 @@ class AppSyncListPayloadTests: XCTestCase {
             return
         }
         guard let postFilter = filter["postID"] as? [String: String],
-              let postId = postFilter["eq"]
-        else {
+              let postId = postFilter["eq"] else {
             XCTFail("Could not retrieve filter values")
             return
         }

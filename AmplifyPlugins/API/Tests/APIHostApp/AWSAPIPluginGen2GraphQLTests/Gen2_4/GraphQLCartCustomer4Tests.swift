@@ -118,8 +118,7 @@ final class GraphQLCartCustomer4Tests: AWSAPIPluginGen2GraphQLBaseTest {
                 request: .get(
                     Cart.self,
                     byIdentifier: existingCart.identifier
-                )).get()
-            else {
+                )).get() else {
                 print("Missing cart")
                 // Code Snippet Ends
                 XCTFail("Missing cart")

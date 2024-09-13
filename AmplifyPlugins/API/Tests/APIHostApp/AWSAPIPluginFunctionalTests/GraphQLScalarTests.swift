@@ -65,8 +65,7 @@ class GraphQLScalarTests: GraphQLTestBase {
         XCTAssertEqual(updatedModel, updatedContainer)
 
         guard let queriedModel =
-                try await queryModel(request: .get(ScalarContainer.self, byId: container.id))
-        else {
+                try await queryModel(request: .get(ScalarContainer.self, byId: container.id)) else {
             XCTFail("Failed to query model")
             return
         }
@@ -146,8 +145,7 @@ class GraphQLScalarTests: GraphQLTestBase {
         guard let queriedModel = try await queryModel(request: .get(
             ListStringContainer.self,
             byId: container.id
-        ))
-        else {
+        )) else {
             XCTFail("Failed to query model")
             return
         }
@@ -188,8 +186,7 @@ class GraphQLScalarTests: GraphQLTestBase {
         guard let queriedModel = try await queryModel(request: .get(
             ListStringContainer.self,
             byId: container.id
-        ))
-        else {
+        )) else {
             XCTFail("Failed to query model")
             return
         }
@@ -268,8 +265,7 @@ class GraphQLScalarTests: GraphQLTestBase {
         guard let queriedModel = try await queryModel(request: .get(
             NestedTypeTestModel.self,
             byId: container.id
-        ))
-        else {
+        )) else {
             XCTFail("Failed to query model")
             return
         }

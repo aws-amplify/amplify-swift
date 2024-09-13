@@ -34,8 +34,7 @@ final class GraphQLPostPerson41Tests: AWSAPIPluginGen2GraphQLBaseTest {
                 request: .get(
                     Post.self,
                     byIdentifier: post.identifier
-                )).get()
-            else {
+                )).get() else {
                 print("Missing post")
                 // Code Snippet Ends
                 XCTFail("Missing post")

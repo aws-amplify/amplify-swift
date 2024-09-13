@@ -128,8 +128,7 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
                 user.comments,
                 user.posts
             ] }
-        ))
-        else {
+        )) else {
             XCTFail("Could not perform nested query for User")
             return
         }
@@ -154,8 +153,7 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
             Post.self,
             byIdentifier: post.id,
             includes: { post in [post.author, post.comments] }
-        ))
-        else {
+        )) else {
             XCTFail("Could not perform nested query for Post")
             return
         }
@@ -173,8 +171,7 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
             Comment.self,
             byIdentifier: comment.id,
             includes: { comment in [comment.author, comment.post] }
-        ))
-        else {
+        )) else {
             XCTFail("Could not perform nested query for Comment")
             return
         }

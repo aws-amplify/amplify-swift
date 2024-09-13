@@ -64,8 +64,7 @@ class GraphQLRequestToListQueryTests: XCTestCase {
               let filterJSON = try? JSONSerialization.data(
                   withJSONObject: filter,
                   options: .prettyPrinted
-              )
-        else {
+              ) else {
             XCTFail("variables should contain a valid filter JSON")
             return
         }
@@ -169,8 +168,7 @@ class GraphQLRequestToListQueryTests: XCTestCase {
               let filterJSON = try? JSONSerialization.data(
                   withJSONObject: filter,
                   options: .prettyPrinted
-              )
-        else {
+              ) else {
             XCTFail("variables should contain a valid filter JSON")
             return
         }

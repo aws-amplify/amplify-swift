@@ -176,8 +176,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
                     graphQLData: graphQLData,
                     apiName: apiName,
                     authMode: authMode
-                )
-                else {
+                ) else {
                     throw CoreError.listOperation("""
                                             The AppSync response return successfully, but could not decode to
                                             AWSAppSyncListResponse from: \(graphQLData)

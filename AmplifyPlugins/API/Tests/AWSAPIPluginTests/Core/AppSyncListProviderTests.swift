@@ -177,8 +177,7 @@ class AppSyncListProviderTests: XCTestCase {
         XCTAssertEqual(nextToken, "nextToken")
         guard let filter = filterOptional,
               let postFilter = filter["postID"] as? [String: String],
-              let postId = postFilter["eq"]
-        else {
+              let postId = postFilter["eq"] else {
             XCTFail("Could not retrieve filter values")
             return
         }
@@ -207,8 +206,7 @@ class AppSyncListProviderTests: XCTestCase {
                 XCTFail("Should have failed")
             } catch let coreError as CoreError {
                 guard case .listOperation(_, _, let underlyingError) = coreError,
-                      (underlyingError as? APIError) != nil
-                else {
+                      (underlyingError as? APIError) != nil else {
                     XCTFail("Unexpected error \(coreError)")
                     return
                 }
@@ -266,8 +264,7 @@ class AppSyncListProviderTests: XCTestCase {
         XCTAssertEqual(nextToken, "nextToken")
         guard let filter = filterOptional,
               let postFilter = filter["postID"] as? [String: String],
-              let postId = postFilter["eq"]
-        else {
+              let postId = postFilter["eq"] else {
             XCTFail("Could not retrieve filter values")
             return
         }
@@ -296,8 +293,7 @@ class AppSyncListProviderTests: XCTestCase {
                 XCTFail("Should have failed")
             } catch let error as CoreError {
                 guard case .listOperation(_, _, let underlyingError) = error,
-                      (underlyingError as? APIError) != nil
-                else {
+                      (underlyingError as? APIError) != nil else {
                     XCTFail("Unexpected error \(error)")
                     return
                 }
@@ -334,8 +330,7 @@ class AppSyncListProviderTests: XCTestCase {
                 XCTFail("Should have failed")
             } catch let error as CoreError {
                 guard case .listOperation(_, _, let underlyingError) = error,
-                      (underlyingError as? GraphQLResponseError<JSONValue>) != nil
-                else {
+                      (underlyingError as? GraphQLResponseError<JSONValue>) != nil else {
                     XCTFail("Unexpected error \(error)")
                     return
                 }

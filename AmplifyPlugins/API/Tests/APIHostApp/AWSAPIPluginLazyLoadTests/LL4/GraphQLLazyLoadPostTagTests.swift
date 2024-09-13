@@ -123,8 +123,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
                 title: post.title
             ),
             includes: { post in [post.tags] }
-        ))
-        else {
+        )) else {
             XCTFail("Could not perform nested query for Post")
             return
         }
@@ -144,8 +143,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
                 name: tag.name
             ),
             includes: { tag in [tag.posts] }
-        ))
-        else {
+        )) else {
             XCTFail("Could not perform nested query for Tag")
             return
         }
@@ -165,8 +163,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
                 postTag.postWithTagsCompositeKey,
                 postTag.tagWithCompositeKey
             ] }
-        ))
-        else {
+        )) else {
             XCTFail("Could not perform nested query for PostTag")
             return
         }

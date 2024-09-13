@@ -106,8 +106,7 @@ class GraphQLLazyLoadProjectTeam5Tests: GraphQLLazyLoadBaseTest {
                 name: team.name
             ),
             includes: { team in [team.project]}
-        ))
-        else {
+        )) else {
             XCTFail("Could not perform nested query for Team")
             return
         }
@@ -121,8 +120,7 @@ class GraphQLLazyLoadProjectTeam5Tests: GraphQLLazyLoadBaseTest {
                 name: project.name
             ),
             includes: { project in [project.team]}
-        ))
-        else {
+        )) else {
             XCTFail("Could not perform nested query for Project")
             return
         }

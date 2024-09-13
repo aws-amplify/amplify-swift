@@ -98,8 +98,7 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
                 name: project.name
             ),
             includes: { project in [project.team]}
-        ))
-        else {
+        )) else {
             XCTFail("Could not perform nested query for Project")
             return
         }
