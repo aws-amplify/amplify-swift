@@ -18,16 +18,17 @@ struct InitiateSignOut: Action {
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
-        let event = if case .hostedUI(let options) = signedInData.signInMethod,
+        let event: SignOutEvent
+        if case .hostedUI(let options) = signedInData.signInMethod,
            options.preferPrivateSession == false {
-            SignOutEvent(eventType: .invokeHostedUISignOut(
+            event = SignOutEvent(eventType: .invokeHostedUISignOut(
                 signOutEventData,
                 signedInData
             ))
         } else if signOutEventData.globalSignOut {
-            SignOutEvent(eventType: .signOutGlobally(signedInData))
+            event = SignOutEvent(eventType: .signOutGlobally(signedInData))
         } else {
-            SignOutEvent(eventType: .revokeToken(signedInData))
+            event = SignOutEvent(eventType: .revokeToken(signedInData))
         }
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         await dispatcher.send(event)

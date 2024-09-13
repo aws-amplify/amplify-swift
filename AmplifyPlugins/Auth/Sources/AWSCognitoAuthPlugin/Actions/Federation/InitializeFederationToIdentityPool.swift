@@ -17,14 +17,16 @@ struct InitializeFederationToIdentityPool: Action {
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let authProviderLoginsMap = AuthProviderLoginsMap(federatedToken: federatedToken)
-        let event = if let developerProvidedIdentityId {
-            FetchAuthSessionEvent.init(
+        let event: FetchAuthSessionEvent
+
+        if let developerProvidedIdentityId {
+            event = FetchAuthSessionEvent.init(
                 eventType: .fetchAWSCredentials(
                     developerProvidedIdentityId,
                     authProviderLoginsMap
                 ))
         } else {
-            FetchAuthSessionEvent.init(
+            event = FetchAuthSessionEvent.init(
                 eventType: .fetchAuthenticatedIdentityID(authProviderLoginsMap))
         }
 

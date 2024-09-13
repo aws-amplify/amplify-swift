@@ -19,8 +19,7 @@ struct FetchHostedUISignInToken: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         guard let environment = environment as? AuthEnvironment,
-              let hostedUIEnvironment = environment.hostedUIEnvironment
-        else {
+              let hostedUIEnvironment = environment.hostedUIEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let error = AuthenticationError.configuration(message: message)
             let event = AuthenticationEvent(eventType: .error(error))
@@ -74,8 +73,7 @@ struct FetchHostedUISignInToken: Action {
         guard let json = try JSONSerialization.jsonObject(
             with: data,
             options: []
-        ) as? [String: Any]
-        else {
+        ) as? [String: Any] else {
             throw HostedUIError.tokenParsing
         }
 

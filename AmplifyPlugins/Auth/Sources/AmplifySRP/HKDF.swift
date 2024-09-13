@@ -40,15 +40,16 @@ public enum HMACKeyDerivationFunction {
         outputLength: Int
     ) -> Data {
         let key = SymmetricKey(data: keyingMaterial)
-        var hkdf: SymmetricKey = if let info {
-            HKDF<SHA256>.deriveKey(
+        var hkdf: SymmetricKey
+        if let info {
+            hkdf = HKDF<SHA256>.deriveKey(
                 inputKeyMaterial: key,
                 salt: salt,
                 info: Data(info.utf8),
                 outputByteCount: outputLength
             )
         } else {
-            HKDF<SHA256>.deriveKey(
+            hkdf = HKDF<SHA256>.deriveKey(
                 inputKeyMaterial: key,
                 salt: salt,
                 outputByteCount: outputLength

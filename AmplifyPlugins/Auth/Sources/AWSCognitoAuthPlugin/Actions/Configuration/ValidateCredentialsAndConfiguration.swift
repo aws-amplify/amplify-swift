@@ -18,14 +18,15 @@ struct ValidateCredentialsAndConfiguration: Action {
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        var event: StateMachineEvent = switch authConfiguration {
+        var event: StateMachineEvent
+        switch authConfiguration {
         case .identityPools:
-            AuthEvent(eventType: .configureAuthorization(
+            event = AuthEvent(eventType: .configureAuthorization(
                 authConfiguration,
                 cachedCredentials
             ))
         default:
-            AuthEvent(eventType: .configureAuthentication(
+            event = AuthEvent(eventType: .configureAuthentication(
                 authConfiguration,
                 cachedCredentials
             ))

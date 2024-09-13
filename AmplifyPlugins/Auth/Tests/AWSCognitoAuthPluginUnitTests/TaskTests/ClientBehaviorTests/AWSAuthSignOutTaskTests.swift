@@ -32,8 +32,7 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
             }
         )
         guard let result = await plugin.signOut() as? AWSCognitoSignOutResult,
-              case .complete = result
-        else {
+              case .complete = result else {
             XCTFail("Did not return complete signOut")
             return
         }
@@ -52,8 +51,7 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
                   revokeTokenError: let revokeTokenError,
                   globalSignOutError: let globalSignOutError,
                   hostedUIError: let hostedUIError
-              ) = result
-        else {
+              ) = result else {
             XCTFail("Did not return partial signOut")
             return
         }
@@ -76,8 +74,7 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
                   revokeTokenError: let revokeTokenError,
                   globalSignOutError: let globalSignOutError,
                   hostedUIError: let hostedUIError
-              ) = result
-        else {
+              ) = result else {
             XCTFail("Did not return partial signOut")
             return
         }
@@ -97,8 +94,7 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
 
         guard let result = await authPlugin.signOut() as? AWSCognitoSignOutResult,
               case .failed(let authError) = result,
-              case .invalidState = authError
-        else {
+              case .invalidState = authError else {
 
             XCTFail("Sign out during federation should not succeed")
             return
@@ -138,8 +134,7 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
         let authPlugin = configureCustomPluginWith(initialState: initialState)
 
         guard let result = await authPlugin.signOut() as? AWSCognitoSignOutResult,
-              case .complete = result
-        else {
+              case .complete = result else {
 
             XCTFail("Sign out during guest should succeed")
             return

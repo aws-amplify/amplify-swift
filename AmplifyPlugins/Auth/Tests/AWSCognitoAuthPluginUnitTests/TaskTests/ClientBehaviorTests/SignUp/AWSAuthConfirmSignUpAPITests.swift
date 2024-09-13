@@ -171,8 +171,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
                 let errorDescription,
                 let recoverySuggestion,
                 let notAuthorizedError
-            ) = authError
-            else {
+            ) = authError else {
                 XCTFail("Auth error should be of type notAuthorized")
                 return
             }
@@ -274,8 +273,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
                     let errorMessage,
                     let recovery,
                     let serviceError
-                ) = authError
-                else {
+                ) = authError else {
                     XCTFail("Auth error should be of type service error")
                     return
                 }

@@ -23,8 +23,7 @@ class ShowHostedUISignIn: NSObject, Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         guard let environment = environment as? AuthEnvironment,
-              let hostedUIEnvironment = environment.hostedUIEnvironment
-        else {
+              let hostedUIEnvironment = environment.hostedUIEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let error = AuthenticationError.configuration(message: message)
             let event = AuthenticationEvent(eventType: .error(error))
@@ -36,8 +35,7 @@ class ShowHostedUISignIn: NSObject, Action {
         let hostedUIConfig = hostedUIEnvironment.configuration
 
         guard let callbackURL = URL(string: hostedUIConfig.oauth.signInRedirectURI),
-              let callbackURLScheme = callbackURL.scheme
-        else {
+              let callbackURLScheme = callbackURL.scheme else {
             let event = SignInEvent(eventType: .throwAuthError(.hostedUI(.signInURI)))
             logVerbose("\(#fileID) Sending event \(event)", environment: environment)
             await dispatcher.send(event)
@@ -58,8 +56,7 @@ class ShowHostedUISignIn: NSObject, Action {
 
             guard let code = queryItems.first(where: { $0.name == "code" })?.value,
                   let state = queryItems.first(where: { $0.name == "state" })?.value,
-                  signingInData.state == state
-            else {
+                  signingInData.state == state else {
 
                 let event = HostedUIEvent(eventType: .throwError(.hostedUI(.codeValidation)))
                 logVerbose("\(#fileID) Sending event \(event)", environment: environment)

@@ -121,14 +121,14 @@ final class AuthStressTests: AuthStressBaseTest {
         for index in 1 ... concurrencyLimit {
             Task {
                 // Randomly yield the task so that below execution of force refresh happens
-                let session: AuthSession = if index == concurrencyLimit / 2 {
-                    try await Amplify.Auth.fetchAuthSession(options: .forceRefresh())
+                let session: AuthSession
+                if index == concurrencyLimit / 2 {
+                    session = try await Amplify.Auth.fetchAuthSession(options: .forceRefresh())
                 } else {
-                    try await Amplify.Auth.fetchAuthSession()
+                    session = try await Amplify.Auth.fetchAuthSession()
                 }
                 guard let cognitoSession = session as? AWSAuthCognitoSession,
-                      let _ = try? cognitoSession.identityIdResult.get()
-                else {
+                      let _ = try? cognitoSession.identityIdResult.get() else {
                     XCTFail("Could not fetch Identity ID")
                     return
                 }

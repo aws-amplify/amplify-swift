@@ -25,8 +25,7 @@ extension RespondToAuthChallenge {
 
     var codeDeliveryDetails: AuthCodeDeliveryDetails {
         guard let parameters,
-              let medium = parameters["CODE_DELIVERY_DELIVERY_MEDIUM"]
-        else {
+              let medium = parameters["CODE_DELIVERY_DELIVERY_MEDIUM"] else {
             return AuthCodeDeliveryDetails(
                 destination: .unknown(nil),
                 attributeKey: nil

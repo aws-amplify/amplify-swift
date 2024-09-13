@@ -34,8 +34,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
                           signedInData: let signedInData,
                           identityID: let identityID,
                           credentials: let awsCredentials
-                      ) = credentials
-                else {
+                      ) = credentials else {
                     XCTFail("The credentials saved should be of type AmplifyCredentials")
                     return
                 }
@@ -143,8 +142,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         await action.execute(
             withDispatcher: MockDispatcher { event in
                 guard let event = event as? CredentialStoreEvent,
-                      case let .throwError(error) = event.eventType
-                else {
+                      case let .throwError(error) = event.eventType else {
                     XCTFail("Expected failure due to no CredentialEnvironment")
                     expectation.fulfill()
                     return
@@ -168,8 +166,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         await action.execute(
             withDispatcher: MockDispatcher { event in
                 guard let event = event as? CredentialStoreEvent,
-                      case .loadCredentialStore(let type) = event.eventType
-                else {
+                      case .loadCredentialStore(let type) = event.eventType else {
                     XCTFail("Expected .loadCredentialStore")
                     expectation.fulfill()
                     return
@@ -184,8 +181,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
                         MockAmplifyCredentialStoreBehavior(
                             saveCredentialHandler: { codableCredentials in
                                 guard let amplifyCredentials = codableCredentials as? AmplifyCredentials,
-                                      case .identityPoolOnly(_, let credentials) = amplifyCredentials
-                                else {
+                                      case .identityPoolOnly(_, let credentials) = amplifyCredentials else {
                                     XCTFail("Expected .identityPoolOnly")
                                     return
                                 }
@@ -213,8 +209,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         await action.execute(
             withDispatcher: MockDispatcher { event in
                 guard let event = event as? CredentialStoreEvent,
-                      case .loadCredentialStore(let type) = event.eventType
-                else {
+                      case .loadCredentialStore(let type) = event.eventType else {
                     XCTFail("Expected .loadCredentialStore")
                     expectation.fulfill()
                     return
@@ -229,8 +224,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
                         MockAmplifyCredentialStoreBehavior(
                             saveCredentialHandler: { codableCredentials in
                                 guard let amplifyCredentials = codableCredentials as? AmplifyCredentials,
-                                      case .identityPoolWithFederation(let token, _, _) = amplifyCredentials
-                                else {
+                                      case .identityPoolWithFederation(let token, _, _) = amplifyCredentials else {
                                     XCTFail("Expected .identityPoolWithFederation")
                                     return
                                 }
