@@ -58,7 +58,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
                 coordinates.longitude,
                 coordinates.latitude
             ]
-            request.filterCountries = options.countries?.map(\.code)
+            request.filterCountries = options.countries?.map { $0.code }
             request.maxResults = options.maxResults ?? 0
             request.indexName = (options.pluginOptions as? AWSLocationGeoPluginSearchOptions)?.searchIndex
             mockLocation.verifySearchPlaceIndexForText(request)
