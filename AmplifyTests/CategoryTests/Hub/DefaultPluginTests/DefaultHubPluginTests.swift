@@ -14,8 +14,7 @@ class DefaultHubPluginTests: XCTestCase {
 
     var plugin: HubCategoryPlugin {
         guard let plugin = try? Amplify.Hub.getPlugin(for: "awsHubPlugin"),
-            plugin.key == "awsHubPlugin"
-        else {
+            plugin.key == "awsHubPlugin" else {
                 fatalError("Could not access AWSHubPlugin")
         }
         return plugin
@@ -126,8 +125,7 @@ class DefaultHubPluginTests: XCTestCase {
             with: unsubscribeToken,
             plugin: plugin,
             timeout: 0.5
-        )
-        else {
+        ) else {
             XCTFail("Token with \(unsubscribeToken.id) was not registered")
             return
         }
