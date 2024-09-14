@@ -272,7 +272,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
             do {
                 let localMetadatas = try storageAdapter.queryMutationSyncMetadata(
-                    for: remoteModels.map(\.model.identifier),
+                    for: remoteModels.map { $0.model.identifier },
                     modelName: self.modelSchema.name
                 )
                 result = .success((remoteModels, localMetadatas))
@@ -305,11 +305,12 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         storageAdapter: StorageEngineAdapter,
         disposition: RemoteSyncReconciler.Disposition
     ) -> AnyPublisher<Result<Void, DataStoreError>, Never> {
-        let operation: Future<ApplyRemoteModelResult, DataStoreError> = switch disposition {
+        let operation: Future<ApplyRemoteModelResult, DataStoreError>
+        switch disposition {
         case .create, .update:
-            save(storageAdapter: storageAdapter, remoteModel: disposition.remoteModel)
+            operation = save(storageAdapter: storageAdapter, remoteModel: disposition.remoteModel)
         case .delete:
-            delete(storageAdapter: storageAdapter, remoteModel: disposition.remoteModel)
+            operation = delete(storageAdapter: storageAdapter, remoteModel: disposition.remoteModel)
         }
 
         return operation

@@ -79,8 +79,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
             case .success = saveModelSynchronous(model: eggsAndSausage),
             case .success = saveModelSynchronous(model: mkDonaldsRestaurant),
             case .success = saveModelSynchronous(model: mkDonaldsMenu),
-            case .success = saveModelSynchronous(model: szechuanSauce)
-        else {
+            case .success = saveModelSynchronous(model: szechuanSauce) else {
                 XCTFail("Failed to save hierarchy")
                 return
         }
@@ -89,20 +88,17 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
             querySingleModelSynchronous(
                 modelType: Restaurant.self,
                 predicate: Restaurant.keys.id == dreamRestaurant.id
-            )
-        else {
+            ) else {
                 XCTFail("Failed to query Restaurant")
                 return
         }
         guard case .success =
-            queryModelSynchronous(modelType: Menu.self, predicate: Menu.keys.restaurant == dreamRestaurant.id)
-        else {
+            queryModelSynchronous(modelType: Menu.self, predicate: Menu.keys.restaurant == dreamRestaurant.id) else {
                 XCTFail("Failed to query Menu")
                 return
         }
         guard case .success(let dishes) =
-            queryModelSynchronous(modelType: Dish.self, predicate: Dish.keys.menu == lunchStandardMenu.id)
-        else {
+            queryModelSynchronous(modelType: Dish.self, predicate: Dish.keys.menu == lunchStandardMenu.id) else {
                 XCTFail("Failed to query Dishes")
                 return
         }
@@ -117,8 +113,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         guard case .success = deleteModelSynchronousOrFailOtherwise(
             modelType: Restaurant.self,
             withId: dreamRestaurant.id
-        )
-        else {
+        ) else {
             XCTFail("Failed to delete restaurant")
             return
         }
@@ -172,8 +167,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
                 case .success = saveModelSynchronous(model: oysters),
                 case .success = saveModelSynchronous(model: tataki),
                 case .success = saveModelSynchronous(model: katsuCurry),
-                case .success = saveModelSynchronous(model: katsuDon)
-            else {
+                case .success = saveModelSynchronous(model: katsuDon) else {
 
                     XCTFail("Failed to save hierarchy")
                     return
@@ -184,8 +178,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
             querySingleModelSynchronous(
                 modelType: Restaurant.self,
                 predicate: Restaurant.keys.id == restaurant1.id
-            )
-        else {
+            ) else {
                                             XCTFail("Failed to query Restaurant")
                                             return
         }
@@ -194,8 +187,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
             queryModelSynchronous(
                 modelType: Menu.self,
                 predicate: QueryPredicateConstant.all
-            )
-        else {
+            ) else {
                                     XCTFail("Failed to query menus")
                                     return
         }
@@ -204,8 +196,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
             queryModelSynchronous(
                 modelType: Dish.self,
                 predicate: QueryPredicateConstant.all
-            )
-        else {
+            ) else {
                                     XCTFail("Failed to query dishes")
                                     return
         }
@@ -223,8 +214,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
             modelType: Restaurant.self,
             withId: restaurant1.id,
             timeout: 100
-        )
-        else {
+        ) else {
                                                                         XCTFail("Failed to delete restaurant")
                                                                         return
         }
@@ -240,8 +230,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
 
          guard case .success = saveModelSynchronous(model: restaurant1),
              case .success = saveModelSynchronous(model: lunchStandardMenu),
-             case .success = saveModelSynchronous(model: oysters)
-         else {
+             case .success = saveModelSynchronous(model: oysters) else {
                  XCTFail("Failed to save hierarchy")
                  return
          }
@@ -268,8 +257,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         guard case .failure(let error) = deleteModelSynchronousOrFailOtherwise(
             modelType: Restaurant.self,
             withId: restaurant1.id
-        )
-        else {
+        ) else {
             XCTFail("Deleting should have failed due to our mock")
             return
         }

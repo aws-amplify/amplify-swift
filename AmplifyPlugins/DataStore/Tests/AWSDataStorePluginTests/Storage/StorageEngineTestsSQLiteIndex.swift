@@ -121,8 +121,7 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                 modelType: CustomerSecondaryIndexV2.self,
                 predicate: predicate,
                 storageEngine: storageEngine
-            )
-            else {
+            ) else {
                 XCTFail("Failed to query customer")
                 return
             }
@@ -204,8 +203,7 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                 modelType: CustomerMultipleSecondaryIndexV2.self,
                 predicate: predicate,
                 storageEngine: storageEngine
-            )
-            else {
+            ) else {
                 XCTFail("Failed to query customer")
                 return
             }
@@ -290,8 +288,7 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                         modelType: CustomerMultipleSecondaryIndexV2.self,
                         predicate: predicate,
                         storageEngine: storageEngine
-                    )
-            else {
+                    ) else {
                     XCTFail("Failed to query customer")
                     return
             }

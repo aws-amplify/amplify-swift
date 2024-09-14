@@ -11,10 +11,11 @@ import AmplifyTestCommon
 struct TestFlutterModelRegistration: AmplifyModelRegistration {
     var version: String = "1"
     private let decoder: (String, JSONDecoder?) throws -> Model = { jsonString, decoder -> Model in
-        let resolvedDecoder: JSONDecoder = if let decoder {
-            decoder
+        let resolvedDecoder: JSONDecoder
+        if let decoder {
+            resolvedDecoder = decoder
         } else {
-            JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
+            resolvedDecoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
         }
         // Convert jsonstring to object
         let data = Data(jsonString.utf8)

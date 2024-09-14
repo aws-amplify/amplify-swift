@@ -61,8 +61,7 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             querySingleModelSynchronous(
                 modelType: Comment8.self,
                 predicate: Comment8.keys.id == comment.id
-            )
-        else {
+            ) else {
                 XCTFail("Failed to query post")
                 return
         }
@@ -81,8 +80,7 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             querySingleModelSynchronous(
                 modelType: Post8.self,
                 predicate: Post8.keys.id == post.id
-            )
-        else {
+            ) else {
                 XCTFail("Failed to query post")
                 return
         }
@@ -103,8 +101,7 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             querySingleModelSynchronous(
                 modelType: Blog8.self,
                 predicate: Blog8.keys.id == blog.id
-            )
-        else {
+            ) else {
                 XCTFail("Failed to query blog")
                 return
         }
@@ -133,8 +130,7 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             querySingleModelSynchronous(
                 modelType: Comment8.self,
                 predicate: Comment8.keys.id == comment.id
-            )
-        else {
+            ) else {
                 XCTFail("Failed to query post")
                 return
         }
@@ -165,8 +161,7 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             querySingleModelSynchronous(
                 modelType: Post8.self,
                 predicate: Post8.keys.id == post.id
-            )
-        else {
+            ) else {
                 XCTFail("Failed to query post")
                 return
         }
@@ -200,8 +195,7 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             querySingleModelSynchronous(
                 modelType: Comment8.self,
                 predicate: Comment8.keys.id == comment.id
-            )
-        else {
+            ) else {
                 XCTFail("Failed to query comment")
                 return
         }
@@ -218,8 +212,7 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
         var comment = Comment8(content: "content", post: post)
         guard case .success = saveModelSynchronous(model: blog),
               case .success = saveModelSynchronous(model: post),
-              case .success = saveModelSynchronous(model: comment)
-        else {
+              case .success = saveModelSynchronous(model: comment) else {
             XCTFail("Failed to save blog, post, comment")
             return
         }
@@ -227,8 +220,7 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             querySingleModelSynchronous(
                 modelType: Comment8.self,
                 predicate: Comment8.keys.id == comment.id
-            )
-        else {
+            ) else {
                 XCTFail("Failed to query comment")
                 return
         }
@@ -244,8 +236,7 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             querySingleModelSynchronous(
                 modelType: Comment8.self,
                 predicate: Comment8.keys.id == comment.id
-            )
-        else {
+            ) else {
                 XCTFail("Failed to query comment")
                 return
         }
@@ -259,8 +250,7 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             querySingleModelSynchronous(
                 modelType: Post8.self,
                 predicate: Post8.keys.id == post.id
-            )
-        else {
+            ) else {
                 XCTFail("Failed to query post")
                 return
         }

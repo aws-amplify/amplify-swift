@@ -162,8 +162,7 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
             guard let user1 = credentials["user1"],
                   let user2 = credentials["user2"],
                   let passwordUser1 = credentials["passwordUser1"],
-                  let passwordUser2 = credentials["passwordUser2"]
-            else {
+                  let passwordUser2 = credentials["passwordUser2"] else {
                 XCTFail("Invalid \(credentialsFile).json data")
                 return
             }
@@ -181,8 +180,7 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
 
     func apiEndpointName() throws -> String {
         guard let apiPlugin = amplifyConfig.api?.plugins["awsAPIPlugin"],
-              case .object(let value) = apiPlugin
-        else {
+              case .object(let value) = apiPlugin else {
             throw APIError.invalidConfiguration("API endpoint not found.", "Check the provided configuration")
         }
         return value.keys.first!
@@ -474,8 +472,7 @@ extension AWSDataStoreAuthBaseTest {
             .filter { $0.eventName == HubPayload.EventName.DataStore.syncReceived }
             .sink { payload in
                 guard let mutationEvent = payload.data as? MutationEvent,
-                      mutationEvent.modelId == model.identifier
-                else {
+                      mutationEvent.modelId == model.identifier else {
                     return
                 }
 
@@ -530,7 +527,7 @@ extension AWSDataStoreAuthBaseTest {
         expectation.assertForOverFulfill = false
         DataStoreAuthBaseTestURLSessionFactory.subject
         .filter { $0.0 == testId }
-        .map(\.1)
+        .map { $0.1 }
         .collect(.byTime(DispatchQueue.global(), .milliseconds(3_500)))
         .sink {
             let result = $0.reduce(Set<AWSAuthorizationType>()) { partialResult, data in

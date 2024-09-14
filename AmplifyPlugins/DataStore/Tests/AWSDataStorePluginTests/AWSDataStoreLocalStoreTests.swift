@@ -64,7 +64,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         XCTAssertEqual(queriedPosts2.count, 5)
         posts.append(contentsOf: queriedPosts2)
 
-        let idSet = Set(posts.map(\.id))
+        let idSet = Set(posts.map { $0.id })
         XCTAssertEqual(idSet.count, 15)
     }
 

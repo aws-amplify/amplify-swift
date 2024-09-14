@@ -101,10 +101,11 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         incomingSubscriptionEventQueue.underlyingQueue = DispatchQueue.global()
         incomingSubscriptionEventQueue.isSuspended = true
 
-        let resolvedIncomingSubscriptionEvents: IncomingSubscriptionEventPublisher = if let incomingSubscriptionEvents {
-            incomingSubscriptionEvents
+        let resolvedIncomingSubscriptionEvents: IncomingSubscriptionEventPublisher
+        if let incomingSubscriptionEvents {
+            resolvedIncomingSubscriptionEvents = incomingSubscriptionEvents
         } else {
-            await AWSIncomingSubscriptionEventPublisher(
+            resolvedIncomingSubscriptionEvents = await AWSIncomingSubscriptionEventPublisher(
                 modelSchema: modelSchema,
                 api: api,
                 modelPredicate: modelPredicate,

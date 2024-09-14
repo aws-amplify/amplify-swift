@@ -137,8 +137,7 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
         guard try await (Amplify.DataStore.query(
             Comment.self,
             byIdentifier: savedComment.identifier
-        )) != nil
-        else {
+        )) != nil else {
             Amplify.Logging.info("[\(AWSDataStoreLazyLoadPostComment4V2Tests.loggingContext)] Comment \(savedComment.id) is not persisted in local DB")
 
             let result = try await Amplify.API.query(
@@ -186,8 +185,7 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
         guard try await (Amplify.DataStore.query(
             Post.self,
             byIdentifier: savedPost.identifier
-        )) != nil
-        else {
+        )) != nil else {
             Amplify.Logging.info("[\(AWSDataStoreLazyLoadPostComment4V2Tests.loggingContext)] Post \(savedPost.id) is not persisted in local DB")
             let result = try await Amplify.API.query(
                 request: .get(

@@ -297,7 +297,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         storageAdapter: StorageEngineAdapter
     ) async {
         log.debug("[InitializeSubscription] \(#function)")
-        let syncableModelSchemas = ModelRegistry.modelSchemas.filter(\.isSyncable)
+        let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
         reconciliationQueue = await reconciliationQueueFactory(
             syncableModelSchemas,
             api,
@@ -464,8 +464,7 @@ extension RemoteSyncEngine: Resettable {
         for child in mirror.children {
             let label = child.label ?? "some RemoteSyncEngine child"
             guard label != "api",
-                  label != "auth"
-            else {
+                  label != "auth" else {
                 log.verbose("Not resetting \(label) from RemoteSyncEngine")
                 continue
             }

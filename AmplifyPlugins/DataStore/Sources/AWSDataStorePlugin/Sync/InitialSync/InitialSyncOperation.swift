@@ -39,8 +39,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     private var syncPredicateString: String? {
         guard let syncPredicate,
-              let data = try? syncPredicateEncoder.encode(syncPredicate)
-        else {
+              let data = try? syncPredicateEncoder.encode(syncPredicate) else {
             return nil
         }
         return String(data: data, encoding: .utf8)

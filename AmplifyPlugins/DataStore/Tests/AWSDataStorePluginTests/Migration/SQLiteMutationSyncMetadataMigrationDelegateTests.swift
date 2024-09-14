@@ -112,8 +112,7 @@ class SQLiteMutationSyncMetadataMigrationDelegateTests: MutationSyncMetadataMigr
         guard let restaurantMetadata = try storageAdapter.queryMutationSyncMetadata(
             for: restaurant.id,
             modelName: Restaurant.modelName
-        )
-        else {
+        ) else {
                    XCTFail("Could not get metadata")
                    return
         }

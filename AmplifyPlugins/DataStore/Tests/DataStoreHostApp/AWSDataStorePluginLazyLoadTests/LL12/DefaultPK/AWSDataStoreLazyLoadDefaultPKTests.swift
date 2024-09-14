@@ -65,8 +65,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         guard let decodedChild = try? ModelRegistry.decode(
             modelName: Child.modelName,
             from: encodedChild
-        ) as? Child
-        else {
+        ) as? Child else {
 
             XCTFail("Could not decode comment")
             return
@@ -94,8 +93,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         guard let decodedChild = try? ModelRegistry.decode(
             modelName: Child.modelName,
             from: encodedChild
-        ) as? Child
-        else {
+        ) as? Child else {
 
             XCTFail("Could not decode comment")
             return

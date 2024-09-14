@@ -102,20 +102,17 @@ class StorageEngineTestsDelete: StorageEngineTestsBase {
         let projectA = Project(name: "ProjectA", team: teamA)
 
         guard case .success = saveModelSynchronous(model: teamA),
-            case .success = saveModelSynchronous(model: projectA)
-        else {
+            case .success = saveModelSynchronous(model: projectA) else {
                 XCTFail("Failed to save hierachy")
                 return
         }
         guard case .success =
-            querySingleModelSynchronous(modelType: Project.self, predicate: Project.keys.id == projectA.id)
-        else {
+            querySingleModelSynchronous(modelType: Project.self, predicate: Project.keys.id == projectA.id) else {
                 XCTFail("Failed to query ProjectA")
                 return
         }
         guard case .success =
-            querySingleModelSynchronous(modelType: Team.self, predicate: Project.keys.id == teamA.id)
-        else {
+            querySingleModelSynchronous(modelType: Team.self, predicate: Project.keys.id == teamA.id) else {
                 XCTFail("Failed to query TeamA")
                 return
         }
@@ -152,20 +149,17 @@ class StorageEngineTestsDelete: StorageEngineTestsBase {
             case .success = saveModelSynchronous(model: teamB),
             case .success = saveModelSynchronous(model: projectB),
             case .success = saveModelSynchronous(model: teamC),
-            case .success = saveModelSynchronous(model: projectC)
-        else {
+            case .success = saveModelSynchronous(model: projectC) else {
                 XCTFail("Failed to save hierachy")
                 return
         }
         guard case .success =
-            querySingleModelSynchronous(modelType: Project.self, predicate: Project.keys.id == projectA.id)
-        else {
+            querySingleModelSynchronous(modelType: Project.self, predicate: Project.keys.id == projectA.id) else {
                 XCTFail("Failed to query ProjectA")
                 return
         }
         guard case .success =
-            querySingleModelSynchronous(modelType: Team.self, predicate: Project.keys.id == teamA.id)
-        else {
+            querySingleModelSynchronous(modelType: Team.self, predicate: Project.keys.id == teamA.id) else {
                 XCTFail("Failed to query TeamA")
                 return
         }
@@ -181,8 +175,7 @@ class StorageEngineTestsDelete: StorageEngineTestsBase {
             modelType: Project.self,
             withId: projectA.id,
             where: project.name == "ProjectA"
-        )
-        else {
+        ) else {
             XCTFail("Failed to delete projectA")
             return
         }

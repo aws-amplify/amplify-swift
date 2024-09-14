@@ -106,23 +106,20 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
         guard var comment = try await saveComment(),
-              let post = try await savePost()
-        else {
+              let post = try await savePost() else {
             XCTFail("Failed to save comment and post")
             return
         }
         comment.post = post
         guard let comment = try await saveComment(comment),
-              let queriedComment = try await queryComment(id: comment.id)
-        else {
+              let queriedComment = try await queryComment(id: comment.id) else {
             XCTFail("Failed to update and query comment")
             return
         }
         XCTAssertNotNil(queriedComment.post)
         XCTAssertEqual(queriedComment.post?.id, post.id)
         guard let queriedPost = try await queryPost(id: post.id),
-              let lazyComments = queriedPost.comments
-        else {
+              let lazyComments = queriedPost.comments else {
             XCTFail("Couldn't get post, and its comments")
             return
         }
@@ -139,23 +136,20 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
         guard var post = try await savePost(),
-              let blog = try await saveBlog()
-        else {
+              let blog = try await saveBlog() else {
             XCTFail("Failed to save post and blog")
             return
         }
         post.blog = blog
         guard let post = try await savePost(post),
-              let queriedPost = try await queryPost(id: post.id)
-        else {
+              let queriedPost = try await queryPost(id: post.id) else {
             XCTFail("Failed to update and query post ")
             return
         }
         XCTAssertNotNil(queriedPost.blog)
         XCTAssertEqual(queriedPost.blog?.id, blog.id)
         guard let queriedBlog = try await queryBlog(id: blog.id),
-              let lazyPosts = queriedBlog.posts
-        else {
+              let lazyPosts = queriedBlog.posts else {
             XCTFail("Couldn't get blog, and its posts")
             return
         }
@@ -173,8 +167,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         try await startAmplifyAndWaitForSync()
         guard var comment = try await saveComment(),
               var post = try await savePost(),
-              let blog = try await saveBlog()
-        else {
+              let blog = try await saveBlog() else {
             XCTFail("Failed to save comment and post and blog")
             return
         }
@@ -182,8 +175,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         post.blog = blog
         guard let post = try await savePost(post),
               let comment = try await saveComment(comment),
-              let queriedComment = try await queryComment(id: comment.id)
-        else {
+              let queriedComment = try await queryComment(id: comment.id) else {
             XCTFail("Failed to update post, comment, and query comment")
             return
         }
@@ -198,14 +190,12 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         try await startAmplifyAndWaitForSync()
         guard let blog = try await saveBlog(),
               let post = try await savePost(withBlog: blog),
-              let comment = try await saveComment(withPost: post)
-        else {
+              let comment = try await saveComment(withPost: post) else {
             XCTFail("Failed to save blog, post, comment")
             return
         }
         guard var queriedComment = try await queryComment(id: comment.id),
-              var queriedPost = try await queryPost(id: post.id)
-        else {
+              var queriedPost = try await queryPost(id: post.id) else {
             XCTFail("Failed to query comment and post")
             return
         }
@@ -223,8 +213,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         guard let variables = request.variables,
               let input = variables["input"] as? [String: Any?],
               let postValue = input["postId"],
-              postValue == nil
-        else {
+              postValue == nil else {
             XCTFail("Failed to retrieve input object from GraphQL variables")
             return
         }
@@ -261,10 +250,11 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
     }
 
     func saveComment(_ comment: Comment8? = nil, withPost post: Post8? = nil) async throws -> Comment8? {
-        let commentToSave: Comment8 = if let comment {
-            comment
+        let commentToSave: Comment8
+        if let comment {
+            commentToSave = comment
         } else {
-            Comment8(content: "content", post: post)
+            commentToSave = Comment8(content: "content", post: post)
         }
 
         let waitForSync = expectation(description: "synced")
@@ -288,10 +278,11 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
     }
 
     func savePost(_ post: Post8? = nil, withBlog blog: Blog8? = nil) async throws -> Post8? {
-        let postToSave: Post8 = if let post {
-            post
+        let postToSave: Post8
+        if let post {
+            postToSave = post
         } else {
-            Post8(name: "name", randomId: "randomId", blog: blog)
+            postToSave = Post8(name: "name", randomId: "randomId", blog: blog)
         }
 
         let waitForSync = expectation(description: "synced")

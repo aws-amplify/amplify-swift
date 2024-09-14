@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-extension MutationSyncMetadataMigration {
+public extension MutationSyncMetadataMigration {
     struct MutationSyncMetadataCopy: Model {
         public let id: String
         public var deleted: Bool

@@ -70,8 +70,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedRestaurants) = await queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -98,8 +97,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedRestaurants) = await queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -119,8 +117,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedModel) = queryModelSynchronous(
             modelType: ModelCompositePk.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -151,8 +148,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedModel) = queryModelSynchronous(
             modelType: ModelCompositePk.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -171,8 +167,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -201,8 +196,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -221,8 +215,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -254,8 +247,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -275,8 +267,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -304,8 +295,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -324,8 +314,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -352,8 +341,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -373,8 +361,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedRestaurants) = await queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -421,8 +408,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedRestaurants) = await queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -443,8 +429,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedModels) = await queryModelSynchronous(
             modelType: ModelCompositePk.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -490,8 +475,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedModels) = await queryModelSynchronous(
             modelType: ModelCompositePk.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -510,8 +494,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -559,8 +542,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -579,8 +561,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -627,8 +608,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
-        )
-        else {
+        ) else {
             XCTFail("Failed to query")
             return
         }
@@ -690,8 +670,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
 
         guard case .success = await saveModelSynchronous(model: restaurant),
             case .success = await saveModelSynchronous(model: lunchStandardMenu),
-            case .success = await saveModelSynchronous(model: oysters)
-        else {
+            case .success = await saveModelSynchronous(model: oysters) else {
                 XCTFail("Failed to save hierarchy")
                 return
         }
@@ -834,8 +813,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
 
         guard case .success = await saveModelSynchronous(model: restaurant),
             case .success = await saveModelSynchronous(model: lunchStandardMenu),
-            case .success = await saveModelSynchronous(model: oysters)
-        else {
+            case .success = await saveModelSynchronous(model: oysters) else {
                 XCTFail("Failed to save hierarchy")
                 return
         }

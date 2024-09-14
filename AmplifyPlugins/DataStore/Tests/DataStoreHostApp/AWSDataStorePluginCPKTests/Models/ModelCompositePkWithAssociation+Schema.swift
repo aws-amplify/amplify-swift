@@ -33,17 +33,17 @@ public extension ModelCompositePkWithAssociation {
     )
 
     model.fields(
-      .field(modelCompositePkWithAssociation.id, is: .required, ofType: .string),
-      .field(modelCompositePkWithAssociation.dob, is: .required, ofType: .dateTime),
-      .field(modelCompositePkWithAssociation.name, is: .optional, ofType: .string),
-      .hasMany(
-        modelCompositePkWithAssociation.otherModels,
-        is: .optional,
-        ofType: ModelCompositePkBelongsTo.self,
-        associatedWith: ModelCompositePkBelongsTo.keys.owner
-      ),
-      .field(modelCompositePkWithAssociation.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
-      .field(modelCompositePkWithAssociation.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
+        .field(modelCompositePkWithAssociation.id, is: .required, ofType: .string),
+        .field(modelCompositePkWithAssociation.dob, is: .required, ofType: .dateTime),
+        .field(modelCompositePkWithAssociation.name, is: .optional, ofType: .string),
+        .hasMany(
+            modelCompositePkWithAssociation.otherModels,
+            is: .optional,
+            ofType: ModelCompositePkBelongsTo.self,
+            associatedWith: ModelCompositePkBelongsTo.keys.owner
+        ),
+        .field(modelCompositePkWithAssociation.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
+        .field(modelCompositePkWithAssociation.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
   }
 }

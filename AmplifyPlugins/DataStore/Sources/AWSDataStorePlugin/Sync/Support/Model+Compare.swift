@@ -76,8 +76,7 @@ extension ModelSchema {
                 }
             case .date:
                 guard let value1Optional = value1 as? Temporal.Date?,
-                      let value2Optional = value2 as? Temporal.Date?
-                else {
+                      let value2Optional = value2 as? Temporal.Date? else {
                     return false
                 }
                 if !compare(value1Optional, value2Optional) {
@@ -85,8 +84,7 @@ extension ModelSchema {
                 }
             case .dateTime:
                 guard let value1Optional = value1 as? Temporal.DateTime?,
-                      let value2Optional = value2 as? Temporal.DateTime?
-                else {
+                      let value2Optional = value2 as? Temporal.DateTime? else {
                     return false
                 }
                 if !compare(value1Optional, value2Optional) {
@@ -94,8 +92,7 @@ extension ModelSchema {
                 }
             case .time:
                 guard let value1Optional = value1 as? Temporal.Time?,
-                      let value2Optional = value2 as? Temporal.Time?
-                else {
+                      let value2Optional = value2 as? Temporal.Time? else {
                     return false
                 }
                 if !compare(value1Optional, value2Optional) {

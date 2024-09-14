@@ -50,8 +50,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
 
     func apiEndpointName() throws -> String {
         guard let apiPlugin = amplifyConfig.api?.plugins["awsAPIPlugin"],
-              case .object(let value) = apiPlugin
-        else {
+              case .object(let value) = apiPlugin else {
             throw APIError.invalidConfiguration("API endpoint not found.", "Check the provided configuration")
         }
         return value.keys.first!
@@ -313,8 +312,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         guard let metadata = try await Amplify.DataStore.query(
             MutationSyncMetadata.self,
             byId: metadataId
-        )
-        else {
+        ) else {
             XCTFail("Could not retrieve metadata for model \(model)")
             throw "Could not retrieve metadata for model \(model)"
         }

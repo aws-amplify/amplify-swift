@@ -101,14 +101,15 @@ class SyncEngineTestBase: XCTestCase {
         connection: Connection? = nil
     ) throws {
         models.forEach { ModelRegistry.register(modelType: $0) }
-        let resolvedConnection: Connection = if let connection {
-            connection
+        let resolvedConnection: Connection
+        if let connection {
+            resolvedConnection = connection
         } else {
-            try Connection(.inMemory)
+            resolvedConnection = try Connection(.inMemory)
         }
 
         storageAdapter = try SQLiteStorageEngineAdapter(connection: resolvedConnection)
-        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + models.map{ $0.schema })
+        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + models.map { $0.schema })
     }
 
     /// Sets up a DataStorePlugin backed by the storageAdapter created in `setUpStorageAdapter()`, and an optional

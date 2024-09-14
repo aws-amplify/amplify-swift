@@ -67,8 +67,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
             LazyChildComment4V2.self,
             byIdentifier: comment.id,
             eagerLoad: true
-        )
-        else {
+        ) else {
             XCTFail("Failed to query saved comment")
             return
         }
@@ -90,8 +89,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
             LazyParentPost4V2.self,
             byIdentifier: post.id,
             eagerLoad: true
-        )
-        else {
+        ) else {
             XCTFail("Failed to query saved post")
             return
         }
@@ -264,8 +262,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
             LazyChildComment4V2.self,
             byIdentifier: comment.id,
             eagerLoad: true
-        )
-        else {
+        ) else {
             XCTFail("Failed to query saved comment")
             return
         }
@@ -285,8 +282,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
             LazyChildComment4V2.self,
             byIdentifier: comment.id,
             eagerLoad: false
-        )
-        else {
+        ) else {
             XCTFail("Failed to query saved comment")
             return
         }
@@ -319,8 +315,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
             LazyParentPost4V2.self,
             byIdentifier: post.id,
             eagerLoad: true
-        )
-        else {
+        ) else {
             XCTFail("Failed to query saved post")
             return
         }

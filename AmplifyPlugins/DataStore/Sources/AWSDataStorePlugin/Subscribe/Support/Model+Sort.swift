@@ -145,8 +145,7 @@ extension ModelSchema {
                 .sortComparator(sortOrder: sortOrder)
         case .dateTime:
             guard let value1Optional = value1 as? Temporal.DateTime?,
-                  let value2Optional = value2 as? Temporal.DateTime?
-            else {
+                  let value2Optional = value2 as? Temporal.DateTime? else {
                 return false
             }
             return ModelValueCompare(

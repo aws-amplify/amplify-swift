@@ -17,8 +17,7 @@ public class FlutterDataStoreRequestUtils {
         guard let jsonValue = try? JSONDecoder().decode(
             [String: JSONValue].self,
             from: jsonData
-        )
-        else {
+        ) else {
             throw DataStoreError.decodingError("Unable to decode json value", "Check the model structure.")
         }
         return jsonValue

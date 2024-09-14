@@ -53,16 +53,14 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
         let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
-                case let .api(amplifyError, mutationEventOptional) = dataStoreError
-            else {
+                case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                     XCTFail("Expected API error with mutationEvent")
                     return
             }
             guard let actualAPIError = amplifyError as? APIError,
                 case let .operationError(_, _, underlyingError) = actualAPIError,
                 let authError = underlyingError as? AuthError,
-                case .signedOut = authError
-            else {
+                case .signedOut = authError else {
                     XCTFail("Should be `signedOut` error")
                     return
             }
@@ -103,14 +101,12 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
         let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
-                  case let .api(amplifyError, mutationEventOptional) = dataStoreError
-            else {
+                  case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                 XCTFail("Expected API error with mutationEvent")
                 return
             }
             guard let actualAPIError = amplifyError as? APIError,
-                  case .operationError = actualAPIError
-            else {
+                  case .operationError = actualAPIError else {
                 XCTFail("Missing APIError.operationError")
                 return
             }
@@ -150,14 +146,12 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
         let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
-                  case let .api(amplifyError, mutationEventOptional) = dataStoreError
-            else {
+                  case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                 XCTFail("Expected API error with mutationEvent")
                 return
             }
             guard let graphQLResponseError = amplifyError as?  GraphQLResponseError<MutationSync<AnyModel>>,
-                  case .unknown = graphQLResponseError
-            else {
+                  case .unknown = graphQLResponseError else {
                 XCTFail("Missing GraphQLResponseError.unknown")
                 return
             }
@@ -197,14 +191,12 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
         let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
-                  case let .api(amplifyError, mutationEventOptional) = dataStoreError
-            else {
+                  case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                 XCTFail("Expected API error with mutationEvent")
                 return
             }
             guard let graphQLResponseError = amplifyError as?  GraphQLResponseError<MutationSync<AnyModel>>,
-                  case .error(let errors) = graphQLResponseError
-            else {
+                  case .error(let errors) = graphQLResponseError else {
                 XCTFail("Missing GraphQLResponseError.unknown")
                 return
             }
@@ -246,14 +238,12 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
         let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
-                  case let .api(amplifyError, mutationEventOptional) = dataStoreError
-            else {
+                  case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                 XCTFail("Expected API error with mutationEvent")
                 return
             }
             guard let graphQLResponseError = amplifyError as?  GraphQLResponseError<MutationSync<AnyModel>>,
-                  case .error(let errors) = graphQLResponseError
-            else {
+                  case .error(let errors) = graphQLResponseError else {
                 XCTFail("Missing GraphQLResponseError.unknown")
                 return
             }
@@ -301,14 +291,12 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
         let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
-                  case let .api(amplifyError, mutationEventOptional) = dataStoreError
-            else {
+                  case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                 XCTFail("Expected API error with mutationEvent")
                 return
             }
             guard let graphQLResponseError = amplifyError as?  GraphQLResponseError<MutationSync<AnyModel>>,
-                  case .error(let errors) = graphQLResponseError
-            else {
+                  case .error(let errors) = graphQLResponseError else {
                 XCTFail("Missing GraphQLResponseError.unknown")
                 return
             }
@@ -345,14 +333,12 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
         let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
-                  case let .api(amplifyError, mutationEventOptional) = dataStoreError
-            else {
+                  case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                 XCTFail("Expected API error with mutationEvent")
                 return
             }
             guard let graphQLResponseError = amplifyError as?  GraphQLResponseError<MutationSync<AnyModel>>,
-                  case .error(let errors) = graphQLResponseError
-            else {
+                  case .error(let errors) = graphQLResponseError else {
                 XCTFail("Missing GraphQLResponseError.unknown")
                 return
             }
@@ -388,14 +374,12 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
         let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
-                  case let .api(amplifyError, mutationEventOptional) = dataStoreError
-            else {
+                  case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                 XCTFail("Expected API error with mutationEvent")
                 return
             }
             guard let graphQLResponseError = amplifyError as?  GraphQLResponseError<MutationSync<AnyModel>>,
-                  case .error(let errors) = graphQLResponseError
-            else {
+                  case .error(let errors) = graphQLResponseError else {
                 XCTFail("Missing GraphQLResponseError")
                 return
             }
@@ -431,14 +415,12 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
         let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
-                  case let .api(amplifyError, mutationEventOptional) = dataStoreError
-            else {
+                  case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                 XCTFail("Expected API error with mutationEvent")
                 return
             }
             guard let graphQLResponseError = amplifyError as?  GraphQLResponseError<MutationSync<AnyModel>>,
-                  case .error(let errors) = graphQLResponseError
-            else {
+                  case .error(let errors) = graphQLResponseError else {
                 XCTFail("Missing GraphQLResponseError.unknown")
                 return
             }
@@ -479,8 +461,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let completion: (Result<MutationEvent?, Error>) -> Void = { result in
             guard case let .failure(error) = result,
                 let dataStoreError = error as? DataStoreError,
-                case .unknown = dataStoreError
-            else {
+                case .unknown = dataStoreError else {
                 XCTFail("Should have failed with DataStoreError.unknown")
                 return
             }
@@ -512,8 +493,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             withRemote: remotePost,
             deleted: false,
             version: 1
-        )
-        else {
+        ) else {
             XCTFail("Couldn't get GraphQL response with remote post")
             return
         }
@@ -521,8 +501,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let completion: (Result<MutationEvent?, Error>) -> Void = { result in
             guard case let .failure(error) = result,
                 let dataStoreError = error as? DataStoreError,
-                case .unknown = dataStoreError
-            else {
+                case .unknown = dataStoreError else {
                 XCTFail("Should have failed with DataStoreError.unknown")
                 return
             }
@@ -555,8 +534,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             withRemote: remotePost,
             deleted: true,
             version: 1
-        )
-        else {
+        ) else {
             XCTFail("Couldn't get GraphQL response with remote post")
             return
         }
@@ -590,8 +568,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             withRemote: remotePost,
             deleted: false,
             version: 2
-        )
-        else {
+        ) else {
             XCTFail("Couldn't get GraphQL response with remote post")
             return
         }
@@ -634,8 +611,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
         let configuration = custom(conflictHandler: { data, resolve  in
             guard let localPost = data.local as? Post,
-                let remotePost = data.remote as? Post
-            else {
+                let remotePost = data.remote as? Post else {
                 XCTFail("Couldn't get Posts from local and remote data")
                 return
             }
@@ -676,8 +652,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             withRemote: remotePost,
             deleted: false,
             version: 2
-        )
-        else {
+        ) else {
             XCTFail("Couldn't get GraphQL response with remote post")
             return
         }
@@ -717,8 +692,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
         let configuration = custom(conflictHandler: { data, resolve  in
             guard let localPost = data.local as? Post,
-                let remotePost = data.remote as? Post
-            else {
+                let remotePost = data.remote as? Post else {
                 XCTFail("Couldn't get Posts from local and remote data")
                 return
             }
@@ -759,16 +733,14 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             withRemote: remotePost,
             deleted: false,
             version: 2
-        )
-        else {
+        ) else {
             XCTFail("Couldn't get GraphQL response with remote post")
             return
         }
         let expectCompletion = expectation(description: "Expect to complete error processing")
         let completion: (Result<MutationEvent?, Error>) -> Void = { result in
             guard case .success(let mutationEventOptional) = result,
-                let mutationEvent = mutationEventOptional
-            else {
+                let mutationEvent = mutationEventOptional else {
                     XCTFail("Should have been successful")
                     return
             }
@@ -840,8 +812,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let expectCompletion = expectation(description: "Expect to complete error processing")
         let completion: (Result<MutationEvent?, Error>) -> Void = { result in
             guard case .success(let mutationEventOptional) = result,
-                let mutationEvent = mutationEventOptional
-            else {
+                let mutationEvent = mutationEventOptional else {
                 XCTFail("Should have been successful")
                 return
             }
@@ -912,8 +883,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let expectCompletion = expectation(description: "Expect to complete error processing")
         let completion: (Result<MutationEvent?, Error>) -> Void = { result in
             guard case .success(let mutationEventOptional) = result,
-                let mutationEvent = mutationEventOptional
-            else {
+                let mutationEvent = mutationEventOptional else {
                 XCTFail("Should have been successful")
                 return
             }
@@ -951,8 +921,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
         let configuration = custom(conflictHandler: { data, resolve  in
             guard let localPost = data.local as? Post,
-                let remotePost = data.remote as? Post
-            else {
+                let remotePost = data.remote as? Post else {
                 XCTFail("Couldn't get Posts from local and remote data")
                 return
             }
@@ -1041,8 +1010,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
         let configuration = custom(conflictHandler: { data, resolve  in
             guard let localPost = data.local as? Post,
-                let remotePost = data.remote as? Post
-            else {
+                let remotePost = data.remote as? Post else {
                 XCTFail("Couldn't get Posts from local and remote data")
                 return
             }
@@ -1084,8 +1052,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             withRemote: remotePost,
             deleted: false,
             version: 2
-        )
-        else {
+        ) else {
             XCTFail("Couldn't get GraphQL response with remote post")
             return
         }
@@ -1129,8 +1096,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
         let configuration = custom(conflictHandler: { data, resolve  in
             guard let localPost = data.local as? Post,
-                let remotePost = data.remote as? Post
-            else {
+                let remotePost = data.remote as? Post else {
                 XCTFail("Couldn't get Posts from local and remote data")
                 return
             }
@@ -1172,8 +1138,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             withRemote: remotePost,
             deleted: false,
             version: 2
-        )
-        else {
+        ) else {
             XCTFail("Couldn't get GraphQL response with remote post")
             return
         }
@@ -1207,8 +1172,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             expectErrorHandlerCalled.fulfill()
         }, conflictHandler: { data, resolve in
             guard let localPost = data.local as? Post,
-                let remotePost = data.remote as? Post
-            else {
+                let remotePost = data.remote as? Post else {
                 XCTFail("Couldn't get Posts from local and remote data")
                 return
             }

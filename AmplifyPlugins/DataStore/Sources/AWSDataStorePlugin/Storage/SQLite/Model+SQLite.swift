@@ -205,7 +205,7 @@ extension [ModelSchema] {
         func walkAssociatedModels(of schema: ModelSchema) {
             if !sortedKeys.contains(schema.name) {
                 let associatedModelSchemas = schema.sortedFields
-                    .filter(\.isForeignKey)
+                    .filter { $0.isForeignKey }
                     .map { schema -> ModelSchema in
                         guard let associatedSchema = ModelRegistry.modelSchema(from: schema.requiredAssociatedModelName)
                         else {

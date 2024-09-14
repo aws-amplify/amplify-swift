@@ -67,8 +67,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
         guard let decodedComment = try? ModelRegistry.decode(
             modelName: Comment.modelName,
             from: encodedComment
-        ) as? Comment
-        else {
+        ) as? Comment else {
 
             XCTFail("Could not decode comment")
             return
@@ -96,8 +95,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
         guard let decodedComment = try? ModelRegistry.decode(
             modelName: Comment.modelName,
             from: encodedComment
-        ) as? Comment
-        else {
+        ) as? Comment else {
 
             XCTFail("Could not decode comment")
             return
