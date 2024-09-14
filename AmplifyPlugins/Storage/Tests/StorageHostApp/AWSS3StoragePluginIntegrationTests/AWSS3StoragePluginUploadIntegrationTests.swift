@@ -67,10 +67,10 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.remove(path: .fromString("public/\(key)"))
 
         // Only the remove operation results in an SDK request
-        XCTAssertEqual(requestRecorder.sdkRequests.map(\.method), [.delete])
+        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method }, [.delete])
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
-        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), ["PUT"])
+        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, ["PUT"])
         try assertUserAgentComponents(urlRequests: requestRecorder.urlRequests)
     }
 
@@ -83,7 +83,7 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.uploadData(path: .fromString("public/\(key)"), data: data, options: nil).value
         _ = try await Amplify.Storage.remove(path: .fromString("public/\(key)"))
 
-        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), ["PUT"])
+        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, ["PUT"])
         try assertUserAgentComponents(urlRequests: requestRecorder.urlRequests)
     }
 
@@ -101,10 +101,10 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.remove(path: .fromString("public/\(key)"))
 
         // Only the remove operation results in an SDK request
-        XCTAssertEqual(requestRecorder.sdkRequests.map(\.method), [.delete])
+        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method}, [.delete])
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
-        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), ["PUT"])
+        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, ["PUT"])
         try assertUserAgentComponents(urlRequests: requestRecorder.urlRequests)
     }
 
@@ -120,7 +120,7 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.uploadFile(path: .fromString("public/\(key)"), local: fileURL, options: nil).value
         _ = try await Amplify.Storage.remove(path: .fromString("public/\(key)"))
 
-        XCTAssertEqual(requestRecorder.urlRequests.map(\.httpMethod), ["PUT"])
+        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, ["PUT"])
         try assertUserAgentComponents(urlRequests: requestRecorder.urlRequests)
     }
 

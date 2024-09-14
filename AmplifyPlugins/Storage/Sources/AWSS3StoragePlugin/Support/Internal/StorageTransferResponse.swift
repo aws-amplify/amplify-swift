@@ -63,8 +63,7 @@ class StorageTransferResponse {
         // See https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html for S3 error responses
 
         guard let httpResponse,
-            transferTask.retryCount < transferTask.retryLimit
-        else {
+            transferTask.retryCount < transferTask.retryLimit else {
             return false
         }
 
@@ -98,15 +97,16 @@ class StorageTransferResponse {
     }
 
     private func errorDescription(forStatusCode statusCode: Int) -> ErrorDescription {
-        let description = switch statusCode {
+        let description: String
+        switch statusCode {
         case 401:
-            "Unauthorized"
+            description = "Unauthorized"
         case 403:
-            "Forbidden"
+            description = "Forbidden"
         case 404:
-            "NotFound"
+            description = "NotFound"
         default:
-            ""
+            description = ""
         }
 
         return "Received HTTP Response status code \(statusCode) \(description)"

@@ -228,8 +228,7 @@ class AWSS3StorageServiceTests: XCTestCase {
         let downloadTask = StorageTransferTask(
             transferType: .download(onEvent: { event in
                 guard case .completed(let data) = event,
-                      let data
-                else {
+                      let data else {
                     XCTFail("Expected .completed event with data")
                     return
                 }
@@ -350,8 +349,7 @@ class AWSS3StorageServiceTests: XCTestCase {
             accelerate: true,
             onEvent: { event in
                 guard case .failed(let error) = event,
-                      case .unknown(let description, _) = error
-                else {
+                      case .unknown(let description, _) = error else {
                     XCTFail("Expected .failed event with .unknown error, got \(event)")
                     return
                 }
