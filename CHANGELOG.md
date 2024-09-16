@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.39.1 (2024-09-16)
+
+### Bug Fixes
+
+- **analytics**: iterate sqlite rows with failableNext (#3857)
+
 ## 2.39.0 (2024-08-28)
 
 ### Features
