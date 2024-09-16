@@ -136,7 +136,7 @@ Amplify requires Xcode 15.0 or later for all the supported platforms.
 
 ## Escape Hatch
 
-All services and features not listed in the [**Features/API sectios**](#featuresapis) are supported via the [Swift SDK](https://github.com/awslabs/aws-sdk-swift) or if supported by a category can be accessed via the Escape Hatch like below:
+All services and features not listed in the [**Features/API sections**](#featuresapis) are supported via the [Swift SDK](https://github.com/awslabs/aws-sdk-swift) or if supported by a category can be accessed via the Escape Hatch like below:
 
 ```swift
 import Amplify
