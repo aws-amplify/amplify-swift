@@ -4,7 +4,6 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-		
 
 import Foundation
 
@@ -52,12 +51,12 @@ extension LocalServer {
     }
 
     var urlRequest: URLRequest {
-        var request = URLRequest(url: URL(string: Self.endpoint + self.path)!)
-        request.httpMethod = self.httpMethod
-        request.httpBody = self.payload
-        additionalRequestHeaders?.forEach({ key, value in
+        var request = URLRequest(url: URL(string: Self.endpoint + path)!)
+        request.httpMethod = httpMethod
+        request.httpBody = payload
+        additionalRequestHeaders?.forEach { key, value in
             request.addValue(value, forHTTPHeaderField: key)
-        })
+        }
         return request
     }
 }

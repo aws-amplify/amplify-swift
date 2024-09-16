@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension AWSPinpointPushNotificationsPlugin {
-    public func reset() async {
+public extension AWSPinpointPushNotificationsPlugin {
+    func reset() async {
         if pinpoint != nil {
             pinpoint = nil
         }
