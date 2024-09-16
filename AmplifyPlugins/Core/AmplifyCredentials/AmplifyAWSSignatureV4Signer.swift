@@ -34,14 +34,14 @@ public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
                                    signingRegion: Swift.String,
                                    date: Date) async throws -> SmithyHTTPAPI.HTTPRequest? {
         do {
-            let credentials = try await credentialIdentityResolver.getIdentity()
+            let credentialIdentity = try await credentialIdentityResolver.getIdentity()
 
             let flags = SigningFlags(useDoubleURIEncode: true,
                                      shouldNormalizeURIPath: true,
                                      omitSessionToken: false)
             let signedBodyHeader: AWSSignedBodyHeader = .none
             let signedBodyValue: AWSSignedBodyValue = .empty
-            let signingConfig = AWSSigningConfig(credentials: credentials,
+            let signingConfig = AWSSigningConfig(credentials: credentialIdentity,
                                                  signedBodyHeader: signedBodyHeader,
                                                  signedBodyValue: signedBodyValue,
                                                  flags: flags,
