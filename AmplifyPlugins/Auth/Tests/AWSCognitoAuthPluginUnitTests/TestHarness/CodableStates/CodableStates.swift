@@ -11,7 +11,7 @@ import AWSPluginsCore
 import Foundation
 @testable import AWSCognitoAuthPlugin
 
-public extension DeviceMetadata {
+extension DeviceMetadata {
 
     init(from decoder: Decoder) throws {
         self = .noData
