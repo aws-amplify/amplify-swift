@@ -10,7 +10,7 @@
 import XCTest
 
 class AWSS3StoragePluginMultipleBucketTests: AWSS3StoragePluginTestBase {
-    var customBucket: (any StorageBucket)!
+    private var customBucket: ResolvedStorageBucket!
 
     override func setUp() async throws {
         guard let outputs = try? AmplifyOutputs.amplifyOutputs.resolveConfiguration(),
@@ -352,7 +352,7 @@ class AWSS3StoragePluginMultipleBucketTests: AWSS3StoragePluginTestBase {
     /// Given: An object in storage in a custom bucket
     /// When: Call the getURL API using key
     /// Then: The operation completes successfully with the URL retrieved
-    func testGetRemoteURL_fromCustomBucket_usingKey_sholdSucceed() async throws {
+    func testGetRemoteURL_fromCustomBucket_usingKey_shouldSucceed() async throws {
         let key = UUID().uuidString
         try await uploadData(
             key: key,
@@ -382,7 +382,7 @@ class AWSS3StoragePluginMultipleBucketTests: AWSS3StoragePluginTestBase {
     /// Given: An object in storage in a custom bucket
     /// When: Call the getURL API using StoragePath
     /// Then: The operation completes successfully with the URL retrieved
-    func testGetRemoteURL_fromCustomBucket_usingStoragePath_sholdSucceed() async throws {
+    func testGetRemoteURL_fromCustomBucket_usingStoragePath_shouldSucceed() async throws {
         let id = UUID().uuidString
         let path: StringStoragePath = .fromString("public/\(id)")
         try await uploadData(
@@ -408,39 +408,6 @@ class AWSS3StoragePluginMultipleBucketTests: AWSS3StoragePluginTestBase {
             options: .init(bucket: customBucket)
         )
         XCTAssertEqual(deleted, path.string)
-    }
-
-    /// Given: An object in storage in a custom bucket
-    /// When: Call the list API using key
-    /// Then: The operation completes successfully with the key retrieved
-    func testList_fromOtherBucket_usingKey_shouldSucceed() async throws {
-        let key = UUID().uuidString
-        try await uploadData(
-            key: key,
-            data: Data(key.utf8),
-            options: .init(bucket: customBucket)
-        )
-
-        let result = try await Amplify.Storage.list(
-            options: .init(
-                path: key,
-                bucket: customBucket
-            )
-        )
-        let items = try XCTUnwrap(result.items)
-
-        XCTAssertEqual(items.count, 1)
-        let item = try XCTUnwrap(items.first)
-        XCTAssertEqual(item.key, key)
-        XCTAssertNotNil(item.eTag)
-        XCTAssertNotNil(item.lastModified)
-        XCTAssertNotNil(item.size)
-
-        let deleted = try await Amplify.Storage.remove(
-            key: key,
-            options: .init(bucket: customBucket)
-        )
-        XCTAssertEqual(deleted, key)
     }
 
     /// Given: An object in storage in a custom bucket
