@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.40.0 (2024-09-17)
+
+### Features
+
+- **Storage**: Implementing support for multiple buckets (#3839)
+
 ## 2.39.1 (2024-09-16)
 
 ### Bug Fixes
