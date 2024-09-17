@@ -230,15 +230,19 @@ final class StorageStressTests: XCTestCase {
 
     private func invalidateCurrentSession() {
         Self.logger.debug("Invalidating URLSession")
-        guard let plugin = try? Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin,
-              let service = plugin.storageService as? AWSS3StorageService else {
-            print("Unable to to cast to AWSS3StorageService")
+        guard let plugin = try? Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin else {
+            print("Unable to to cast to AWSS3StoragePlugin")
             return
         }
 
-        if let delegate = service.urlSession.delegate as? StorageServiceSessionDelegate {
-            delegate.storageService = nil
+        for serviceBehaviour in plugin.storageServicesByBucket.values {
+            guard let service = serviceBehaviour as? AWSS3StorageService else {
+                continue
+            }
+            if let delegate = service.urlSession.delegate as? StorageServiceSessionDelegate {
+                delegate.storageService = nil
+            }
+            service.urlSession.invalidateAndCancel()
         }
-        service.urlSession.invalidateAndCancel()
     }
 }
