@@ -73,6 +73,11 @@ public extension StorageGetURLRequest {
         /// - Tag: StorageGetURLRequest.Options.expires
         public let expires: Int
 
+        /// A Storage Bucket that contains the object. Defaults to `nil`, in which case the default one will be used.
+        ///
+        /// - Tag: StorageDownloadDataRequest.bucket
+        public let bucket: (any StorageBucket)?
+
         /// Extra plugin specific options, only used in special circumstances when the existing options do
         /// not provide a way to utilize the underlying storage system's functionality. See plugin
         /// documentation or
@@ -84,20 +89,39 @@ public extension StorageGetURLRequest {
 
         /// - Tag: StorageGetURLRequest.Options.init
         @available(*, deprecated, message: "Use init(expires:pluginOptions)")
-        public init(accessLevel: StorageAccessLevel = .guest,
-                    targetIdentityId: String? = nil,
-                    expires: Int = Options.defaultExpireInSeconds,
-                    pluginOptions: Any? = nil) {
+        public init(
+            accessLevel: StorageAccessLevel = .guest,
+            targetIdentityId: String? = nil,
+            expires: Int = Options.defaultExpireInSeconds,
+            pluginOptions: Any? = nil
+        ) {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
             self.expires = expires
+            self.bucket = nil
             self.pluginOptions = pluginOptions
         }
 
         /// - Tag: StorageGetURLRequest.Options.init
-        public init(expires: Int = Options.defaultExpireInSeconds,
-                    pluginOptions: Any? = nil) {
+        public init(
+            expires: Int = Options.defaultExpireInSeconds,
+            pluginOptions: Any? = nil
+        ) {
             self.expires = expires
+            self.bucket = nil
+            self.pluginOptions = pluginOptions
+            self.accessLevel = .guest
+            self.targetIdentityId = nil
+        }
+
+        /// - Tag: StorageGetURLRequest.Options.init
+        public init(
+            expires: Int = Options.defaultExpireInSeconds,
+            bucket: some StorageBucket,
+            pluginOptions: Any? = nil
+        ) {
+            self.expires = expires
+            self.bucket = bucket
             self.pluginOptions = pluginOptions
             self.accessLevel = .guest
             self.targetIdentityId = nil
