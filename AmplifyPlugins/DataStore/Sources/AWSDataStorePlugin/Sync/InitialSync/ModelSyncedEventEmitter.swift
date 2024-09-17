@@ -74,7 +74,7 @@ final class ModelSyncedEventEmitter {
                 receiveCompletion: { _ in },
                 receiveValue: { [weak self] value in
                     self?.onReceiveSyncOperationEvent(value: value)
-            }
+                }
             )
 
         self.reconciliationQueueSink = reconciliationQueue?
@@ -85,7 +85,7 @@ final class ModelSyncedEventEmitter {
                 receiveCompletion: { _ in },
                 receiveValue: { [weak self] value in
                     self?.onReceiveReconciliationEvent(value: value)
-            }
+                }
             )
     }
 
