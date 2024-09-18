@@ -8,11 +8,11 @@
 import AWSClientRuntime
 import AWSS3
 import Amplify
-import ClientRuntime
 import XCTest
-import AWSClientRuntime
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
+import SmithyHTTPAPI
 
 final class AWSS3StorageServiceListTests: XCTestCase {
 
@@ -99,7 +99,7 @@ final class AWSS3StorageServiceListTests: XCTestCase {
     func testSdkError() async throws {
         client.listObjectsV2Handler = { _ in
             throw AWSClientRuntime.UnknownAWSHTTPServiceError(
-                httpResponse: HttpResponse(body: .empty, statusCode: .forbidden),
+                httpResponse: HTTPResponse(body: .empty, statusCode: .forbidden),
                 message: nil,
                 requestID: nil,
                 typeName: nil

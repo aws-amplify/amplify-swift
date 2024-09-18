@@ -6,29 +6,31 @@
 //
 
 import AWSCognitoIdentityProvider
-import ClientRuntime
+import SmithyHTTPAPI
 
-extension HttpResponse: Codable { }
+extension SmithyHTTPAPI.HTTPResponse: Codable { }
 
-enum HttpResponseCodingKeys: String, CodingKey {
+enum HTTPResponseCodingKeys: String, CodingKey {
     case statusCode = "statusCode"
 }
 
-extension Encodable where Self: HttpResponse {
+extension Encodable where Self: SmithyHTTPAPI.HTTPResponse {
 
     public func encode(to encoder: Encoder) throws {
-
-        var container = encoder.container(keyedBy: HttpResponseCodingKeys.self)
+        var container = encoder.container(keyedBy: HTTPResponseCodingKeys.self)
         try container.encode(statusCode.rawValue, forKey: .statusCode)
     }
 }
 
-extension Decodable where Self: HttpResponse {
+extension Decodable where Self: SmithyHTTPAPI.HTTPResponse {
 
     public init(from decoder: Decoder) throws {
 
-        let containerValues = try decoder.container(keyedBy: HttpResponseCodingKeys.self)
+        let containerValues = try decoder.container(keyedBy: HTTPResponseCodingKeys.self)
         let httpStatusCode = try containerValues.decodeIfPresent(Int.self, forKey: .statusCode)
-        self = HttpResponse(body: .empty, statusCode: HttpStatusCode(rawValue: httpStatusCode ?? 404) ?? .notFound) as! Self
+        self = SmithyHTTPAPI.HTTPResponse(
+            body: .empty,
+            statusCode: SmithyHTTPAPI.HTTPStatusCode(rawValue: httpStatusCode ?? 404) ?? .notFound
+        ) as! Self
     }
 }

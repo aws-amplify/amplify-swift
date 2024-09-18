@@ -11,7 +11,7 @@ import XCTest
 import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
-import AWSClientRuntime
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -41,11 +41,11 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                     },
                     mockSetUserMFAPreferenceResponse: { request in
                         XCTAssertEqual(
-                            request.smsMfaSettings,
-                            smsPreference.smsSetting())
+                            request.smsMfaSettings?.preferredMfa,
+                            smsPreference.smsSetting().preferredMfa)
                         XCTAssertEqual(
-                            request.softwareTokenMfaSettings,
-                            totpPreference.softwareTokenSetting())
+                            request.softwareTokenMfaSettings?.preferredMfa,
+                            totpPreference.softwareTokenSetting().preferredMfa)
 
                         return .init()
                     })

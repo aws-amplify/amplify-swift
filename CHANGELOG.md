@@ -1,5 +1,23 @@
 # Changelog
 
+## 2.41.0 (2024-09-18)
+
+### Features
+
+- **Core**: Updating to AWS SDK for Swift 1.0.0 (#3858)
+
+## 2.40.0 (2024-09-17)
+
+### Features
+
+- **Storage**: Implementing support for multiple buckets (#3839)
+
+## 2.39.1 (2024-09-16)
+
+### Bug Fixes
+
+- **analytics**: iterate sqlite rows with failableNext (#3857)
+
 ## 2.39.0 (2024-08-28)
 
 ### Features

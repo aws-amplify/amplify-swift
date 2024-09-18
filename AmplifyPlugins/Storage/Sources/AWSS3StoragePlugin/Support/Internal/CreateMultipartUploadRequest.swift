@@ -11,7 +11,7 @@ struct CreateMultipartUploadRequest {
     let bucket: String
     let key: String
 
-    let expires: Date?
+    let expires: String?
     let cacheControl: String?
     let contentDisposition: String?
     let contentEncoding: String?
@@ -20,7 +20,7 @@ struct CreateMultipartUploadRequest {
     let metadata: [String: String]?
 
     init(bucket: String, key: String,
-         expires: Date? = nil,
+         expires: String? = nil,
          cacheControl: String? = nil,
          contentDisposition: String? = nil,
          contentEncoding: String? = nil,

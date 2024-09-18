@@ -18,7 +18,7 @@ class SignOutGloballyTests: XCTestCase {
             MockIdentityProvider(
                 mockGlobalSignOutResponse: { _ in
                     globalSignOutInvoked.fulfill()
-                    return try await GlobalSignOutOutput(httpResponse: MockHttpResponse.ok)
+                    return GlobalSignOutOutput()
                 }
             )
         }
@@ -88,7 +88,7 @@ class SignOutGloballyTests: XCTestCase {
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 mockGlobalSignOutResponse: { _ in
-                    return try await GlobalSignOutOutput(httpResponse: MockHttpResponse.ok)
+                    return GlobalSignOutOutput()
                 }
             )
         }

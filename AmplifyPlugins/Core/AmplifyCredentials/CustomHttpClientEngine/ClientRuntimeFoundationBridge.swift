@@ -6,30 +6,31 @@
 //
 
 import Foundation
-import ClientRuntime
+import Smithy
+import SmithyHTTPAPI
 
 extension Foundation.URLRequest {
-    init(sdkRequest: ClientRuntime.SdkHttpRequest) async throws {
-        guard let url = sdkRequest.endpoint.url else {
-            throw FoundationClientEngineError.invalidRequestURL(sdkRequest: sdkRequest)
+    init(from smithyRequest: SmithyHTTPAPI.HTTPRequest) async throws {
+        guard let url = smithyRequest.endpoint.url else {
+            throw FoundationClientEngineError.invalidRequestURL(smithyRequest: smithyRequest)
         }
         self.init(url: url)
-        httpMethod = sdkRequest.method.rawValue
+        httpMethod = smithyRequest.method.rawValue
 
-        for header in sdkRequest.headers.headers {
+        for header in smithyRequest.headers.headers {
             for value in header.value {
                 addValue(value, forHTTPHeaderField: header.name)
             }
         }
 
-        httpBody = try await sdkRequest.body.readData()
+        httpBody = try await smithyRequest.body.readData()
     }
 }
 
-extension ClientRuntime.HttpResponse {
+extension SmithyHTTPAPI.HTTPResponse {
     private static func headers(
         from allHeaderFields: [AnyHashable: Any]
-    ) -> ClientRuntime.Headers {
+    ) -> SmithyHTTPAPI.Headers {
         var headers = Headers()
         for header in allHeaderFields {
             switch (header.key, header.value) {
@@ -47,7 +48,7 @@ extension ClientRuntime.HttpResponse {
         let headers = Self.headers(from: httpURLResponse.allHeaderFields)
         let body = ByteStream.data(data)
 
-        guard let statusCode = HttpStatusCode(rawValue: httpURLResponse.statusCode) else {
+        guard let statusCode = HTTPStatusCode(rawValue: httpURLResponse.statusCode) else {
             // This shouldn't happen, but `HttpStatusCode` only exposes a failable
             // `init`. The alternative here is force unwrapping, but we can't
             // make the decision to crash here on behalf on consuming applications.

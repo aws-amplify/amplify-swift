@@ -6,8 +6,8 @@
 //
 
 @_spi(InternalHttpEngineProxy) @_spi(InternalAmplifyPluginExtension) import InternalAmplifyCredentials
-import ClientRuntime
 import Foundation
+import SmithyHTTPAPI
 
 protocol HttpClientEngineProxy: HTTPClient {
     var target: HTTPClient? { get set }

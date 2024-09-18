@@ -23,7 +23,6 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
     let logger: Logger
 
     /// Creates a pre-signed URL builder.
-    /// - Parameter credentialsProvider: Credentials Provider.
     init(config: S3Client.S3ClientConfiguration, bucket: String, logger: Logger = storageLogger) {
         self.bucket = bucket
         self.config = config

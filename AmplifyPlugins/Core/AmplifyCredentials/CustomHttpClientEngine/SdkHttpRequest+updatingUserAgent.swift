@@ -6,27 +6,22 @@
 //
 
 import Foundation
-import ClientRuntime
+import SmithyHTTPAPI
 
 @_spi(PluginHTTPClientEngine)
-extension SdkHttpRequest {
-    public func updatingUserAgent(with value: String) -> SdkHttpRequest {
+extension HTTPRequest {
+    public func updatingUserAgent(with value: String) -> HTTPRequest {
         let userAgentKey = "User-Agent"
         var headers = headers
         headers.remove(name: userAgentKey)
         headers.add(name: userAgentKey, value: value)
 
-        let endpoint = ClientRuntime.Endpoint(
-            host: endpoint.host,
-            path: endpoint.path,
-            port: endpoint.port,
-            queryItems: endpoint.queryItems,
-            protocolType: endpoint.protocolType,
-            headers: headers,
-            properties: endpoint.properties
+        let endpoint = SmithyHTTPAPI.Endpoint(
+            uri: endpoint.uri,
+            headers: headers
         )
 
-        return SdkHttpRequest(
+        return HTTPRequest(
             method: method,
             endpoint: endpoint,
             body: body

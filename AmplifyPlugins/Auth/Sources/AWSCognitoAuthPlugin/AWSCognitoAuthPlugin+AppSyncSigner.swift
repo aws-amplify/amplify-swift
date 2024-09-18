@@ -8,9 +8,13 @@
 import Foundation
 import Amplify // Amplify.Auth
 import AWSPluginsCore // AuthAWSCredentialsProvider
-import AWSClientRuntime // AWSClientRuntime.CredentialsProviding
-import ClientRuntime // SdkHttpRequestBuilder
 import AwsCommonRuntimeKit // CommonRuntimeKit.initialize()
+import AWSSDKHTTPAuth // AWSSigV4Signer
+import Smithy // URIQueryItem
+import SmithyHTTPAPI
+import SmithyHTTPAuth
+import SmithyHTTPAuthAPI
+import SmithyIdentity // AWSCredentialIdentity
 
 extension AWSCognitoAuthPlugin {
 
@@ -29,11 +33,15 @@ extension AWSCognitoAuthPlugin {
                                          region: region)
         }
     }
-    
+
+    private static var signer = {
+        return AWSSigV4Signer()
+    }()
+
     static func signAppSyncRequest(_ urlRequest: URLRequest,
                                    region: Swift.String,
                                    signingName: Swift.String = "appsync",
-                                   date: ClientRuntime.Date = Date()) async throws -> URLRequest {
+                                   date: Date = Date()) async throws -> URLRequest {
         CommonRuntimeKit.initialize()
 
         // Convert URLRequest to SDK's HTTPRequest
@@ -43,11 +51,11 @@ extension AWSCognitoAuthPlugin {
         }
 
         // Retrieve the credentials from credentials provider
-        let credentials: AWSClientRuntime.AWSCredentials
+        let credentials: AWSCredentialIdentity
         let authSession = try await Amplify.Auth.fetchAuthSession()
         if let awsCredentialsProvider = authSession as? AuthAWSCredentialsProvider {
             let awsCredentials = try awsCredentialsProvider.getAWSCredentials().get()
-            credentials = awsCredentials.toAWSSDKCredentials()
+            credentials = try awsCredentials.toAWSSDKCredentials()
         } else {
             let error = AuthError.unknown("Auth session does not include AWS credentials information")
             throw error
@@ -70,7 +78,7 @@ extension AWSCognitoAuthPlugin {
                                              signingAlgorithm: .sigv4)
 
         // Sign request
-        guard let httpRequest = await AWSSigV4Signer.sigV4SignedRequest(
+        guard let httpRequest = await signer.sigV4SignedRequest(
             requestBuilder: requestBuilder,
 
             signingConfig: signingConfig
@@ -82,7 +90,7 @@ extension AWSCognitoAuthPlugin {
         return setHeaders(from: httpRequest, to: urlRequest)
     }
 
-    static func setHeaders(from sdkRequest: SdkHttpRequest, to urlRequest: URLRequest) -> URLRequest {
+    static func setHeaders(from sdkRequest: SmithyHTTPAPI.HTTPRequest, to urlRequest: URLRequest) -> URLRequest {
         var urlRequest = urlRequest
         for header in sdkRequest.headers.headers {
             urlRequest.setValue(header.value.joined(separator: ","), forHTTPHeaderField: header.name)
@@ -90,7 +98,7 @@ extension AWSCognitoAuthPlugin {
         return urlRequest
     }
 
-    static func createAppSyncSdkHttpRequestBuilder(urlRequest: URLRequest) throws -> SdkHttpRequestBuilder? {
+    static func createAppSyncSdkHttpRequestBuilder(urlRequest: URLRequest) throws -> HTTPRequestBuilder? {
 
         guard let url = urlRequest.url,
               let host = url.host else {
@@ -101,12 +109,12 @@ extension AWSCognitoAuthPlugin {
         headers.updateValue(host, forKey: "host")
 
         let httpMethod = (urlRequest.httpMethod?.uppercased())
-            .flatMap(HttpMethodType.init(rawValue:)) ?? .get
+            .flatMap(HTTPMethodType.init(rawValue:)) ?? .get
 
         let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?
-            .map { ClientRuntime.SDKURLQueryItem(name: $0.name, value: $0.value)} ?? []
+            .map { URIQueryItem(name: $0.name, value: $0.value)} ?? []
 
-        let requestBuilder = SdkHttpRequestBuilder()
+        let requestBuilder = HTTPRequestBuilder()
             .withHost(host)
             .withPath(url.path)
             .withQueryItems(queryItems)
@@ -122,19 +130,20 @@ extension AWSCognitoAuthPlugin {
 
 extension AWSPluginsCore.AWSCredentials {
 
-    func toAWSSDKCredentials() -> AWSClientRuntime.AWSCredentials {
+    func toAWSSDKCredentials() throws -> AWSCredentialIdentity {
         if let tempCredentials = self as? AWSTemporaryCredentials {
-            return AWSClientRuntime.AWSCredentials(
+            return AWSCredentialIdentity(
                 accessKey: tempCredentials.accessKeyId,
                 secret: tempCredentials.secretAccessKey,
-                expirationTimeout: tempCredentials.expiration,
-                sessionToken: tempCredentials.sessionToken)
+                expiration: tempCredentials.expiration,
+                sessionToken: tempCredentials.sessionToken
+            )
         } else {
-            return AWSClientRuntime.AWSCredentials(
+            return AWSCredentialIdentity(
                 accessKey: accessKeyId,
                 secret: secretAccessKey,
-                expirationTimeout: Date())
+                expiration: nil
+            )
         }
-
     }
 }

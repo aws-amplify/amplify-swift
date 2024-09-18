@@ -9,7 +9,7 @@
 
 import AWSS3StoragePlugin
 import ClientRuntime
-import AWSClientRuntime
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 import CryptoKit
 import XCTest
 import AWSS3
@@ -24,7 +24,9 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
         let data = Data(key.utf8)
         let uniqueStringPath = "public/\(key)"
 
-        _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/test1"), data: data, options: nil).value
+        await wait {
+            _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/test1"), data: data, options: nil).value
+        }
 
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
@@ -32,7 +34,9 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
         XCTAssertEqual(firstListResult.items.filter({ $0.path.contains(uniqueStringPath)
         }).count, 1)
 
-        _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/test2"), data: data, options: nil).value
+        await wait {
+            _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/test2"), data: data, options: nil).value
+        }
 
         let secondListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
@@ -56,13 +60,15 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
         // Sign in
         _ = try await Amplify.Auth.signIn(username: Self.user1, password: Self.password)
 
-        _ = try await Amplify.Storage.uploadData(
-            path: .fromIdentityID({ identityId in
-                uniqueStringPath = "protected/\(identityId)/\(key)"
-                return uniqueStringPath + "test1"
-            }),
-            data: data,
-            options: nil).value
+        await wait {
+            _ = try await Amplify.Storage.uploadData(
+                path: .fromIdentityID({ identityId in
+                    uniqueStringPath = "protected/\(identityId)/\(key)"
+                    return uniqueStringPath + "test1"
+                }),
+                data: data,
+                options: nil).value
+        }
 
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
@@ -70,13 +76,15 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
         XCTAssertEqual(firstListResult.items.filter({ $0.path.contains(uniqueStringPath)
         }).count, 1)
 
-        _ = try await Amplify.Storage.uploadData(
-            path: .fromIdentityID({ identityId in
-                uniqueStringPath = "protected/\(identityId)/\(key)"
-                return uniqueStringPath + "test2"
-            }),
-            data: data,
-            options: nil).value
+        await wait {
+            _ = try await Amplify.Storage.uploadData(
+                path: .fromIdentityID({ identityId in
+                    uniqueStringPath = "protected/\(identityId)/\(key)"
+                    return uniqueStringPath + "test2"
+                }),
+                data: data,
+                options: nil).value
+        }
 
         let secondListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
@@ -101,13 +109,15 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
         // Sign in
         _ = try await Amplify.Auth.signIn(username: Self.user1, password: Self.password)
 
-        _ = try await Amplify.Storage.uploadData(
-            path: .fromIdentityID({ identityId in
-                uniqueStringPath = "private/\(identityId)/\(key)"
-                return uniqueStringPath + "test1"
-            }),
-            data: data,
-            options: nil).value
+        await wait {
+            _ = try await Amplify.Storage.uploadData(
+                path: .fromIdentityID({ identityId in
+                    uniqueStringPath = "private/\(identityId)/\(key)"
+                    return uniqueStringPath + "test1"
+                }),
+                data: data,
+                options: nil).value
+        }
 
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
@@ -115,13 +125,15 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
         XCTAssertEqual(firstListResult.items.filter({ $0.path.contains(uniqueStringPath)
         }).count, 1)
 
-        _ = try await Amplify.Storage.uploadData(
-            path: .fromIdentityID({ identityId in
-                uniqueStringPath = "private/\(identityId)/\(key)"
-                return uniqueStringPath + "test2"
-            }),
-            data: data,
-            options: nil).value
+        await wait {
+            _ = try await Amplify.Storage.uploadData(
+                path: .fromIdentityID({ identityId in
+                    uniqueStringPath = "private/\(identityId)/\(key)"
+                    return uniqueStringPath + "test2"
+                }),
+                data: data,
+                options: nil).value
+        }
 
         let secondListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
@@ -198,10 +210,12 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
         let uniqueStringPath = "public/\(path)"
 
         // Upload data
-        _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/test1"), data: data, options: nil).value
-        _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/test2"), data: data, options: nil).value
-        _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/subpath1/test"), data: data, options: nil).value
-        _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/subpath2/test"), data: data, options: nil).value
+        await wait(timeout: 25) {
+            _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/test1"), data: data, options: nil).value
+            _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/test2"), data: data, options: nil).value
+            _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/subpath1/test"), data: data, options: nil).value
+            _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/subpath2/test"), data: data, options: nil).value
+        }
 
         let result = try await Amplify.Storage.list(
             path: .fromString("\(uniqueStringPath)/"),
@@ -232,8 +246,10 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
         let uniqueStringPath = "public/\(path)"
 
         // Upload data
-        _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "-test"), data: data, options: nil).value
-        _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "-subpath-test"), data: data, options: nil).value
+        await wait(timeout: 10) {
+            _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "-test"), data: data, options: nil).value
+            _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "-subpath-test"), data: data, options: nil).value
+        }
 
         let result = try await Amplify.Storage.list(
             path: .fromString("\(uniqueStringPath)-"),

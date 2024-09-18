@@ -22,7 +22,7 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
 
     override func setUp() async throws {
         try await super.setUp()
-        AWSPinpointFactory.credentialsProvider = MockCredentialsProvider()
+        AWSPinpointFactory.credentialIdentityResolver = MockCredentialsProvider()
         AmplifyRemoteNotificationsHelper.shared = mockRemoteNotifications
     }
 

@@ -6,9 +6,10 @@
 //
 
 import ClientRuntime
-import AWSClientRuntime
+import AwsCommonRuntimeKit
 import Amplify
 import InternalAmplifyCredentials
+import SmithyIdentity
 
 public class MockAWSAuthService: AWSAuthCredentialsProviderBehavior {
 
@@ -29,6 +30,12 @@ public class MockAWSAuthService: AWSAuthCredentialsProviderBehavior {
     }
 
     public func getCredentialsProvider() -> CredentialsProviding {
+        interactions.append(#function)
+        let cognitoCredentialsProvider = MyCustomCredentialsProvider()
+        return cognitoCredentialsProvider
+    }
+
+    public func getCredentialIdentityResolver() -> any SmithyIdentity.AWSCredentialIdentityResolver {
         interactions.append(#function)
         let cognitoCredentialsProvider = MyCustomCredentialsProvider()
         return cognitoCredentialsProvider
@@ -61,11 +68,12 @@ public class MockAWSAuthService: AWSAuthCredentialsProviderBehavior {
     }
 }
 
-struct MyCustomCredentialsProvider: CredentialsProviding {
-    func getCredentials() async throws -> AWSClientRuntime.AWSCredentials {
-        AWSCredentials(
+struct MyCustomCredentialsProvider: CredentialsProviding, AWSCredentialIdentityResolver {
+    func getCredentials() async throws -> AwsCommonRuntimeKit.Credentials {
+        try AwsCommonRuntimeKit.Credentials(
             accessKey: "AKIDEXAMPLE",
             secret: "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY",
-            expirationTimeout: Date().addingTimeInterval(30))
+            expiration: Date().addingTimeInterval(30)
+        )
     }
 }

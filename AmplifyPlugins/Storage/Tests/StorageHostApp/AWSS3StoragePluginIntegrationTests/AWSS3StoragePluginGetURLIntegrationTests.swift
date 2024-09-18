@@ -22,11 +22,13 @@ class AWSS3StoragePluginGetURLIntegrationTests: AWSS3StoragePluginTestBase {
     func testGetRemoteURL() async throws {
         let key = "public/" + UUID().uuidString
         try await uploadData(key: key, dataString: key)
-        _ = try await Amplify.Storage.uploadData(
-            path: .fromString(key),
-            data: Data(key.utf8),
-            options: .init()
-        ).value
+        await wait {
+            _ = try await Amplify.Storage.uploadData(
+                path: .fromString(key),
+                data: Data(key.utf8),
+                options: .init()
+            ).value
+        }
 
         let remoteURL = try await Amplify.Storage.getURL(path: .fromString(key))
 

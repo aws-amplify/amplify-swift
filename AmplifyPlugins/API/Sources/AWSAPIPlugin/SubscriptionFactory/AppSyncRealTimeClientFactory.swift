@@ -101,8 +101,8 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
             let provider = AWSOIDCAuthProvider(authService: authService)
             return AuthTokenInterceptor(getLatestAuthToken: provider.getLatestAuthToken)
         case .awsIAM(let awsIAMConfiguration):
-            return IAMAuthInterceptor(authService.getCredentialsProvider(),
-                                                 region: awsIAMConfiguration.region)
+            return IAMAuthInterceptor(authService.getCredentialIdentityResolver(),
+                                      region: awsIAMConfiguration.region)
         case .openIDConnect:
             guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
                 throw APIError.invalidConfiguration(

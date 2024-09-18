@@ -14,6 +14,8 @@ import ClientRuntime
 import AWSClientRuntime
 @_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 @_spi(InternalHttpEngineProxy) import AWSPluginsCore
+import SmithyRetriesAPI
+import SmithyRetries
 
 extension AWSCognitoAuthPlugin {
 
@@ -91,7 +93,8 @@ extension AWSCognitoAuthPlugin {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
             let configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
                 region: userPoolConfig.region,
-                serviceSpecific: .init(endpointResolver: userPoolConfig.endpoint?.resolver)
+                signingRegion: userPoolConfig.region,
+                endpointResolver: userPoolConfig.endpoint?.resolver
             )
 
             if var httpClientEngineProxy = httpClientEngineProxy {
@@ -108,11 +111,14 @@ extension AWSCognitoAuthPlugin {
             }
 
             if let maxRetryUnwrapped = networkPreferences?.maxRetryCount {
-                configuration.retryStrategyOptions = RetryStrategyOptions(maxRetriesBase: Int(maxRetryUnwrapped))
+                configuration.retryStrategyOptions = RetryStrategyOptions(
+                    backoffStrategy: ExponentialBackoffStrategy(),
+                    maxRetriesBase: Int(maxRetryUnwrapped)
+                )
             }
 
             let authService = AWSAuthService()
-            configuration.credentialsProvider = authService.getCredentialsProvider()
+            configuration.awsCredentialIdentityResolver = authService.getCredentialIdentityResolver()
 
             return CognitoIdentityProviderClient(config: configuration)
         default:
@@ -133,11 +139,14 @@ extension AWSCognitoAuthPlugin {
             }
 
             if let maxRetryUnwrapped = networkPreferences?.maxRetryCount {
-                configuration.retryStrategyOptions = RetryStrategyOptions(maxRetriesBase: Int(maxRetryUnwrapped))
+                configuration.retryStrategyOptions = RetryStrategyOptions(
+                    backoffStrategy: ExponentialBackoffStrategy(),
+                    maxRetriesBase: Int(maxRetryUnwrapped)
+                )
             }
 
             let authService = AWSAuthService()
-            configuration.credentialsProvider = authService.getCredentialsProvider()
+            configuration.awsCredentialIdentityResolver = authService.getCredentialIdentityResolver()
 
             return CognitoIdentityClient(config: configuration)
         default:

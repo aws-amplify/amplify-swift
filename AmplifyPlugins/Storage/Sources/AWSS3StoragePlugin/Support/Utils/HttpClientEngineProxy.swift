@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import ClientRuntime
 import Foundation
+import SmithyHTTPAPI
 
 /// Internal protocol that may be to inspect or decorate
 /// [ClientRuntime requests](x-source-tag://SdkHttpRequest).

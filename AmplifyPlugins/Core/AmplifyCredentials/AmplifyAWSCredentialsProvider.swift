@@ -6,18 +6,32 @@
 //
 
 import Amplify
-import AWSClientRuntime
 import AwsCommonRuntimeKit
 import AWSPluginsCore
 import Foundation
+import Smithy
+import SmithyIdentity
 
-public class AmplifyAWSCredentialsProvider: AWSClientRuntime.CredentialsProviding {
-    
-    public func getCredentials() async throws -> AWSClientRuntime.AWSCredentials {
+public class AmplifyAWSCredentialsProvider: AwsCommonRuntimeKit.CredentialsProviding {
+
+    public func getCredentials() async throws -> AwsCommonRuntimeKit.Credentials {
         let authSession = try await Amplify.Auth.fetchAuthSession()
         if let awsCredentialsProvider = authSession as? AuthAWSCredentialsProvider {
             let credentials = try awsCredentialsProvider.getAWSCredentials().get()
-            return credentials.toAWSSDKCredentials()
+            return try credentials.toAWSSDKCredentials()
+        } else {
+            let error = AuthError.unknown("Auth session does not include AWS credentials information")
+            throw error
+        }
+    }
+}
+
+extension AmplifyAWSCredentialsProvider: AWSCredentialIdentityResolver {
+    public func getIdentity(identityProperties: Smithy.Attributes? = nil) async throws -> AWSCredentialIdentity {
+        let authSession = try await Amplify.Auth.fetchAuthSession()
+        if let awsCredentialsProvider = authSession as? AuthAWSCredentialsProvider {
+            let credentials = try awsCredentialsProvider.getAWSCredentials().get()
+            return try credentials.toAWSCredentialIdentity()
         } else {
             let error = AuthError.unknown("Auth session does not include AWS credentials information")
             throw error
@@ -27,19 +41,30 @@ public class AmplifyAWSCredentialsProvider: AWSClientRuntime.CredentialsProvidin
 
 extension AWSPluginsCore.AWSCredentials {
 
-    func toAWSSDKCredentials() -> AWSClientRuntime.AWSCredentials {
+    func toAWSSDKCredentials() throws -> AwsCommonRuntimeKit.Credentials {
         if let tempCredentials = self as? AWSTemporaryCredentials {
-            return AWSClientRuntime.AWSCredentials(
+            return try AwsCommonRuntimeKit.Credentials(
                 accessKey: tempCredentials.accessKeyId,
                 secret: tempCredentials.secretAccessKey,
-                expirationTimeout: tempCredentials.expiration,
-                sessionToken: tempCredentials.sessionToken)
+                sessionToken: tempCredentials.sessionToken,
+                expiration: tempCredentials.expiration
+            )
         } else {
-            return AWSClientRuntime.AWSCredentials(
+            return try AwsCommonRuntimeKit.Credentials(
                 accessKey: accessKeyId,
                 secret: secretAccessKey,
-                expirationTimeout: Date())
+                expiration: nil
+            )
         }
 
+    }
+
+    func toAWSCredentialIdentity() throws -> SmithyIdentity.AWSCredentialIdentity {
+        return SmithyIdentity.AWSCredentialIdentity(
+            accessKey: accessKeyId,
+            secret: secretAccessKey,
+            expiration: (self as? AWSTemporaryCredentials)?.expiration,
+            sessionToken: (self as? AWSTemporaryCredentials)?.sessionToken
+        )
     }
 }

@@ -20,7 +20,7 @@ public class AWSPinpointFactory {
 
     private init() {}
 
-    static var credentialsProvider = AWSAuthService().getCredentialsProvider()
+    static var credentialIdentityResolver = AWSAuthService().getCredentialIdentityResolver()
 
     static var provisioningProfileReader: ProvisioningProfileReader = .default
 
@@ -46,7 +46,7 @@ public class AWSPinpointFactory {
         let configuration = PinpointContextConfiguration(
             appId: appId,
             region: region,
-            credentialsProvider: credentialsProvider,
+            credentialIdentityResolver: credentialIdentityResolver,
             isDebug: isDebug
         )
 
