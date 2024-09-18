@@ -9,16 +9,16 @@ import AWSS3
 extension S3Client.S3ClientConfiguration {
     func endpointParams(withBucket bucket: String?) -> EndpointParams {
         EndpointParams(
-            accelerate: serviceSpecific.accelerate ?? false,
+            accelerate: accelerate ?? false,
             bucket: bucket,
-            disableMultiRegionAccessPoints: serviceSpecific.disableMultiRegionAccessPoints ?? false,
+            disableMultiRegionAccessPoints: disableMultiRegionAccessPoints ?? false,
             endpoint: endpoint,
-            forcePathStyle: serviceSpecific.forcePathStyle ?? false,
+            forcePathStyle: forcePathStyle ?? false,
             region: region,
-            useArnRegion: serviceSpecific.useArnRegion,
+            useArnRegion: useArnRegion,
             useDualStack: useDualStack ?? false,
             useFIPS: useFIPS ?? false,
-            useGlobalEndpoint: serviceSpecific.useGlobalEndpoint ?? false
+            useGlobalEndpoint: useGlobalEndpoint ?? false
         )
     }
 

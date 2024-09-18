@@ -11,7 +11,7 @@ import XCTest
 import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
-import AWSClientRuntime
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length

@@ -6,10 +6,10 @@
 //
 
 import Foundation
-import ClientRuntime
+import SmithyHTTPAPI
 
 struct EndpointResolving {
-    let run: (String) throws -> ClientRuntime.Endpoint
+    let run: (String) throws -> SmithyHTTPAPI.Endpoint
 }
 
 extension EndpointResolving {
@@ -37,6 +37,6 @@ extension EndpointResolving {
         // Finally, let's confirm that the endpoint doesn't contain a path.
         try validate((components, endpoint), with: .pathIsEmpty())
 
-        return ClientRuntime.Endpoint(host: host)
+        return SmithyHTTPAPI.Endpoint(host: host)
     }
 }

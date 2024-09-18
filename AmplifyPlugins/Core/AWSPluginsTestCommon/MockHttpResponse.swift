@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import ClientRuntime
+import SmithyHTTPAPI
 
 class MockHttpResponse {
-    class var ok: HttpResponse {
-        HttpResponse(body: .empty, statusCode: .ok)
+    class var ok: SmithyHTTPAPI.HTTPResponse {
+        SmithyHTTPAPI.HTTPResponse(body: .empty, statusCode: .ok)
     }
 }

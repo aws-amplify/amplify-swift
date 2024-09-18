@@ -9,13 +9,14 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 import InternalAmplifyCredentials
-import AWSClientRuntime
-import ClientRuntime
+import Smithy
+import SmithyIdentity
+import SmithyHTTPAPI
 
 public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsProvider {
     public let refreshIntervalInSeconds: Int
     private let endpoint: URL
-    private let credentialProvider: CredentialsProviding?
+    private let credentialProvider: (any AWSCredentialIdentityResolver)?
     private let region: String
     private let loggingConstraintsLocalStore: LoggingConstraintsLocalStore = UserDefaults.standard
 
@@ -32,12 +33,12 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
     public init(
          endpoint: URL,
          region: String,
-         credentialProvider: CredentialsProviding? = nil,
+         credentialProvider: (any AWSCredentialIdentityResolver)? = nil,
          refreshIntervalInSeconds: Int = 1200
     ) {
         self.endpoint = endpoint
         if credentialProvider == nil {
-            self.credentialProvider = AWSAuthService().getCredentialsProvider()
+            self.credentialProvider = AWSAuthService().getCredentialIdentityResolver()
         } else {
             self.credentialProvider = credentialProvider
         }
@@ -85,13 +86,13 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
         request.setValue(host, forHTTPHeaderField: "host")
 
         let httpMethod = (request.httpMethod?.uppercased())
-            .flatMap(HttpMethodType.init(rawValue:)) ?? .get
+            .flatMap(HTTPMethodType.init(rawValue:)) ?? .get
 
         let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?
             .queryItems?
-            .map { ClientRuntime.SDKURLQueryItem(name: $0.name, value: $0.value) } ?? []
+            .map { URIQueryItem(name: $0.name, value: $0.value) } ?? []
 
-        let requestBuilder = SdkHttpRequestBuilder()
+        let requestBuilder = HTTPRequestBuilder()
             .withHost(host)
             .withPath(url.path)
             .withQueryItems(queryItems)
@@ -107,7 +108,7 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
 
         guard let urlRequest = try await AmplifyAWSSignatureV4Signer().sigV4SignedRequest(
             requestBuilder: requestBuilder,
-            credentialsProvider: credentialProvider,
+            credentialIdentityResolver: credentialProvider,
             signingName: "execute-api",
             signingRegion: region,
             date: Date()

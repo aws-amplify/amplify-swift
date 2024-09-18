@@ -9,7 +9,8 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 import AWSTranscribeStreaming
-import AWSClientRuntime
+import AwsCommonRuntimeKit
+import SmithyIdentity
 
 class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
 
@@ -22,11 +23,11 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
         let mediaSampleRateHertz: Int
     }
 
-    let credentialsProvider: CredentialsProviding
+    let credentialIdentityResolver: any AWSCredentialIdentityResolver
     let region: String
 
-    init(credentialsProvider: CredentialsProviding, region: String) {
-        self.credentialsProvider = credentialsProvider
+    init(credentialIdentityResolver: any AWSCredentialIdentityResolver, region: String) {
+        self.credentialIdentityResolver = credentialIdentityResolver
         self.region = region
     }
 

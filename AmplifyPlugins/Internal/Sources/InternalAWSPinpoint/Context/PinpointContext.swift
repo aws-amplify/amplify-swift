@@ -10,6 +10,7 @@ import AWSClientRuntime
 import AWSPinpoint
 import Foundation
 @_spi(KeychainStore) import AWSPluginsCore
+import SmithyIdentity
 
 // MARK: - UserDefaultsBehaviour
 protocol UserDefaultsBehaviour {
@@ -76,18 +77,18 @@ struct PinpointContextConfiguration {
     /// The Pinpoint region
     let region: String
     /// Used to retrieve the proper AWSCredentials when creating the PinpointCLient
-    let credentialsProvider: CredentialsProviding
+    let credentialIdentityResolver: any AWSCredentialIdentityResolver
     /// Indicates if the App is in Debug or Release build. Defaults to `false`
     /// Setting this flag to true will set the Endpoint Profile to have a channel type of "APNS_SANDBOX".
     let isDebug: Bool
 
     init(appId: String,
          region: String,
-         credentialsProvider: CredentialsProviding,
+         credentialIdentityResolver: some AWSCredentialIdentityResolver,
          isDebug: Bool = false) {
         self.appId = appId
         self.region = region
-        self.credentialsProvider = credentialsProvider
+        self.credentialIdentityResolver = credentialIdentityResolver
         self.isDebug = isDebug
     }
 }
@@ -124,7 +125,7 @@ class PinpointContext {
         uniqueId = Self.retrieveUniqueId(applicationId: configuration.appId, storage: storage)
 
         let pinpointClient = try PinpointClient(region: configuration.region,
-                                                credentialsProvider: configuration.credentialsProvider)
+                                                credentialIdentityResolver: configuration.credentialIdentityResolver)
 
         endpointClient = EndpointClient(configuration: .init(appId: configuration.appId,
                                                              uniqueDeviceId: uniqueId,

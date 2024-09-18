@@ -16,35 +16,42 @@ extension S3Client.S3ClientConfiguration {
         }
 
         // if `shouldAccelerate` isn't `nil` and
-        // is equal to the exisiting config's `serviceSpecific.accelerate
+        // is equal to the exisiting config's `accelerate`
         // we can avoid allocating a new configuration object.
-        if shouldAccelerate == serviceSpecific.accelerate {
+        if shouldAccelerate == accelerate {
             return self
         }
-
-        // This shouldn't happen based on how we're initially
-        // creating the configuration, but we can't reasonably prove
-        // it at compile time - so we have to unwrap.
-        guard let region else { return self }
-
-        // `S3Client.ServiceSpecificConfiguration` is a struct
-        // so we're copying by value here.
-        var serviceSpecific = serviceSpecific
-        serviceSpecific.accelerate = shouldAccelerate
 
         // `S3Client.S3ClientConfiguration` is a `class` so we need to make
         // a deep copy here as not to change the value of the existing base
         // configuration.
-        let copy = try S3Client.S3ClientConfiguration(
-            region: region,
-            credentialsProvider: credentialsProvider,
-            endpoint: endpoint,
-            serviceSpecific: serviceSpecific,
-            signingRegion: signingRegion,
-            useDualStack: useDualStack,
+        let copy =  try S3Client.S3ClientConfiguration(
             useFIPS: useFIPS,
-            retryMode: awsRetryMode,
-            appID: appID
+            useDualStack: useDualStack,
+            appID: appID,
+            awsCredentialIdentityResolver: awsCredentialIdentityResolver,
+            awsRetryMode: awsRetryMode,
+            region: region,
+            signingRegion: signingRegion,
+            forcePathStyle: forcePathStyle,
+            useArnRegion: useArnRegion,
+            disableMultiRegionAccessPoints: disableMultiRegionAccessPoints,
+            accelerate: shouldAccelerate,
+            disableS3ExpressSessionAuth: disableS3ExpressSessionAuth,
+            useGlobalEndpoint: useGlobalEndpoint,
+            endpointResolver: endpointResolver,
+            telemetryProvider: telemetryProvider,
+            retryStrategyOptions: retryStrategyOptions,
+            clientLogMode: clientLogMode,
+            endpoint: endpoint,
+            idempotencyTokenGenerator: idempotencyTokenGenerator,
+            httpClientEngine: httpClientEngine,
+            httpClientConfiguration: httpClientConfiguration,
+            authSchemes: authSchemes,
+            authSchemeResolver: authSchemeResolver,
+            bearerTokenIdentityResolver: bearerTokenIdentityResolver,
+            interceptorProviders: interceptorProviders,
+            httpInterceptorProviders: httpInterceptorProviders
         )
 
         return copy

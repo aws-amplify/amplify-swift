@@ -20,7 +20,7 @@ class AppSyncSignerTests: AWSAuthBaseTest {
     ///    - I should get a signed request.
     ///
     func testSignAppSyncRequest() async throws {
-        let request = URLRequest(url: URL(string: "http://graphql.com")!)
+        let request = URLRequest(url: URL(string: "http://graphql.com?param=value")!)
         let signer = AWSCognitoAuthPlugin.createAppSyncSigner(region: "us-east-1")
         let signedRequest = try await signer(request)
         guard let headers = signedRequest.allHTTPHeaderFields else {

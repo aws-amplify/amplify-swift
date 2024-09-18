@@ -9,7 +9,7 @@
 @_spi(PluginHTTPClientEngine)
 @_spi(InternalHttpEngineProxy)
 import InternalAmplifyCredentials
-import ClientRuntime
+import SmithyHTTPAPI
 import XCTest
 
 class UserAgentSettingClientEngineTestCase: XCTestCase {
@@ -19,7 +19,7 @@ class UserAgentSettingClientEngineTestCase: XCTestCase {
     /// When: A request is invoked **with** an existing User-Agent.
     /// Then: The `lib` component of the user-agent is added.
     func test_existingUserAgent_addsLibComponent() async throws {
-        let request: SdkHttpRequest = .mock
+        let request: SmithyHTTPAPI.HTTPRequest = .mock
         let existingUserAgent = "foo/bar/baz"
         request.withHeader(name: userAgentKey, value: existingUserAgent)
 
@@ -38,7 +38,7 @@ class UserAgentSettingClientEngineTestCase: XCTestCase {
     /// When: A request is invoked **without** existing User-Agent.
     /// Then: The `lib` component of the user-agent is added.
     func test_nonExistingUserAgent_addsLibComponent() async throws {
-        let request: SdkHttpRequest = .mock
+        let request: SmithyHTTPAPI.HTTPRequest = .mock
         let target = MockTargetEngine()
         let engine = UserAgentSettingClientEngine(target: target)
         _ = try await engine.send(request: request)
@@ -51,7 +51,7 @@ class UserAgentSettingClientEngineTestCase: XCTestCase {
     /// When: A request is invoked **with** existing User-Agent.
     /// Then: The `lib` component of the user-agent and the suffix are added.
     func test_existingUserAgentCombinedWithSuffixAppender_addLibAndSuffix() async throws {
-        let request: SdkHttpRequest = .mock
+        let request: SmithyHTTPAPI.HTTPRequest = .mock
         let existingUserAgent = "foo/bar/baz"
         request.withHeader(name: userAgentKey, value: existingUserAgent)
 
@@ -73,7 +73,7 @@ class UserAgentSettingClientEngineTestCase: XCTestCase {
     /// When: A request is invoked **without** existing User-Agent.
     /// Then: The `lib` component of the user-agent and the suffix are added.
     func test_nonExistingUserAgentCombinedWithSuffixAppender_addLibAndSuffix() async throws {
-        let request: SdkHttpRequest = .mock
+        let request: SmithyHTTPAPI.HTTPRequest = .mock
 
         let target = MockTargetEngine()
         let suffix = "a/b/c"
@@ -91,18 +91,18 @@ class UserAgentSettingClientEngineTestCase: XCTestCase {
 }
 
 class MockTargetEngine: HTTPClient {
-    var request: SdkHttpRequest?
+    var request: HTTPRequest?
 
     func send(
-        request: SdkHttpRequest
-    ) async throws -> HttpResponse {
+        request: HTTPRequest
+    ) async throws -> HTTPResponse {
         self.request = request
         return .init(body: .empty, statusCode: .accepted)
     }
 }
 
-extension SdkHttpRequest {
-    static var mock: SdkHttpRequest {
+extension HTTPRequest {
+    static var mock: HTTPRequest {
         .init(
             method: .get,
             endpoint: .init(host: "amplify")

@@ -20,7 +20,7 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutput: { _ in
-                try await ListDevicesOutput(httpResponse: MockHttpResponse.ok)
+                try ListDevicesOutput()
             }
         )
     }
@@ -147,9 +147,7 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutput: { _ in
-                throw try await AWSCognitoIdentityProvider.InternalErrorException(
-                    httpResponse: .init(body: .empty, statusCode: .accepted)
-                )
+                throw AWSCognitoIdentityProvider.InternalErrorException()
             }
         )
         do {

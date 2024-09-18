@@ -6,13 +6,13 @@
 //
 
 import Foundation
-import ClientRuntime
 import Amplify
+import SmithyHTTPAPI
 
 @_spi(FoundationClientEngine)
 public struct FoundationClientEngine: HTTPClient {
-    public func send(request: ClientRuntime.SdkHttpRequest) async throws -> ClientRuntime.HttpResponse {
-        let urlRequest = try await URLRequest(sdkRequest: request)
+    public func send(request: SmithyHTTPAPI.HTTPRequest) async throws -> SmithyHTTPAPI.HTTPResponse {
+        let urlRequest = try await URLRequest(from: request)
 
         let (data, response) = try await URLSession.shared.data(for: urlRequest)
         guard let httpURLResponse = response as? HTTPURLResponse else {
@@ -22,7 +22,7 @@ public struct FoundationClientEngine: HTTPClient {
             throw FoundationClientEngineError.invalidURLResponse(urlRequest: response)
         }
 
-        let httpResponse = try HttpResponse(
+        let httpResponse = try HTTPResponse(
             httpURLResponse: httpURLResponse,
             data: data
         )

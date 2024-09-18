@@ -5,22 +5,21 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSClientRuntime
-import ClientRuntime
 import AWSCognitoIdentityProvider
+import SmithyHTTPAPI
 
 struct AWSEndpointResolving: AWSCognitoIdentityProvider.EndpointResolver {
-    func resolve(params: AWSCognitoIdentityProvider.EndpointParams) throws -> ClientRuntime.Endpoint {
+    func resolve(params: AWSCognitoIdentityProvider.EndpointParams) throws -> SmithyHTTPAPI.Endpoint {
         try endpoint()
     }
 
-    let endpoint: () throws -> ClientRuntime.Endpoint
+    let endpoint: () throws -> SmithyHTTPAPI.Endpoint
 
-    init(_ endpoint: @escaping () throws -> ClientRuntime.Endpoint) {
+    init(_ endpoint: @escaping () throws -> SmithyHTTPAPI.Endpoint) {
         self.endpoint = endpoint
     }
 
-    init(_ endpoint: @escaping @autoclosure () throws -> ClientRuntime.Endpoint) {
+    init(_ endpoint: @escaping @autoclosure () throws -> SmithyHTTPAPI.Endpoint) {
         self.endpoint = endpoint
     }
 }

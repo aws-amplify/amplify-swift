@@ -11,6 +11,7 @@ import AWSPinpoint
 import ClientRuntime
 import enum AwsCommonRuntimeKit.CommonRunTimeError
 import Foundation
+import SmithyHTTPAPI
 
 /// AnalyticsEventRecording saves and submits pinpoint events
 protocol AnalyticsEventRecording: Actor {
@@ -157,7 +158,7 @@ actor EventRecorder: AnalyticsEventRecording {
 
             let endpointResponseMap = results.compactMap { $0.value.endpointItemResponse }
             for endpointResponse in endpointResponseMap {
-                if HttpStatusCode.accepted.rawValue == endpointResponse.statusCode {
+                if HTTPStatusCode.accepted.rawValue == endpointResponse.statusCode {
                     log.verbose("EndpointProfile updated successfully.")
                 } else {
                     log.error("Unable to update EndpointProfile. Error: \(endpointResponse.message ?? "Unknown")")
@@ -168,13 +169,13 @@ actor EventRecorder: AnalyticsEventRecording {
             for (eventId, eventResponse) in eventsResponseMap.flatMap({ $0 }) {
                 guard let event = pinpointEventsById[eventId] else { continue }
                 let responseMessage = eventResponse.message ?? "Unknown"
-                if HttpStatusCode.accepted.rawValue == eventResponse.statusCode,
+                if HTTPStatusCode.accepted.rawValue == eventResponse.statusCode,
                    Constants.acceptedResponseMessage == responseMessage {
                     // On successful submission, add the event to the list of submitted events and delete it from the local storage
                     log.verbose("Successful submit for event with id \(eventId)")
                     submittedEvents.append(event)
                     deleteEvent(eventId: eventId)
-                } else if HttpStatusCode.badRequest.rawValue == eventResponse.statusCode {
+                } else if HTTPStatusCode.badRequest.rawValue == eventResponse.statusCode {
                     // On bad request responses, mark the event as dirty
                     log.error("Server rejected submission of event. Event with id \(eventId) will be discarded. Error: \(responseMessage)")
                     setDirtyEvent(eventId: eventId)

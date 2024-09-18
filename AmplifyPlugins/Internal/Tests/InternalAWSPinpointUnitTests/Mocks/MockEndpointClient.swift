@@ -13,12 +13,6 @@ import Foundation
 actor MockEndpointClient: EndpointClientBehaviour {
     let pinpointClient: PinpointClientProtocol = MockPinpointClient()
 
-    class MockCredentialsProvider: CredentialsProviding {
-        func getCredentials() async throws -> AWSCredentials {
-            return AWSCredentials(accessKey: "", secret: "", expirationTimeout: Date().addingTimeInterval(1000))
-        }
-    }
-
     var updateEndpointProfileCount = 0
     func updateEndpointProfile() async throws {
         updateEndpointProfileCount += 1

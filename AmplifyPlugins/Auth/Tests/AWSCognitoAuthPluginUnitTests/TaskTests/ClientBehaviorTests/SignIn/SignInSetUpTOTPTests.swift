@@ -10,7 +10,7 @@ import AWSCognitoIdentity
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
-import AWSClientRuntime
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class SignInSetUpTOTPTests: BasePluginTest {
 

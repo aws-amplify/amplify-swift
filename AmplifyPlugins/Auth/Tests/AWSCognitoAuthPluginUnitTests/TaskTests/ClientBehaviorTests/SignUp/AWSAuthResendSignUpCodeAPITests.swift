@@ -148,9 +148,7 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
 
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutput: { _ in
-                throw try await AWSCognitoIdentityProvider.CodeDeliveryFailureException(
-                    httpResponse: .init(body: .empty, statusCode: .accepted)
-                )
+                throw AWSCognitoIdentityProvider.CodeDeliveryFailureException()
             }
         )
         do {

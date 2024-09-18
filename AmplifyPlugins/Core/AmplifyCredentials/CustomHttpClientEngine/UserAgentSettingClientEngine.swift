@@ -7,7 +7,7 @@
 
 import Foundation
 import ClientRuntime
-import AWSClientRuntime
+import SmithyHTTPAPI
 
 @_spi(PluginHTTPClientEngine)
 public struct UserAgentSettingClientEngine: AWSPluginExtension {
@@ -28,7 +28,7 @@ extension UserAgentSettingClientEngine: HTTPClient {
     // as it's no longer necessary there.
     var lib: String { AmplifyAWSServiceConfiguration.userAgentLib }
 
-    public func send(request: SdkHttpRequest) async throws -> HttpResponse {
+    public func send(request: HTTPRequest) async throws -> HTTPResponse {
         let existingUserAgent = request.headers.value(for: userAgentKey) ?? ""
         let userAgent = "\(existingUserAgent) \(lib)"
         let updatedRequest = request.updatingUserAgent(with: userAgent)
@@ -40,7 +40,7 @@ extension UserAgentSettingClientEngine: HTTPClient {
 @_spi(PluginHTTPClientEngine)
 extension HTTPClient where Self == UserAgentSettingClientEngine {
     public static func userAgentEngine(
-        for configuration: AWSClientConfiguration<some AWSServiceSpecificConfiguration>
+        for configuration: ClientRuntime.DefaultHttpClientConfiguration
     ) -> Self {
         let baseClientEngine = baseClientEngine(for: configuration)
         return self.init(target: baseClientEngine)

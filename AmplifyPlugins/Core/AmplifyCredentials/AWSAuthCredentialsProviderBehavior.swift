@@ -7,11 +7,13 @@
 
 import Foundation
 import Amplify
-import AWSClientRuntime
+import AwsCommonRuntimeKit
 import AWSPluginsCore
+import SmithyIdentity
 
 public protocol AWSAuthCredentialsProviderBehavior: AWSAuthServiceBehavior {
     func getCredentialsProvider() -> CredentialsProviding
-}
 
+    func getCredentialIdentityResolver() -> any AWSCredentialIdentityResolver
+}
 
