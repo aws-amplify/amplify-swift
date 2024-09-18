@@ -10,6 +10,7 @@ import AWSPinpoint
 @testable import AWSPinpointPushNotificationsPlugin
 import Foundation
 import XCTest
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class ErrorPushNotificationsTests: XCTestCase {
     /// Given: A NSError error

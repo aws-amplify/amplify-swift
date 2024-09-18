@@ -30,3 +30,5 @@ extension InitiateAuthInput: Decodable {
             clientMetadata: clientMetadata)
     }
 }
+
+extension CognitoIdentityProviderClientTypes.AuthFlowType: Decodable { }

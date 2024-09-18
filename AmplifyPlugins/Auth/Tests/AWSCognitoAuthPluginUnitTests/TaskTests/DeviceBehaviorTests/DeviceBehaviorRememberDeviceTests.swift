@@ -20,9 +20,7 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
-                try await UpdateDeviceStatusOutput(
-                    httpResponse: MockHttpResponse.ok
-                )
+                try UpdateDeviceStatusOutput()
             }
         )
     }
@@ -143,12 +141,7 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
-                throw try await AWSCognitoIdentityProvider.InvalidUserPoolConfigurationException(
-                    httpResponse: .init(body: .empty, statusCode: .accepted),
-                    decoder: nil,
-                    message: nil,
-                    requestID: nil
-                )
+                throw AWSCognitoIdentityProvider.InvalidUserPoolConfigurationException()
             }
         )
         do {

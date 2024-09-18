@@ -18,7 +18,7 @@ class RevokeTokenTests: XCTestCase {
             MockIdentityProvider(
                 mockRevokeTokenResponse: { _ in
                     revokeTokenInvoked.fulfill()
-                    return try await RevokeTokenOutput(httpResponse: MockHttpResponse.ok)
+                    return RevokeTokenOutput()
                 }
             )
         }
@@ -92,7 +92,7 @@ class RevokeTokenTests: XCTestCase {
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 mockRevokeTokenResponse: { _ in
-                    return try await RevokeTokenOutput(httpResponse: MockHttpResponse.ok)
+                    return RevokeTokenOutput()
                 }
             )
         }

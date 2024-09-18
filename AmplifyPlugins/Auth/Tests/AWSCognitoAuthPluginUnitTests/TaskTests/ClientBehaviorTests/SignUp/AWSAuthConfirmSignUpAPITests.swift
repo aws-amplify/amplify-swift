@@ -11,7 +11,7 @@ import AWSCognitoIdentity
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import ClientRuntime
-import AWSClientRuntime
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
@@ -177,9 +177,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
-                throw try await AWSCognitoIdentityProvider.InternalErrorException(
-                    httpResponse: .init(body: .empty, statusCode: .accepted)
-                )
+                throw AWSCognitoIdentityProvider.InternalErrorException()
             }
         )
 

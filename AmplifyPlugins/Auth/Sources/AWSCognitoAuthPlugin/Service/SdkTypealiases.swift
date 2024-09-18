@@ -8,5 +8,6 @@
 import Foundation
 import AWSClientRuntime
 import ClientRuntime
+import SmithyHTTPAPI
 
-public typealias NetworkResult = (Result<HttpResponse, Error>) -> Void
+public typealias NetworkResult = (Result<HTTPResponse, Error>) -> Void

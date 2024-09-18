@@ -24,6 +24,7 @@ enum StorageMultipartUploadBehavior {
     case progressive
 }
 
+// swiftlint:disable type_body_length
 class StorageMultipartUploadSession {
     enum Failure: Error {
         case invalidStateTransition
@@ -43,6 +44,7 @@ class StorageMultipartUploadSession {
     private let onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler
 
     private let transferTask: StorageTransferTask
+    private var cancelationError: (any Error)? = nil
 
     init(client: StorageMultipartUploadClient,
          bucket: String,
@@ -244,10 +246,11 @@ class StorageMultipartUploadSession {
                 }
             case .completed:
                 onEvent(.completed(()))
-            case .aborting:
+            case .aborting(_, let error):
+                cancelationError = error
                 try abort()
-            case .aborted:
-                onEvent(.completed(()))
+            case .aborted(_, let error):
+                onEvent(.failed(StorageError.unknown("Unable to upload", cancelationError ?? error)))
             case .failed(_, _, let error):
                 onEvent(.failed(StorageError(error: error)))
             default:
@@ -331,6 +334,11 @@ class StorageMultipartUploadSession {
                     let index = partNumber - 1
                     parts[index] = .pending(bytes: part.bytes)
                     multipartUpload = .parts(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
+                    let remainingParts = parts.filter({ $0.inProgress })
+                    if remainingParts.isEmpty {
+                        // If there are no remaining parts in progress, manually trigger the reupload
+                        try client.uploadPart(partNumber: partNumber, multipartUpload: multipartUpload, subTask: createSubTask(partNumber: partNumber))
+                    }
                 } else {
                     fatalError("Invalid state")
                 }

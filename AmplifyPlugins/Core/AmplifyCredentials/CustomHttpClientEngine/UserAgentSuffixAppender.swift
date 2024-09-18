@@ -5,7 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import ClientRuntime
+import SmithyHTTPAPI
+import Smithy
 
 @_spi(InternalAmplifyPluginExtension)
 public class UserAgentSuffixAppender: AWSPluginExtension {
@@ -21,9 +22,9 @@ public class UserAgentSuffixAppender: AWSPluginExtension {
 
 @_spi(InternalHttpEngineProxy)
 extension UserAgentSuffixAppender: HTTPClient {
-    public func send(request: SdkHttpRequest) async throws -> HttpResponse {
+    public func send(request: SmithyHTTPAPI.HTTPRequest) async throws -> SmithyHTTPAPI.HTTPResponse {
         guard let target = target  else {
-            throw ClientError.unknownError("HttpClientEngine is not set")
+            throw Smithy.ClientError.unknownError("HttpClientEngine is not set")
         }
 
         let existingUserAgent = request.headers.value(for: userAgentKey) ?? ""

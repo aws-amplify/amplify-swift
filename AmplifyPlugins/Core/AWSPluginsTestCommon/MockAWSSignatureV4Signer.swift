@@ -6,17 +6,18 @@
 //
 
 import AWSPluginsCore
-import ClientRuntime
-import AWSClientRuntime
+import AwsCommonRuntimeKit
 import InternalAmplifyCredentials
 import Foundation
+import SmithyHTTPAPI
+import SmithyIdentity
 
 class MockAWSSignatureV4Signer: AWSSignatureV4Signer {
-    func sigV4SignedRequest(requestBuilder: SdkHttpRequestBuilder,
-                            credentialsProvider: CredentialsProviding,
+    func sigV4SignedRequest(requestBuilder: SmithyHTTPAPI.HTTPRequestBuilder,
+                            credentialIdentityResolver: some AWSCredentialIdentityResolver,
                             signingName: String,
                             signingRegion: String,
-                            date: Date) throws -> SdkHttpRequest? {
+                            date: Date) throws -> SmithyHTTPAPI.HTTPRequest? {
         let originalRequest = requestBuilder.build()
         return originalRequest
     }

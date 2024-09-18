@@ -8,7 +8,7 @@
 @testable import Amplify
 
 import AWSS3StoragePlugin
-import ClientRuntime
+import SmithyHTTPAPI
 import CryptoKit
 import XCTest
 
@@ -62,8 +62,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     func testUploadData() async throws {
         let key = UUID().uuidString
         let data = Data(key.utf8)
-
-        _ = try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
+        await wait {
+            _ = try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
+        }
         _ = try await Amplify.Storage.remove(key: key)
 
         // Only the remove operation results in an SDK request
@@ -80,7 +81,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     func testUploadEmptyData() async throws {
         let key = UUID().uuidString
         let data = Data("".utf8)
-        _ = try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
+        await wait {
+            _ = try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
+        }
         _ = try await Amplify.Storage.remove(key: key)
 
         XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, ["PUT"])
@@ -97,7 +100,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: Data(key.utf8), attributes: nil)
 
-        _ = try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
+        await wait {
+            _ = try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
+        }
         _ = try await Amplify.Storage.remove(key: key)
 
         // Only the remove operation results in an SDK request
@@ -117,7 +122,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: Data("".utf8), attributes: nil)
 
-        _ = try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
+        await wait {
+            _ = try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
+        }
         _ = try await Amplify.Storage.remove(key: key)
 
         XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, ["PUT"])
@@ -130,10 +137,12 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     func testUploadLargeData() async throws {
         let key = UUID().uuidString
 
-        let uploadKey = try await Amplify.Storage.uploadData(key: key,
-                                                             data: AWSS3StoragePluginTestBase.largeDataObject,
-                                                             options: nil).value
-        XCTAssertEqual(uploadKey, key)
+        await wait(timeout: 60) {
+            let uploadKey = try await Amplify.Storage.uploadData(key: key,
+                                                                 data: AWSS3StoragePluginTestBase.largeDataObject,
+                                                                 options: nil).value
+            XCTAssertEqual(uploadKey, key)
+        }
 
         try await Amplify.Storage.remove(key: key)
 
@@ -157,7 +166,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
                                        contents: AWSS3StoragePluginTestBase.largeDataObject,
                                        attributes: nil)
 
-        _ = try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
+        await wait(timeout: 60) {
+            _ = try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
+        }
         _ = try await Amplify.Storage.remove(key: key)
 
         let userAgents = requestRecorder.urlRequests.compactMap { $0.allHTTPHeaderFields?["User-Agent"] }
@@ -436,7 +447,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         // An SDK call for the ListObjectsV2 call and each deletion is expected
-        let expectedMethods = [.get] + keys.map {_ in HttpMethodType.delete}
+        let expectedMethods = [.get] + keys.map {_ in HTTPMethodType.delete}
         XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method}, expectedMethods)
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
@@ -527,7 +538,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
     }
 
-    private func assertUserAgentComponents(sdkRequests: [SdkHttpRequest], file: StaticString = #filePath, line: UInt = #line) throws {
+    private func assertUserAgentComponents(sdkRequests: [HTTPRequest], file: StaticString = #filePath, line: UInt = #line) throws {
         for request in sdkRequests {
             let headers = request.headers.dictionary
             let userAgent = try XCTUnwrap(headers["User-Agent"]?.joined(separator:","))

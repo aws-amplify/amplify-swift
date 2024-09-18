@@ -8,9 +8,9 @@
 @testable import Amplify
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
-import ClientRuntime
 import AWSS3
 import XCTest
+import SmithyHTTPAPI
 
 class AWSS3StorageServiceTests: XCTestCase {
     private var service: AWSS3StorageService!
@@ -340,6 +340,11 @@ class AWSS3StorageServiceTests: XCTestCase {
     func testUpload_withoutPreSignedURL_shouldSendFailEvent() async {
         let data = Data("someData".utf8)
         let expectation = self.expectation(description: "Upload")
+        let builder = MockAWSS3PreSignedURLBuilder()
+        builder.getPreSignedURLHandler = {_, _, _ in
+            throw StorageError.unknown("Unable to create URL", nil)
+        }
+        service.preSignedURLBuilder = builder
         service.upload(
             serviceKey: "key",
             uploadSource: .data(data),
@@ -388,8 +393,8 @@ private class MockHttpClientEngineProxy: HttpClientEngineProxy {
     var target: HTTPClient? = nil
 
     var executeCount = 0
-    var executeRequest: SdkHttpRequest?
-    func send(request: SdkHttpRequest) async throws -> HttpResponse {
+    var executeRequest: HTTPRequest?
+    func send(request: HTTPRequest) async throws -> HTTPResponse {
         executeCount += 1
         executeRequest = request
         return .init(body: .empty, statusCode: .accepted)

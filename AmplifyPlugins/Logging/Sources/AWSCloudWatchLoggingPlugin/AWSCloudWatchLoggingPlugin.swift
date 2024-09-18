@@ -42,7 +42,7 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
             let authService = AWSAuthService()
             self.loggingClient = AWSCloudWatchLoggingCategoryClient(
                 enable: configuration.enable,
-                credentialsProvider: authService.getCredentialsProvider(),
+                credentialIdentityResolver: authService.getCredentialIdentityResolver(),
                 authentication: Amplify.Auth,
                 loggingConstraintsResolver: AWSCloudWatchLoggingConstraintsResolver(loggingPluginConfiguration: configuration),
                 logGroupName: configuration.logGroupName,
@@ -127,7 +127,7 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
 
             self.loggingClient = AWSCloudWatchLoggingCategoryClient(
                 enable: configuration.enable,
-                credentialsProvider: authService.getCredentialsProvider(),
+                credentialIdentityResolver: authService.getCredentialIdentityResolver(),
                 authentication: Amplify.Auth,
                 loggingConstraintsResolver: AWSCloudWatchLoggingConstraintsResolver(loggingPluginConfiguration: configuration),
                 logGroupName: configuration.logGroupName,

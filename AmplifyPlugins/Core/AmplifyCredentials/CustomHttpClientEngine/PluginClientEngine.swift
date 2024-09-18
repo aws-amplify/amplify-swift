@@ -7,11 +7,11 @@
 
 import Foundation
 import ClientRuntime
-import AWSClientRuntime
+import SmithyHTTPAPI
 
 @_spi(PluginHTTPClientEngine)
 public func baseClientEngine(
-    for configuration: AWSClientConfiguration<some AWSServiceSpecificConfiguration>
+    for configuration: ClientRuntime.DefaultHttpClientConfiguration
 ) -> HTTPClient {
     return FoundationClientEngine()
 }

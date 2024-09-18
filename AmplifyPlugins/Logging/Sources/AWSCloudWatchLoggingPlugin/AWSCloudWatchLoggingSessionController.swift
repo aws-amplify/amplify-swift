@@ -11,8 +11,8 @@ import Amplify
 import Combine
 import Foundation
 import AWSCloudWatchLogs
-import AWSClientRuntime
 import Network
+import SmithyIdentity
 
 /// Responsible for setting up and tearing-down log sessions for a given category/tag according to changes in
 /// user authentication sessions.
@@ -25,7 +25,7 @@ final class AWSCloudWatchLoggingSessionController {
     private let logGroupName: String
     private let region: String
     private let localStoreMaxSizeInMB: Int
-    private let credentialsProvider: CredentialsProviding
+    private let credentialIdentityResolver: any AWSCredentialIdentityResolver
     private let authentication: AuthCategoryUserBehavior
     private let category: String
     private var session: AWSCloudWatchLoggingSession?
@@ -59,7 +59,7 @@ final class AWSCloudWatchLoggingSessionController {
     }
 
     /// - Tag: CloudWatchLogSessionController.init
-    init(credentialsProvider: CredentialsProviding,
+    init(credentialIdentityResolver: some AWSCredentialIdentityResolver,
          authentication: AuthCategoryUserBehavior,
          logFilter: AWSCloudWatchLoggingFilterBehavior,
          category: String,
@@ -71,7 +71,7 @@ final class AWSCloudWatchLoggingSessionController {
          userIdentifier: String?,
          networkMonitor: LoggingNetworkMonitor
     ) {
-        self.credentialsProvider = credentialsProvider
+        self.credentialIdentityResolver = credentialIdentityResolver
         self.authentication = authentication
         self.logFilter = logFilter
         self.category = category
@@ -104,8 +104,9 @@ final class AWSCloudWatchLoggingSessionController {
     private func createConsumer() throws -> LogBatchConsumer? {
         if self.client == nil {
             let configuration = try CloudWatchLogsClient.CloudWatchLogsClientConfiguration(
+                awsCredentialIdentityResolver: credentialIdentityResolver,
                 region: region,
-                credentialsProvider: credentialsProvider
+                signingRegion: region
             )
 
             configuration.httpClientEngine = .userAgentEngine(for: configuration)
