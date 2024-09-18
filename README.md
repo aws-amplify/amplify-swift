@@ -3,7 +3,7 @@
 
 AWS Amplify provides a declarative and easy-to-use interface across different categories of cloud operations. Our default implementation works with Amazon Web Services (AWS), but AWS Amplify is designed to be open and pluggable for any custom backend or service.
 
-The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.amazon.com/sdk-for-swift/), which was released as Developer Preview last year. This allows for access to the AWS SDK for Swift for a breadth of service-centric APIs.
+The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.amazon.com/sdk-for-swift/). This allows for access to the AWS SDK for Swift for a breadth of service-centric APIs.
 
 [**API Documentation**](https://aws-amplify.github.io/amplify-swift/docs/)
 
