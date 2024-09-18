@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.41.0 (2024-09-18)
+
+### Features
+
+- **Core**: Updating to AWS SDK for Swift 1.0.0 (#3858)
+
 ## 2.40.0 (2024-09-17)
 
 ### Features
