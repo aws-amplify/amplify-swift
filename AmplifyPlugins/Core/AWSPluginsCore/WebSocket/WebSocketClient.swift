@@ -72,7 +72,7 @@ public final actor WebSocketClient: NSObject {
         interceptor: WebSocketInterceptor? = nil,
         networkMonitor: WebSocketNetworkMonitorProtocol = AmplifyNetworkMonitor()
     ) {
-        self.url = Self.useWebSocketProtocolScheme(url: url)
+        self.url = url
         self.handshakeHttpHeaders = handshakeHttpHeaders
         self.interceptor = interceptor
         self.autoConnectOnNetworkStatusChange = false
@@ -159,6 +159,8 @@ public final actor WebSocketClient: NSObject {
         let decoratedURL = (await self.interceptor?.interceptConnection(url: self.url)) ?? self.url
         var urlRequest = URLRequest(url: decoratedURL)
         self.handshakeHttpHeaders.forEach { urlRequest.setValue($0.value, forHTTPHeaderField: $0.key) }
+
+        urlRequest = await self.interceptor?.interceptConnection(request: urlRequest) ?? urlRequest
 
         let urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
         return urlSession.webSocketTask(with: urlRequest)
@@ -342,16 +344,6 @@ extension WebSocketClient {
         default: break
         }
 
-    }
-}
-
-extension WebSocketClient {
-    static func useWebSocketProtocolScheme(url: URL) -> URL {
-        guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-            return url
-        }
-        urlComponents.scheme = urlComponents.scheme == "http" ? "ws" : "wss"
-        return urlComponents.url ?? url
     }
 }
 

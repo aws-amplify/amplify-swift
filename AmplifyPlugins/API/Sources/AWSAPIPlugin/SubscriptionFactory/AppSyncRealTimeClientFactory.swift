@@ -127,9 +127,9 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
 extension AppSyncRealTimeClientFactory {
 
     /**
-     Converting appsync api url to realtime api url
-     1. api.example.com/graphql -> api.example.com/graphql/realtime
-     2. abc.appsync-api.us-east-1.amazonaws.com/graphql -> abc.appsync-realtime-api.us-east-1.amazonaws.com/graphql
+     Converting appsync api url to realtime api url, realtime endpoint has scheme 'wss'
+     1. api.example.com/graphql -> wss://api.example.com/graphql/realtime
+     2. abc.appsync-api.us-east-1.amazonaws.com/graphql -> wss://abc.appsync-realtime-api.us-east-1.amazonaws.com/graphql
      */
     static func appSyncRealTimeEndpoint(_ url: URL) -> URL {
         guard let host = url.host else {
@@ -145,6 +145,7 @@ extension AppSyncRealTimeClientFactory {
         }
 
         urlComponents.host = host.replacingOccurrences(of: "appsync-api", with: "appsync-realtime-api")
+        urlComponents.scheme = "wss"
         guard let realTimeUrl = urlComponents.url else {
             return url
         }
@@ -153,9 +154,9 @@ extension AppSyncRealTimeClientFactory {
     }
 
     /**
-     Converting appsync realtime api url to api url
+     Converting appsync realtime api url to api url, api endpoint has scheme 'https'
      1. api.example.com/graphql/realtime -> api.example.com/graphql
-     2. abc.appsync-realtime-api.us-east-1.amazonaws.com/graphql -> abc.appsync-api.us-east-1.amazonaws.com/graphql
+     2. abc.appsync-realtime-api.us-east-1.amazonaws.com/graphql -> https://abc.appsync-api.us-east-1.amazonaws.com/graphql
      */
     static func appSyncApiEndpoint(_ url: URL) -> URL {
         guard let host = url.host else {
@@ -174,6 +175,7 @@ extension AppSyncRealTimeClientFactory {
         }
 
         urlComponents.host = host.replacingOccurrences(of: "appsync-realtime-api", with: "appsync-api")
+        urlComponents.scheme = "https"
         guard let apiUrl = urlComponents.url else {
             return url
         }
