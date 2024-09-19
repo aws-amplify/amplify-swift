@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.41.1 (2024-09-19)
+
+### Bug Fixes
+
+- **Storage**: Removing testable import on UploadPartInput extension (#3878)
+
 ## 2.41.0 (2024-09-18)
 
 ### Features
