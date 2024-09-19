@@ -12,20 +12,13 @@ import Amplify
 
 class APIKeyAuthInterceptorTests: XCTestCase {
 
-    func testInterceptConnection_addApiKeySignatureInURLQuery() async {
+    func testInterceptConnection_addApiKeyInRequestHeader() async {
         let apiKey = UUID().uuidString
         let interceptor = APIKeyAuthInterceptor(apiKey: apiKey)
-        let resultUrl = await interceptor.interceptConnection(url: URL(string: "https://example.com")!)
-        guard let components = URLComponents(url: resultUrl, resolvingAgainstBaseURL: false) else {
-            XCTFail("Failed to decode decorated URL")
-            return
-        }
-
-        let header = components.queryItems?.first { $0.name == "header" }
-        XCTAssertNotNil(header?.value)
-        let headerData = try! header?.value!.base64DecodedString().data(using: .utf8)
-        let decodedHeader = try! JSONDecoder().decode(JSONValue.self, from: headerData!)
-        XCTAssertEqual(decodedHeader["x-api-key"]?.stringValue, apiKey)
+        let resultUrlRequest = await interceptor.interceptConnection(request: URLRequest(url: URL(string: "https://example.com")!))
+        
+        let header = resultUrlRequest.value(forHTTPHeaderField: "x-api-key")
+        XCTAssertEqual(header, apiKey)
     }
 
     func testInterceptRequest_appendAuthInfoInPayload() async {

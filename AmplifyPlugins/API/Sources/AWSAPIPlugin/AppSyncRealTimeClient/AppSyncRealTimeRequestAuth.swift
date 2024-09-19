@@ -9,6 +9,9 @@
 import Foundation
 
 public enum AppSyncRealTimeRequestAuth {
+    private static let jsonEncoder = JSONEncoder()
+    private static let jsonDecoder = JSONDecoder()
+
     case authToken(AuthToken)
     case apiKey(ApiKey)
     case iam(IAM)
@@ -31,33 +34,10 @@ public enum AppSyncRealTimeRequestAuth {
         let amzDate: String
     }
 
-    public struct URLQuery {
-        let header: AppSyncRealTimeRequestAuth
-        let payload: String
-
-        init(header: AppSyncRealTimeRequestAuth, payload: String = "{}") {
-            self.header = header
-            self.payload = payload
-        }
-
-        func withBaseURL(_ url: URL, encoder: JSONEncoder? = nil) -> URL {
-            let jsonEncoder: JSONEncoder = encoder ?? JSONEncoder()
-            guard let headerJsonData = try? jsonEncoder.encode(header) else {
-                return url
-            }
-
-            guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
-            else {
-                return url
-            }
-
-            urlComponents.queryItems = [
-                URLQueryItem(name: "header", value: headerJsonData.base64EncodedString()),
-                URLQueryItem(name: "payload", value: try? payload.base64EncodedString())
-            ]
-
-            return urlComponents.url ?? url
-        }
+    var authHeaders: [String: String] {
+        (try? Self.jsonEncoder.encode(self)).flatMap {
+            try? Self.jsonDecoder.decode([String: String].self, from: $0)
+        } ?? [:]
     }
 }
 
