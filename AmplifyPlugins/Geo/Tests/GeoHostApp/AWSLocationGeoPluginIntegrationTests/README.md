@@ -52,22 +52,22 @@ At the time this was written, it follows the steps from here https://docs.amplif
 {
   ...
   "devDependencies": {
-    "@aws-amplify/backend": "^0.13.0-beta.14",
-    "@aws-amplify/backend-cli": "^0.12.0-beta.16",
-    "aws-cdk": "^2.134.0",
-    "aws-cdk-lib": "^2.134.0",
+    "@aws-amplify/backend": "^0.15.0",
+    "@aws-amplify/backend-cli": "^0.15.0",
+    "aws-cdk": "^2.139.0",
+    "aws-cdk-lib": "^2.139.0",
     "constructs": "^10.3.0",
     "esbuild": "^0.20.2",
-    "tsx": "^4.7.1",
-    "typescript": "^5.4.3"
+    "tsx": "^4.7.3",
+    "typescript": "^5.4.5"
   },
   "dependencies": {
-    "aws-amplify": "^6.0.25"
-  }
+    "aws-amplify": "^6.2.0"
+  },
 }
-
 ```
-2. Update `amplify/auth/resource.ts`. The resulting file should look like this
+
+2. Update `amplify/auth/resource.ts`.
 
 ```ts
 import { defineAuth, defineFunction } from '@aws-amplify/backend';
@@ -79,56 +79,78 @@ import { defineAuth, defineFunction } from '@aws-amplify/backend';
 export const auth = defineAuth({
   loginWith: {
     email: true
-  },
-  triggers: {
-    // configure a trigger to point to a function definition
-    preSignUp: defineFunction({
-      entry: './pre-sign-up-handler.ts'
-    })
   }
 });
 
 ```
 
+3. Update `amplify.backend.ts`. 
 ```ts
-import type { PreSignUpTriggerHandler } from 'aws-lambda';
+import { defineBackend } from '@aws-amplify/backend';
+import { auth } from './auth/resource';
 
-export const handler: PreSignUpTriggerHandler = async (event) => {
-  // your code here
-  event.response.autoConfirmUser = true
-  return event;
-};
-```
-
-3. Update `amplify/backend.ts` to create the analytics stack (https://docs.amplify.aws/gen2/build-a-backend/add-aws-services/geo/)
-
-Add the following imports
-
-```ts
+// Geo imports
 import { CfnMap } from "aws-cdk-lib/aws-location";
-```
+import { Policy, PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { CfnPlaceIndex } from "aws-cdk-lib/aws-location";
 
-Create `backend` const
-
-```ts
 const backend = defineBackend({
-  auth,
-  // data,
-  // storage
-  // additional resource
+  auth
 });
-```
 
+// Auth - sign in with username
+const { cfnUserPool } = backend.auth.resources.cfnResources
+cfnUserPool.usernameAttributes = []
 
-Add the remaining code
+// ============ GEO Stack ============
 
-```ts
+// Search 
+// https://docs.amplify.aws/swift/build-a-backend/add-aws-services/geo/configure-location-search/
 
 const geoStack = backend.createStack("geo-stack");
 
+// create a location services place index
+const myIndex = new CfnPlaceIndex(geoStack, "PlaceIndex", {
+  dataSource: "Here",
+  dataSourceConfiguration: {
+    intendedUse: "SingleUse",
+  },
+  indexName: "myPlaceIndex",
+  pricingPlan: "RequestBasedUsage",
+  tags: [
+    {
+      key: "name",
+      value: "myPlaceIndex",
+    },
+  ],
+});
+
+// create a policy to allow access to the place index
+const myIndexPolicy = new Policy(geoStack, "IndexPolicy", {
+  policyName: "myIndexPolicy",
+  statements: [
+    new PolicyStatement({
+      actions: [
+        "geo:SearchPlaceIndexForPosition",
+        "geo:SearchPlaceIndexForText",
+        "geo:SearchPlaceIndexForSuggestions",
+        "geo:GetPlace",
+      ],
+      resources: [myIndex.attrArn],
+    }),
+  ],
+});
+
+// attach the policy to the authenticated and unauthenticated IAM roles
+backend.auth.resources.authenticatedUserIamRole.attachInlinePolicy(myIndexPolicy);
+backend.auth.resources.unauthenticatedUserIamRole.attachInlinePolicy(myIndexPolicy);
+
+// Map 
+// https://docs.amplify.aws/swift/build-a-backend/add-aws-services/geo/set-up-geo/
+
 // create a location services map
 const map = new CfnMap(geoStack, "Map", {
-  mapName: "myMap",
+  mapName: "myMap_84633830",
   description: "Map",
   configuration: {
     style: "VectorEsriNavigation",
@@ -137,14 +159,14 @@ const map = new CfnMap(geoStack, "Map", {
   tags: [
     {
       key: "name",
-      value: "myMap",
+      value: "myMap_84633830",
     },
   ],
 });
 
 // create an IAM policy to allow interacting with geo resource
-const myGeoPolicy = new Policy(geoStack, "AuthenticatedUserIamRolePolicy", {
-  policyName: "GeoPolicy",
+const myGeoPolicy = new Policy(geoStack, "GeoPolicy", {
+  policyName: "myGeoPolicy",
   statements: [
     new PolicyStatement({
       actions: [
@@ -162,10 +184,14 @@ const myGeoPolicy = new Policy(geoStack, "AuthenticatedUserIamRolePolicy", {
 backend.auth.resources.authenticatedUserIamRole.attachInlinePolicy(myGeoPolicy);
 backend.auth.resources.unauthenticatedUserIamRole.attachInlinePolicy(myGeoPolicy);
 
-// patch the custom map resource to the expected output configuration
+// patch the place index resource and custom map resource to the expected output configuration
 backend.addOutput({
   geo: {
-    aws_region: Stack.of(geoStack).region,
+    aws_region: geoStack.region,
+    search_indices: {
+      default: myIndex.indexName,
+      items: [myIndex.indexName],
+    },
     maps: {
       items: {
         [map.mapName]: {
@@ -183,7 +209,7 @@ backend.addOutput({
 For example, this deploys to a sandbox env and generates the amplify_outputs.json file.
 
 ```
-npx amplify sandbox --config-out-dir ./config --config-version 1 --profile [PROFILE]
+npx amplify sandbox --config-out-dir ./config --profile [PROFILE]
 ```
 
 5. Copy the `amplify_outputs.json` file over to the test directory as `AWSLocationGeoPluginIntegrationTests-amplify_outputs.json`. The tests will automatically pick this file up. Create the directories in this path first if it currently doesn't exist.
@@ -211,6 +237,6 @@ If you want to be able utilize Git commits for deployments
 7. Generate the `amplify_outputs.json` configuration file
 
 ```
-npx amplify generate config --branch main --app-id [APP_ID] --profile [AWS_PROFILE] --config-version 1
+npx amplify generate outputs --branch main --app-id [APP_ID] --profile [AWS_PROFILE]
 ```
 
