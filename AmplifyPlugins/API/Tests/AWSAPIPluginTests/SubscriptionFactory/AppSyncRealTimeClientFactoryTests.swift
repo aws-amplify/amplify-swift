@@ -15,15 +15,15 @@ class AppSyncRealTimeClientFactoryTests: XCTestCase {
         let appSyncEndpoint = URL(string: "https://abc.appsync-api.amazonaws.com/graphql")!
         XCTAssertEqual(
             AppSyncRealTimeClientFactory.appSyncRealTimeEndpoint(appSyncEndpoint),
-            URL(string: "https://abc.appsync-realtime-api.amazonaws.com/graphql")
+            URL(string: "wss://abc.appsync-realtime-api.amazonaws.com/graphql")
         )
     }
 
     func testAppSyncRealTimeEndpoint_withAWSAppSyncRealTimeDomain_returnTheSameDomain() {
-        let appSyncEndpoint = URL(string: "https://abc.appsync-realtime-api.amazonaws.com/graphql")!
+        let appSyncEndpoint = URL(string: "wss://abc.appsync-realtime-api.amazonaws.com/graphql")!
         XCTAssertEqual(
             AppSyncRealTimeClientFactory.appSyncRealTimeEndpoint(appSyncEndpoint),
-            URL(string: "https://abc.appsync-realtime-api.amazonaws.com/graphql")
+            URL(string: "wss://abc.appsync-realtime-api.amazonaws.com/graphql")
         )
     }
 
@@ -32,6 +32,30 @@ class AppSyncRealTimeClientFactoryTests: XCTestCase {
         XCTAssertEqual(
             AppSyncRealTimeClientFactory.appSyncRealTimeEndpoint(appSyncEndpoint),
             URL(string: "https://test.example.com/graphql/realtime")
+        )
+    }
+
+    func testAppSyncApiEndpoint_withAWSAppSyncRealTimeDomain_returnCorrectApiDomain() {
+        let appSyncEndpoint = URL(string: "wss://abc.appsync-realtime-api.amazonaws.com/graphql")!
+        XCTAssertEqual(
+            AppSyncRealTimeClientFactory.appSyncApiEndpoint(appSyncEndpoint),
+            URL(string: "https://abc.appsync-api.amazonaws.com/graphql")
+        )
+    }
+
+    func testAppSyncApiEndpoint_withAWSAppSyncApiDomain_returnTheSameDomain() {
+        let appSyncEndpoint = URL(string: "https://abc.appsync-api.amazonaws.com/graphql")!
+        XCTAssertEqual(
+            AppSyncRealTimeClientFactory.appSyncApiEndpoint(appSyncEndpoint),
+            URL(string: "https://abc.appsync-api.amazonaws.com/graphql")
+        )
+    }
+
+    func testAppSyncApiEndpoint_withCustomDomain_returnCorrectRealtimePath() {
+        let appSyncEndpoint = URL(string: "https://test.example.com/graphql")!
+        XCTAssertEqual(
+            AppSyncRealTimeClientFactory.appSyncApiEndpoint(appSyncEndpoint),
+            URL(string: "https://test.example.com/graphql")
         )
     }
 }
