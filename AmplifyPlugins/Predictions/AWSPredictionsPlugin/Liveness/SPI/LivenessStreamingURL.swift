@@ -7,17 +7,17 @@
 
 import Foundation
 
-private let ISO_PARTITION_BASE_DOMAIN: String = "csp.hci.ic.gov"
-private let DEFAULT_BASE_DOMAIN: String = "amazonaws.com"
+private let isoPartitionBaseDomain: String = "csp.hci.ic.gov"
+private let defaultBaseDomain: String = "amazonaws.com"
 
 func streamingSessionURL(for region: String) throws -> URL {
 
     // Determine the base domain based on the region
     let baseDomain: String
     if region.lowercased().starts(with: "us-isof") {
-        baseDomain = ISO_PARTITION_BASE_DOMAIN
+        baseDomain = isoPartitionBaseDomain
     } else {
-        baseDomain = DEFAULT_BASE_DOMAIN
+        baseDomain = defaultBaseDomain
     }
 
     let urlString = "wss://streaming-rekognition.\(region).\(baseDomain)/start-face-liveness-session-websocket"
