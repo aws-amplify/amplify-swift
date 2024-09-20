@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.41.2 (2024-09-20)
+
+### Bug Fixes
+
+- **api**: append auth info as head fields for appSync realtime handshake request
+
 ## 2.41.1 (2024-09-19)
 
 ### Bug Fixes
