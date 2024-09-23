@@ -76,9 +76,66 @@ private func translateQueryPredicate(from modelSchema: ModelSchema,
         return operation.field.quoted()
     }
 
+    func optimizeQueryPredicateGroup(_ predicate: QueryPredicate) -> QueryPredicate {
+        func rewritePredicate(_ predicate: QueryPredicate) -> QueryPredicate {
+            if let operation = predicate as? QueryPredicateOperation {
+                switch operation.operator {
+                case .attributeExists(let bool):
+                    return QueryPredicateOperation(
+                        field: operation.field,
+                        operator: bool ? .notEqual(nil) : .equals(nil)
+                    )
+                default:
+                    return operation
+                }
+            } else if let group = predicate as? QueryPredicateGroup {
+                return optimizeQueryPredicateGroup(group)
+            }
+
+            return predicate
+        }
+
+        func removeDuplicatePredicate(_ predicates: [QueryPredicate]) -> [QueryPredicate] {
+            var result = [QueryPredicate]()
+            for predicate in predicates {
+                let hasSameExpression = result.reduce(false) {
+                    if $0 { return $0 }
+                    switch ($1, predicate) {
+                    case let (lhs as QueryPredicateOperation, rhs as QueryPredicateOperation):
+                        return lhs == rhs
+                    case let (lhs as QueryPredicateGroup, rhs as QueryPredicateGroup):
+                        return lhs == rhs
+                    default:
+                        return false
+                    }
+                }
+
+                if !hasSameExpression {
+                    result.append(predicate)
+                }
+            }
+            return result
+        }
+
+        switch predicate {
+        case let predicate as QueryPredicateGroup:
+            let optimizedPredicates = removeDuplicatePredicate(predicate.predicates.reduce([]) {
+                $0 + [rewritePredicate($1)]
+            })
+
+            if optimizedPredicates.count == 1 {
+                return optimizedPredicates.first!
+            } else {
+                return QueryPredicateGroup(type: predicate.type, predicates: optimizedPredicates)
+            }
+        default:
+            return predicate
+        }
+    }
+
     // the very first `and` is always prepended, using -1 for if statement checking
     // the very first `and` is to connect `where` clause with translated QueryPredicate
-    translate(predicate, predicateIndex: -1, groupType: .and)
+    translate(optimizeQueryPredicateGroup(predicate), predicateIndex: -1, groupType: .and)
     return (sql.joined(separator: "\n"), bindings)
 }
 
