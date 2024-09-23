@@ -187,6 +187,8 @@ extension QueryOperator {
             return "beginsWith"
         case .notContains:
             return "notContains"
+        case .attributeExists:
+            return "attributeExists"
         }
     }
 
@@ -211,6 +213,8 @@ extension QueryOperator {
         case .beginsWith(let value):
             return value
         case .notContains(let value):
+            return value
+        case .attributeExists(let value):
             return value
         }
     }

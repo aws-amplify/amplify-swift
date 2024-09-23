@@ -30,7 +30,7 @@ public func field(_ name: String) -> QueryField {
 /// - seealso: `ModelKey`
 public protocol QueryFieldOperation {
     // MARK: - Functions
-
+    func attributeExists(_ value: Bool) -> QueryPredicateOperation
     func beginsWith(_ value: String) -> QueryPredicateOperation
     func between(start: Persistable, end: Persistable) -> QueryPredicateOperation
     func contains(_ value: String) -> QueryPredicateOperation
@@ -60,6 +60,11 @@ public protocol QueryFieldOperation {
 public struct QueryField: QueryFieldOperation {
 
     public let name: String
+
+    // MARK: - attributeExists
+    public func attributeExists(_ value: Bool) -> QueryPredicateOperation {
+        return QueryPredicateOperation(field: name, operator: .attributeExists(value))
+    }
 
     // MARK: - beginsWith
     public func beginsWith(_ value: String) -> QueryPredicateOperation {
