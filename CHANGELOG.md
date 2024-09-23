@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.42.0 (2024-09-23)
+
+### Features
+
+- **api**: add support for GraphQL filter attributeExists  (#3838)
+
 ## 2.41.2 (2024-09-20)
 
 ### Bug Fixes
