@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.42.1 (2024-09-24)
+
+### Bug Fixes
+
+- **predictions**: region handling for creating correct streaming endpoint from region (#3880)
+
 ## 2.42.0 (2024-09-23)
 
 ### Features
