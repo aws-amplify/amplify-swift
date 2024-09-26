@@ -36,7 +36,7 @@ class ShowHostedUISignIn: NSObject, Action {
 
         guard let callbackURL = URL(string: hostedUIConfig.oauth.signInRedirectURI),
               let callbackURLScheme = callbackURL.scheme else {
-            let event = SignInEvent(eventType: .throwAuthError(.hostedUI(.signInURI)))
+            let event = HostedUIEvent(eventType: .throwError(.hostedUI(.signInURI)))
             logVerbose("\(#fileID) Sending event \(event)", environment: environment)
             await dispatcher.send(event)
             return
