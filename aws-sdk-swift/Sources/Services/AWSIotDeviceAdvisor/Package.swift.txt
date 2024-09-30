@@ -1,0 +1,99 @@
+// swift-tools-version: 5.9.0
+
+import PackageDescription
+
+let package = Package(
+    name: "AWSIotDeviceAdvisor",
+    platforms: [
+        .macOS(.v10_15), .iOS(.v13)
+    ],
+    products: [
+        .library(name: "AWSIotDeviceAdvisor", targets: ["AWSIotDeviceAdvisor"])
+    ],
+    dependencies: [
+        .package(
+            id: "aws-sdk-swift.smithy-swift",
+            exact: "0.0.1"
+        ),
+        .package(
+            id: "aws-sdk-swift.AWSClientRuntime",
+            exact: "0.0.1"
+        ),
+        .package(
+            id: "aws-sdk-swift.AWSSDKHTTPAuth",
+            exact: "0.0.1"
+        ),
+    ],
+    targets: [
+        .target(
+            name: "AWSIotDeviceAdvisor",
+            dependencies: [
+                .product(
+                    name: "SmithyHTTPAuthAPI",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "Smithy",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "ClientRuntime",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "SmithyHTTPAPI",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "AWSClientRuntime",
+                    package: "aws-sdk-swift.AWSClientRuntime"
+                ),
+                .product(
+                    name: "SmithyIdentity",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "SmithyRetriesAPI",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "AWSSDKHTTPAuth",
+                    package: "aws-sdk-swift.AWSSDKHTTPAuth"
+                ),
+                .product(
+                    name: "SmithyJSON",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "SmithyReadWrite",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "SmithyRetries",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "SmithyTimestamps",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "SmithyTestUtil",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+            ],
+            resources: [
+                .process("Resources")
+            ]
+        ),
+        .testTarget(
+            name: "AWSIotDeviceAdvisorTests",
+            dependencies: [
+                "AWSIotDeviceAdvisor",
+                .product(
+                    name: "SmithyTestUtil",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+            ]
+        )
+    ]
+)

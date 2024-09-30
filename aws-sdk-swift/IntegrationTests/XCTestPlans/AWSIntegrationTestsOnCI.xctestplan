@@ -1,0 +1,110 @@
+{
+  "configurations" : [
+    {
+      "id" : "FF4C1A8F-5D70-4A2A-BFDE-77467500C547",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "environmentVariableEntries" : [
+
+    ]
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AWSCognitoIdentityIntegrationTests",
+        "name" : "AWSCognitoIdentityIntegrationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AWSSTSIntegrationTests",
+        "name" : "AWSSTSIntegrationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AWSTranscribeStreamingIntegrationTests",
+        "name" : "AWSTranscribeStreamingIntegrationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AWSECSIntegrationTests",
+        "name" : "AWSECSIntegrationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AWSGlacierIntegrationTests",
+        "name" : "AWSGlacierIntegrationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AWSMediaConvertIntegrationTests",
+        "name" : "AWSMediaConvertIntegrationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AWSCloudFrontKeyValueStoreIntegrationTests",
+        "name" : "AWSCloudFrontKeyValueStoreIntegrationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AWSSQSIntegrationTests",
+        "name" : "AWSSQSIntegrationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AWSEventBridgeIntegrationTests",
+        "name" : "AWSEventBridgeIntegrationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AWSEC2IntegrationTests",
+        "name" : "AWSEC2IntegrationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AWSKinesisIntegrationTests",
+        "name" : "AWSKinesisIntegrationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AWSRoute53IntegrationTests",
+        "name" : "AWSRoute53IntegrationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AWSS3IntegrationTests",
+        "name" : "AWSS3IntegrationTests"
+      }
+    }
+  ],
+  "version" : 1
+}

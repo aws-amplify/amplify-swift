@@ -1,0 +1,17 @@
+[profile dev]
+sso_session = my-sso
+sso_account_id = 111122223333
+sso_role_name = SampleRole
+
+[sso-session my-sso]
+sso_region = us-east-1
+sso_start_url = https://my-sso-portal.awsapps.com/start
+sso_registration_scopes = sso:account:access
+
+[profile user]
+aws_access_key_id = example_access_key_id
+aws_secret_access_key = example_secret_access_key
+sso_start_url = https://d-test.awsapps.com/start
+sso_region = us-west-2
+sso_account_id = 12345
+sso_role_name = roleName

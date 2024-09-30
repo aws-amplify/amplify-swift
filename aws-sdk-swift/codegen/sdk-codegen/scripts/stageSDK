@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Quick and dirty script for releasing a specific SDK
+# This will eventually be updated by task inside of gradle
+
+usage() {
+    echo "Usage: "
+    echo "  stageSDK [SDKDIR] [TARGETDIR]"
+    echo "Example: "
+    echo "  ./stageSDK ../build/smithyprojections/sdk-codegen/s3.2006-03-01 ../../../AlphaSwiftSDK"
+}
+
+SDKDIR=$1
+TARGET=$2
+
+if [ $# -ne 2 ]; then
+    usage
+    exit 1
+fi
+
+if [ ! -d ${SDKDIR} ]; then
+   echo "Could not find ${SDKDIR}"
+   exit 1
+fi
+
+
+if [ ! -d ${SDKDIR}/swift-codegen ]; then
+   echo "There does not seem to be a swift-codegen dir in ${SDKDIR}"
+   exit 1
+fi
+
+if [ ! -d ${TARGET} ]; then
+    echo "Directory needs to be present: ${TARGET}"
+    exit 1
+fi
+
+buildclean() {
+    pushd ${SDKDIR}/swift-codegen
+    swift build
+    if [ $? -ne 0 ]; then
+	echo "Failed to build: ${SDKDIR}"
+	exit 1
+    fi
+    swift package clean
+    popd
+}
+
+buildclean
+
+cp -R ${SDKDIR}/swift-codegen/* ${TARGET}/.
+rm -Rf ${TARGET}/.build
+rm -f ${TARGET}/Package.swift
+rm -f ${TARGET}/Package.resolved

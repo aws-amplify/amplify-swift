@@ -1,0 +1,200 @@
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+env:
+  AWS_SWIFT_SDK_USE_LOCAL_DEPS: 1
+
+jobs:
+  apple:
+    runs-on: ${{ matrix.runner }}
+    env:
+      DEVELOPER_DIR: /Applications/${{ matrix.xcode }}.app/Contents/Developer
+    strategy:
+      fail-fast: false
+      matrix:
+        # This matrix runs tests on iOS sim & Mac, on oldest & newest supported Xcodes
+        runner:
+          - macos-13
+          - macos-14
+        xcode:
+          - Xcode_15.2
+          - Xcode_16.0
+        destination:
+          - 'platform=iOS Simulator,OS=17.2,name=iPhone 15'
+          - 'platform=iOS Simulator,OS=18.0,name=iPhone 15'
+          - 'platform=tvOS Simulator,OS=17.2,name=Apple TV 4K (3rd generation) (at 1080p)'
+          - 'platform=tvOS Simulator,OS=18.0,name=Apple TV 4K (3rd generation) (at 1080p)'
+          - 'platform=visionOS Simulator,OS=1.0,name=Apple Vision Pro'
+          - 'platform=visionOS Simulator,OS=2.0,name=Apple Vision Pro'
+          - 'platform=OS X'
+        exclude:
+          # Don't run old macOS with new Xcode
+          - runner: macos-13
+            xcode: Xcode_16.0
+          # Don't run new macOS with old Xcode
+          - runner: macos-14
+            xcode: Xcode_15.2
+          # Don't run old simulators with new Xcode
+          - destination: 'platform=tvOS Simulator,OS=17.2,name=Apple TV 4K (3rd generation) (at 1080p)'
+            xcode: Xcode_16.0
+          - destination: 'platform=iOS Simulator,OS=17.2,name=iPhone 15'
+            xcode: Xcode_16.0
+          - destination: 'platform=visionOS Simulator,OS=1.0,name=Apple Vision Pro'
+            xcode: Xcode_16.0
+          # Don't run new simulators with old Xcode
+          - destination: 'platform=tvOS Simulator,OS=18.0,name=Apple TV 4K (3rd generation) (at 1080p)'
+            xcode: Xcode_15.2
+          - destination: 'platform=iOS Simulator,OS=18.0,name=iPhone 15'
+            xcode: Xcode_15.2
+          - destination: 'platform=visionOS Simulator,OS=2.0,name=Apple Vision Pro'
+            xcode: Xcode_15.2
+    steps:
+      - name: Checkout aws-sdk-swift
+        uses: actions/checkout@v4
+      - name: Select smithy-swift branch
+        run: |
+          ORIGINAL_REPO_HEAD_REF="$GITHUB_HEAD_REF" \
+          DEPENDENCY_REPO_URL="https://github.com/smithy-lang/smithy-swift.git" \
+          ./scripts/ci_steps/select_dependency_branch.sh
+      - name: Checkout smithy-swift
+        uses: actions/checkout@v4
+        with:
+          repository: smithy-lang/smithy-swift
+          ref: ${{ env.DEPENDENCY_REPO_SHA }}
+          path: smithy-swift
+      - name: Move smithy-swift into place
+        run: mv smithy-swift ..
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: 2-${{ runner.os }}-gradle-${{ hashFiles('*.gradle.kts', 'gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            2-${{ runner.os }}-gradle-${{ hashFiles('*.gradle.kts', 'gradle/wrapper/gradle-wrapper.properties') }}
+            2-${{ runner.os }}-gradle-
+      - name: Cache Swift
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            ~/.cache/org.swift.swiftpm
+          key: 1-${{ runner.os }}-${{ matrix.xcode }}-${{ hashFiles('Package.swift', 'AWSSDKSwiftCLI/Package.swift') }}
+          restore-keys: |
+            1-${{ runner.os }}-${{ matrix.xcode }}-${{ hashFiles('Package.swift', 'AWSSDKSwiftCLI/Package.swift') }}
+            1-${{ runner.os }}-${{ matrix.xcode }}-
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: 17
+      - name: Tools Versions
+        run: ./scripts/ci_steps/log_tool_versions.sh
+      - name: Prepare Protocol & Unit Tests
+        run: |
+          ./scripts/ci_steps/prepare_protocol_and_unit_tests.sh
+      - name: Build and Run Unit Tests
+        run: |
+          set -o pipefail && \
+          NSUnbufferedIO=YES xcodebuild \
+            -scheme aws-sdk-swift-Package \
+            -destination '${{ matrix.destination }}' \
+            test 2>&1 \
+            | xcbeautify
+      - name: Build and Run Protocol Tests
+        run: |
+          cd codegen/
+          set -o pipefail && \
+          NSUnbufferedIO=YES xcodebuild \
+            -scheme aws-sdk-swift-protocol-tests-Package \
+            -testPlan ProtocolTestPlan \
+            -destination '${{ matrix.destination }}' \
+            test 2>&1 \
+            | xcbeautify
+          cd ..
+
+  linux:
+    runs-on: ubuntu-latest
+    container: swift:${{ matrix.version }}-${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - jammy
+          - amazonlinux2
+        version:
+          - "5.9"
+          - "6.0"
+    env:
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+    steps:
+      - name: Checkout aws-sdk-swift
+        uses: actions/checkout@v3
+      - name: Select smithy-swift branch
+        run: |
+          ORIGINAL_REPO_HEAD_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME:-main}}" \
+          DEPENDENCY_REPO_URL="https://github.com/smithy-lang/smithy-swift.git" \
+          ./scripts/ci_steps/select_dependency_branch.sh
+      - name: Checkout smithy-swift
+        uses: actions/checkout@v3
+        with:
+          repository: smithy-lang/smithy-swift
+          ref: ${{ env.DEPENDENCY_REPO_SHA }}
+          path: smithy-swift
+      - name: Move smithy-swift into place
+        run: mv smithy-swift ..
+      - name: Cache Gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: 2-${{ runner.os }}-gradle-${{ hashFiles('*.gradle.kts', 'gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            2-${{ runner.os }}-gradle-${{ hashFiles('*.gradle.kts', 'gradle/wrapper/gradle-wrapper.properties') }}
+            2-${{ runner.os }}-gradle-
+      - name: Cache Swift
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            ~/.cache/org.swift.swiftpm
+          key: 1-${{ runner.os }}-swift-${{ matrix.version }}-spm-${{ hashFiles('Package.swift', 'AWSSDKSwiftCLI/Package.swift') }}
+          restore-keys: |
+            1-${{ runner.os }}-swift-${{ matrix.version }}-spm-${{ hashFiles('Package.swift', 'AWSSDKSwiftCLI/Package.swift') }}
+            1-${{ runner.os }}-swift-${{ matrix.version }}-spm-
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: corretto
+          java-version: 17
+      - name: Install OpenSSL (all OS) and which (AL2 only)
+        run: ./scripts/ci_steps/install_native_linux_dependencies.sh
+      - name: Tools Versions
+        run: ./scripts/ci_steps/log_tool_versions.sh
+      # Configure fake credentials using profiles
+      - name: (Credentials 1/3) Create AWS config directory
+        run: mkdir -p ~/.aws
+      - name: (Credentials 2/3) Create AWS config file
+        run: |
+          echo "[default]" > ~/.aws/config
+          echo "region=us-west-2" >> ~/.aws/config
+      - name: (Credentials 3/3) Create AWS credentials file
+        run: |
+          echo "[default]" > ~/.aws/credentials
+          echo "aws_access_key_id = test-key-id" >> ~/.aws/credentials
+          echo "aws_secret_access_key = test-secret-access-key" >> ~/.aws/credentials
+      - name: Prepare Protocol & Unit Tests
+        run: |
+          ./scripts/ci_steps/prepare_protocol_and_unit_tests.sh
+      - name: Build and Run Unit Tests on Linux
+        run: swift test
+      - name: Build and Run Protocol Tests on Linux
+        run: |
+          cd codegen/
+          swift test
+          cd ..

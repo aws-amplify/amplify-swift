@@ -1,0 +1,14 @@
+[default]
+one-number = 1
+two-word = two
+nested =
+    one-number = 1
+    two-word = two
+
+
+[profile test-profile]
+one-word = one
+two-number = 2
+nested =
+    one-word = one
+    two-number = 2

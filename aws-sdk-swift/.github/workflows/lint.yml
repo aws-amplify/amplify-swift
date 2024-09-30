@@ -1,0 +1,26 @@
+name: Lint
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ktlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Lint smithy-aws-swift-codegen
+        run: ./gradlew ktlint
+
+  swiftlint:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/realm/swiftlint:0.54.0
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Run swiftlint on AWSClientRuntime
+        run: swiftlint --reporter github-actions-logging

@@ -1,0 +1,79 @@
+# This script is for building the full SDK
+# It will regenerate all models, build the full SDK with the new models, and run tests.
+name: Codegen, Build, and Test
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+env:
+  AWS_SWIFT_SDK_USE_LOCAL_DEPS: 1
+
+jobs:
+  codegen-build-test:
+    runs-on: macos-14-xlarge
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_15.4.app/Contents/Developer
+    steps:
+      - name: Checkout aws-sdk-swift
+        uses: actions/checkout@v3
+      - name: Select smithy-swift branch
+        run: |
+          ORIGINAL_REPO_HEAD_REF="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}" \
+          DEPENDENCY_REPO_URL="https://github.com/smithy-lang/smithy-swift.git" \
+          ./scripts/ci_steps/select_dependency_branch.sh
+      - name: Checkout smithy-swift
+        uses: actions/checkout@v3
+        with:
+          repository: smithy-lang/smithy-swift
+          ref: ${{ env.DEPENDENCY_REPO_SHA }}
+          path: smithy-swift
+      - name: Move smithy-swift into place
+        run: mv smithy-swift ..
+      - name: Cache Gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: 2-${{ runner.os }}-gradle-${{ hashFiles('*.gradle.kts', 'gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            2-${{ runner.os }}-gradle-${{ hashFiles('*.gradle.kts', 'gradle/wrapper/gradle-wrapper.properties') }}
+            2-${{ runner.os }}-gradle-
+      - name: Cache Swift
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            ~/.cache/org.swift.swiftpm
+          key: 1-${{ runner.os }}-${{ matrix.xcode }}-${{ hashFiles('Package.swift', 'AWSSDKSwiftCLI/Package.swift') }}
+          restore-keys: |
+            1-${{ runner.os }}-${{ matrix.xcode }}-${{ hashFiles('Package.swift', 'AWSSDKSwiftCLI/Package.swift') }}
+            1-${{ runner.os }}-${{ matrix.xcode }}-
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: corretto
+          java-version: 17
+      - name: Tools Versions
+        run: ./scripts/ci_steps/log_tool_versions.sh
+      - name: Code-Generate SDK
+        run: ./scripts/ci_steps/codegen_sdk.sh
+      - name: Build SDK with Unit Tests
+        run: swift build --build-tests
+
+      # Configure credentials for use during special protocol tests run against real clients
+      # Since environment variables are modified by some tests profiles are used instead
+      - name: Create AWS config directory
+        run: mkdir -p ~/.aws
+      - name: Create AWS config file
+        run: |
+          echo "[default]" > ~/.aws/config
+          echo "region=us-west-2" >> ~/.aws/config
+      - name: Create AWS credentials file
+        run: |
+          echo "[default]" > ~/.aws/credentials
+          echo "aws_access_key_id = test-key-id" >> ~/.aws/credentials
+          echo "aws_secret_access_key = test-secret-access-key" >> ~/.aws/credentials
+      - name: Run Unit Tests
+        run: swift test --skip-build

@@ -1,0 +1,1633 @@
+{
+    "smithy": "2.0",
+    "shapes": {
+        "com.amazonaws.supplychain#AccessDeniedException": {
+            "type": "structure",
+            "members": {
+                "message": {
+                    "target": "smithy.api#String"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>You do not have the required privileges to perform this action.</p>",
+                "smithy.api#error": "client",
+                "smithy.api#httpError": 403
+            }
+        },
+        "com.amazonaws.supplychain#BillOfMaterialsImportJob": {
+            "type": "structure",
+            "members": {
+                "instanceId": {
+                    "target": "com.amazonaws.supplychain#UUID",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The BillOfMaterialsImportJob instanceId.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "instanceId"
+                    }
+                },
+                "jobId": {
+                    "target": "com.amazonaws.supplychain#UUID",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The BillOfMaterialsImportJob jobId.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "jobId"
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.supplychain#ConfigurationJobStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The BillOfMaterialsImportJob ConfigurationJobStatus.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "s3uri": {
+                    "target": "com.amazonaws.supplychain#ConfigurationS3Uri",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The S3 URI from which the CSV is read.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "message": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>When the BillOfMaterialsImportJob has reached a terminal state, there will be a message.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The BillOfMaterialsImportJob details.</p>"
+            }
+        },
+        "com.amazonaws.supplychain#BillOfMaterialsImportJobResource": {
+            "type": "resource",
+            "identifiers": {
+                "instanceId": {
+                    "target": "com.amazonaws.supplychain#UUID"
+                },
+                "jobId": {
+                    "target": "com.amazonaws.supplychain#UUID"
+                }
+            },
+            "properties": {
+                "status": {
+                    "target": "com.amazonaws.supplychain#ConfigurationJobStatus"
+                },
+                "s3uri": {
+                    "target": "com.amazonaws.supplychain#ConfigurationS3Uri"
+                },
+                "message": {
+                    "target": "smithy.api#String"
+                }
+            },
+            "create": {
+                "target": "com.amazonaws.supplychain#CreateBillOfMaterialsImportJob"
+            },
+            "read": {
+                "target": "com.amazonaws.supplychain#GetBillOfMaterialsImportJob"
+            },
+            "traits": {
+                "aws.api#arn": {
+                    "template": "instance/{instanceId}/bill-of-materials-import-job/{jobId}"
+                }
+            }
+        },
+        "com.amazonaws.supplychain#ClientToken": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+                "smithy.api#length": {
+                    "min": 33,
+                    "max": 126
+                }
+            }
+        },
+        "com.amazonaws.supplychain#ConfigurationJobStatus": {
+            "type": "enum",
+            "members": {
+                "NEW": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NEW"
+                    }
+                },
+                "FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FAILED"
+                    }
+                },
+                "IN_PROGRESS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "IN_PROGRESS"
+                    }
+                },
+                "QUEUED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "QUEUED"
+                    }
+                },
+                "SUCCESS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SUCCESS"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The status of the job.</p>"
+            }
+        },
+        "com.amazonaws.supplychain#ConfigurationS3Uri": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 10
+                },
+                "smithy.api#pattern": "^[sS]3://[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]/.+$"
+            }
+        },
+        "com.amazonaws.supplychain#ConflictException": {
+            "type": "structure",
+            "members": {
+                "message": {
+                    "target": "smithy.api#String"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Updating or deleting a resource can cause an inconsistent state.</p>",
+                "smithy.api#error": "client",
+                "smithy.api#httpError": 409
+            }
+        },
+        "com.amazonaws.supplychain#CreateBillOfMaterialsImportJob": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.supplychain#CreateBillOfMaterialsImportJobRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.supplychain#CreateBillOfMaterialsImportJobResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.supplychain#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>CreateBillOfMaterialsImportJob creates an import job for the Product Bill Of Materials (BOM) entity. For information on the product_bom entity, see the AWS Supply Chain User Guide.</p>\n         <p>The CSV file must be located in an Amazon S3 location accessible to AWS Supply Chain. It is recommended to use the same Amazon S3 bucket created during your AWS Supply Chain instance creation.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "Invoke CreateBillOfMaterialsImportJob",
+                        "input": {
+                            "instanceId": "60f82bbd-71f7-4fcd-a941-472f574c5243",
+                            "s3uri": "s3://mybucketname/pathelemene/file.csv",
+                            "clientToken": "550e8400-e29b-41d4-a716-446655440000"
+                        },
+                        "output": {
+                            "jobId": "f79b359b-1515-4436-a3bf-bae7b33e47b4"
+                        }
+                    }
+                ],
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "POST",
+                    "uri": "/api/configuration/instances/{instanceId}/bill-of-materials-import-jobs"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.supplychain#CreateBillOfMaterialsImportJobRequest": {
+            "type": "structure",
+            "members": {
+                "instanceId": {
+                    "target": "com.amazonaws.supplychain#UUID",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The AWS Supply Chain instance identifier.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "s3uri": {
+                    "target": "com.amazonaws.supplychain#ConfigurationS3Uri",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The S3 URI of the CSV file to be imported. The bucket must grant permissions for AWS Supply Chain to read the file.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.supplychain#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An idempotency token.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The request parameters for CreateBillOfMaterialsImportJob.</p>",
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.supplychain#CreateBillOfMaterialsImportJobResponse": {
+            "type": "structure",
+            "members": {
+                "jobId": {
+                    "target": "com.amazonaws.supplychain#UUID",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The new BillOfMaterialsImportJob identifier.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The response parameters of CreateBillOfMaterialsImportJob.</p>",
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.supplychain#DataIntegrationEventData": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1048576
+                },
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.supplychain#DataIntegrationEventGroupId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                }
+            }
+        },
+        "com.amazonaws.supplychain#DataIntegrationEventResource": {
+            "type": "resource",
+            "identifiers": {
+                "instanceId": {
+                    "target": "com.amazonaws.supplychain#UUID"
+                },
+                "eventId": {
+                    "target": "com.amazonaws.supplychain#UUID"
+                }
+            },
+            "properties": {
+                "eventType": {
+                    "target": "com.amazonaws.supplychain#DataIntegrationEventType"
+                },
+                "data": {
+                    "target": "com.amazonaws.supplychain#DataIntegrationEventData"
+                },
+                "eventGroupId": {
+                    "target": "com.amazonaws.supplychain#DataIntegrationEventGroupId"
+                },
+                "eventTimestamp": {
+                    "target": "smithy.api#Timestamp"
+                }
+            },
+            "create": {
+                "target": "com.amazonaws.supplychain#SendDataIntegrationEvent"
+            },
+            "traits": {
+                "aws.api#arn": {
+                    "template": "instance/{instanceId}/data-integration-events/{eventId}"
+                }
+            }
+        },
+        "com.amazonaws.supplychain#DataIntegrationEventType": {
+            "type": "enum",
+            "members": {
+                "FORECAST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "scn.data.forecast"
+                    }
+                },
+                "INVENTORY_LEVEL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "scn.data.inventorylevel"
+                    }
+                },
+                "INBOUND_ORDER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "scn.data.inboundorder"
+                    }
+                },
+                "INBOUND_ORDER_LINE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "scn.data.inboundorderline"
+                    }
+                },
+                "INBOUND_ORDER_LINE_SCHEDULE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "scn.data.inboundorderlineschedule"
+                    }
+                },
+                "OUTBOUND_ORDER_LINE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "scn.data.outboundorderline"
+                    }
+                },
+                "OUTBOUND_SHIPMENT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "scn.data.outboundshipment"
+                    }
+                },
+                "PROCESS_HEADER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "scn.data.processheader"
+                    }
+                },
+                "PROCESS_OPERATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "scn.data.processoperation"
+                    }
+                },
+                "PROCESS_PRODUCT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "scn.data.processproduct"
+                    }
+                },
+                "RESERVATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "scn.data.reservation"
+                    }
+                },
+                "SHIPMENT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "scn.data.shipment"
+                    }
+                },
+                "SHIPMENT_STOP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "scn.data.shipmentstop"
+                    }
+                },
+                "SHIPMENT_STOP_ORDER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "scn.data.shipmentstoporder"
+                    }
+                },
+                "SUPPLY_PLAN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "scn.data.supplyplan"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.supplychain#GalaxyPublicAPIGateway": {
+            "type": "service",
+            "version": "2024-01-01",
+            "resources": [
+                {
+                    "target": "com.amazonaws.supplychain#BillOfMaterialsImportJobResource"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#DataIntegrationEventResource"
+                }
+            ],
+            "errors": [
+                {
+                    "target": "com.amazonaws.supplychain#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ValidationException"
+                }
+            ],
+            "traits": {
+                "aws.api#service": {
+                    "sdkId": "SupplyChain",
+                    "arnNamespace": "scn",
+                    "endpointPrefix": "scn"
+                },
+                "aws.auth#sigv4": {
+                    "name": "scn"
+                },
+                "aws.protocols#restJson1": {},
+                "smithy.api#cors": {
+                    "additionalAllowedHeaders": [
+                        "*",
+                        "content-type",
+                        "x-amz-content-sha256",
+                        "x-amz-user-agent",
+                        "x-amzn-platform-id",
+                        "x-amzn-trace-id"
+                    ],
+                    "additionalExposedHeaders": [
+                        "x-amzn-errortype",
+                        "x-amzn-requestid",
+                        "x-amzn-trace-id"
+                    ],
+                    "maxAge": 86400
+                },
+                "smithy.api#documentation": "<p>\n            AWS Supply Chain is a cloud-based application that works with your enterprise resource planning (ERP) and supply chain management systems. Using AWS Supply Chain, you can connect and extract your inventory, supply, and demand related data from existing ERP or supply chain systems into a single data model.\n        </p>\n         <p>The AWS Supply Chain API supports configuration data import for Supply Planning.</p>\n         <p>\n            All AWS Supply chain API operations are Amazon-authenticated and certificate-signed. They not only require the use of the AWS SDK, but also allow for the exclusive use of AWS Identity and Access Management users and roles to help facilitate access, trust, and permission policies.\n        </p>",
+                "smithy.api#title": "AWS Supply Chain",
+                "smithy.rules#endpointRuleSet": {
+                    "version": "1.0",
+                    "parameters": {
+                        "Region": {
+                            "builtIn": "AWS::Region",
+                            "required": false,
+                            "documentation": "The AWS region used to dispatch the request.",
+                            "type": "String"
+                        },
+                        "UseDualStack": {
+                            "builtIn": "AWS::UseDualStack",
+                            "required": true,
+                            "default": false,
+                            "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
+                            "type": "Boolean"
+                        },
+                        "UseFIPS": {
+                            "builtIn": "AWS::UseFIPS",
+                            "required": true,
+                            "default": false,
+                            "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
+                            "type": "Boolean"
+                        },
+                        "Endpoint": {
+                            "builtIn": "SDK::Endpoint",
+                            "required": false,
+                            "documentation": "Override the endpoint used to send this request",
+                            "type": "String"
+                        }
+                    },
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "Endpoint"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseFIPS"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
+                                    "type": "error"
+                                },
+                                {
+                                    "conditions": [],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseDualStack"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
+                                            "type": "error"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": {
+                                                    "ref": "Endpoint"
+                                                },
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                }
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "isSet",
+                                            "argv": [
+                                                {
+                                                    "ref": "Region"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "aws.partition",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "Region"
+                                                        }
+                                                    ],
+                                                    "assign": "PartitionResult"
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseFIPS"
+                                                                },
+                                                                true
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseDualStack"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "booleanEquals",
+                                                                    "argv": [
+                                                                        true,
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "supportsFIPS"
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "booleanEquals",
+                                                                    "argv": [
+                                                                        true,
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "supportsDualStack"
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "rules": [
+                                                                {
+                                                                    "conditions": [],
+                                                                    "rules": [
+                                                                        {
+                                                                            "conditions": [],
+                                                                            "endpoint": {
+                                                                                "url": "https://scn-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                                "properties": {},
+                                                                                "headers": {}
+                                                                            },
+                                                                            "type": "endpoint"
+                                                                        }
+                                                                    ],
+                                                                    "type": "tree"
+                                                                }
+                                                            ],
+                                                            "type": "tree"
+                                                        },
+                                                        {
+                                                            "conditions": [],
+                                                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                                                            "type": "error"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseFIPS"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "booleanEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "supportsFIPS"
+                                                                            ]
+                                                                        },
+                                                                        true
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "rules": [
+                                                                {
+                                                                    "conditions": [],
+                                                                    "rules": [
+                                                                        {
+                                                                            "conditions": [],
+                                                                            "endpoint": {
+                                                                                "url": "https://scn-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                                                "properties": {},
+                                                                                "headers": {}
+                                                                            },
+                                                                            "type": "endpoint"
+                                                                        }
+                                                                    ],
+                                                                    "type": "tree"
+                                                                }
+                                                            ],
+                                                            "type": "tree"
+                                                        },
+                                                        {
+                                                            "conditions": [],
+                                                            "error": "FIPS is enabled but this partition does not support FIPS",
+                                                            "type": "error"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseDualStack"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "booleanEquals",
+                                                                    "argv": [
+                                                                        true,
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "supportsDualStack"
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "rules": [
+                                                                {
+                                                                    "conditions": [],
+                                                                    "rules": [
+                                                                        {
+                                                                            "conditions": [],
+                                                                            "endpoint": {
+                                                                                "url": "https://scn.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                                "properties": {},
+                                                                                "headers": {}
+                                                                            },
+                                                                            "type": "endpoint"
+                                                                        }
+                                                                    ],
+                                                                    "type": "tree"
+                                                                }
+                                                            ],
+                                                            "type": "tree"
+                                                        },
+                                                        {
+                                                            "conditions": [],
+                                                            "error": "DualStack is enabled but this partition does not support DualStack",
+                                                            "type": "error"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://scn.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [],
+                                    "error": "Invalid Configuration: Missing Region",
+                                    "type": "error"
+                                }
+                            ],
+                            "type": "tree"
+                        }
+                    ]
+                },
+                "smithy.rules#endpointTests": {
+                    "testCases": [
+                        {
+                            "documentation": "For region us-east-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://scn-fips.us-east-1.api.aws"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-east-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://scn-fips.us-east-1.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-east-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://scn.us-east-1.api.aws"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-east-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://scn.us-east-1.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region cn-north-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://scn-fips.cn-north-1.api.amazonwebservices.com.cn"
+                                }
+                            },
+                            "params": {
+                                "Region": "cn-north-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region cn-north-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://scn-fips.cn-north-1.amazonaws.com.cn"
+                                }
+                            },
+                            "params": {
+                                "Region": "cn-north-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region cn-north-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://scn.cn-north-1.api.amazonwebservices.com.cn"
+                                }
+                            },
+                            "params": {
+                                "Region": "cn-north-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region cn-north-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://scn.cn-north-1.amazonaws.com.cn"
+                                }
+                            },
+                            "params": {
+                                "Region": "cn-north-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://scn-fips.us-gov-east-1.api.aws"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://scn-fips.us-gov-east-1.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://scn.us-gov-east-1.api.aws"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://scn.us-gov-east-1.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://scn-fips.us-iso-east-1.c2s.ic.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "error": "DualStack is enabled but this partition does not support DualStack"
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://scn.us-iso-east-1.c2s.ic.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
+                            },
+                            "params": {
+                                "Region": "us-isob-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://scn-fips.us-isob-east-1.sc2s.sgov.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-isob-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "error": "DualStack is enabled but this partition does not support DualStack"
+                            },
+                            "params": {
+                                "Region": "us-isob-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://scn.us-isob-east-1.sc2s.sgov.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-isob-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For custom endpoint with region set and fips disabled and dualstack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://example.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false,
+                                "Endpoint": "https://example.com"
+                            }
+                        },
+                        {
+                            "documentation": "For custom endpoint with region not set and fips disabled and dualstack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://example.com"
+                                }
+                            },
+                            "params": {
+                                "UseFIPS": false,
+                                "UseDualStack": false,
+                                "Endpoint": "https://example.com"
+                            }
+                        },
+                        {
+                            "documentation": "For custom endpoint with fips enabled and dualstack disabled",
+                            "expect": {
+                                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false,
+                                "Endpoint": "https://example.com"
+                            }
+                        },
+                        {
+                            "documentation": "For custom endpoint with fips disabled and dualstack enabled",
+                            "expect": {
+                                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true,
+                                "Endpoint": "https://example.com"
+                            }
+                        },
+                        {
+                            "documentation": "Missing region",
+                            "expect": {
+                                "error": "Invalid Configuration: Missing Region"
+                            }
+                        }
+                    ],
+                    "version": "1.0"
+                }
+            }
+        },
+        "com.amazonaws.supplychain#GetBillOfMaterialsImportJob": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.supplychain#GetBillOfMaterialsImportJobRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.supplychain#GetBillOfMaterialsImportJobResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.supplychain#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Get status and details of a BillOfMaterialsImportJob.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "Invoke GetBillOfMaterialsImportJob for a successful job",
+                        "input": {
+                            "instanceId": "60f82bbd-71f7-4fcd-a941-472f574c5243",
+                            "jobId": "f79b359b-1515-4436-a3bf-bae7b33e47b4"
+                        },
+                        "output": {
+                            "job": {
+                                "instanceId": "60f82bbd-71f7-4fcd-a941-472f574c5243",
+                                "jobId": "f79b359b-1515-4436-a3bf-bae7b33e47b4",
+                                "status": "SUCCESS",
+                                "s3uri": "s3://mybucketname/pathelemene/file.csv",
+                                "message": "Import job completed successfully."
+                            }
+                        }
+                    },
+                    {
+                        "title": "Invoke GetBillOfMaterialsImportJob for an in-progress job",
+                        "input": {
+                            "instanceId": "60f82bbd-71f7-4fcd-a941-472f574c5243",
+                            "jobId": "f79b359b-1515-4436-a3bf-bae7b33e47b4"
+                        },
+                        "output": {
+                            "job": {
+                                "instanceId": "60f82bbd-71f7-4fcd-a941-472f574c5243",
+                                "jobId": "f79b359b-1515-4436-a3bf-bae7b33e47b4",
+                                "status": "IN_PROGRESS",
+                                "s3uri": "s3://mybucketname/pathelemene/file.csv"
+                            }
+                        }
+                    }
+                ],
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "GET",
+                    "uri": "/api/configuration/instances/{instanceId}/bill-of-materials-import-jobs/{jobId}"
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.supplychain#GetBillOfMaterialsImportJobRequest": {
+            "type": "structure",
+            "members": {
+                "instanceId": {
+                    "target": "com.amazonaws.supplychain#UUID",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The AWS Supply Chain instance identifier.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "jobId": {
+                    "target": "com.amazonaws.supplychain#UUID",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The BillOfMaterialsImportJob identifier.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The request parameters for GetBillOfMaterialsImportJob.</p>",
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.supplychain#GetBillOfMaterialsImportJobResponse": {
+            "type": "structure",
+            "members": {
+                "job": {
+                    "target": "com.amazonaws.supplychain#BillOfMaterialsImportJob",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The BillOfMaterialsImportJob.</p>",
+                        "smithy.api#nestedProperties": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The response parameters for GetBillOfMaterialsImportJob.</p>",
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.supplychain#InternalServerException": {
+            "type": "structure",
+            "members": {
+                "message": {
+                    "target": "smithy.api#String"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Unexpected error during processing of request.</p>",
+                "smithy.api#error": "server",
+                "smithy.api#httpError": 500,
+                "smithy.api#retryable": {}
+            }
+        },
+        "com.amazonaws.supplychain#ResourceNotFoundException": {
+            "type": "structure",
+            "members": {
+                "message": {
+                    "target": "smithy.api#String"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Request references a resource which does not exist.</p>",
+                "smithy.api#error": "client",
+                "smithy.api#httpError": 404
+            }
+        },
+        "com.amazonaws.supplychain#SendDataIntegrationEvent": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.supplychain#SendDataIntegrationEventRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.supplychain#SendDataIntegrationEventResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.supplychain#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.supplychain#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Send the transactional data payload for the event with real-time data for analysis or monitoring. The real-time data events are stored in an Amazon Web Services service before being processed and stored in data lake. \n            New data events are synced with data lake at 5 PM GMT everyday. The updated transactional data is available in data lake after ingestion.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "Successful SendDataIntegrationEvent for inboundorder event type",
+                        "input": {
+                            "instanceId": "8928ae12-15e5-4441-825d-ec2184f0a43a",
+                            "eventType": "scn.data.inboundorder",
+                            "data": "{\"id\": \"inbound-order-id-test-123\", \"tpartner_id\": \"partner-id-test-123\" }",
+                            "eventGroupId": "inboundOrderId",
+                            "eventTimestamp": 1.515531081123E9
+                        },
+                        "output": {
+                            "eventId": "c4132c1d-8f60-44a2-9932-f723c4f7b8a7"
+                        }
+                    },
+                    {
+                        "title": "Successful SendDataIntegrationEvent for inboundorderline event type",
+                        "input": {
+                            "instanceId": "8928ae12-15e5-4441-825d-ec2184f0a43a",
+                            "eventType": "scn.data.inboundorderline",
+                            "data": "{\"id\": \"inbound-order-line-id-test-123\", \"order_id\": \"order-id-test-123\", \"tpartner_id\": \"partner-id-test-123\", \"product_id\": \"product-id-test-123\", \"quantity_submitted\": \"100.0\" }",
+                            "eventGroupId": "inboundOrderLineId",
+                            "eventTimestamp": 1.515531081123E9
+                        },
+                        "output": {
+                            "eventId": "45d95db2-d106-40e0-aa98-f1204230a691"
+                        }
+                    },
+                    {
+                        "title": "Successful SendDataIntegrationEvent for inboundorderlineschedule event type",
+                        "input": {
+                            "instanceId": "8928ae12-15e5-4441-825d-ec2184f0a43a",
+                            "eventType": "scn.data.inboundorderlineschedule",
+                            "data": "{\"id\": \"inbound-order-line-schedule-id-test-123\", \"order_id\": \"order-id-test-123\", \"order_line_id\": \"order-line-id-test-123\", \"product_id\": \"product-id-test-123\"}",
+                            "eventGroupId": "inboundOrderLineScheduleId",
+                            "eventTimestamp": 1.515531081123E9
+                        },
+                        "output": {
+                            "eventId": "5abba995-7735-4d1e-95c4-7cc93e48cf9f"
+                        }
+                    },
+                    {
+                        "title": "Successful SendDataIntegrationEvent for forecast event type",
+                        "input": {
+                            "instanceId": "8928ae12-15e5-4441-825d-ec2184f0a43a",
+                            "eventType": "scn.data.forecast",
+                            "data": "{\"snapshot_date\": \"1672470400000\", \"product_id\": \"product-id-test-123\", \"site_id\": \"site-id-test-123\", \"region_id\": \"region-id-test-123\", \"product_group_id\": \"product-group-id-test-123\", \"forecast_start_dttm\": \"1672470400000\", \"forecast_end_dttm\": \"1672470400000\" }",
+                            "eventGroupId": "forecastId",
+                            "eventTimestamp": 1.515531081123E9
+                        },
+                        "output": {
+                            "eventId": "29312d5b-f499-4dcd-b017-3dab3cd34d61"
+                        }
+                    },
+                    {
+                        "title": "Successful SendDataIntegrationEvent for inventorylevel event type",
+                        "input": {
+                            "instanceId": "8928ae12-15e5-4441-825d-ec2184f0a43a",
+                            "eventType": "scn.data.inventorylevel",
+                            "data": "{\"snapshot_date\": \"1672470400000\", \"site_id\": \"site-id-test-123\", \"product_id\": \"product-id-test-123\", \"on_hand_inventory\": \"100.0\", \"inv_condition\": \"good\", \"lot_number\": \"lot-number-test-123\"}",
+                            "eventGroupId": "inventoryLevelId",
+                            "eventTimestamp": 1.515531081123E9
+                        },
+                        "output": {
+                            "eventId": "3aa78324-acd8-4fdd-a19e-231ea003c2b3"
+                        }
+                    },
+                    {
+                        "title": "Successful SendDataIntegrationEvent for outboundorderline event type",
+                        "input": {
+                            "instanceId": "8928ae12-15e5-4441-825d-ec2184f0a43a",
+                            "eventType": "scn.data.outboundorderline",
+                            "data": "{\"id\": \"outbound-orderline-id-test-123\", \"cust_order_id\": \"cust-order-id-test-123\", \"product_id\": \"product-id-test-123\" }",
+                            "eventGroupId": "outboundOrderLineId",
+                            "eventTimestamp": 1.515531081123E9
+                        },
+                        "output": {
+                            "eventId": "959b7ef9-5e2d-4795-b1ca-5b16a3eb6b89"
+                        }
+                    },
+                    {
+                        "title": "Successful SendDataIntegrationEvent for outboundshipment event type",
+                        "input": {
+                            "instanceId": "8928ae12-15e5-4441-825d-ec2184f0a43a",
+                            "eventType": "scn.data.outboundshipment",
+                            "data": "{\"id\": \"outbound-shipment-id-test-123\", \"cust_order_id\": \"cust-order-id-test-123\", \"cust_order_line_id\": \"cust-order-line-id-test-123\", \"product_id\": \"product-id-test-123\" }",
+                            "eventGroupId": "outboundShipmentId",
+                            "eventTimestamp": 1.515531081123E9
+                        },
+                        "output": {
+                            "eventId": "59feded3-5e46-4126-81bf-0137ca176ee0"
+                        }
+                    },
+                    {
+                        "title": "Successful SendDataIntegrationEvent for processheader event type",
+                        "input": {
+                            "instanceId": "8928ae12-15e5-4441-825d-ec2184f0a43a",
+                            "eventType": "scn.data.processheader",
+                            "data": "{\"process_id\": \"process-id-test-123\" }",
+                            "eventGroupId": "processHeaderId",
+                            "eventTimestamp": 1.515531081123E9
+                        },
+                        "output": {
+                            "eventId": "564130eb-2d8a-4550-a768-ddf0daf7b4a9"
+                        }
+                    },
+                    {
+                        "title": "Successful SendDataIntegrationEvent for processoperation event type",
+                        "input": {
+                            "instanceId": "8928ae12-15e5-4441-825d-ec2184f0a43a",
+                            "eventType": "scn.data.processoperation",
+                            "data": "{\"process_operation_id\": \"process-operation-id-test-123\", \"process_id\": \"process-id-test-123\" }",
+                            "eventGroupId": "processOperationId",
+                            "eventTimestamp": 1.515531081123E9
+                        },
+                        "output": {
+                            "eventId": "db5df408-89c7-4b9f-a326-016f6c2b3396"
+                        }
+                    },
+                    {
+                        "title": "Successful SendDataIntegrationEvent for processproduct event type",
+                        "input": {
+                            "instanceId": "8928ae12-15e5-4441-825d-ec2184f0a43a",
+                            "eventType": "scn.data.processproduct",
+                            "data": "{\"process_product_id\": \"process-product-id-test-123\", \"process_id\": \"process-id-test-123\" }",
+                            "eventGroupId": "processProductId",
+                            "eventTimestamp": 1.515531081123E9
+                        },
+                        "output": {
+                            "eventId": "6929b275-485e-4035-a798-99077ca6d669"
+                        }
+                    },
+                    {
+                        "title": "Successful SendDataIntegrationEvent for reservation event type",
+                        "input": {
+                            "instanceId": "8928ae12-15e5-4441-825d-ec2184f0a43a",
+                            "eventType": "scn.data.reservation",
+                            "data": "{\"reservation_id\": \"reservation-id-test-123\", \"reservation_detail_id\": \"reservation-detail-id-test-123\" }",
+                            "eventGroupId": "reservationId",
+                            "eventTimestamp": 1.515531081123E9
+                        },
+                        "output": {
+                            "eventId": "f6c55a8b-fde2-44f6-848a-9b4336c77209"
+                        }
+                    },
+                    {
+                        "title": "Successful SendDataIntegrationEvent for shipment event type",
+                        "input": {
+                            "instanceId": "8928ae12-15e5-4441-825d-ec2184f0a43a",
+                            "eventType": "scn.data.shipment",
+                            "data": "{\"id\": \"shipment-id-test-123\", \"supplier_tpartner_id\": \"supplier-tpartner-id-test-123\", \"product_id\": \"product-id-test-123\", \"order_id\": \"order-id-test-123\", \"order_line_id\": \"order-line-id-test-123\", \"package_id\": \"package-id-test-123\" }",
+                            "eventGroupId": "shipmentId",
+                            "eventTimestamp": 1.515531081123E9
+                        },
+                        "output": {
+                            "eventId": "61d079d8-3f56-49bb-b35a-c0271a4e4f0a"
+                        }
+                    },
+                    {
+                        "title": "Successful SendDataIntegrationEvent for shipmentstop event type",
+                        "input": {
+                            "instanceId": "8928ae12-15e5-4441-825d-ec2184f0a43a",
+                            "eventType": "scn.data.shipmentstop",
+                            "data": "{\"shipment_stop_id\": \"shipment-stop-id-test-123\", \"shipment_id\": \"shipment-id-test-123\" }",
+                            "eventGroupId": "shipmentStopId",
+                            "eventTimestamp": 1.515531081123E9
+                        },
+                        "output": {
+                            "eventId": "3610992a-fc2f-4da4-9beb-724994622ba1"
+                        }
+                    },
+                    {
+                        "title": "Successful SendDataIntegrationEvent for shipmentstoporder event type",
+                        "input": {
+                            "instanceId": "8928ae12-15e5-4441-825d-ec2184f0a43a",
+                            "eventType": "scn.data.shipmentstoporder",
+                            "data": "{\"shipment_stop_order_id\": \"shipment-stop-order-id-test-123\", \"shipment_stop_id\": \"shipment-stop-id-test-123\", \"shipment_id\": \"shipment-id-test-123\" }",
+                            "eventGroupId": "shipmentStopOrderId",
+                            "eventTimestamp": 1.515531081123E9
+                        },
+                        "output": {
+                            "eventId": "1d550a60-9321-4d25-a132-9dd4b2d9e934"
+                        }
+                    },
+                    {
+                        "title": "Successful SendDataIntegrationEvent for supplyplan event type",
+                        "input": {
+                            "instanceId": "8928ae12-15e5-4441-825d-ec2184f0a43a",
+                            "eventType": "scn.data.supplyplan",
+                            "data": "{\"supply_plan_id\": \"supply-plan-id-test-123\" }",
+                            "eventGroupId": "supplyPlanId",
+                            "eventTimestamp": 1.515531081123E9
+                        },
+                        "output": {
+                            "eventId": "9abaee56-5dc4-4c31-8250-3206a651d8a1"
+                        }
+                    }
+                ],
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "POST",
+                    "uri": "/api-data/data-integration/instance/{instanceId}/data-integration-events"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.supplychain#SendDataIntegrationEventRequest": {
+            "type": "structure",
+            "members": {
+                "instanceId": {
+                    "target": "com.amazonaws.supplychain#UUID",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The AWS Supply Chain instance identifier.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "eventType": {
+                    "target": "com.amazonaws.supplychain#DataIntegrationEventType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The data event type.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "data": {
+                    "target": "com.amazonaws.supplychain#DataIntegrationEventData",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The data payload of the event. For more information on the data schema to use, see <a href=\"https://docs.aws.amazon.com/aws-supply-chain/latest/userguide/data-model-asc.html\">Data entities supported in AWS Supply Chain\n        </a>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "eventGroupId": {
+                    "target": "com.amazonaws.supplychain#DataIntegrationEventGroupId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Event identifier (for example, orderId for InboundOrder) used for data sharing or partitioning.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "eventTimestamp": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The event timestamp (in epoch seconds).</p>",
+                        "smithy.api#timestampFormat": "epoch-seconds"
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.supplychain#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The idempotent client token.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The request parameters for SendDataIntegrationEvent.</p>",
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.supplychain#SendDataIntegrationEventResponse": {
+            "type": "structure",
+            "members": {
+                "eventId": {
+                    "target": "com.amazonaws.supplychain#UUID",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique event identifier.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The response parameters for SendDataIntegrationEvent.</p>",
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.supplychain#ServiceQuotaExceededException": {
+            "type": "structure",
+            "members": {
+                "message": {
+                    "target": "smithy.api#String"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Request would cause a service quota to be exceeded.</p>",
+                "smithy.api#error": "client",
+                "smithy.api#httpError": 402
+            }
+        },
+        "com.amazonaws.supplychain#ThrottlingException": {
+            "type": "structure",
+            "members": {
+                "message": {
+                    "target": "smithy.api#String"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Request was denied due to request throttling.</p>",
+                "smithy.api#error": "client",
+                "smithy.api#httpError": 429,
+                "smithy.api#retryable": {
+                    "throttling": true
+                }
+            }
+        },
+        "com.amazonaws.supplychain#UUID": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 36,
+                    "max": 36
+                },
+                "smithy.api#pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            }
+        },
+        "com.amazonaws.supplychain#ValidationException": {
+            "type": "structure",
+            "members": {
+                "message": {
+                    "target": "smithy.api#String"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The input does not satisfy the constraints specified by an AWS service.</p>",
+                "smithy.api#error": "client",
+                "smithy.api#httpError": 400
+            }
+        }
+    }
+}

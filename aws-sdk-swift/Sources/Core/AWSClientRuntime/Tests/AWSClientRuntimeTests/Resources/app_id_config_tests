@@ -1,0 +1,5 @@
+[default]
+sdk_ua_app_id = default-app-id
+
+[profile app-id-config-test]
+sdk_ua_app_id = custom-profile-app-id

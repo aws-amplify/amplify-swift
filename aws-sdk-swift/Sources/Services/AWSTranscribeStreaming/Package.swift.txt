@@ -1,0 +1,111 @@
+// swift-tools-version: 5.9.0
+
+import PackageDescription
+
+let package = Package(
+    name: "AWSTranscribeStreaming",
+    platforms: [
+        .macOS(.v10_15), .iOS(.v13)
+    ],
+    products: [
+        .library(name: "AWSTranscribeStreaming", targets: ["AWSTranscribeStreaming"])
+    ],
+    dependencies: [
+        .package(
+            id: "aws-sdk-swift.smithy-swift",
+            exact: "0.0.1"
+        ),
+        .package(
+            id: "aws-sdk-swift.AWSClientRuntime",
+            exact: "0.0.1"
+        ),
+        .package(
+            id: "aws-sdk-swift.AWSSDKHTTPAuth",
+            exact: "0.0.1"
+        ),
+        .package(
+            id: "aws-sdk-swift.AWSSDKEventStreamsAuth",
+            exact: "0.0.1"
+        ),
+    ],
+    targets: [
+        .target(
+            name: "AWSTranscribeStreaming",
+            dependencies: [
+                .product(
+                    name: "SmithyHTTPAuthAPI",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "Smithy",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "ClientRuntime",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "SmithyHTTPAPI",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "AWSClientRuntime",
+                    package: "aws-sdk-swift.AWSClientRuntime"
+                ),
+                .product(
+                    name: "SmithyEventStreams",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "SmithyJSON",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "SmithyReadWrite",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "SmithyEventStreamsAPI",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "AWSSDKHTTPAuth",
+                    package: "aws-sdk-swift.AWSSDKHTTPAuth"
+                ),
+                .product(
+                    name: "SmithyIdentity",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "SmithyRetriesAPI",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "AWSSDKEventStreamsAuth",
+                    package: "aws-sdk-swift.AWSSDKEventStreamsAuth"
+                ),
+                .product(
+                    name: "SmithyRetries",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+                .product(
+                    name: "SmithyTestUtil",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+            ],
+            resources: [
+                .process("Resources")
+            ]
+        ),
+        .testTarget(
+            name: "AWSTranscribeStreamingTests",
+            dependencies: [
+                "AWSTranscribeStreaming",
+                .product(
+                    name: "SmithyTestUtil",
+                    package: "aws-sdk-swift.smithy-swift"
+                ),
+            ]
+        )
+    ]
+)

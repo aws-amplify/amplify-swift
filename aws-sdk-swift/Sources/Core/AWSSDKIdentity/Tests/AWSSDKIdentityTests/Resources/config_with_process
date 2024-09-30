@@ -1,0 +1,13 @@
+[default]
+aws_access_key_id = access_key_default_config
+aws_secret_access_key = secret_default_config
+credential_process = echo '{"Version": 1, "AccessKeyId": "AccessKey123", "SecretAccessKey": "SecretAccessKey123", "SessionToken": "SessionToken123","Expiration":"2020-02-25T06:03:31Z"}'
+
+[profile credentials-provider-config-tests-profile]
+aws_access_key_id = access_key_profile_config
+aws_secret_access_key = secret_profile_config
+
+[profile credentials-process-config-tests-profile]
+aws_access_key_id = access_key_profile_config
+aws_secret_access_key = secret_profile_config
+credential_process = echo '{"Version": 1, "AccessKeyId": "AccessKey123", "SecretAccessKey": "SecretAccessKey123", "SessionToken": "SessionToken123","Expiration":"2020-02-25T06:03:31Z"}'

@@ -1,0 +1,10 @@
+{
+    "startUrl": "A",
+    "region": "B",
+    "accessToken": "ACCESS_TOKEN_STRING",
+    "expiresAt": "D",
+    "clientId": "E",
+    "clientSecret": "F",
+    "registrationExpiresAt": "G",
+    "refreshToken": "H"
+}
