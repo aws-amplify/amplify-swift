@@ -21,7 +21,8 @@ final class GraphQLTodo6Tests: AWSAPIPluginGen2GraphQLBaseTest {
             let todo = Todo(
                 todoId: "MyUniqueTodoId",
                 content: "Buy Milk",
-                completed: false)
+                completed: false
+            )
             let createdTodo = try await Amplify.API.mutate(request: .create(todo)).get()
             print("New Todo created: \(createdTodo)")
             // Code Snippet Ends

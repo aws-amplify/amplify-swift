@@ -6,8 +6,8 @@
 //
 
 import XCTest
-@testable import AWSAPIPlugin
 @testable import Amplify
+@testable import AWSAPIPlugin
 #if os(watchOS)
 @testable import APIWatchApp
 #else
@@ -15,7 +15,7 @@ import XCTest
 #endif
 
 extension GraphQLConnectionScenario3Tests {
-    
+
     func createPost(id: String = UUID().uuidString, title: String) async throws -> Post3? {
         let post = Post3(id: id, title: title)
         let event = try await Amplify.API.mutate(request: .create(post))

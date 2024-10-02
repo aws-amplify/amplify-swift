@@ -1,11 +1,20 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 //  This file was automatically generated and should not be edited.
+// swiftlint:disable all
+// swiftformat:disable all
 #if canImport(AWSAPIPlugin)
 import Foundation
 public protocol GraphQLInputValue {
 }
 public struct GraphQLVariable {
   let name: String
-  
+
   public init(_ name: String) {
     self.name = name
   }
@@ -39,13 +48,13 @@ public extension GraphQLMapConvertible {
 }
 public typealias GraphQLID = String
 public protocol APISwiftGraphQLOperation: AnyObject {
-  
+
   static var operationString: String { get }
   static var requestString: String { get }
   static var operationIdentifier: String? { get }
-  
+
   var variables: GraphQLMap? { get }
-  
+
   associatedtype Data: GraphQLSelectionSet
 }
 public extension APISwiftGraphQLOperation {
@@ -68,7 +77,7 @@ public protocol GraphQLFragment: GraphQLSelectionSet {
 public typealias Snapshot = [String: Any?]
 public protocol GraphQLSelectionSet: Decodable {
   static var selections: [GraphQLSelection] { get }
-  
+
   var snapshot: Snapshot { get }
   init(snapshot: Snapshot)
 }
@@ -92,10 +101,10 @@ enum APISwiftJSONValue: Codable {
     case object([String: APISwiftJSONValue])
     case string(String)
     case null
-    
+
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        
+
         if let value = try? container.decode([String: APISwiftJSONValue].self) {
             self = .object(value)
         } else if let value = try? container.decode([APISwiftJSONValue].self) {
@@ -110,10 +119,10 @@ enum APISwiftJSONValue: Codable {
             self = .null
         }
     }
-    
+
     func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-        
+
         switch self {
         case .array(let value):
             try container.encode(value)
@@ -136,19 +145,19 @@ public struct GraphQLField: GraphQLSelection {
   let name: String
   let alias: String?
   let arguments: [String: GraphQLInputValue]?
-  
+
   var responseKey: String {
     return alias ?? name
   }
-  
+
   let type: GraphQLOutputType
-  
+
   public init(_ name: String, alias: String? = nil, arguments: [String: GraphQLInputValue]? = nil, type: GraphQLOutputType) {
     self.name = name
     self.alias = alias
-    
+
     self.arguments = arguments
-    
+
     self.type = type
   }
 }
@@ -157,7 +166,7 @@ public indirect enum GraphQLOutputType {
   case object([GraphQLSelection])
   case nonNull(GraphQLOutputType)
   case list(GraphQLOutputType)
-  
+
   var namedType: GraphQLOutputType {
     switch self {
     case .nonNull(let innerType), .list(let innerType):
@@ -171,7 +180,7 @@ public struct GraphQLBooleanCondition: GraphQLSelection {
   let variableName: String
   let inverted: Bool
   let selections: [GraphQLSelection]
-  
+
   public init(variableName: String, inverted: Bool, selections: [GraphQLSelection]) {
     self.variableName = variableName
     self.inverted = inverted;
@@ -181,7 +190,7 @@ public struct GraphQLBooleanCondition: GraphQLSelection {
 public struct GraphQLTypeCondition: GraphQLSelection {
   let possibleTypes: [String]
   let selections: [GraphQLSelection]
-  
+
   public init(possibleTypes: [String], selections: [GraphQLSelection]) {
     self.possibleTypes = possibleTypes
     self.selections = selections;
@@ -189,7 +198,7 @@ public struct GraphQLTypeCondition: GraphQLSelection {
 }
 public struct GraphQLFragmentSpread: GraphQLSelection {
   let fragment: GraphQLFragment.Type
-  
+
   public init(_ fragment: GraphQLFragment.Type) {
     self.fragment = fragment
   }
@@ -197,7 +206,7 @@ public struct GraphQLFragmentSpread: GraphQLSelection {
 public struct GraphQLTypeCase: GraphQLSelection {
   let variants: [String: [GraphQLSelection]]
   let `default`: [GraphQLSelection]
-  
+
   public init(variants: [String: [GraphQLSelection]], default: [GraphQLSelection]) {
     self.variants = variants
     self.default = `default`;
@@ -215,7 +224,7 @@ public enum JSONDecodingError: Error, LocalizedError {
   case nullValue
   case wrongType
   case couldNotConvert(value: Any, to: Any.Type)
-  
+
   public var errorDescription: String? {
     switch self {
     case .missingValue:
@@ -324,7 +333,7 @@ extension Dictionary: JSONEncodable {
   public var jsonValue: Any {
     return jsonObject
   }
-  
+
   public var jsonObject: JSONObject {
     var jsonObject = JSONObject(minimumCapacity: count)
     for (key, value) in self {

@@ -6,10 +6,10 @@
 //
 
 import XCTest
-@testable import AWSPluginsTestCommon
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
+@testable import AWSPluginsTestCommon
 
 class OperationTestBase: XCTestCase {
 
@@ -86,13 +86,17 @@ class OperationTestBase: XCTestCase {
                     return
             }
 
-            delegate.urlSessionBehavior(mockSession,
-                                        dataTaskBehavior: mockTask,
-                                        didReceive: data)
+            delegate.urlSessionBehavior(
+                mockSession,
+                dataTaskBehavior: mockTask,
+                didReceive: data
+            )
 
-            delegate.urlSessionBehavior(mockSession,
-                                        dataTaskBehavior: mockTask,
-                                        didCompleteWithError: nil)
+            delegate.urlSessionBehavior(
+                mockSession,
+                dataTaskBehavior: mockTask,
+                didCompleteWithError: nil
+            )
         })
 
         guard let task = mockTask else {
@@ -111,9 +115,11 @@ class OperationTestBase: XCTestCase {
                     return
             }
 
-            delegate.urlSessionBehavior(mockSession,
-                                        dataTaskBehavior: mockTask,
-                                        didCompleteWithError: URLError(.badServerResponse))
+            delegate.urlSessionBehavior(
+                mockSession,
+                dataTaskBehavior: mockTask,
+                didCompleteWithError: URLError(.badServerResponse)
+            )
         })
 
         guard let task = mockTask else {

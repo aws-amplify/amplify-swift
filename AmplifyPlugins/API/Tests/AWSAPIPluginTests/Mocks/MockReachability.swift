@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSAPIPlugin
+import Foundation
 
 class MockNetworkReachabilityProvidingFactory: NetworkReachabilityProvidingFactory {
 #if os(watchOS)

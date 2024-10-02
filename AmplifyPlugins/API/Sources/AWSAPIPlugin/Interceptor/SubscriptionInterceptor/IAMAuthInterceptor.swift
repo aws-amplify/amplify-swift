@@ -5,8 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
+import AWSClientRuntime
 import Foundation
 @_spi(WebSocket) import AWSPluginsCore
+import ClientRuntime
 import InternalAmplifyCredentials
 import Amplify
 import SmithyHTTPAPI
@@ -110,7 +113,8 @@ extension IAMAuthInterceptor: AppSyncRequestInterceptor {
 
         let authHeader = await getAuthHeader(
             AppSyncRealTimeClientFactory.appSyncApiEndpoint(url),
-            with: request.data)
+            with: request.data
+        )
         return .start(.init(
             id: request.id,
             data: request.data,

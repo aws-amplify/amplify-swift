@@ -65,18 +65,21 @@ public extension AWSAPIPlugin {
                 authService: authService,
                 apiAuthProviderFactory: authProviderFactory,
                 inProcessListener: valueListener,
-                resultListener: completionListener)
+                resultListener: completionListener
+            )
             queue.addOperation(operation)
             return operation
     }
 
     func subscribe<R>(request: GraphQLRequest<R>) -> AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<R>> {
         let request = request.toOperationRequest(operationType: .subscription)
-        let runner = AWSGraphQLSubscriptionTaskRunner(request: request,
-                                                      pluginConfig: pluginConfig,
-                                                      appSyncClientFactory: appSyncRealTimeClientFactory,
-                                                      authService: authService,
-                                                      apiAuthProviderFactory: authProviderFactory)
+        let runner = AWSGraphQLSubscriptionTaskRunner(
+            request: request,
+            pluginConfig: pluginConfig,
+            appSyncClientFactory: appSyncRealTimeClientFactory,
+            authService: authService,
+            apiAuthProviderFactory: authProviderFactory
+        )
         return runner.sequence
     }
 }

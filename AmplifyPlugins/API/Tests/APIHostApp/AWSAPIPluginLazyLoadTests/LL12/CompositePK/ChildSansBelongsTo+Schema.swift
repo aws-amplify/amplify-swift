@@ -1,10 +1,17 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension ChildSansBelongsTo {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension ChildSansBelongsTo {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case childId
     case content
     case compositePKParentChildrenSansBelongsToCustomId
@@ -12,21 +19,21 @@ extension ChildSansBelongsTo {
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let childSansBelongsTo = ChildSansBelongsTo.keys
-    
+
     model.pluralName = "ChildSansBelongsTos"
-    
+
     model.attributes(
       .index(fields: ["childId", "content"], name: nil),
       .index(fields: ["compositePKParentChildrenSansBelongsToCustomId", "compositePKParentChildrenSansBelongsToContent"], name: "byParent"),
       .primaryKey(fields: [childSansBelongsTo.childId, childSansBelongsTo.content])
     )
-    
+
     model.fields(
       .field(childSansBelongsTo.childId, is: .required, ofType: .string),
       .field(childSansBelongsTo.content, is: .required, ofType: .string),
@@ -36,9 +43,9 @@ extension ChildSansBelongsTo {
       .field(childSansBelongsTo.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
-    public class Path: ModelPath<ChildSansBelongsTo> { }
-    
-    public static var rootPath: PropertyContainerPath? { Path() }
+    class Path: ModelPath<ChildSansBelongsTo> { }
+
+    static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension ChildSansBelongsTo: ModelIdentifiable {
@@ -46,29 +53,31 @@ extension ChildSansBelongsTo: ModelIdentifiable {
   public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension ChildSansBelongsTo.IdentifierProtocol {
-  public static func identifier(childId: String,
-      content: String) -> Self {
-    .make(fields:[(name: "childId", value: childId), (name: "content", value: content)])
+public extension ChildSansBelongsTo.IdentifierProtocol {
+  static func identifier(
+    childId: String,
+    content: String
+  ) -> Self {
+    .make(fields: [(name: "childId", value: childId), (name: "content", value: content)])
   }
 }
-extension ModelPath where ModelType == ChildSansBelongsTo {
-  public var childId: FieldPath<String>   {
-      string("childId") 
+public extension ModelPath where ModelType == ChildSansBelongsTo {
+  var childId: FieldPath<String>   {
+      string("childId")
     }
-  public var content: FieldPath<String>   {
-      string("content") 
+  var content: FieldPath<String>   {
+      string("content")
     }
-  public var compositePKParentChildrenSansBelongsToCustomId: FieldPath<String>   {
-      string("compositePKParentChildrenSansBelongsToCustomId") 
+  var compositePKParentChildrenSansBelongsToCustomId: FieldPath<String>   {
+      string("compositePKParentChildrenSansBelongsToCustomId")
     }
-  public var compositePKParentChildrenSansBelongsToContent: FieldPath<String>   {
-      string("compositePKParentChildrenSansBelongsToContent") 
+  var compositePKParentChildrenSansBelongsToContent: FieldPath<String>   {
+      string("compositePKParentChildrenSansBelongsToContent")
     }
-  public var createdAt: FieldPath<Temporal.DateTime>   {
-      datetime("createdAt") 
+  var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt")
     }
-  public var updatedAt: FieldPath<Temporal.DateTime>   {
-      datetime("updatedAt") 
+  var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt")
     }
 }

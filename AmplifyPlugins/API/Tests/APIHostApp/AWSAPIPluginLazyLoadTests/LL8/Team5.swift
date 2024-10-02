@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -5,7 +12,7 @@ import Foundation
 public struct Team5: Model {
   public let teamId: String
   public let name: String
-  internal var _project: LazyReference<Project5>
+  var _project: LazyReference<Project5>
   public var project: Project5?   {
       get async throws {
         try await _project.get()
@@ -13,21 +20,27 @@ public struct Team5: Model {
     }
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
-  public init(teamId: String,
-      name: String,
-      project: Project5? = nil) {
-    self.init(teamId: teamId,
+
+  public init(
+    teamId: String,
+    name: String,
+    project: Project5? = nil
+  ) {
+    self.init(
+      teamId: teamId,
       name: name,
       project: project,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(teamId: String,
-      name: String,
-      project: Project5? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    teamId: String,
+    name: String,
+    project: Project5? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.teamId = teamId
       self.name = name
       self._project = LazyReference(project)
@@ -35,15 +48,15 @@ public struct Team5: Model {
       self.updatedAt = updatedAt
   }
   public mutating func setProject(_ project: Project5? = nil) {
-    self._project = LazyReference(project)
+    _project = LazyReference(project)
   }
   public init(from decoder: Decoder) throws {
       let values = try decoder.container(keyedBy: CodingKeys.self)
-      teamId = try values.decode(String.self, forKey: .teamId)
-      name = try values.decode(String.self, forKey: .name)
-      _project = try values.decodeIfPresent(LazyReference<Project5>.self, forKey: .project) ?? LazyReference(identifiers: nil)
-      createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-      updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+      self.teamId = try values.decode(String.self, forKey: .teamId)
+      self.name = try values.decode(String.self, forKey: .name)
+      self._project = try values.decodeIfPresent(LazyReference<Project5>.self, forKey: .project) ?? LazyReference(identifiers: nil)
+      self.createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+      self.updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
   }
   public func encode(to encoder: Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)

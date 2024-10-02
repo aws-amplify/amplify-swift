@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 import XCTest
-import Amplify
 
 public actor AsyncExpectation {
     enum State {
@@ -28,10 +28,12 @@ public actor AsyncExpectation {
         state == .fulfilled
     }
 
-    public init(description: String,
-                isInverted: Bool = false,
-                expectedFulfillmentCount: Int = 1) {
-        expectationDescription = description
+    public init(
+        description: String,
+        isInverted: Bool = false,
+        expectedFulfillmentCount: Int = 1
+    ) {
+        self.expectationDescription = description
         self.isInverted = isInverted
         self.expectedFulfillmentCount = expectedFulfillmentCount
     }
@@ -59,7 +61,7 @@ public actor AsyncExpectation {
         }
     }
 
-    internal nonisolated func wait() async throws {
+    nonisolated func wait() async throws {
         try await withTaskCancellationHandler(handler: {
             Task {
                 await cancel()
@@ -69,8 +71,10 @@ public actor AsyncExpectation {
         })
     }
 
-    internal func timeOut(file: StaticString = #filePath,
-                          line: UInt = #line) async {
+    func timeOut(
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async {
         if isInverted {
             state = .timedOut
         } else if state != .fulfilled {
@@ -103,7 +107,7 @@ public actor AsyncExpectation {
 }
 
 
-extension XCTestCase {
+public extension XCTestCase {
 
     /// Creates a new async expectation with an associated description.
     ///
@@ -118,12 +122,16 @@ extension XCTestCase {
     ///   - description: A string to display in the test log for this expectation, to help diagnose failures.
     ///   - isInverted: Indicates that the expectation is not intended to happen.
     ///   - expectedFulfillmentCount: The number of times fulfill() must be called before the expectation is completely fulfilled. (default = 1)
-    public func expectation(description: String,
-                                 isInverted: Bool = false,
-                                 expectedFulfillmentCount: Int = 1) -> AsyncExpectation {
-        expectation(description: description,
-                         isInverted: isInverted,
-                         expectedFulfillmentCount: expectedFulfillmentCount)
+    func expectation(
+        description: String,
+        isInverted: Bool = false,
+        expectedFulfillmentCount: Int = 1
+    ) -> AsyncExpectation {
+        expectation(
+            description: description,
+            isInverted: isInverted,
+            expectedFulfillmentCount: expectedFulfillmentCount
+        )
     }
 
     /// Waits for the test to fulfill a set of expectations within a specified time.
@@ -131,33 +139,43 @@ extension XCTestCase {
     ///   - expectations: An array of async expectations that must be fulfilled.
     ///   - timeout: The number of seconds within which all expectations must be fulfilled.
     @MainActor
-    public func waitForExpectations(_ expectations: [AsyncExpectation],
-                                    timeout: Double = 1.0,
-                                    file: StaticString = #filePath,
-                                    line: UInt = #line) async {
-        await AsyncTesting.waitForExpectations(expectations,
-                                               timeout: timeout,
-                                               file: file,
-                                               line: line)
+    func waitForExpectations(
+        _ expectations: [AsyncExpectation],
+        timeout: Double = 1.0,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async {
+        await AsyncTesting.waitForExpectations(
+            expectations,
+            timeout: timeout,
+            file: file,
+            line: line
+        )
     }
 
 }
 
 public enum AsyncTesting {
 
-    public static func expectation(description: String,
-                                   isInverted: Bool = false,
-                                   expectedFulfillmentCount: Int = 1) -> AsyncExpectation {
-        expectation(description: description,
-                         isInverted: isInverted,
-                         expectedFulfillmentCount: expectedFulfillmentCount)
+    public static func expectation(
+        description: String,
+        isInverted: Bool = false,
+        expectedFulfillmentCount: Int = 1
+    ) -> AsyncExpectation {
+        expectation(
+            description: description,
+            isInverted: isInverted,
+            expectedFulfillmentCount: expectedFulfillmentCount
+        )
     }
 
     @MainActor
-    public static func waitForExpectations(_ expectations: [AsyncExpectation],
-                                           timeout: Double = 1.0,
-                                           file: StaticString = #filePath,
-                                           line: UInt = #line) async {
+    public static func waitForExpectations(
+        _ expectations: [AsyncExpectation],
+        timeout: Double = 1.0,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async {
         guard !expectations.isEmpty else { return }
 
         // check if all expectations are already satisfied and skip sleeping

@@ -47,8 +47,8 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
     ) throws -> AppSyncRealTimeClientProtocol {
         let apiName = endpointConfig.name
 
-        let authInterceptor = try self.getInterceptor(
-            for: self.getOrCreateAuthConfiguration(from: endpointConfig, authType: authType),
+        let authInterceptor = try getInterceptor(
+            for: getOrCreateAuthConfiguration(from: endpointConfig, authType: authType),
             authService: authService,
             apiAuthProviderFactory: apiAuthProviderFactory
         )
@@ -82,7 +82,7 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
         authType: AWSAuthorizationType?
     ) throws -> AWSAuthorizationConfiguration {
         // create a configuration if there's an override auth type
-        if let authType = authType {
+        if let authType {
             return try endpointConfig.authorizationConfigurationFor(authType: authType)
         }
 
@@ -107,14 +107,16 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
             guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
                 throw APIError.invalidConfiguration(
                     "Using openIDConnect requires passing in an APIAuthProvider with an OIDC AuthProvider",
-                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil)
+                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil
+                )
             }
             return AuthTokenInterceptor(getLatestAuthToken: oidcAuthProvider.getLatestAuthToken)
         case .function:
             guard let functionAuthProvider = apiAuthProviderFactory.functionAuthProvider() else {
                 throw APIError.invalidConfiguration(
                     "Using function as auth provider requires passing in an APIAuthProvider with a Function AuthProvider",
-                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil)
+                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil
+                )
             }
             return AuthTokenInterceptor(authTokenProvider: functionAuthProvider)
         case .none:

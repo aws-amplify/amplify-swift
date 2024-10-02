@@ -5,10 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import Foundation
-import Combine
 import Amplify
+import Combine
+import Foundation
 
 public enum AppSyncRealTimeRequest {
     case connectionInit
@@ -70,8 +69,8 @@ extension AppSyncRealTimeRequest: Encodable {
 }
 
 
-extension AppSyncRealTimeRequest {
-    public enum Error: Swift.Error, Equatable {
+public extension AppSyncRealTimeRequest {
+    enum Error: Swift.Error, Equatable {
         case timeout
         case limitExceeded
         case maxSubscriptionsReached
@@ -99,7 +98,7 @@ extension AppSyncRealTimeRequest {
     }
 
 
-    public static func parseResponseError(
+    static func parseResponseError(
         error: JSONValue
     ) -> AppSyncRealTimeRequest.Error? {
         let limitExceededErrorString = "LimitExceededError"

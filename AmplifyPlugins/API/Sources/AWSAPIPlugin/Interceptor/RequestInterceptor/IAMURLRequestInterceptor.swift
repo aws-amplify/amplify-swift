@@ -7,6 +7,8 @@
 
 import Amplify
 import AWSPluginsCore
+import ClientRuntime
+import Foundation
 import InternalAmplifyCredentials
 import Foundation
 import SmithyHTTPAPI
@@ -20,9 +22,11 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
     let endpointType: AWSAPICategoryPluginEndpointType
     private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
 
-    init(iamCredentialsProvider: IAMCredentialsProvider,
-         region: AWSRegionType,
-         endpointType: AWSAPICategoryPluginEndpointType) {
+    init(
+        iamCredentialsProvider: IAMCredentialsProvider,
+        region: AWSRegionType,
+        endpointType: AWSAPICategoryPluginEndpointType
+    ) {
         self.iamCredentialsProvider = iamCredentialsProvider
         self.region = region
         self.endpointType = endpointType
@@ -57,12 +61,11 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
             .withHeaders(.init(request.allHTTPHeaderFields ?? [:]))
             .withBody(.data(request.httpBody))
 
-        let signingName: String
-        switch endpointType {
+        let signingName: String = switch endpointType {
         case .graphQL:
-            signingName = URLRequestConstants.appSyncServiceName
+            URLRequestConstants.appSyncServiceName
         case .rest:
-            signingName = URLRequestConstants.apiGatewayServiceName
+            URLRequestConstants.apiGatewayServiceName
         }
 
         guard let urlRequest = try await AmplifyAWSSignatureV4Signer().sigV4SignedRequest(

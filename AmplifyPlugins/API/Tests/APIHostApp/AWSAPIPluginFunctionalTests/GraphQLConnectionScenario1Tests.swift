@@ -6,8 +6,8 @@
 //
 
 import XCTest
-@testable import AWSAPIPlugin
 @testable import Amplify
+@testable import AWSAPIPlugin
 #if os(watchOS)
 @testable import APIWatchApp
 #else
@@ -32,35 +32,36 @@ import XCTest
 
  */
 class GraphQLConnectionScenario1Tests: XCTestCase {
-    
+
     override func setUp() async throws {
         do {
             Amplify.Logging.logLevel = .verbose
             try Amplify.add(plugin: AWSAPIPlugin())
-            
+
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: GraphQLModelBasedTests.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
-            
+
             ModelRegistry.register(modelType: Project1.self)
             ModelRegistry.register(modelType: Team1.self)
-            
+
         } catch {
             XCTFail("Error during setup: \(error)")
         }
     }
-    
+
     override func tearDown() async throws {
         await Amplify.reset()
     }
-    
+
     func testCreateAndGetProject() async throws {
         guard let team = try await createTeam(name: "name".withUUID),
-              let project = try await createProject(team: team) else {
+              let project = try await createProject(team: team)
+        else {
             XCTFail("Could not create team and a project")
             return
         }
-        
+
         let result = try await Amplify.API.query(request: .get(Project1.self, byId: project.id))
         switch result {
         case .success(let queriedProjectOptional):
@@ -74,10 +75,11 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
             XCTFail("Failed with: \(response)")
         }
     }
-    
+
     func testUpdateProjectWithAnotherTeam() async throws {
         guard let team = try await createTeam(name: "name".withUUID),
-              var project = try await createProject(team: team) else {
+              var project = try await createProject(team: team)
+        else {
             XCTFail("Could not create a Team")
             return
         }
@@ -94,10 +96,11 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
         }
         XCTAssertEqual(updatedProject.team, anotherTeam)
     }
-    
+
     func testDeleteAndGetProject() async throws {
         guard let team = try await createTeam(name: "name".withUUID),
-              let project = try await createProject(team: team) else {
+              let project = try await createProject(team: team)
+        else {
             XCTFail("Could not create team and a project")
             return
         }
@@ -120,12 +123,13 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
             XCTFail("Failed with: \(response)")
         }
     }
-    
+
     // The filter we are passing into is the ProjectTeamID, but the API doesn't have the field ProjectTeamID
     //    so we are disabling it
     func testListProjectsByTeamID() async throws {
         guard let team = try await createTeam(name: "name".withUUID),
-              let project = try await createProject(team: team) else {
+              let project = try await createProject(team: team)
+        else {
             XCTFail("Could not create team and a project")
             return
         }
@@ -139,23 +143,24 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
             XCTFail("Failed with: \(response)")
         }
     }
-    
+
     func testPaginatedListProjects() async throws {
         let testCompleted = expectation(description: "test completed")
         Task {
             guard let team = try await createTeam(name: "name".withUUID),
                   let projecta = try await createProject(team: team),
-                  let projectb = try await createProject(team: team) else {
+                  let projectb = try await createProject(team: team)
+            else {
                 XCTFail("Could not create team and two projects")
                 return
             }
-            
+
             var results: List<Project1>?
             let predicate = Project1.keys.id == projecta.id || Project1.keys.id == projectb.id
             let request: GraphQLRequest<List<Project1>> = GraphQLRequest<Project1>.list(Project1.self, where: predicate)
-            
+
             let result = try await Amplify.API.query(request: request)
-            
+
             guard case .success(let projects) = result else {
                 XCTFail("Missing Successful response")
                 return
@@ -177,7 +182,7 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
         }
         await fulfillment(of: [testCompleted], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     func createTeam(id: String = UUID().uuidString, name: String) async throws -> Team1? {
         let team = Team1(id: id, name: name)
         let graphQLResponse = try await Amplify.API.mutate(request: .create(team))
@@ -188,10 +193,12 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
             throw graphQLResponseError
         }
     }
-    
-    func createProject(id: String = UUID().uuidString,
-                       name: String? = nil,
-                       team: Team1? = nil) async throws -> Project1? {
+
+    func createProject(
+        id: String = UUID().uuidString,
+        name: String? = nil,
+        team: Team1? = nil
+    ) async throws -> Project1? {
         let project = Project1(id: id, name: name, team: team)
         let graphQLResponse = try await Amplify.API.mutate(request: .create(project))
         switch graphQLResponse {
@@ -204,8 +211,10 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
 }
 
 extension Team1: Equatable {
-    public static func == (lhs: Team1,
-                           rhs: Team1) -> Bool {
+    public static func == (
+        lhs: Team1,
+        rhs: Team1
+    ) -> Bool {
         return lhs.id == rhs.id
             && lhs.name == rhs.name
     }

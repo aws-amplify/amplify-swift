@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSAPIPlugin
 import AWSCognitoAuthPlugin
+import XCTest
 
 @testable import Amplify
 #if os(watchOS)
@@ -36,7 +36,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         } catch {
             XCTFail("Error during setup: \(error)")
         }
-        
+
     }
 
     override func tearDown() async throws {
@@ -45,7 +45,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         }
         await Amplify.reset()
     }
-        
+
     func testSignUserOut() async throws {
         if try await isSignedIn() {
             print("User is signed in")
@@ -53,7 +53,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
 
         await signOut()
     }
-    
+
     /// Test create mutation with a custom GraphQL Document
     ///
     /// - Given:  A custom GraphQL document containing CreateTodo mutation request, and user is signed in.
@@ -66,7 +66,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         try await createAuthenticatedUser()
         try await createTodoTest()
     }
-    
+
     /// An unauthenticated user should not fail
     ///
     /// - Given:  A CreateTodo mutation request, and user is not signed in.
@@ -81,18 +81,22 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         }
         try await createTodoTest()
     }
-    
+
     func createTodoTest() async throws {
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
-        let request = GraphQLRequest(document: CreateTodoMutation.document,
-                                     variables: CreateTodoMutation.variables(id: expectedId,
-                                                                             name: expectedName,
-                                                                             description: expectedDescription),
-                                     responseType: CreateTodoMutation.Data.self)
-        
-        
+        let request = GraphQLRequest(
+            document: CreateTodoMutation.document,
+            variables: CreateTodoMutation.variables(
+                id: expectedId,
+                name: expectedName,
+                description: expectedDescription
+            ),
+            responseType: CreateTodoMutation.Data.self
+        )
+
+
         let event = try await Amplify.API.mutate(request: request)
         switch event {
         case .success(let data):
@@ -125,7 +129,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         }
         try await onCreateTodoTest()
     }
-    
+
     /// A subscription to onCreate todo should receive an event for each create Todo mutation API called
     ///
     /// - Given:  An onCreate Todo subscription established
@@ -138,7 +142,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         try await createAuthenticatedUser()
         try await onCreateTodoTest()
     }
-    
+
     func onCreateTodoTest() async throws {
         let connectedInvoked = expectation(description: "Connection established")
         let progressInvoked = expectation(description: "progress invoked")
@@ -172,7 +176,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
                 }
             }
         }
-        
+
         await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         _ = try await createTodo(id: uuid, name: name)
         _ = try await createTodo(id: uuid2, name: name)
@@ -182,7 +186,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
     }
 
     // MARK: - Helpers
-    
+
     func createTodo(id: String, name: String) async throws -> Todo {
         let todo = Todo(id: id, name: name)
         let event = try await Amplify.API.mutate(request: .create(todo))
@@ -195,7 +199,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
     }
 
     // MARK: - Auth Helpers
-    
+
     func createAuthenticatedUser() async throws {
         if try await isSignedIn() {
             await signOut()
@@ -203,12 +207,12 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         try await signUp()
         try await signIn()
     }
-    
+
     func isSignedIn() async throws -> Bool {
         let authSession = try await Amplify.Auth.fetchAuthSession()
         return authSession.isSignedIn
     }
-    
+
     func signUp() async throws {
         let userAttributes = [AuthUserAttribute(.email, value: email)]
         let options = AuthSignUpRequest.Options(userAttributes: userAttributes)
@@ -218,7 +222,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
             return
         }
     }
-    
+
     func signIn() async throws {
         let signInResult = try await Amplify.Auth.signIn(username: username, password: password)
         guard signInResult.isSignedIn else {
@@ -226,7 +230,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
             return
         }
     }
-    
+
     func signOut() async {
         _ = await Amplify.Auth.signOut()
     }
@@ -238,9 +242,11 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         public var name: String
         public var description: String?
 
-        init(id: String = UUID().uuidString,
-             name: String,
-             description: String? = nil) {
+        init(
+            id: String = UUID().uuidString,
+            name: String,
+            description: String? = nil
+        ) {
             self.id = id
             self.name = name
             self.description = description

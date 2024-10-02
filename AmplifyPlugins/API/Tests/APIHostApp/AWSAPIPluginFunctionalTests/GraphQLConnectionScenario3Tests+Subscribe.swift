@@ -6,8 +6,8 @@
 //
 
 import XCTest
-@testable import AWSAPIPlugin
 @testable import Amplify
+@testable import AWSAPIPlugin
 #if os(watchOS)
 @testable import APIWatchApp
 #else
@@ -53,7 +53,7 @@ extension GraphQLConnectionScenario3Tests {
                 XCTFail("Unexpected subscription failure")
             }
         }
-        
+
         await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let post = Post3(id: uuid, title: title)
         _ = try await Amplify.API.mutate(request: .create(post))
@@ -62,7 +62,7 @@ extension GraphQLConnectionScenario3Tests {
 
         await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     func testOnUpdatePostSubscriptionWithModel() async throws {
         let connectingInvoked = expectation(description: "Connection connecting")
         let connectedInvoked = expectation(description: "Connection established")
@@ -91,9 +91,9 @@ extension GraphQLConnectionScenario3Tests {
                 XCTFail("Unexpected subscription failure")
             }
         }
-                                 
+
         await fulfillment(of: [connectingInvoked, connectedInvoked], timeout: TestCommonConstants.networkTimeout)
-        
+
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title".withUUID
@@ -103,12 +103,12 @@ extension GraphQLConnectionScenario3Tests {
 
         await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     func testOnDeletePostSubscriptionWithModel() async throws {
         let connectingInvoked = expectation(description: "Connection connecting")
         let connectedInvoked = expectation(description: "Connection established")
         let progressInvoked = expectation(description: "progress invoked")
-        
+
         let subscription = Amplify.API.subscribe(request: .subscription(of: Post3.self, type: .onDelete))
         Task {
             do {

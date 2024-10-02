@@ -23,7 +23,7 @@ class RESTRequestUtilsTests: XCTestCase {
             }
         }
 
-        guard let expected = expected else {
+        guard let expected else {
             return XCTAssertTrue(
                 queryParams.isEmpty,
                 "Test \(testCase): Unexpected query items found \(queryParams)"

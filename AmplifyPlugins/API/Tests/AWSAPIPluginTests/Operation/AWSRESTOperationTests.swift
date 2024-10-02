@@ -122,7 +122,7 @@ class AWSRESTOperationTests: OperationTestBase {
 
 }
 
-fileprivate struct TestURLRequestInterceptor: URLRequestInterceptor {
+private struct TestURLRequestInterceptor: URLRequestInterceptor {
     let validate: (URLRequest) -> Bool
 
     func intercept(_ request: URLRequest) async throws -> URLRequest {

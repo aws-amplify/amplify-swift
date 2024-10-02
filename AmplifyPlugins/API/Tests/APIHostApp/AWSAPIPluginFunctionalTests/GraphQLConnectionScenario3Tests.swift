@@ -6,8 +6,8 @@
 //
 
 import XCTest
-@testable import AWSAPIPlugin
 @testable import Amplify
+@testable import AWSAPIPlugin
 #if os(watchOS)
 @testable import APIWatchApp
 #else

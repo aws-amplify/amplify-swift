@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
+import Combine
 import Foundation
 @preconcurrency import Combine
 @_spi(WebSocket) import AWSPluginsCore

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 
 final class APISwiftTests: XCTestCase {
 
@@ -14,7 +14,7 @@ final class APISwiftTests: XCTestCase {
         let file = S3ObjectInput(bucket: "bucket", key: "let", region: "region")
         let input = CreateBlogInput(name: "name", file: file)
         let mutation = CreateBlogMutation(input: input)
-        
+
         let request = GraphQLRequest<CreateBlogMutation.Data>(
             document: CreateBlogMutation.requestString,
             variables: mutation.variables?.jsonObject,

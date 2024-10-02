@@ -6,18 +6,19 @@
 //
 
 import Amplify
-import Foundation
 import Combine
+import Foundation
 
-extension AWSAPIPlugin {
-    public func reachabilityPublisher() throws -> AnyPublisher<ReachabilityUpdate, Never>? {
+public extension AWSAPIPlugin {
+    func reachabilityPublisher() throws -> AnyPublisher<ReachabilityUpdate, Never>? {
         return try reachabilityPublisher(for: nil)
     }
 
-    public func reachabilityPublisher(for apiName: String?) throws -> AnyPublisher<ReachabilityUpdate, Never>? {
+    func reachabilityPublisher(for apiName: String?) throws -> AnyPublisher<ReachabilityUpdate, Never>? {
         let endpoint = try pluginConfig.endpoints.getConfig(for: apiName)
         guard let hostName = endpoint.baseURL.host else {
-            let error = APIError.invalidConfiguration("Invalid endpoint configuration",
+            let error = APIError.invalidConfiguration(
+                "Invalid endpoint configuration",
                 """
                 baseURL does not contain a valid hostname
                 """
@@ -30,9 +31,11 @@ extension AWSAPIPlugin {
                 return networkReachability.publisher
             }
             do {
-                let networkReachability = try NetworkReachabilityNotifier(host: hostName,
-                                                                          allowsCellularAccess: true,
-                                                                          reachabilityFactory: AmplifyReachability.self)
+                let networkReachability = try NetworkReachabilityNotifier(
+                    host: hostName,
+                    allowsCellularAccess: true,
+                    reachabilityFactory: AmplifyReachability.self
+                )
                 reachabilityMap[hostName] = networkReachability
                 return networkReachability.publisher
             } catch {

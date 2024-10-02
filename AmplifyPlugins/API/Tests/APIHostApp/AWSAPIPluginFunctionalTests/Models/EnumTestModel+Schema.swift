@@ -1,10 +1,17 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension EnumTestModel {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension EnumTestModel {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case id
     case enumVal
     case nullableEnumVal
@@ -15,15 +22,15 @@ extension EnumTestModel {
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let enumTestModel = EnumTestModel.keys
-    
+
     model.pluralName = "EnumTestModels"
-    
+
     model.fields(
       .id(),
       .field(enumTestModel.enumVal, is: .required, ofType: .enum(type: TestEnum.self)),

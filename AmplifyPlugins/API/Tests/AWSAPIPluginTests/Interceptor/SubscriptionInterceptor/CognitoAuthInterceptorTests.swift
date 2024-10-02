@@ -5,9 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import XCTest
 import Amplify
+import XCTest
 @testable import AWSAPIPlugin
 @testable @_spi(WebSocket) import AWSPluginsCore
 
@@ -78,14 +77,14 @@ class CognitoAuthInterceptorTests: XCTestCase {
     }
 }
 
-fileprivate class MockAuthTokenProvider: AmplifyAuthTokenProvider {
+private class MockAuthTokenProvider: AmplifyAuthTokenProvider {
     let authToken = UUID().uuidString
     func getLatestAuthToken() async throws -> String {
         return authToken
     }
 }
 
-fileprivate class MockAuthTokenProviderFailed: AmplifyAuthTokenProvider {
+private class MockAuthTokenProviderFailed: AmplifyAuthTokenProvider {
     let authToken = UUID().uuidString
     func getLatestAuthToken() async throws -> String {
         throw "Intended"
