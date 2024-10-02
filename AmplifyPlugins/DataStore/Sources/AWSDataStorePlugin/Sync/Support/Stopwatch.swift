@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 /// A simple implementation of a stopwatch used for gathering metrics of elapsed time.
 class Stopwatch {
@@ -28,7 +28,7 @@ class Stopwatch {
     /// - Returns: the elapsed time in seconds
     func lap() -> Double {
         lock.execute {
-            guard let lapStart = lapStart else {
+            guard let lapStart else {
                 return 0
             }
 
@@ -50,7 +50,7 @@ class Stopwatch {
                 startTime = nil
             }
 
-            guard let startTime = startTime else {
+            guard let startTime else {
                 return 0
             }
             let endTime = DispatchTime.now()

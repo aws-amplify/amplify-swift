@@ -5,11 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 @preconcurrency import Amplify
 
 extension MutationSyncMetadataMigration {
-    public struct MutationSyncMetadataCopy: Model {
+    struct MutationSyncMetadataCopy: Model {
         public let id: String
         public var deleted: Bool
         public var lastChangedAt: Int64

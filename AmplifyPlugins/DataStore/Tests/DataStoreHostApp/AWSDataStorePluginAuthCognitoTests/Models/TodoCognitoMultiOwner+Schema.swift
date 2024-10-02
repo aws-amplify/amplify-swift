@@ -9,9 +9,9 @@
 import Amplify
 import Foundation
 
-extension TodoCognitoMultiOwner {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension TodoCognitoMultiOwner {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case id
     case title
     case content
@@ -20,25 +20,25 @@ extension TodoCognitoMultiOwner {
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let todoCognitoMultiOwner = TodoCognitoMultiOwner.keys
-    
+
     model.authRules = [
       rule(allow: .owner, ownerField: "owner", identityClaim: "cognito:username", provider: .userPools, operations: [.create, .update, .delete, .read]),
       rule(allow: .owner, ownerField: "editors", identityClaim: "cognito:username", provider: .userPools, operations: [.update, .read])
     ]
-    
+
     model.listPluralName = "TodoCognitoMultiOwners"
     model.syncPluralName = "TodoCognitoMultiOwners"
-    
+
     model.attributes(
       .primaryKey(fields: [todoCognitoMultiOwner.id])
     )
-    
+
     model.fields(
       .field(todoCognitoMultiOwner.id, is: .required, ofType: .string),
       .field(todoCognitoMultiOwner.title, is: .required, ofType: .string),

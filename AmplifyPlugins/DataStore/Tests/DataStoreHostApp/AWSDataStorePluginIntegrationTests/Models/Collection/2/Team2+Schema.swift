@@ -9,17 +9,17 @@
 import Amplify
 import Foundation
 
-extension Team2 {
+public extension Team2 {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case name
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let team2 = Team2.keys
 
     model.listPluralName = "Team2s"

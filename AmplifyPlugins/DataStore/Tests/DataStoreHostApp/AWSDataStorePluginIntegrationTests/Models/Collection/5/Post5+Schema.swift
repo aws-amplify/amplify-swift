@@ -9,18 +9,18 @@
 import Amplify
 import Foundation
 
-extension Post5 {
+public extension Post5 {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case title
     case editors
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let post5 = Post5.keys
 
     model.listPluralName = "Post5s"

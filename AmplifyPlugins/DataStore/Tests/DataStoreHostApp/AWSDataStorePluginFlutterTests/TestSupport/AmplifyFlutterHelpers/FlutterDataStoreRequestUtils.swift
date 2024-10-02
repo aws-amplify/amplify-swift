@@ -4,8 +4,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-import Foundation
+
 import Amplify
+import Foundation
 
 public class FlutterDataStoreRequestUtils {
 
@@ -13,8 +14,10 @@ public class FlutterDataStoreRequestUtils {
         guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonDict) else {
             throw DataStoreError.decodingError("Unable to deserialize json data", "Check the model structure.")
         }
-        guard let jsonValue = try? JSONDecoder().decode(Dictionary<String, JSONValue>.self,
-                                                        from: jsonData) else {
+        guard let jsonValue = try? JSONDecoder().decode(
+            [String: JSONValue].self,
+            from: jsonData
+        ) else {
             throw DataStoreError.decodingError("Unable to decode json value", "Check the model structure.")
         }
         return jsonValue

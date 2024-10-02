@@ -21,10 +21,10 @@ struct DynamicModel: Model, JSONValueHolder {
     public init(from decoder: Decoder) throws {
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(String.self, forKey: .id)
+        self.id = try container.decode(String.self, forKey: .id)
         let json = try JSONValue(from: decoder)
         if case .object(let jsonValues) = json {
-            values = jsonValues
+            self.values = jsonValues
         } else {
             self.values = [:]
         }

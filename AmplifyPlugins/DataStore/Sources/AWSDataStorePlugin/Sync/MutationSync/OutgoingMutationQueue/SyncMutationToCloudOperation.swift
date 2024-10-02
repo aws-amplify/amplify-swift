@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Combine
 import Foundation
 @preconcurrency import AWSPluginsCore
@@ -29,14 +30,16 @@ class SyncMutationToCloudOperation: AsynchronousOperation, @unchecked Sendable {
     private var currentAttemptNumber: Int
     private var authTypesIterator: AWSAuthorizationTypeIterator?
 
-    init(mutationEvent: MutationEvent,
-         getLatestSyncMetadata: @escaping () -> MutationSyncMetadata?,
-         api: APICategoryGraphQLBehavior,
-         authModeStrategy: AuthModeStrategy,
-         networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
-         currentAttemptNumber: Int = 1,
-         requestRetryablePolicy: RequestRetryablePolicy? = RequestRetryablePolicy(),
-         completion: @escaping GraphQLOperation<MutationSync<AnyModel>>.ResultListener) async {
+    init(
+        mutationEvent: MutationEvent,
+        getLatestSyncMetadata: @escaping () -> MutationSyncMetadata?,
+        api: APICategoryGraphQLBehavior,
+        authModeStrategy: AuthModeStrategy,
+        networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
+        currentAttemptNumber: Int = 1,
+        requestRetryablePolicy: RequestRetryablePolicy? = RequestRetryablePolicy(),
+        completion: @escaping GraphQLOperation<MutationSync<AnyModel>>.ResultListener
+    ) async {
         self.mutationEvent = mutationEvent
         self.getLatestSyncMetadata = getLatestSyncMetadata
         self.api = api
@@ -48,8 +51,10 @@ class SyncMutationToCloudOperation: AsynchronousOperation, @unchecked Sendable {
         if let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName),
            let mutationType = GraphQLMutationType(rawValue: mutationEvent.mutationType) {
 
-            self.authTypesIterator = await authModeStrategy.authTypesFor(schema: modelSchema,
-                                                                   operation: mutationType.toModelOperation())
+            self.authTypesIterator = await authModeStrategy.authTypesFor(
+                schema: modelSchema,
+                operation: mutationType.toModelOperation()
+            )
         }
 
         super.init()
@@ -151,10 +156,12 @@ class SyncMutationToCloudOperation: AsynchronousOperation, @unchecked Sendable {
                     initialized.
                     """)
                 }
-                request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: model,
-                                                                            modelSchema: modelSchema,
-                                                                            where: graphQLFilter,
-                                                                            version: version)
+                request = GraphQLRequest<MutationSyncResult>.deleteMutation(
+                    of: model,
+                    modelSchema: modelSchema,
+                    where: graphQLFilter,
+                    version: version
+                )
             case .update:
                 let model = try mutationEvent.decodeModel()
                 guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {
@@ -163,10 +170,12 @@ class SyncMutationToCloudOperation: AsynchronousOperation, @unchecked Sendable {
                     initialized.
                     """)
                 }
-                request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
-                                                                            modelSchema: modelSchema,
-                                                                            where: graphQLFilter,
-                                                                            version: version)
+                request = GraphQLRequest<MutationSyncResult>.updateMutation(
+                    of: model,
+                    modelSchema: modelSchema,
+                    where: graphQLFilter,
+                    version: version
+                )
             case .create:
                 let model = try mutationEvent.decodeModel()
                 guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {
@@ -175,9 +184,11 @@ class SyncMutationToCloudOperation: AsynchronousOperation, @unchecked Sendable {
                     initialized.
                     """)
                 }
-                request = GraphQLRequest<MutationSyncResult>.createMutation(of: model,
-                                                                            modelSchema: modelSchema,
-                                                                            version: version)
+                request = GraphQLRequest<MutationSyncResult>.createMutation(
+                    of: model,
+                    modelSchema: modelSchema,
+                    version: version
+                )
             }
         } catch {
             let apiError = APIError.unknown("Couldn't decode model", "", error)
@@ -185,8 +196,10 @@ class SyncMutationToCloudOperation: AsynchronousOperation, @unchecked Sendable {
             return nil
         }
 
-        let awsPluginOptions = AWSAPIPluginDataStoreOptions(authType: authType,
-                                                         modelName: mutationEvent.modelName)
+        let awsPluginOptions = AWSAPIPluginDataStoreOptions(
+            authType: authType,
+            modelName: mutationEvent.modelName
+        )
         request.options = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
         return request
     }
@@ -196,7 +209,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation, @unchecked Sendable {
     /// completion handler
     /// - Parameter apiRequest: The GraphQLRequest used to create the mutation operation
     private func sendMutation(describedBy apiRequest: GraphQLRequest<MutationSync<AnyModel>>) {
-        guard let api = api else {
+        guard let api else {
             log.error("\(#function): API unexpectedly nil")
             let apiError = APIError.unknown("API unexpectedly nil", "")
             finish(result: .failure(apiError))
@@ -224,7 +237,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation, @unchecked Sendable {
         toCloudResult result: GraphQLResponse<MutationSync<AnyModel>>,
         withAPIRequest apiRequest: GraphQLRequest<MutationSync<AnyModel>>
     ) {
-        guard !self.isCancelled else {
+        guard !isCancelled else {
             Amplify.log.debug("SyncMutationToCloudOperation cancelled, aborting")
             return
         }
@@ -286,9 +299,11 @@ class SyncMutationToCloudOperation: AsynchronousOperation, @unchecked Sendable {
         case .networkError(_, _, let error):
             // currently expecting APIOperationResponse to be an URLError
             let urlError = error as? URLError
-            advice = requestRetryablePolicy.retryRequestAdvice(urlError: urlError,
-                                                               httpURLResponse: nil,
-                                                               attemptNumber: currentAttemptNumber)
+            advice = requestRetryablePolicy.retryRequestAdvice(
+                urlError: urlError,
+                httpURLResponse: nil,
+                attemptNumber: currentAttemptNumber
+            )
 
         // we can't unify the following two cases (case 1 and case 2) as they have different associated values.
         // should retry with a different authType if server returned "Unauthorized Error"
@@ -302,18 +317,22 @@ class SyncMutationToCloudOperation: AsynchronousOperation, @unchecked Sendable {
                 switch authError {
                 case .sessionExpired, .signedOut:
                     // use `userAuthenticationRequired` to ensure advice to retry is true.
-                    advice = requestRetryablePolicy.retryRequestAdvice(urlError: URLError(.userAuthenticationRequired),
-                                                                       httpURLResponse: nil,
-                                                                       attemptNumber: currentAttemptNumber)
+                    advice = requestRetryablePolicy.retryRequestAdvice(
+                        urlError: URLError(.userAuthenticationRequired),
+                        httpURLResponse: nil,
+                        attemptNumber: currentAttemptNumber
+                    )
                 default:
                     // should retry with a different authType if request failed locally with any other AuthError
                     advice = shouldRetryWithDifferentAuthType()
                 }
             }
         case .httpStatusError(_, let httpURLResponse):
-            advice = requestRetryablePolicy.retryRequestAdvice(urlError: nil,
-                                                               httpURLResponse: httpURLResponse,
-                                                               attemptNumber: currentAttemptNumber)
+            advice = requestRetryablePolicy.retryRequestAdvice(
+                urlError: nil,
+                httpURLResponse: httpURLResponse,
+                attemptNumber: currentAttemptNumber
+            )
         default:
             break
         }
@@ -325,8 +344,10 @@ class SyncMutationToCloudOperation: AsynchronousOperation, @unchecked Sendable {
         return RequestRetryAdvice(shouldRetry: shouldRetry, retryInterval: .milliseconds(0))
     }
 
-    private func scheduleRetry(advice: RequestRetryAdvice,
-                               withAuthType authType: AWSAuthorizationType? = nil) {
+    private func scheduleRetry(
+        advice: RequestRetryAdvice,
+        withAuthType authType: AWSAuthorizationType? = nil
+    ) {
         log.verbose("\(#function) scheduling retry for mutation \(advice)")
         mutationRetryNotifier = MutationRetryNotifier(
             advice: advice,

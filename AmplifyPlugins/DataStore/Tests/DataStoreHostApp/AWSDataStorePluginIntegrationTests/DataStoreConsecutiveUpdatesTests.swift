@@ -34,11 +34,13 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
 
-        let newPost = Post(title: "MyPost",
-                          content: "This is my post.",
-                          createdAt: .now(),
-                          rating: 3,
-                          status: .published)
+        let newPost = Post(
+            title: "MyPost",
+            content: "This is my post.",
+            createdAt: .now(),
+            rating: 3,
+            status: .published
+        )
 
         var updatedPost = newPost
         updatedPost.rating = 5
@@ -49,7 +51,8 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Can't cast payload as mutation event")
                 return
@@ -98,7 +101,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
                 XCTFail("Failed to get data")
                 return
             }
-            
+
             XCTAssertEqual(post.model["title"] as? String, updatedPost.title)
             XCTAssertEqual(post.model["content"] as? String, updatedPost.content)
             XCTAssertEqual(post.model["rating"] as? Double, updatedPost.rating)
@@ -115,17 +118,20 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
 
-        let newPost = Post(title: "MyPost",
-                          content: "This is my post.",
-                          createdAt: .now(),
-                          rating: 3,
-                          status: .published)
+        let newPost = Post(
+            title: "MyPost",
+            content: "This is my post.",
+            createdAt: .now(),
+            rating: 3,
+            status: .published
+        )
 
         let deleteSyncReceived = expectation(description: "Received delete mutation event on subscription for Post")
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Can't cast payload as mutation event")
                 return
@@ -173,7 +179,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
                 XCTFail("Failed to get data")
                 return
             }
-            
+
             XCTAssertEqual(post.model["title"] as? String, newPost.title)
             XCTAssertEqual(post.model["content"] as? String, newPost.content)
             XCTAssertEqual(post.model["rating"] as? Double, newPost.rating)
@@ -191,11 +197,13 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
 
-        let newPost = Post(title: "MyPost",
-                          content: "This is my post.",
-                          createdAt: .now(),
-                          rating: 3,
-                          status: .published)
+        let newPost = Post(
+            title: "MyPost",
+            content: "This is my post.",
+            createdAt: .now(),
+            rating: 3,
+            status: .published
+        )
 
         var updatedPost = newPost
         updatedPost.rating = 5
@@ -279,11 +287,13 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
 
-        let newPost = Post(title: "MyPost",
-                          content: "This is my post.",
-                          createdAt: .now(),
-                          rating: 3,
-                          status: .published)
+        let newPost = Post(
+            title: "MyPost",
+            content: "This is my post.",
+            createdAt: .now(),
+            rating: 3,
+            status: .published
+        )
         var updatedPost = newPost
         let updatedPostDefaultTitle = "MyUpdatedPost"
         let updateCount = 10
@@ -293,7 +303,8 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Can't cast payload as mutation event")
                 return
@@ -348,7 +359,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
                 XCTFail("Failed to get data")
                 return
             }
-            
+
             XCTAssertEqual(post.model["title"] as? String, updatedPost.title)
             XCTAssertEqual(post.model["content"] as? String, updatedPost.content)
             XCTAssertEqual(post.model["rating"] as? Double, updatedPost.rating)
@@ -360,7 +371,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
             XCTFail("Error: \(error)")
         }
     }
-    
+
     func queryPost(byId id: String) async throws -> Post? {
         return try await Amplify.DataStore.query(Post.self, byId: id)
     }

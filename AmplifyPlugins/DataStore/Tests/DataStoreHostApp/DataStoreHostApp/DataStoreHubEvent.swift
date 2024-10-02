@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSDataStorePlugin
+import Foundation
 
 /// Initialize with `HubPayload`'s `eventName: String` and `data: Any?` fields to return an enum of events with their
 /// expected payloads in their respective types

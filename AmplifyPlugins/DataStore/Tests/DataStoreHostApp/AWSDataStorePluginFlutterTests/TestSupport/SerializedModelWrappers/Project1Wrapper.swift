@@ -5,24 +5,24 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AmplifyTestCommon
+import Foundation
 
 /**
  Creates a convenience wrapper for non-model type instantiations so that tests do not need to directly access json.
- 
+
  Wraps: Project1
  */
 class Project1Wrapper: NSCopying {
     var model: FlutterSerializedModel
 
     init(team: FlutterSerializedModel) throws {
-        self.model = FlutterSerializedModel(id: UUID().uuidString, map: try FlutterDataStoreRequestUtils.getJSONValue(["team": team.toMap(modelSchema: Team1.schema)]))
+        self.model = try FlutterSerializedModel(id: UUID().uuidString, map: FlutterDataStoreRequestUtils.getJSONValue(["team": team.toMap(modelSchema: Team1.schema)]))
     }
 
     init(name: String, team: FlutterSerializedModel) throws {
-        self.model = FlutterSerializedModel(id: UUID().uuidString, map: try FlutterDataStoreRequestUtils.getJSONValue(["name": name, "team": team.toMap(modelSchema: Team1.schema)]))
+        self.model = try FlutterSerializedModel(id: UUID().uuidString, map: FlutterDataStoreRequestUtils.getJSONValue(["name": name, "team": team.toMap(modelSchema: Team1.schema)]))
     }
 
     init(model: FlutterSerializedModel) {
@@ -30,23 +30,23 @@ class Project1Wrapper: NSCopying {
     }
 
     func setTeam(team: FlutterSerializedModel) throws {
-        self.model = FlutterSerializedModel(id: self.model.id, map: try FlutterDataStoreRequestUtils.getJSONValue(["team": team.toMap(modelSchema: Team1.schema)]))
+        model = try FlutterSerializedModel(id: model.id, map: FlutterDataStoreRequestUtils.getJSONValue(["team": team.toMap(modelSchema: Team1.schema)]))
     }
 
     func idString() -> String {
-        return self.model.id
+        return model.id
     }
 
     func id() -> JSONValue? {
-        return self.model.values["id"]
+        return model.values["id"]
     }
 
     func teamId() -> JSONValue? {
-        return self.model.values["team"]!["id"]
+        return model.values["team"]!["id"]
     }
 
     func teamName() -> JSONValue? {
-        return self.model.values["team"]!["name"]
+        return model.values["team"]!["name"]
     }
 
     func copy(with zone: NSZone? = nil) -> Any {

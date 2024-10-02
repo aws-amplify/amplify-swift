@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -40,7 +41,8 @@ class DataStoreConnectionScenario6FlutterTests: SyncEngineFlutterIntegrationTest
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         guard let blog = try saveBlog(name: "name", plugin: plugin),
               let post = try savePost(title: "title", blog: blog, plugin: plugin),
-              let comment = try saveComment(post: post, content: "content", plugin: plugin) else {
+              let comment = try saveComment(post: post, content: "content", plugin: plugin)
+        else {
             XCTFail("Could not create blog, post, and comment")
             return
         }

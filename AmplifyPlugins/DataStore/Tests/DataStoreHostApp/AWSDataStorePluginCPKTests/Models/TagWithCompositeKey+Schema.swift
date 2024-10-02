@@ -1,30 +1,37 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension TagWithCompositeKey {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension TagWithCompositeKey {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case id
     case name
     case posts
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let tagWithCompositeKey = TagWithCompositeKey.keys
-    
+
     model.pluralName = "TagWithCompositeKeys"
-    
+
     model.attributes(
       .index(fields: ["id", "name"], name: nil),
       .primaryKey(fields: [tagWithCompositeKey.id, tagWithCompositeKey.name])
     )
-    
+
     model.fields(
       .field(tagWithCompositeKey.id, is: .required, ofType: .string),
       .field(tagWithCompositeKey.name, is: .required, ofType: .string),
@@ -40,9 +47,11 @@ extension TagWithCompositeKey: ModelIdentifiable {
   public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension TagWithCompositeKey.IdentifierProtocol {
-  public static func identifier(id: String,
-      name: String) -> Self {
-    .make(fields:[(name: "id", value: id), (name: "name", value: name)])
+public extension TagWithCompositeKey.IdentifierProtocol {
+  static func identifier(
+    id: String,
+    name: String
+  ) -> Self {
+    .make(fields: [(name: "id", value: id), (name: "name", value: name)])
   }
 }

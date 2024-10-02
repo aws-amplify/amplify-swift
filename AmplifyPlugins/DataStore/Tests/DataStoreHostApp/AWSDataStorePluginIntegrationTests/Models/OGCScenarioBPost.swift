@@ -14,9 +14,11 @@ public struct OGCScenarioBPost: Model {
   public var title: String
   public var owner: String?
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       title: String,
-      owner: String? = nil) {
+      owner: String? = nil
+  ) {
       self.id = id
       self.title = title
       self.owner = owner

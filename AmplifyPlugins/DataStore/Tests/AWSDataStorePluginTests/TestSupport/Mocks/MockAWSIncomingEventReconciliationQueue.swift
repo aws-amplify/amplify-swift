@@ -14,11 +14,13 @@ import Combine
 
 class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
     static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, _, _, _ in
-        MockAWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
-                                                api: api,
-                                                storageAdapter: storageAdapter,
-                                                syncExpressions: syncExpressions,
-                                                auth: auth)
+        MockAWSIncomingEventReconciliationQueue(
+            modelSchemas: modelSchemas,
+            api: api,
+            storageAdapter: storageAdapter,
+            syncExpressions: syncExpressions,
+            auth: auth
+        )
     }
     let incomingEventSubject: PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>
     var publisher: AnyPublisher<IncomingEventReconciliationQueueEvent, DataStoreError> {
@@ -26,11 +28,13 @@ class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue 
     }
 
     static var lastInstance = AtomicValue<MockAWSIncomingEventReconciliationQueue?>(initialValue: nil)
-    init(modelSchemas: [ModelSchema],
-         api: APICategoryGraphQLBehavior?,
-         storageAdapter: StorageEngineAdapter?,
-         syncExpressions: [DataStoreSyncExpression],
-         auth: AuthCategoryBehavior?) {
+    init(
+        modelSchemas: [ModelSchema],
+        api: APICategoryGraphQLBehavior?,
+        storageAdapter: StorageEngineAdapter?,
+        syncExpressions: [DataStoreSyncExpression],
+        auth: AuthCategoryBehavior?
+    ) {
         self.incomingEventSubject = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
         updateLastInstance(instance: self)
     }

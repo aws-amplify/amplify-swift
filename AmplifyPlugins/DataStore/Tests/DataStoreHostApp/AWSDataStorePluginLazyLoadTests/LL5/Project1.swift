@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -5,7 +12,7 @@ import Foundation
 public struct Project1: Model {
     public let projectId: String
     public let name: String
-    internal var _team: LazyReference<Team1>
+    var _team: LazyReference<Team1>
     public var team: Team1?   {
         get async throws {
             try await _team.get()
@@ -15,27 +22,33 @@ public struct Project1: Model {
     public var updatedAt: Temporal.DateTime?
     public var project1TeamTeamId: String?
     public var project1TeamName: String?
-    
-    public init(projectId: String,
-                name: String,
-                team: Team1? = nil,
-                project1TeamTeamId: String? = nil,
-                project1TeamName: String? = nil) {
-        self.init(projectId: projectId,
-                  name: name,
-                  team: team,
-                  createdAt: nil,
-                  updatedAt: nil,
-                  project1TeamTeamId: project1TeamTeamId,
-                  project1TeamName: project1TeamName)
+
+    public init(
+        projectId: String,
+        name: String,
+        team: Team1? = nil,
+        project1TeamTeamId: String? = nil,
+        project1TeamName: String? = nil
+    ) {
+        self.init(
+            projectId: projectId,
+            name: name,
+            team: team,
+            createdAt: nil,
+            updatedAt: nil,
+            project1TeamTeamId: project1TeamTeamId,
+            project1TeamName: project1TeamName
+        )
     }
-    internal init(projectId: String,
-                  name: String,
-                  team: Team1? = nil,
-                  createdAt: Temporal.DateTime? = nil,
-                  updatedAt: Temporal.DateTime? = nil,
-                  project1TeamTeamId: String? = nil,
-                  project1TeamName: String? = nil) {
+    init(
+        projectId: String,
+        name: String,
+        team: Team1? = nil,
+        createdAt: Temporal.DateTime? = nil,
+        updatedAt: Temporal.DateTime? = nil,
+        project1TeamTeamId: String? = nil,
+        project1TeamName: String? = nil
+    ) {
         self.projectId = projectId
         self.name = name
         self._team = LazyReference(team)
@@ -45,17 +58,17 @@ public struct Project1: Model {
         self.project1TeamName = project1TeamName
     }
     public mutating func setTeam(_ team: Team1? = nil) {
-        self._team = LazyReference(team)
+        _team = LazyReference(team)
     }
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        projectId = try values.decode(String.self, forKey: .projectId)
-        name = try values.decode(String.self, forKey: .name)
-        _team = try values.decodeIfPresent(LazyReference<Team1>.self, forKey: .team) ?? LazyReference(identifiers: nil)
-        createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-        updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
-        project1TeamTeamId = try? values.decode(String?.self, forKey: .project1TeamTeamId)
-        project1TeamName = try? values.decode(String?.self, forKey: .project1TeamName)
+        self.projectId = try values.decode(String.self, forKey: .projectId)
+        self.name = try values.decode(String.self, forKey: .name)
+        self._team = try values.decodeIfPresent(LazyReference<Team1>.self, forKey: .team) ?? LazyReference(identifiers: nil)
+        self.createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+        self.updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+        self.project1TeamTeamId = try? values.decode(String?.self, forKey: .project1TeamTeamId)
+        self.project1TeamName = try? values.decode(String?.self, forKey: .project1TeamName)
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)

@@ -14,9 +14,11 @@ public struct M2MUser: Model {
   public var username: String
   public var posts: List<M2MPostEditor>?
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       username: String,
-      posts: List<M2MPostEditor>? = []) {
+      posts: List<M2MPostEditor>? = []
+  ) {
       self.id = id
       self.username = username
       self.posts = posts

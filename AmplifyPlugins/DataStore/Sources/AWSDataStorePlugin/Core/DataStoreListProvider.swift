@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import Combine
+import Foundation
 
 /// `DataStoreList<ModelType>` is a DataStore-aware custom `Collection` that is capable of loading
 /// records from the `DataStore` on-demand. This is especially useful when dealing with
@@ -21,8 +21,10 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
     var loadedState: ModelListProviderState<Element>
 
     init(metadata: DataStoreListDecoder.Metadata) {
-        self.loadedState = .notLoaded(associatedIdentifiers: metadata.dataStoreAssociatedIdentifiers,
-                                      associatedFields: metadata.dataStoreAssociatedFields)
+        self.loadedState = .notLoaded(
+            associatedIdentifiers: metadata.dataStoreAssociatedIdentifiers,
+            associatedFields: metadata.dataStoreAssociatedFields
+        )
     }
 
     init(_ elements: [Element]) {
@@ -47,28 +49,32 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
             if associatedIdentifiers.count == 1,
                let associatedId = associatedIdentifiers.first,
                let associatedField = associatedFields.first {
-                self.log.verbose("Loading List of \(Element.schema.name) by \(associatedField) == \(associatedId) ")
+                log.verbose("Loading List of \(Element.schema.name) by \(associatedField) == \(associatedId) ")
                 predicate = field(associatedField) == associatedId
             } else {
                 let predicateValues = zip(associatedFields, associatedIdentifiers)
                 var queryPredicates: [QueryPredicateOperation] = []
                 for (identifierName, identifierValue) in predicateValues {
-                    queryPredicates.append(QueryPredicateOperation(field: identifierName,
-                                                                   operator: .equals(identifierValue)))
+                    queryPredicates.append(QueryPredicateOperation(
+                        field: identifierName,
+                        operator: .equals(identifierValue)
+                    ))
                 }
-                self.log.verbose("Loading List of \(Element.schema.name) by \(associatedFields) == \(associatedIdentifiers) ")
+                log.verbose("Loading List of \(Element.schema.name) by \(associatedFields) == \(associatedIdentifiers) ")
                 predicate = QueryPredicateGroup(type: .and, predicates: queryPredicates)
             }
 
             do {
                 let elements = try await Amplify.DataStore.query(Element.self, where: predicate)
-                self.loadedState = .loaded(elements)
+                loadedState = .loaded(elements)
                 return elements
             } catch let error as DataStoreError {
                 self.log.error(error: error)
-                throw CoreError.listOperation("Failed to Query DataStore.",
-                                              "See underlying DataStoreError for more details.",
-                                              error)
+                throw CoreError.listOperation(
+                    "Failed to Query DataStore.",
+                    "See underlying DataStoreError for more details.",
+                    error
+                )
             } catch {
                 throw error
 
@@ -81,17 +87,23 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
     }
 
     public func getNextPage() async throws -> List<Element> {
-        throw CoreError.clientValidation("There is no next page.",
-                                         "Only call `getNextPage()` when `hasNextPage()` is true.",
-                                         nil)
+        throw CoreError.clientValidation(
+            "There is no next page.",
+            "Only call `getNextPage()` when `hasNextPage()` is true.",
+            nil
+        )
     }
 
     public func encode(to encoder: Encoder) throws {
         switch loadedState {
-        case .notLoaded(let associatedIdentifiers,
-                        let associatedFields):
-            let metadata = DataStoreListDecoder.Metadata(dataStoreAssociatedIdentifiers: associatedIdentifiers,
-                                                         dataStoreAssociatedFields: associatedFields)
+        case .notLoaded(
+            let associatedIdentifiers,
+            let associatedFields
+        ):
+            let metadata = DataStoreListDecoder.Metadata(
+                dataStoreAssociatedIdentifiers: associatedIdentifiers,
+                dataStoreAssociatedFields: associatedFields
+            )
             var container = encoder.singleValueContainer()
             try container.encode(metadata)
         case .loaded(let elements):

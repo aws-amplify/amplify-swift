@@ -28,7 +28,7 @@ final class ReadyEventEmitter {
         let syncEngineStartedPublisher = ReadyEventEmitter.makeRemoteSyncEngineStartedPublisher(
             remoteSyncEnginePublisher: remoteSyncEnginePublisher
         )
-        readySink = Publishers
+        self.readySink = Publishers
             .Merge(queriesReadyPublisher, syncEngineStartedPublisher)
             .sink(receiveCompletion: { completion in
                 switch completion {

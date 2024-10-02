@@ -18,9 +18,11 @@ typealias SQLPredicate = (String, [Binding?])
 ///   - modelSchema: the model schema of the `Model`
 ///   - predicate: the query predicate
 /// - Returns: a tuple containing the SQL string and the associated values
-private func translateQueryPredicate(from modelSchema: ModelSchema,
-                                     predicate: QueryPredicate,
-                                     namespace: Substring? = nil) -> SQLPredicate {
+private func translateQueryPredicate(
+    from modelSchema: ModelSchema,
+    predicate: QueryPredicate,
+    namespace: Substring? = nil
+) -> SQLPredicate {
     var sql: [String] = []
     var bindings: [Binding?] = []
     let indentPrefix = "  "
@@ -66,11 +68,11 @@ private func translateQueryPredicate(from modelSchema: ModelSchema,
 
     func resolveColumn(_ operation: QueryPredicateOperation) -> String {
         let modelField = modelSchema.field(withName: operation.field)
-        if let namespace = namespace, let modelField = modelField {
+        if let namespace, let modelField {
             return modelField.columnName(forNamespace: String(namespace))
-        } else if let modelField = modelField {
+        } else if let modelField {
             return modelField.columnName()
-        } else if let namespace = namespace {
+        } else if let namespace {
             return String(namespace).quoted() + "." + operation.field.quoted()
         }
         return operation.field.quoted()
@@ -150,9 +152,11 @@ struct ConditionStatement: SQLStatement {
     init(modelSchema: ModelSchema, predicate: QueryPredicate, namespace: Substring? = nil) {
         self.modelSchema = modelSchema
 
-        let (sql, variables) = translateQueryPredicate(from: modelSchema,
-                                                       predicate: predicate,
-                                                       namespace: namespace)
+        let (sql, variables) = translateQueryPredicate(
+            from: modelSchema,
+            predicate: predicate,
+            namespace: namespace
+        )
         self.stringValue = sql
         self.variables = variables
     }
