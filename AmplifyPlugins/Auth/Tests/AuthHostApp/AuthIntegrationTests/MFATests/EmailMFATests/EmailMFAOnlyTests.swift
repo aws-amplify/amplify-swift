@@ -10,8 +10,17 @@ import Amplify
 import AWSCognitoAuthPlugin
 import AWSAPIPlugin
 
+// Follow MFATests/EmailMFAOnlyTests/Readme.md for test setup locally
 // Test class for scenarios where only Email MFA is required.
 // - This test suite verifies the sign-in process when only Email MFA is enabled.
+//   loginWith: {
+//     email: true,
+//   },
+//   multifactor: {
+//     mode: "REQUIRED",
+//     sms: true,
+//     email: true, (email has not been added to backend at the time of writing this test)
+//   },
 class EmailMFARequiredTests: AWSAuthBaseTest {
 
     // Sets up the test environment with a custom configuration and adds required plugins
