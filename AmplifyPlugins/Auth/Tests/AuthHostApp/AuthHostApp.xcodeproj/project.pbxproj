@@ -68,6 +68,7 @@
 		487C403F2CADE8DA009CF221 /* EmailMFAOnlyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C403E2CADE88F009CF221 /* EmailMFAOnlyTests.swift */; };
 		487C40402CADE8DA009CF221 /* EmailMFAOnlyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C403E2CADE88F009CF221 /* EmailMFAOnlyTests.swift */; };
 		487C40412CADE8DA009CF221 /* EmailMFAOnlyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C403E2CADE88F009CF221 /* EmailMFAOnlyTests.swift */; };
+		487C40432CAE2905009CF221 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 487C40422CAE2905009CF221 /* AWSAPIPlugin */; };
 		48916F382A412B2800E3E1B1 /* TOTPSetupWhenAuthenticatedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F372A412B2800E3E1B1 /* TOTPSetupWhenAuthenticatedTests.swift */; };
 		48916F3A2A412CEE00E3E1B1 /* TOTPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F392A412CEE00E3E1B1 /* TOTPHelper.swift */; };
 		48916F3C2A42333E00E3E1B1 /* MFAPreferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F3B2A42333E00E3E1B1 /* MFAPreferenceTests.swift */; };
@@ -259,6 +260,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				487C40432CAE2905009CF221 /* AWSAPIPlugin in Frameworks */,
 				681B769A2A3CBA97004B59D9 /* Amplify in Frameworks */,
 				681B769C2A3CBA97004B59D9 /* AWSCognitoAuthPlugin in Frameworks */,
 			);
@@ -600,6 +602,7 @@
 			packageProductDependencies = (
 				681B76992A3CBA97004B59D9 /* Amplify */,
 				681B769B2A3CBA97004B59D9 /* AWSCognitoAuthPlugin */,
+				487C40422CAE2905009CF221 /* AWSAPIPlugin */,
 			);
 			productName = "AuthWatchApp Watch App";
 			productReference = 681B76802A3CB86B004B59D9 /* AuthWatchApp.app */;
@@ -1517,6 +1520,10 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		487C40372CACFD50009CF221 /* AWSAPIPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSAPIPlugin;
+		};
+		487C40422CAE2905009CF221 /* AWSAPIPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSAPIPlugin;
 		};
