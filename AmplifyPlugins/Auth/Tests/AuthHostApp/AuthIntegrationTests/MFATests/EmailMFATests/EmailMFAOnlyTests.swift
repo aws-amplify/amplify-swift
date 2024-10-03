@@ -126,4 +126,94 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
             XCTFail("Unexpected error: \(error)")
         }
     }
+
+
+    /// Test the sign-in flow when an incorrect MFA code is entered first, followed by the correct MFA code.
+    ///
+    /// - Given: A new user is created, and only Email MFA is required for the account.
+    /// - When: The user provides valid username and password, receives the MFA code via email, enters an incorrect code,
+    ///         and then enters the correct MFA code.
+    /// - Then: The user should receive a `codeMismatch` error for the incorrect code, but after entering the correct MFA code,
+    ///         they should successfully complete the MFA process and sign in.
+    ///
+    /// - MFA Setup Flow:
+    ///     - Step 1: User signs in and receives the `confirmSignInWithEmailMFACode` challenge.
+    ///     - Step 2: User enters an incorrect MFA code and receives a `codeMismatch` error.
+    ///     - Step 3: User enters the correct MFA code.
+    ///     - Step 4: Sign-in completes, and the email is associated with the user account.
+    func testSuccessfulEmailMFAWithIncorrectCodeFirstAndThenValidOne() async {
+        do {
+            // Step 1: Set up a subscription to receive MFA codes
+            createMFASubscription()
+
+            // Step 2: Sign up a new user
+            let uniqueId = UUID().uuidString
+            let username = "integTest\(uniqueId)"
+            let password = "Pp123@\(uniqueId)"
+
+            _ = try await AuthSignInHelper.signUpUserReturningResult(
+                username: username,
+                password: password,
+                email: username + "@integTest.com")
+
+            let options = AuthSignInRequest.Options()
+
+            // Step 3: Initiate sign-in, expecting MFA setup to be required
+            let result = try await Amplify.Auth.signIn(
+                username: username,
+                password: password,
+                options: options)
+
+            // Step 6: Ensure that the next step is to confirm the Email MFA code
+            guard case .confirmSignInWithEmailMFACode(let deliveryDetails) = result.nextStep else {
+                XCTFail("Expected .confirmSignInWithEmailMFACode step, got \(result.nextStep)")
+                return
+            }
+            if case .email(let destination) = deliveryDetails.destination {
+                XCTAssertNotNil(destination, "Email destination should be provided")
+            } else {
+                XCTFail("Expected the destination to be email")
+            }
+
+            XCTAssertFalse(result.isSignedIn, "User should not be signed in at this stage")
+
+            // Step 7: Retrieve the MFA code sent to the email and confirm the sign-in
+            guard let mfaCode = try await waitForMFACode(for: username.lowercased()) else {
+                XCTFail("Failed to retrieve the MFA code")
+                return
+            }
+
+            // Step 6: Enter an incorrect MFA code first
+            do {
+                _ = try await Amplify.Auth.confirmSignIn(
+                    challengeResponse: "000000",
+                    options: .init())
+            } catch AuthError.service(_, _, let error) {
+
+                guard let underlyingError = error as? AWSCognitoAuthError else {
+                    XCTFail("Expected an AWS Cognito Auth error")
+                    return
+                }
+                guard underlyingError == .codeMismatch else {
+                    XCTFail("Expected .codeMismatch error")
+                    return
+                }
+
+                // Step 7: Enter the correct MFA code
+                let confirmSignInResult = try await Amplify.Auth.confirmSignIn(
+                    challengeResponse: mfaCode,
+                    options: .init())
+
+                // Step 8: Ensure that the sign-in process is complete
+                guard case .done = confirmSignInResult.nextStep else {
+                    XCTFail("Expected .done step after confirming MFA")
+                    return
+                }
+                XCTAssertTrue(confirmSignInResult.isSignedIn, "User should be signed in at this stage")
+                XCTAssertFalse(result.isSignedIn, "User should not be signed in at the initial stage")
+            }
+        } catch {
+            XCTFail("Unexpected error: \(error)")
+        }
+    }
 }
