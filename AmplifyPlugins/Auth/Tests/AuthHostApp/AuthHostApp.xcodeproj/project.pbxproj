@@ -61,6 +61,13 @@
 		485CB5C027B61F1E006CCEC7 /* SignedOutAuthSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BC27B61F1D006CCEC7 /* SignedOutAuthSessionTests.swift */; };
 		485CB5C127B61F1E006CCEC7 /* AuthSignOutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BD27B61F1D006CCEC7 /* AuthSignOutTests.swift */; };
 		485CB5C227B61F1E006CCEC7 /* AuthSRPSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */; };
+		487C40232CACF303009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C40222CACF2FD009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift */; };
+		487C40242CACF303009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C40222CACF2FD009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift */; };
+		487C40252CACF303009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C40222CACF2FD009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift */; };
+		487C40382CACFD50009CF221 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 487C40372CACFD50009CF221 /* AWSAPIPlugin */; };
+		487C403F2CADE8DA009CF221 /* EmailMFAOnlyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C403E2CADE88F009CF221 /* EmailMFAOnlyTests.swift */; };
+		487C40402CADE8DA009CF221 /* EmailMFAOnlyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C403E2CADE88F009CF221 /* EmailMFAOnlyTests.swift */; };
+		487C40412CADE8DA009CF221 /* EmailMFAOnlyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C403E2CADE88F009CF221 /* EmailMFAOnlyTests.swift */; };
 		48916F382A412B2800E3E1B1 /* TOTPSetupWhenAuthenticatedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F372A412B2800E3E1B1 /* TOTPSetupWhenAuthenticatedTests.swift */; };
 		48916F3A2A412CEE00E3E1B1 /* TOTPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F392A412CEE00E3E1B1 /* TOTPHelper.swift */; };
 		48916F3C2A42333E00E3E1B1 /* MFAPreferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F3B2A42333E00E3E1B1 /* MFAPreferenceTests.swift */; };
@@ -196,6 +203,8 @@
 		485CB5BC27B61F1D006CCEC7 /* SignedOutAuthSessionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignedOutAuthSessionTests.swift; sourceTree = "<group>"; };
 		485CB5BD27B61F1D006CCEC7 /* AuthSignOutTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSignOutTests.swift; sourceTree = "<group>"; };
 		485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSRPSignInTests.swift; sourceTree = "<group>"; };
+		487C40222CACF2FD009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailMFAWithAllMFATypesRequiredTests.swift; sourceTree = "<group>"; };
+		487C403E2CADE88F009CF221 /* EmailMFAOnlyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailMFAOnlyTests.swift; sourceTree = "<group>"; };
 		48916F372A412B2800E3E1B1 /* TOTPSetupWhenAuthenticatedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOTPSetupWhenAuthenticatedTests.swift; sourceTree = "<group>"; };
 		48916F392A412CEE00E3E1B1 /* TOTPHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOTPHelper.swift; sourceTree = "<group>"; };
 		48916F3B2A42333E00E3E1B1 /* MFAPreferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MFAPreferenceTests.swift; sourceTree = "<group>"; };
@@ -232,6 +241,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				487C40382CACFD50009CF221 /* AWSAPIPlugin in Frameworks */,
 				B4B9F45828F47C0A004F346F /* Amplify in Frameworks */,
 				B4B9F45A28F47C0A004F346F /* AWSCognitoAuthPlugin in Frameworks */,
 			);
@@ -432,9 +442,19 @@
 			name = Packages;
 			sourceTree = "<group>";
 		};
+		487C403D2CADBC37009CF221 /* EmailMFATests */ = {
+			isa = PBXGroup;
+			children = (
+				487C403E2CADE88F009CF221 /* EmailMFAOnlyTests.swift */,
+				487C40222CACF2FD009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift */,
+			);
+			path = EmailMFATests;
+			sourceTree = "<group>";
+		};
 		48916F362A412AF800E3E1B1 /* MFATests */ = {
 			isa = PBXGroup;
 			children = (
+				487C403D2CADBC37009CF221 /* EmailMFATests */,
 				48916F372A412B2800E3E1B1 /* TOTPSetupWhenAuthenticatedTests.swift */,
 				48916F3B2A42333E00E3E1B1 /* MFAPreferenceTests.swift */,
 				48599D492A429893009DE21C /* MFASignInTests.swift */,
@@ -534,6 +554,7 @@
 			packageProductDependencies = (
 				B4B9F45728F47C0A004F346F /* Amplify */,
 				B4B9F45928F47C0A004F346F /* AWSCognitoAuthPlugin */,
+				487C40372CACFD50009CF221 /* AWSAPIPlugin */,
 			);
 			productName = AuthHostApp;
 			productReference = 485CB53A27B614CE006CCEC7 /* AuthHostApp.app */;
@@ -819,6 +840,7 @@
 				21F762B22BD6B1AA0048845A /* SignedOutAuthSessionTests.swift in Sources */,
 				21F762B32BD6B1AA0048845A /* AuthSignInHelper.swift in Sources */,
 				21F762B42BD6B1AA0048845A /* FederatedSessionTests.swift in Sources */,
+				487C40402CADE8DA009CF221 /* EmailMFAOnlyTests.swift in Sources */,
 				21F762B52BD6B1AA0048845A /* AuthCustomSignInTests.swift in Sources */,
 				21F762B62BD6B1AA0048845A /* AuthEventIntegrationTests.swift in Sources */,
 				21F762B72BD6B1AA0048845A /* AuthEnvironmentHelper.swift in Sources */,
@@ -832,6 +854,7 @@
 				21F762BF2BD6B1AA0048845A /* MFASignInTests.swift in Sources */,
 				21F762C02BD6B1AA0048845A /* SignedInAuthSessionTests.swift in Sources */,
 				21F762C12BD6B1AA0048845A /* AuthSignUpTests.swift in Sources */,
+				487C40252CACF303009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift in Sources */,
 				21F762C22BD6B1AA0048845A /* AuthConfirmResetPasswordTests.swift in Sources */,
 				21F762C32BD6B1AA0048845A /* AuthDeleteUserTests.swift in Sources */,
 			);
@@ -851,6 +874,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				485CB5B927B61F10006CCEC7 /* AuthSessionHelper.swift in Sources */,
+				487C403F2CADE8DA009CF221 /* EmailMFAOnlyTests.swift in Sources */,
 				681DFEAB28E747B80000C36A /* AsyncTesting.swift in Sources */,
 				485CB5C227B61F1E006CCEC7 /* AuthSRPSignInTests.swift in Sources */,
 				9737C7502880BFD600DA0D2B /* AuthForgetDeviceTests.swift in Sources */,
@@ -863,6 +887,7 @@
 				48E3AB3128E52590004EE395 /* GetCurrentUserTests.swift in Sources */,
 				48916F3A2A412CEE00E3E1B1 /* TOTPHelper.swift in Sources */,
 				21CFD7C62C7524570071C70F /* AppSyncSignerTests.swift in Sources */,
+				487C40232CACF303009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift in Sources */,
 				485CB5B127B61EAC006CCEC7 /* AWSAuthBaseTest.swift in Sources */,
 				485CB5C027B61F1E006CCEC7 /* SignedOutAuthSessionTests.swift in Sources */,
 				485CB5BA27B61F10006CCEC7 /* AuthSignInHelper.swift in Sources */,
@@ -914,6 +939,7 @@
 				681B76AC2A3CBBAE004B59D9 /* AWSAuthBaseTest.swift in Sources */,
 				681B76AD2A3CBBAE004B59D9 /* SignedOutAuthSessionTests.swift in Sources */,
 				681B76AE2A3CBBAE004B59D9 /* AuthSignInHelper.swift in Sources */,
+				487C40412CADE8DA009CF221 /* EmailMFAOnlyTests.swift in Sources */,
 				681B76AF2A3CBBAE004B59D9 /* FederatedSessionTests.swift in Sources */,
 				681B76B02A3CBBAE004B59D9 /* AuthCustomSignInTests.swift in Sources */,
 				681B76B12A3CBBAE004B59D9 /* AuthEventIntegrationTests.swift in Sources */,
@@ -927,6 +953,7 @@
 				681B76B92A3CBBAE004B59D9 /* SignedInAuthSessionTests.swift in Sources */,
 				681B76BA2A3CBBAE004B59D9 /* AuthSignUpTests.swift in Sources */,
 				681B76BB2A3CBBAE004B59D9 /* AuthConfirmResetPasswordTests.swift in Sources */,
+				487C40242CACF303009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift in Sources */,
 				48BCE8942A54564C0012C3CD /* MFASignInTests.swift in Sources */,
 				681B76BC2A3CBBAE004B59D9 /* AuthDeleteUserTests.swift in Sources */,
 			);
@@ -1479,6 +1506,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		487C40372CACFD50009CF221 /* AWSAPIPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSAPIPlugin;
+		};
 		681B76992A3CBA97004B59D9 /* Amplify */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Amplify;
