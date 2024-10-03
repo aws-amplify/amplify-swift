@@ -10,8 +10,18 @@ import Amplify
 import AWSCognitoAuthPlugin
 import AWSAPIPlugin
 
+// Follow MFATests/EmailMFAOnlyTests/Readme.md for test setup locally
 // Test class for MFA Required scenario with Email, TOTP, and SMS MFA enabled.
 // - This test suite verifies various steps in the MFA sign-in process when multiple MFA types (Email, TOTP, SMS) are required.
+//   loginWith: {
+//     email: true,
+//   },
+//   multifactor: {
+//     mode: "REQUIRED",
+//     sms: true,
+//     totp: true,
+//     email: true, (email has not been added to backend at the time of writing this test)
+//   },
 class EmailMFAWithAllMFATypesRequiredTests: AWSAuthBaseTest {
 
     // Sets up the test environment using Gen2 configuration and adds required plugins
