@@ -92,6 +92,36 @@ export const handler: PreSignUpTriggerHandler = async (event) => {
   return event;
 };
 ```
+Create a file `amplify/data/mfa/index.graphql` with the following content
+
+```graphql
+# A Graphql Schema for creating Mfa info such as code and username.
+
+type Query {
+	listMfaInfo: [MfaInfo] @aws_api_key
+}
+
+type Mutation {
+	createMfaInfo(input: CreateMfaInfoInput!): MfaInfo @aws_api_key
+}
+
+type Subscription {
+	onCreateMfaInfo(username: String): MfaInfo
+		@aws_subscribe(mutations: ["createMfaInfo"])
+}
+
+input CreateMfaInfoInput {
+	username: String!
+	code: String!
+	expirationTime: AWSTimestamp!
+}
+
+type MfaInfo {
+	username: String!
+	code: String!
+	expirationTime: AWSTimestamp!
+}
+```
 
 Update `amplify/data/mfa/index.ts`. The resulting file should look like this
 
