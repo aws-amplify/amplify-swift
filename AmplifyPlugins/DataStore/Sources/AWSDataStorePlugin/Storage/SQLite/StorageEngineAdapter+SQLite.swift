@@ -75,6 +75,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         pragma auto_vacuum = full;
         pragma encoding = "utf-8";
         pragma foreign_keys = on;
+        pragma journal_mode = WAL;
         pragma case_sensitive_like = off;
         """
 
@@ -507,6 +508,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let fileManager = FileManager.default
         do {
             try fileManager.removeItem(at: dbFilePath)
+            try fileManager.removeItem(at: dbFilePath.deletingPathExtension().appendingPathExtension("db-wal"))
+            try fileManager.removeItem(at: dbFilePath.deletingPathExtension().appendingPathExtension("db-shm"))
         } catch {
             log.error("Failed to delete database file located at: \(dbFilePath), error: \(error)")
             completion(.failure(causedBy: DataStoreError.invalidDatabase(path: dbFilePath.absoluteString, error)))
@@ -543,6 +546,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         log.verbose("\(#function) Warning: Schema change detected, removing your previous database")
         do {
             try fileManager.removeItem(at: dbFilePath)
+            try fileManager.removeItem(at: dbFilePath.deletingPathExtension().appendingPathExtension("db-wal"))
+            try fileManager.removeItem(at: dbFilePath.deletingPathExtension().appendingPathExtension("db-shm"))
         } catch {
             log.error("\(#function) Failed to delete database file located at: \(dbFilePath), error: \(error)")
             throw DataStoreError.invalidDatabase(path: dbFilePath.path, error)
