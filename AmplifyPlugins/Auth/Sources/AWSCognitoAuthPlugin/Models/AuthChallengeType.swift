@@ -22,6 +22,8 @@ enum AuthChallengeType {
 
     case setUpMFA
 
+    case emailMFA
+
     case unknown(CognitoIdentityProviderClientTypes.ChallengeNameType)
 
 }
@@ -41,6 +43,8 @@ extension CognitoIdentityProviderClientTypes.ChallengeNameType: Codable {
             return .selectMFAType
         case .mfaSetup:
             return .setUpMFA
+        case .emailOtp:
+            return .emailMFA
         default:
             return .unknown(self)
         }

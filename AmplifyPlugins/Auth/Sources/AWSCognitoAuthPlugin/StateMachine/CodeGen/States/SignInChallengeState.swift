@@ -6,18 +6,19 @@
 //
 
 import Foundation
+import Amplify
 
 enum SignInChallengeState: State {
 
     case notStarted
 
-    case waitingForAnswer(RespondToAuthChallenge, SignInMethod)
+    case waitingForAnswer(RespondToAuthChallenge, SignInMethod, AuthSignInStep)
 
-    case verifying(RespondToAuthChallenge, SignInMethod, String)
+    case verifying(RespondToAuthChallenge, SignInMethod, String, AuthSignInStep)
 
     case verified
 
-    case error(RespondToAuthChallenge, SignInMethod, SignInError)
+    case error(RespondToAuthChallenge, SignInMethod, SignInError, AuthSignInStep)
 }
 
 extension SignInChallengeState {
