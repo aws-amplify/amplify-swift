@@ -13,10 +13,10 @@ extension SignInChallengeState: CustomDebugDictionaryConvertible {
         let additionalMetadataDictionary: [String: Any]
         switch self {
 
-        case .waitingForAnswer(let respondAuthChallenge, _),
-                .verifying(let respondAuthChallenge, _, _):
+        case .waitingForAnswer(let respondAuthChallenge, _, _),
+                .verifying(let respondAuthChallenge, _, _, _):
             additionalMetadataDictionary = respondAuthChallenge.debugDictionary
-        case .error(let respondAuthChallenge, _, let error):
+        case .error(let respondAuthChallenge, _, let error, _):
             additionalMetadataDictionary = respondAuthChallenge.debugDictionary.merging(
                 [
                     "error": error

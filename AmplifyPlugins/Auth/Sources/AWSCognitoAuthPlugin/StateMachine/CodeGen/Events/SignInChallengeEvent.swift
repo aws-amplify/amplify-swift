@@ -6,16 +6,17 @@
 //
 
 import Foundation
+import Amplify
 
 struct SignInChallengeEvent: StateMachineEvent {
 
     enum EventType: Equatable {
 
-        case waitForAnswer(RespondToAuthChallenge, SignInMethod)
+        case waitForAnswer(RespondToAuthChallenge, SignInMethod, AuthSignInStep)
 
         case verifyChallengeAnswer(ConfirmSignInEventData)
 
-        case retryVerifyChallengeAnswer(ConfirmSignInEventData)
+        case retryVerifyChallengeAnswer(ConfirmSignInEventData, AuthSignInStep)
 
         case verified
 

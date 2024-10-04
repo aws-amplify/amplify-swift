@@ -10,7 +10,7 @@ import Foundation
 struct InitializeTOTPSetup: Action {
 
     var identifier: String = "InitializeTOTPSetup"
-    let authResponse: SignInResponseBehavior
+    let authResponse: RespondToAuthChallenge
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Start execution", environment: environment)
@@ -26,9 +26,9 @@ extension InitializeTOTPSetup: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
-            "challengeName": authResponse.challengeName?.rawValue ?? "",
+            "challengeName": authResponse.challenge.rawValue,
             "session": authResponse.session?.masked() ?? "",
-            "challengeParameters": authResponse.challengeParameters ?? [:]
+            "challengeParameters": authResponse.parameters ?? [:]
         ]
     }
 }

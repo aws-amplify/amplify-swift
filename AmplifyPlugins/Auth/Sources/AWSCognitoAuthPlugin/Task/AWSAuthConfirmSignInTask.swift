@@ -55,7 +55,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         if case .resolvingChallenge(let challengeState, let challengeType, _) = signInState {
 
             // Validate if request valid MFA selection
-            if case .selectMFAType = challengeType {
+            if challengeType == .selectMFAType {
                 try validateRequestForMFASelection()
             }
 

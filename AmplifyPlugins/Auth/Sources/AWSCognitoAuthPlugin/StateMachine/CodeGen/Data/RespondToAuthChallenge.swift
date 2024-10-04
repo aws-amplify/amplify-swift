@@ -34,6 +34,8 @@ extension RespondToAuthChallenge {
         let destination = parameters["CODE_DELIVERY_DESTINATION"]
         if medium == "SMS" {
             deliveryDestination = .sms(destination)
+        } else if medium == "EMAIL" {
+            deliveryDestination = .email(destination)
         }
         return AuthCodeDeliveryDetails(destination: deliveryDestination,
                                        attributeKey: nil)
@@ -71,6 +73,10 @@ extension RespondToAuthChallenge {
         case .smsMfa: return "SMS_MFA_CODE"
         case .softwareTokenMfa: return "SOFTWARE_TOKEN_MFA_CODE"
         case .newPasswordRequired: return "NEW_PASSWORD"
+        case .emailOtp: return "EMAIL_OTP_CODE"
+        // At the moment of writing this code, `mfaSetup` only supports EMAIL.
+        // TOTP is not part of it because, it follows a completely different setup path
+        case .mfaSetup: return "EMAIL"
         default:
             let message = "Unsupported challenge type for response key generation \(challenge)"
             let error = SignInError.unknown(message: message)
