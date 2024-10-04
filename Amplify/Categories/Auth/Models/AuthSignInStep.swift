@@ -47,6 +47,7 @@ public enum AuthSignInStep {
     ///
     case continueSignInWithMFASetupSelection(AllowedMFATypes)
 
+
     /// Auth step is for confirming sign in with OTP
     ///
     /// OTP for the factor will be sent to the delivery medium.
