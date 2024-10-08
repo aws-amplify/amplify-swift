@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 protocol LoggingConstraintsLocalStore {
     func getLocalLoggingConstraints() -> LoggingConstraints?

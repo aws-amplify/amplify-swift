@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSPluginsCore
 import Amplify
+import AWSClientRuntime
+import AWSCloudWatchLogs
+import AWSPluginsCore
 import Combine
 import Foundation
-import AWSCloudWatchLogs
-import AWSClientRuntime
 import Network
 
 /// Concrete implementation of
@@ -57,7 +57,7 @@ final class AWSCloudWatchLoggingCategoryClient {
         self.networkMonitor = networkMonitor
         self.networkMonitor.startMonitoring(using: DispatchQueue(label: "com.amazonaws.awscloudwatchlogging.networkmonitor"))
         self.automaticFlushLogMonitor = AWSCLoudWatchLoggingMonitor(flushIntervalInSeconds: TimeInterval(flushIntervalInSeconds), eventDelegate: self)
-        self.automaticFlushLogMonitor?.setAutomaticFlushIntervals()
+        automaticFlushLogMonitor?.setAutomaticFlushIntervals()
         self.authSubscription = Amplify.Hub.publisher(for: .auth).sink { [weak self] payload in
             self?.handle(payload: payload)
         }
@@ -92,8 +92,8 @@ final class AWSCloudWatchLoggingCategoryClient {
         case HubPayload.EventName.Auth.signedIn, CognitoEventName.signInAPI.rawValue:
             takeUserIdentifierFromCurrentUser()
         case HubPayload.EventName.Auth.signedOut, CognitoEventName.signOutAPI.rawValue:
-            self.userIdentifier = nil
-            self.updateSessionControllers()
+            userIdentifier = nil
+            updateSessionControllers()
         default:
             break
         }
@@ -135,7 +135,7 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
     }
 
     var `default`: Logger {
-        return self.logger(forCategory: "Amplify")
+        return logger(forCategory: "Amplify")
     }
 
     func logger(forCategory category: String, namespace: String?, logLevel: Amplify.LogLevel) -> Logger {
@@ -145,17 +145,19 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
                 return existing
             }
 
-            let controller = AWSCloudWatchLoggingSessionController(credentialsProvider: credentialsProvider,
-                                                                   authentication: authentication,
-                                                                   logFilter: self.logFilter,
-                                                                   category: category,
-                                                                   namespace: namespace,
-                                                                   logLevel: logLevel,
-                                                                   logGroupName: self.logGroupName,
-                                                                   region: self.region,
-                                                                   localStoreMaxSizeInMB: self.localStoreMaxSizeInMB,
-                                                                   userIdentifier: self.userIdentifier,
-                                                                   networkMonitor: self.networkMonitor)
+            let controller = AWSCloudWatchLoggingSessionController(
+                credentialsProvider: credentialsProvider,
+                authentication: authentication,
+                logFilter: self.logFilter,
+                category: category,
+                namespace: namespace,
+                logLevel: logLevel,
+                logGroupName: self.logGroupName,
+                region: self.region,
+                localStoreMaxSizeInMB: self.localStoreMaxSizeInMB,
+                userIdentifier: self.userIdentifier,
+                networkMonitor: self.networkMonitor
+            )
             if enabled {
                 controller.enable()
             }
@@ -165,21 +167,21 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
     }
 
     func logger(forCategory category: String, logLevel: LogLevel) -> Logger {
-        return self.logger(forCategory: category, namespace: nil, logLevel: logLevel)
+        return logger(forCategory: category, namespace: nil, logLevel: logLevel)
     }
 
     func logger(forCategory category: String) -> Logger {
-        let defaultLogLevel = logFilter.getDefaultLogLevel(forCategory: category, userIdentifier: self.userIdentifier)
-        return self.logger(forCategory: category, namespace: nil, logLevel: defaultLogLevel)
+        let defaultLogLevel = logFilter.getDefaultLogLevel(forCategory: category, userIdentifier: userIdentifier)
+        return logger(forCategory: category, namespace: nil, logLevel: defaultLogLevel)
     }
 
     func logger(forNamespace namespace: String) -> Logger {
-        self.logger(forCategory: namespace)
+        logger(forCategory: namespace)
     }
 
     func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
-        let defaultLogLevel = logFilter.getDefaultLogLevel(forCategory: category, userIdentifier: self.userIdentifier)
-        return self.logger(forCategory: category, namespace: namespace, logLevel: defaultLogLevel)
+        let defaultLogLevel = logFilter.getDefaultLogLevel(forCategory: category, userIdentifier: userIdentifier)
+        return logger(forCategory: category, namespace: namespace, logLevel: defaultLogLevel)
     }
 
     func getInternalClient() -> CloudWatchLogsClientProtocol {
