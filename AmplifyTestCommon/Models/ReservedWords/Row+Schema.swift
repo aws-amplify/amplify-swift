@@ -5,20 +5,20 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
-extension Row {
+public extension Row {
     // MARK: - CodingKeys
-    public enum CodingKeys: String, ModelKey {
+    enum CodingKeys: String, ModelKey {
         case id
         case group
     }
 
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
     // MARK: - ModelSchema
 
-    public static let schema = defineSchema { model in
+    static let schema = defineSchema { model in
         let row = Row.keys
 
         model.listPluralName = "Rows"

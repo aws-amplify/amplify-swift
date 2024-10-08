@@ -9,19 +9,19 @@
 import Amplify
 import Foundation
 
-extension TodoWithDefaultValueV2 {
+public extension TodoWithDefaultValueV2 {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case content
     case createdAt
     case updatedAt
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let todoWithDefaultValueV2 = TodoWithDefaultValueV2.keys
 
     model.pluralName = "TodoWithDefaultValueV2s"

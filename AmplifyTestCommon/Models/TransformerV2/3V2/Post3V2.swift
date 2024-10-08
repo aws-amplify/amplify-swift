@@ -16,20 +16,26 @@ public struct Post3V2: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      title: String,
-      comments: List<Comment3V2>? = []) {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    title: String,
+    comments: List<Comment3V2>? = []
+  ) {
+    self.init(
+      id: id,
       title: title,
       comments: comments,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      title: String,
-      comments: List<Comment3V2>? = [],
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    title: String,
+    comments: List<Comment3V2>? = [],
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.title = title
       self.comments = comments

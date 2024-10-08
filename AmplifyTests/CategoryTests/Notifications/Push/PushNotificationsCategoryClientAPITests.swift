@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import Amplify
-@testable import AmplifyTestCommon
 import UserNotifications
 import XCTest
+@testable import Amplify
+@testable import AmplifyTestCommon
 
 class PushNotificationsCategoryClientAPITests: XCTestCase {
     private var category: PushNotificationsCategory!
@@ -18,11 +18,11 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
         await Amplify.reset()
         category = Amplify.Notifications.Push
         plugin = MockPushNotificationsCategoryPlugin()
-        
+
         let categoryConfiguration = NotificationsCategoryConfiguration(
             plugins: ["MockPushNotificationsCategoryPlugin": true]
         )
-        
+
         let amplifyConfiguration = AmplifyConfiguration(notifications: categoryConfiguration)
         try Amplify.add(plugin: plugin)
         try Amplify.configure(amplifyConfiguration)

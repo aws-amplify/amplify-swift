@@ -8,12 +8,12 @@
 import Foundation
 import XCTest
 
+@_implementationOnly import AmplifyAsyncTesting
 @testable import Amplify
 @testable import AmplifyTestCommon
-@_implementationOnly import AmplifyAsyncTesting
 
 class InternalTaskTests: XCTestCase {
-    
+
     override func setUp() async throws {
         await Amplify.reset()
     }
@@ -127,7 +127,7 @@ class InternalTaskTests: XCTestCase {
 
         await fulfillment(of: [done], timeout: timeout)
     }
-    
+
     // MARK: - Random Emoji (Throwing) -
 
     func testRandomEmojiTaskRunner() async throws {

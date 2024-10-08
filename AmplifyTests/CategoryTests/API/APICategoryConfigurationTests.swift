@@ -99,8 +99,10 @@ class APICategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         await Amplify.reset()
-        XCTAssertThrowsError(try Amplify.API.getPlugin(for: "MockAPICategoryPlugin"),
-                             "Getting a plugin after reset() should throw") { error in
+        XCTAssertThrowsError(
+            try Amplify.API.getPlugin(for: "MockAPICategoryPlugin"),
+            "Getting a plugin after reset() should throw"
+        ) { error in
                                 guard case APIError.invalidConfiguration = error else {
                                     XCTFail("Expected PluginError.noSuchPlugin")
                                     return
@@ -213,7 +215,7 @@ class APICategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(api: apiConfig)
 
         try Amplify.configure(amplifyConfig)
-        
+
         let getCompleted = expectation(description: "get completed")
         Task {
             let plugin = try Amplify.API.getPlugin(for: "MockSecondAPICategoryPlugin")
@@ -286,8 +288,10 @@ class APICategoryConfigurationTests: XCTestCase {
 
         try Amplify.API.configure(using: categoryConfig)
 
-        XCTAssertThrowsError(try Amplify.API.configure(using: categoryConfig),
-                             "configure() an already configured plugin should throw") { error in
+        XCTAssertThrowsError(
+            try Amplify.API.configure(using: categoryConfig),
+            "configure() an already configured plugin should throw"
+        ) { error in
                                 guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                                     XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                                     return
@@ -395,8 +399,10 @@ class APICategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        XCTAssertThrowsError(try Amplify.add(plugin: plugin),
-                             "configure() an already configured plugin should throw") { error in
+        XCTAssertThrowsError(
+            try Amplify.add(plugin: plugin),
+            "configure() an already configured plugin should throw"
+        ) { error in
                                 guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                                     XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                                     return

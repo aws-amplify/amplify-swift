@@ -6,8 +6,8 @@
 //
 
 #if canImport(Combine)
-import XCTest
 import Combine
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -57,10 +57,14 @@ class AmplifyInProcessReportingOperationChainedTests: XCTestCase {
         mockOp1.main()
         mockOp2.main()
 
-        await fulfillment(of: [receivedValue,
-                               receivedFailure,
-                               receivedFinished],
-                          timeout: 0.05)
+        await fulfillment(
+            of: [
+                receivedValue,
+                receivedFailure,
+                receivedFinished
+            ],
+            timeout: 0.05
+        )
         sink.cancel()
     }
 
@@ -90,7 +94,7 @@ class AmplifyInProcessReportingOperationChainedTests: XCTestCase {
         let sink = Publishers.Zip(
             mockOp1.internalResultPublisher,
             mockOp2.internalResultPublisher
-        ).flatMap { (_, _) -> AnyPublisher<Int, APIError> in
+        ).flatMap { _, _ -> AnyPublisher<Int, APIError> in
             let mockOp = MockPublisherInProcessOperation(responder: failureResponder)
             mockOp.main()
             return mockOp.internalResultPublisher
@@ -112,10 +116,14 @@ class AmplifyInProcessReportingOperationChainedTests: XCTestCase {
         mockOp1.main()
         mockOp2.main()
 
-        await fulfillment(of: [receivedValue,
-                               receivedFailure,
-                               receivedFinished],
-                          timeout: 0.05)
+        await fulfillment(
+            of: [
+                receivedValue,
+                receivedFailure,
+                receivedFinished
+            ],
+            timeout: 0.05
+        )
         sink.cancel()
     }
 
@@ -162,10 +170,14 @@ class AmplifyInProcessReportingOperationChainedTests: XCTestCase {
         mockOp1.main()
         mockOp2.main()
 
-        await fulfillment(of: [receivedValue,
-                               receivedFailure,
-                               receivedFinished],
-                          timeout: 0.05)
+        await fulfillment(
+            of: [
+                receivedValue,
+                receivedFailure,
+                receivedFinished
+            ],
+            timeout: 0.05
+        )
         sink.cancel()
     }
 

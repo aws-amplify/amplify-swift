@@ -22,9 +22,11 @@ public struct CustomerOrder: Model {
   public var orderId: String
   public var email: String
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       orderId: String,
-      email: String) {
+      email: String
+  ) {
       self.id = id
       self.orderId = orderId
       self.email = email

@@ -11,7 +11,7 @@ import XCTest
 class FoundationUtilsTests: XCTestCase {
 
     func test_isEmpty_extensionPlaysNicelyWithStandardLib_Array() {
-        let notEmpty: [String] = ["Foo"]
+        let notEmpty = ["Foo"]
         XCTAssertFalse(notEmpty.isEmpty)
 
         let empty: [String] = []
@@ -19,7 +19,7 @@ class FoundationUtilsTests: XCTestCase {
     }
 
     func test_isEmpty_extensionPlaysNicelyWithStandardLib_Dict() {
-        let notEmpty: [String: Int] = ["Foo": 1]
+        let notEmpty = ["Foo": 1]
         XCTAssertFalse(notEmpty.isEmpty)
 
         let empty: [String: Int] = [:]
@@ -27,10 +27,10 @@ class FoundationUtilsTests: XCTestCase {
     }
 
     func test_isEmpty_String() {
-        let notEmpty: String = "Foo"
+        let notEmpty = "Foo"
         XCTAssertFalse(notEmpty.isEmpty)
 
-        let empty: String = ""
+        let empty = ""
         XCTAssert(empty.isEmpty)
 
         let notEmptyOptional: String? = "Foo"
@@ -44,7 +44,7 @@ class FoundationUtilsTests: XCTestCase {
     }
 
     func test_isEmpty_Array() {
-        let notEmpty: [String] = ["Foo"]
+        let notEmpty = ["Foo"]
         XCTAssertFalse(notEmpty.isEmpty)
 
         let empty: [String] = []
@@ -61,7 +61,7 @@ class FoundationUtilsTests: XCTestCase {
     }
 
     func test_isEmpty_Dict() {
-        let notEmpty: [String: Int] = ["Foo": 1]
+        let notEmpty = ["Foo": 1]
         XCTAssertFalse(notEmpty.isEmpty)
 
         let empty: [String: Int] = [:]
