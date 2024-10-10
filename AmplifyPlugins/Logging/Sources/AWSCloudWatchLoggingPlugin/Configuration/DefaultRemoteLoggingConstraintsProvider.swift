@@ -5,9 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import AWSClientRuntime
 import AWSPluginsCore
+import ClientRuntime
+import Foundation
 import InternalAmplifyCredentials
 import Smithy
 import SmithyIdentity
@@ -44,7 +46,7 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
         }
         self.region = region
         self.refreshIntervalInSeconds = refreshIntervalInSeconds
-        self.setupAutomaticRefreshInterval()
+        setupAutomaticRefreshInterval()
     }
 
     public func fetchLoggingConstraints() async throws -> LoggingConstraints {
@@ -102,7 +104,7 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
             .withHeaders(.init(request.allHTTPHeaderFields ?? [:]))
             .withBody(.data(request.httpBody))
 
-        guard let credentialProvider = self.credentialProvider else {
+        guard let credentialProvider else {
             return request
         }
 
@@ -140,16 +142,19 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
         }
 
         refreshTimer = Self.createRepeatingTimer(
-            timeInterval: TimeInterval(self.refreshIntervalInSeconds),
+            timeInterval: TimeInterval(refreshIntervalInSeconds),
             eventHandler: { [weak self] in
-                guard let self = self else { return }
-                self.refresh()
-        })
+                guard let self else { return }
+                refresh()
+        }
+        )
         refreshTimer?.resume()
     }
 
-    static func createRepeatingTimer(timeInterval: TimeInterval,
-                                     eventHandler: @escaping () -> Void) -> DispatchSourceTimer {
+    static func createRepeatingTimer(
+        timeInterval: TimeInterval,
+        eventHandler: @escaping () -> Void
+    ) -> DispatchSourceTimer {
         let timer = DispatchSource.makeTimerSource(queue: DispatchQueue.global(qos: .background))
         timer.schedule(deadline: .now() + timeInterval, repeating: timeInterval)
         timer.setEventHandler(handler: eventHandler)

@@ -11,7 +11,7 @@ import XCTest
 @testable import AWSCloudWatchLoggingPlugin
 
 final class LogEntryTests: XCTestCase {
-    
+
     let levels = [
         LogLevel.error,
         LogLevel.warn,
@@ -19,7 +19,7 @@ final class LogEntryTests: XCTestCase {
         LogLevel.debug,
         LogLevel.verbose
     ]
-    
+
     /// Given: a Log Entry
     /// When: attributes are acccessed
     /// Then: attributes are set correctly
@@ -32,7 +32,7 @@ final class LogEntryTests: XCTestCase {
             XCTAssertEqual(sut.logLevel, level)
         }
     }
-    
+
     /// Given: a Log Entry
     /// When: encoding and decoding occurs
     /// Then: the log entry is endoded and decoded
@@ -49,7 +49,7 @@ final class LogEntryTests: XCTestCase {
             XCTAssertEqual(decoded.logLevel, level)
         }
     }
-    
+
     /// Given: a Log Entry json with invalid log level that is below 0
     /// When: decoding occurs
     /// Then: the log level defaults to Error

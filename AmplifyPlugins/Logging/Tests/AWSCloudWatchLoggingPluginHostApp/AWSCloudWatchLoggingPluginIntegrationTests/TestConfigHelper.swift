@@ -35,7 +35,7 @@ class TestConfigHelper {
         let url = URL(fileURLWithPath: path)
         return try Data(contentsOf: url)
     }
-    
+
     static func retrieveLoggingConfiguration(forResource: String) throws -> URL {
         guard let path = Bundle(for: self).path(forResource: forResource, ofType: "json") else {
             throw TestConfigError.bundlePathError("Could not retrieve logging configuration file: \(forResource)")

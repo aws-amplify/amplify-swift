@@ -5,9 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSPluginsCore
-@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 import Amplify
+import AWSClientRuntime
+import AWSCloudWatchLogs
+import AWSPluginsCore
 import Combine
 import Foundation
 import AWSCloudWatchLogs
@@ -54,7 +55,7 @@ final class AWSCloudWatchLoggingSessionController {
 
     var logLevel: LogLevel {
         didSet {
-            self.session?.logger.logLevel = logLevel
+            session?.logger.logLevel = logLevel
         }
     }
 
@@ -91,18 +92,18 @@ final class AWSCloudWatchLoggingSessionController {
     }
 
     func disable() {
-        self.batchSubscription = nil
-        self.authSubscription = nil
-        self.session = nil
-        self.consumer = nil
+        batchSubscription = nil
+        authSubscription = nil
+        session = nil
+        consumer = nil
     }
 
     private func updateConsumer() {
-        self.consumer = try? createConsumer()
+        consumer = try? createConsumer()
     }
 
     private func createConsumer() throws -> LogBatchConsumer? {
-        if self.client == nil {
+        if client == nil {
             let configuration = try CloudWatchLogsClient.CloudWatchLogsClientConfiguration(
                 awsCredentialIdentityResolver: credentialIdentityResolver,
                 region: region,
@@ -111,26 +112,27 @@ final class AWSCloudWatchLoggingSessionController {
 
             configuration.httpClientEngine = .userAgentEngine(for: configuration)
 
-            self.client = CloudWatchLogsClient(config: configuration)
+            client = CloudWatchLogsClient(config: configuration)
         }
 
         guard let cloudWatchClient = client else { return nil }
         return CloudWatchLoggingConsumer(
             client: cloudWatchClient,
-            logGroupName: self.logGroupName,
-            userIdentifier: self.userIdentifier)
+            logGroupName: logGroupName,
+            userIdentifier: userIdentifier
+        )
     }
 
     private func connectProducerAndConsumer() {
-        guard let consumer = consumer else {
-            self.batchSubscription = nil
+        guard let consumer else {
+            batchSubscription = nil
             return
         }
         guard let producer = session else {
-            self.batchSubscription = nil
+            batchSubscription = nil
             return
         }
-        self.batchSubscription = producer.logBatchPublisher.sink { [weak self] batch in
+        batchSubscription = producer.logBatchPublisher.sink { [weak self] batch in
             guard self?.networkMonitor.isOnline == true else { return }
             
             // Capture strong references to consumer and batch before the async task
@@ -159,19 +161,21 @@ final class AWSCloudWatchLoggingSessionController {
 
     private func updateSession() {
         do {
-            self.session = try AWSCloudWatchLoggingSession(category: self.category,
-                                                           namespace: self.namespace,
-                                                           logLevel: self.logLevel,
-                                                           userIdentifier: self.userIdentifier,
-                                                           localStoreMaxSizeInMB: self.localStoreMaxSizeInMB)
+            session = try AWSCloudWatchLoggingSession(
+                category: category,
+                namespace: namespace,
+                logLevel: logLevel,
+                userIdentifier: userIdentifier,
+                localStoreMaxSizeInMB: localStoreMaxSizeInMB
+            )
         } catch {
-            self.session = nil
+            session = nil
             print(error)
         }
     }
 
     func setCurrentUser(identifier: String?) {
-        self.userIdentifier = identifier
+        userIdentifier = identifier
     }
 
     func flushLogs() async throws {
@@ -213,32 +217,32 @@ final class AWSCloudWatchLoggingSessionController {
 
 extension AWSCloudWatchLoggingSessionController: Logger {
     func error(_ message: @autoclosure () -> String) {
-        guard self.logFilter.canLog(withCategory: self.category, logLevel: .error, userIdentifier: self.userIdentifier) else { return }
+        guard logFilter.canLog(withCategory: category, logLevel: .error, userIdentifier: userIdentifier) else { return }
         session?.logger.error(message())
     }
 
     func error(error: Error) {
-        guard self.logFilter.canLog(withCategory: self.category, logLevel: .error, userIdentifier: self.userIdentifier) else { return }
+        guard logFilter.canLog(withCategory: category, logLevel: .error, userIdentifier: userIdentifier) else { return }
         session?.logger.error(error: error)
     }
 
     func warn(_ message: @autoclosure () -> String) {
-        guard self.logFilter.canLog(withCategory: self.category, logLevel: .warn, userIdentifier: self.userIdentifier) else { return }
+        guard logFilter.canLog(withCategory: category, logLevel: .warn, userIdentifier: userIdentifier) else { return }
         session?.logger.warn(message())
     }
 
     func info(_ message: @autoclosure () -> String) {
-        guard self.logFilter.canLog(withCategory: self.category, logLevel: .info, userIdentifier: self.userIdentifier) else { return }
+        guard logFilter.canLog(withCategory: category, logLevel: .info, userIdentifier: userIdentifier) else { return }
         session?.logger.info(message())
     }
 
     func debug(_ message: @autoclosure () -> String) {
-        guard self.logFilter.canLog(withCategory: self.category, logLevel: .debug, userIdentifier: self.userIdentifier) else { return }
+        guard logFilter.canLog(withCategory: category, logLevel: .debug, userIdentifier: userIdentifier) else { return }
         session?.logger.debug(message())
     }
 
     func verbose(_ message: @autoclosure () -> String) {
-        guard self.logFilter.canLog(withCategory: self.category, logLevel: .verbose, userIdentifier: self.userIdentifier) else { return }
+        guard logFilter.canLog(withCategory: category, logLevel: .verbose, userIdentifier: userIdentifier) else { return }
         session?.logger.verbose(message())
     }
 }

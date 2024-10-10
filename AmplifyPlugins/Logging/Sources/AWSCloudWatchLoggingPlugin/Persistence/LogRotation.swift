@@ -69,35 +69,49 @@ final class LogRotation {
         for file in existingFiles {
             try FileManager.default.removeItem(at: file)
         }
-        self.currentLogFile = try Self.createLogFile(in: directory,
-                                                     index: 0,
-                                                     fileSizeLimitInBytes: fileSizeLimitInBytes)
+        currentLogFile = try Self.createLogFile(
+            in: directory,
+            index: 0,
+            fileSizeLimitInBytes: fileSizeLimitInBytes
+        )
     }
 
-    private static func selectNextLogFile(from directory: URL,
-                                          fileCountLimit: Int,
-                                          fileSizeLimitInBytes: UInt64) throws -> LogFile {
+    private static func selectNextLogFile(
+        from directory: URL,
+        fileCountLimit: Int,
+        fileSizeLimitInBytes: UInt64
+    ) throws -> LogFile {
         let existingFiles = try Self.listLogFiles(in: directory)
         if let index = try Self.nextUnallocatedIndex(from: existingFiles, fileCountLimit: fileCountLimit) {
-            return try createLogFile(in: directory,
-                                     index: index,
-                                     fileSizeLimitInBytes: fileSizeLimitInBytes)
+            return try createLogFile(
+                in: directory,
+                index: index,
+                fileSizeLimitInBytes: fileSizeLimitInBytes
+            )
         }
 
-        if let underutilized = try Self.oldestUnderutilizedFile(from: existingFiles,
-                                                                sizeLimitInBytes: fileSizeLimitInBytes) {
-            return try LogFile(forAppending: underutilized,
-                               sizeLimitInBytes: fileSizeLimitInBytes)
+        if let underutilized = try Self.oldestUnderutilizedFile(
+            from: existingFiles,
+            sizeLimitInBytes: fileSizeLimitInBytes
+        ) {
+            return try LogFile(
+                forAppending: underutilized,
+                sizeLimitInBytes: fileSizeLimitInBytes
+            )
         }
 
         if let oldestFileURL = existingFiles.last {
-            return try LogFile(forWritingTo: oldestFileURL,
-                               sizeLimitInBytes: fileSizeLimitInBytes)
+            return try LogFile(
+                forWritingTo: oldestFileURL,
+                sizeLimitInBytes: fileSizeLimitInBytes
+            )
         }
 
-        return try createLogFile(in: directory,
-                                 index: 0,
-                                 fileSizeLimitInBytes: fileSizeLimitInBytes)
+        return try createLogFile(
+            in: directory,
+            index: 0,
+            fileSizeLimitInBytes: fileSizeLimitInBytes
+        )
     }
 
     func ensureFileExists() throws {
@@ -118,7 +132,7 @@ final class LogRotation {
         }
         typealias FileIndexRef = (URL, Int)
         let references = try existingFiles.compactMap { try LogRotation.index(of: $0) }
-                                          .filter { (0..<fileCountLimit).contains($0) }
+                                          .filter { (0 ..< fileCountLimit).contains($0) }
                                           .sorted()
         guard let lastIndex = references.last else {
             return Int(existingFiles.count)
@@ -129,7 +143,7 @@ final class LogRotation {
     /// - Returns: The URL for the file with the oldest last modified date (assumes that the list of files are presorted by date with oldest last) that
     ///            also is taking up less than half of the size limit.
     private static func oldestUnderutilizedFile(from existingFiles: [URL], sizeLimitInBytes: UInt64) throws -> URL? {
-        let fileManager: FileManager = FileManager.default
+        let fileManager = FileManager.default
         let underutilizedFiles = try existingFiles.filter { url in
             let attributes = try fileManager.attributesOfItem(atPath: url.path)
             guard let size = attributes[.size] as? Int else { return false }
@@ -142,7 +156,7 @@ final class LogRotation {
     /// file naming pattern ordered by last modified date descending
     /// (most-recently modified first).
     private static func listLogFiles(in directory: URL) throws -> [URL] {
-        let fileManager: FileManager = FileManager.default
+        let fileManager = FileManager.default
         let propertyKeys: [URLResourceKey] = [.contentModificationDateKey, .nameKey, .fileSizeKey]
         return try fileManager.contentsOfDirectory(at: directory, includingPropertiesForKeys: propertyKeys)
             .filter { try index(of: $0) != nil }
@@ -179,14 +193,18 @@ final class LogRotation {
     /// - Returns: An empty LogFile within the given
     /// directory using the given index whose name matches the
     /// amplify.<index>.log name pattern.
-    private static func createLogFile(in directory: URL,
-                                      index: Int,
-                                      fileSizeLimitInBytes: UInt64) throws -> LogFile {
-        let fileManager: FileManager = FileManager.default
+    private static func createLogFile(
+        in directory: URL,
+        index: Int,
+        fileSizeLimitInBytes: UInt64
+    ) throws -> LogFile {
+        let fileManager = FileManager.default
         let fileURL = directory.appendingPathComponent("amplify.\(index).log")
-        fileManager.createFile(atPath: fileURL.path,
-                               contents: nil,
-                               attributes: [FileAttributeKey: Any]())
+        fileManager.createFile(
+            atPath: fileURL.path,
+            contents: nil,
+            attributes: [FileAttributeKey: Any]()
+        )
         if #available(macOS 11.0, *) {
             let resourceValues: [URLResourceKey: Any] = [
                 URLResourceKey.fileProtectionKey: URLFileProtection.complete,

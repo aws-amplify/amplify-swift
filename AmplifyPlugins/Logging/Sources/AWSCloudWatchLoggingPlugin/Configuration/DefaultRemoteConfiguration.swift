@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 public struct DefaultRemoteConfiguration: Codable {
     public init(
         endpoint: URL,
-        refreshIntervalInSeconds: Int = 1200
+        refreshIntervalInSeconds: Int = 1_200
     ) {
         self.endpoint = endpoint
         self.refreshIntervalInSeconds = refreshIntervalInSeconds

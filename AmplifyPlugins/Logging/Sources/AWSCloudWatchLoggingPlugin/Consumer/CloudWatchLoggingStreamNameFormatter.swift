@@ -42,7 +42,7 @@ struct CloudWatchLoggingStreamNameFormatter {
     }
 
     func formattedStreamName() async -> String {
-        return "\(await deviceIdentifier ?? "").\(userIdentifier ?? "guest")"
+        return await "\(deviceIdentifier ?? "").\(userIdentifier ?? "guest")"
     }
     
     // Add the missing deviceIdentifierFromBundle static method

@@ -5,17 +5,19 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 /// Provides resolver to return the active/valid log constraints to use for the logging plugin
 class AWSCloudWatchLoggingConstraintsResolver {
     let loggingPluginConfiguration: AWSCloudWatchLoggingPluginConfiguration
     let loggingConstraintsLocalStore: LoggingConstraintsLocalStore
 
-    init(loggingPluginConfiguration: AWSCloudWatchLoggingPluginConfiguration,
-         loggingConstraintsLocalStore: LoggingConstraintsLocalStore = UserDefaults.standard) {
+    init(
+        loggingPluginConfiguration: AWSCloudWatchLoggingPluginConfiguration,
+        loggingConstraintsLocalStore: LoggingConstraintsLocalStore = UserDefaults.standard
+    ) {
         self.loggingPluginConfiguration = loggingPluginConfiguration
         self.loggingConstraintsLocalStore = loggingConstraintsLocalStore
     }

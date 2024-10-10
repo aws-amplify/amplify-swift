@@ -22,7 +22,7 @@ extension LogEntry {
 
 extension LogEntry: Comparable {
     public static func < (lhs: LogEntry, rhs: LogEntry) -> Bool {
-        if (lhs.created == rhs.created) {
+        if lhs.created == rhs.created {
             let formatter = CloudWatchLoggingEntryFormatter()
             return formatter.format(entry: lhs) < formatter.format(entry: rhs)
         }

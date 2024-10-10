@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSPluginsCore
-import AWSCloudWatchLogs
-import AWSClientRuntime
 import Amplify
+import AWSClientRuntime
+import AWSCloudWatchLogs
+import AWSPluginsCore
 import Foundation
 
 class CloudWatchLoggingConsumer {
@@ -216,7 +216,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         }
 
         var retriableEntries: [LogEntry] = []
-        for index in tooNewLogEventStartIndex..<totalEntries {
+        for index in tooNewLogEventStartIndex ..< totalEntries {
             retriableEntries.append(entries[index])
         }
         return retriableEntries

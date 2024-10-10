@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import AWSCloudWatchLogs
 import AWSPluginsCore
-import Amplify
 import Combine
 import Foundation
 
@@ -54,7 +54,8 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
                 self.remoteLoggingConstraintsProvider = DefaultRemoteLoggingConstraintsProvider(
                     endpoint: remoteConfig.endpoint,
                     region: configuration.region,
-                    refreshIntervalInSeconds: remoteConfig.refreshIntervalInSeconds)
+                    refreshIntervalInSeconds: remoteConfig.refreshIntervalInSeconds
+                )
             }
         }
     }
@@ -114,18 +115,19 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any?) throws {
-        if self.loggingPluginConfiguration == nil, let configuration = try? AWSCloudWatchLoggingPluginConfiguration(bundle: Bundle.main) {
-            self.loggingPluginConfiguration = configuration
+        if loggingPluginConfiguration == nil, let configuration = try? AWSCloudWatchLoggingPluginConfiguration(bundle: Bundle.main) {
+            loggingPluginConfiguration = configuration
             let authService = AWSAuthService()
 
-            if let remoteConfig = configuration.defaultRemoteConfiguration, self.remoteLoggingConstraintsProvider == nil {
-                self.remoteLoggingConstraintsProvider = DefaultRemoteLoggingConstraintsProvider(
+            if let remoteConfig = configuration.defaultRemoteConfiguration, remoteLoggingConstraintsProvider == nil {
+                remoteLoggingConstraintsProvider = DefaultRemoteLoggingConstraintsProvider(
                     endpoint: remoteConfig.endpoint,
                     region: configuration.region,
-                    refreshIntervalInSeconds: remoteConfig.refreshIntervalInSeconds)
+                    refreshIntervalInSeconds: remoteConfig.refreshIntervalInSeconds
+                )
             }
 
-            self.loggingClient = AWSCloudWatchLoggingCategoryClient(
+            loggingClient = AWSCloudWatchLoggingCategoryClient(
                 enable: configuration.enable,
                 credentialIdentityResolver: authService.getCredentialIdentityResolver(),
                 authentication: Amplify.Auth,
@@ -137,7 +139,7 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
             )
         }
 
-        if self.loggingPluginConfiguration == nil {
+        if loggingPluginConfiguration == nil {
             throw LoggingError.configuration(
                 """
                 Missing configuration for AWSCloudWatchLoggingPlugin
@@ -150,7 +152,7 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
             )
         }
 
-        if self.remoteLoggingConstraintsProvider == nil {
+        if remoteLoggingConstraintsProvider == nil {
             let localStore: LoggingConstraintsLocalStore = UserDefaults.standard
             localStore.reset()
         }
