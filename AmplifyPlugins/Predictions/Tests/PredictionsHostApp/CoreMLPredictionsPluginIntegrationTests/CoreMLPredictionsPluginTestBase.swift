@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import CoreMLPredictionsPlugin
 import XCTest
 @testable import Amplify
-import CoreMLPredictionsPlugin
 
 class AWSPredictionsPluginTestBase: XCTestCase {
     let region: JSONValue = "us-east-1"

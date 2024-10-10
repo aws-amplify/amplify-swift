@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import AWSComprehend
 import Amplify
+import AWSComprehend
+import Foundation
 
 extension AWSPredictionsService: AWSComprehendServiceBehavior {
     func comprehend(text: String) async throws -> Predictions.Interpret.Result {
@@ -211,7 +211,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
     }
 }
 
-extension Array where Element == ComprehendClientTypes.DominantLanguage {
+extension [ComprehendClientTypes.DominantLanguage] {
 
     func getDominantLanguage() -> ComprehendClientTypes.DominantLanguage? {
         // SwiftFormat removes `self` below, but that leads to ambiguity between the instance method on Array and the

@@ -6,10 +6,10 @@
 //
 
 import Amplify
-import Foundation
 import AWSPluginsCore
+import Foundation
 
-final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
+public final class AWSPredictionsPlugin: PredictionsCategoryPlugin {
     let awsPredictionsPluginKey = "awsPredictionsPlugin"
 
     /// An instance of the predictions  service

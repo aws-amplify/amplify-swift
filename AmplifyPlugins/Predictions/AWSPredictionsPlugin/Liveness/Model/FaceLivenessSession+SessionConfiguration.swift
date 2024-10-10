@@ -7,9 +7,9 @@
 
 import Foundation
 
-extension FaceLivenessSession {
+public extension FaceLivenessSession {
     @_spi(PredictionsFaceLiveness)
-    public struct SessionConfiguration {
+    struct SessionConfiguration {
         public let colorChallenge: ColorChallenge
         public let ovalMatchChallenge: OvalMatchChallenge
 

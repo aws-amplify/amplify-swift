@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSRekognition
 import Amplify
+import AWSRekognition
 import ClientRuntime
 
 extension AWSRekognition.HumanLoopQuotaExceededException: PredictionsErrorConvertible {

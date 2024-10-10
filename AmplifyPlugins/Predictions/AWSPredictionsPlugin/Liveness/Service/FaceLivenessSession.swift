@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 @_spi(PredictionsFaceLiveness)
 public final class FaceLivenessSession: LivenessService {
@@ -17,10 +17,11 @@ public final class FaceLivenessSession: LivenessService {
     let baseURL: URL
     var serverEventListeners: [LivenessEventKind.Server: (FaceLivenessSession.SessionConfiguration) -> Void] = [:]
     var onComplete: (ServerDisconnection) -> Void = { _ in }
-    
+
     private let livenessServiceDispatchQueue = DispatchQueue(
         label: "com.amazon.aws.amplify.liveness.service",
-        qos: .userInteractive)
+        qos: .userInteractive
+    )
 
     init(
         websocket: WebSocketSession,
@@ -79,8 +80,8 @@ public final class FaceLivenessSession: LivenessService {
         websocket.open(url: signedConnectionURL)
     }
 
-    public func send<T>(
-        _ event: LivenessEvent<T>,
+    public func send(
+        _ event: LivenessEvent<some Any>,
         eventDate: @escaping () -> Date = Date.init
     ) {
         livenessServiceDispatchQueue.sync {
@@ -121,7 +122,7 @@ public final class FaceLivenessSession: LivenessService {
         // We'll try to decode each of these events
         if let payload = try? JSONDecoder().decode(ServerSessionInformationEvent.self, from: message.payload) {
             let sessionConfiguration = sessionConfiguration(from: payload)
-            self.serverEventListeners[.challenge]?(sessionConfiguration)
+            serverEventListeners[.challenge]?(sessionConfiguration)
         } else if (try? JSONDecoder().decode(DisconnectEvent.self, from: message.payload)) != nil {
             onComplete(.disconnectionEvent)
             return false
@@ -133,7 +134,7 @@ public final class FaceLivenessSession: LivenessService {
         switch result {
         case .success(.data(let data)):
             do {
-                let message = try self.eventStreamDecoder.decode(data: data)
+                let message = try eventStreamDecoder.decode(data: data)
 
                 if let eventType = message.headers.first(where: { $0.name == ":event-type" }) {
                     let serverEvent = LivenessEventKind.Server(rawValue: eventType.value)

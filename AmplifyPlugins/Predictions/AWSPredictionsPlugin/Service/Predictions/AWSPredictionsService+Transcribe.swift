@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
 import AWSTranscribeStreaming
+import Foundation
 
 extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
     func transcribe(
@@ -28,7 +28,7 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
             audioStream: audioData,
             languageCode: language,
             mediaEncoding: .pcm,
-            mediaSampleRateHertz: 8000
+            mediaSampleRateHertz: 8_000
         )
 
         // map each `TranscribeStreamingClientTypes.TranscriptEvent` received from the service

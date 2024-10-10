@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import AWSRekognition
 import Amplify
+import AWSRekognition
+import Foundation
 
 enum IdentifyCelebritiesResultTransformers {
     static func processCelebs(
@@ -19,7 +19,8 @@ enum IdentifyCelebritiesResultTransformers {
             guard let name = rekognitionCeleb.name,
                 let identifier = rekognitionCeleb.id,
                 let face = rekognitionCeleb.face,
-                let stringUrls = rekognitionCeleb.urls else {
+                let stringUrls = rekognitionCeleb.urls
+            else {
                 continue
             }
             var urls = [URL]()

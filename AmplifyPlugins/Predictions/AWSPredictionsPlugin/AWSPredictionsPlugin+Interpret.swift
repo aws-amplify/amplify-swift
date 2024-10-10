@@ -5,17 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 @_spi(PredictionsConvertRequestKind) import Amplify
 
-extension AWSPredictionsPlugin {
+public extension AWSPredictionsPlugin {
     /// Interprets the input text and detects sentiment, language, syntax, and key phrases
     ///
     /// - Parameter text: input text
     /// - Parameter options: Option for the plugin
     /// - Parameter resultListener: Listener to which events are send
-    public func interpret(
+    func interpret(
         text: String,
         options: Predictions.Interpret.Options?
     ) async throws -> Predictions.Interpret.Result {

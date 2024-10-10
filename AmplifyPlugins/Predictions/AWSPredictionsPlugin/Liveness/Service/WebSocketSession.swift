@@ -24,7 +24,7 @@ final class WebSocketSession {
     }
 
     func onMessageReceived(_ receive: @escaping (Result<URLSessionWebSocketTask.Message, Error>) -> Bool) {
-        self.receiveMessage = receive
+        receiveMessage = receive
     }
 
     func onSocketClosed(_ onClose: @escaping (URLSessionWebSocketTask.CloseCode) -> Void) {

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import AWSRekognition
 import Amplify
+import AWSRekognition
+import Foundation
 
 enum IdentifyLabelsResultTransformers {
     static func processLabels(
@@ -69,7 +69,7 @@ enum IdentifyLabelsResultTransformers {
         _ rekognitionParents: [RekognitionClientTypes.Parent]?
     ) -> [Predictions.Parent] {
         var parents = [Predictions.Parent]()
-        guard let rekognitionParents = rekognitionParents else {
+        guard let rekognitionParents else {
             return parents
         }
 
@@ -85,7 +85,7 @@ enum IdentifyLabelsResultTransformers {
         _ rekognitionInstances: [RekognitionClientTypes.Instance]?
     ) -> [CGRect] {
         var boundingBoxes = [CGRect]()
-        guard let rekognitionInstances = rekognitionInstances else {
+        guard let rekognitionInstances else {
             return boundingBoxes
         }
         for rekognitionInstance in rekognitionInstances {

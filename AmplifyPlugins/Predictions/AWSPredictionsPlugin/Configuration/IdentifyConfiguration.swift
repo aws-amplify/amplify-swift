@@ -119,7 +119,7 @@ extension IdentifyLabelsConfiguration: Decodable {
 
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        type = try values.decode(Predictions.LabelType.self, forKey: .type)
+        self.type = try values.decode(Predictions.LabelType.self, forKey: .type)
     }
 }
 
@@ -151,7 +151,7 @@ extension IdentifyTextConfiguration: Decodable {
 
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        format = try values.decode(Predictions.TextFormatType.self, forKey: .format)
+        self.format = try values.decode(Predictions.TextFormatType.self, forKey: .format)
     }
 }
 

@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
+import Amplify
 import AWSRekognition
 import CoreML
-import Amplify
 import Foundation
+import XCTest
 @testable import AWSPredictionsPlugin
 
 // swiftlint:disable file_length type_body_length

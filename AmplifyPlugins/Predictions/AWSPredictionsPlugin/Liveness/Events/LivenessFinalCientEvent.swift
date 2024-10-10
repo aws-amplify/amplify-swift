@@ -24,9 +24,9 @@ public struct FinalClientEvent {
     let videoEndTimeStamp: UInt64
 }
 
-extension LivenessEvent where T == FinalClientEvent {
+public extension LivenessEvent where T == FinalClientEvent {
     @_spi(PredictionsFaceLiveness)
-    public static func final(event: FinalClientEvent) throws -> Self {
+    static func final(event: FinalClientEvent) throws -> Self {
 
         let clientEvent = ClientSessionInformationEvent(
             challenge: .init(
