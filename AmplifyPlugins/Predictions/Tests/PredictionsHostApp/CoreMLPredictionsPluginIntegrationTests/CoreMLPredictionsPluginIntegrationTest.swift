@@ -8,7 +8,6 @@
 import Amplify
 import AVFoundation
 import XCTest
-import XCTest
 
 class CoreMLPredictionsPluginIntegrationTest: AWSPredictionsPluginTestBase {
 
