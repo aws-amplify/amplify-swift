@@ -5,55 +5,65 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension AWSS3StorageService {
 
-    func upload(serviceKey: String,
-                uploadSource: UploadSource,
-                contentType: String?,
-                metadata: [String: String]?,
-                accelerate: Bool?,
-                onEvent: @escaping StorageServiceUploadEventHandler) {
+    func upload(
+        serviceKey: String,
+        uploadSource: UploadSource,
+        contentType: String?,
+        metadata: [String: String]?,
+        accelerate: Bool?,
+        onEvent: @escaping StorageServiceUploadEventHandler
+    ) {
         let fail: (Error) -> Void = { error in
             let storageError = StorageError(error: error)
             onEvent(.failed(storageError))
         }
 
-        guard attempt(try validateParameters(bucket: bucket, key: serviceKey, accelerationModeEnabled: false), fail: fail) else { return }
+        guard try attempt(validateParameters(bucket: bucket, key: serviceKey, accelerationModeEnabled: false), fail: fail) else { return }
 
         Task {
-            let transferTask = createTransferTask(transferType: .upload(onEvent: onEvent),
-                                                  bucket: bucket,
-                                                  key: serviceKey)
+            let transferTask = createTransferTask(
+                transferType: .upload(onEvent: onEvent),
+                bucket: bucket,
+                key: serviceKey
+            )
             let uploadFileURL: URL
-            guard let uploadFile = attempt(try uploadSource.getFile(), fail: fail) else { return }
+            guard let uploadFile = try attempt(uploadSource.getFile(), fail: fail) else { return }
             uploadFileURL = uploadFile.fileURL
 
             let contentType = contentType ?? "application/octet-stream"
 
             do {
-                let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(key: serviceKey,
-                                                                                 signingOperation: .putObject,
-                                                                                 metadata: metadata,
-                                                                                 accelerate: accelerate,
-                                                                                 expires: nil)
-                await startUpload(preSignedURL: preSignedURL,
-                            fileURL: uploadFileURL,
-                            contentType: contentType,
-                            transferTask: transferTask)
+                let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(
+                    key: serviceKey,
+                    signingOperation: .putObject,
+                    metadata: metadata,
+                    accelerate: accelerate,
+                    expires: nil
+                )
+                await startUpload(
+                    preSignedURL: preSignedURL,
+                    fileURL: uploadFileURL,
+                    contentType: contentType,
+                    transferTask: transferTask
+                )
             } catch {
                 onEvent(.failed(StorageError.unknown("Failed to get pre-signed URL", nil)))
             }
         }
     }
 
-    func startUpload(preSignedURL: URL,
-                     fileURL: URL,
-                     contentType: String,
-                     transferTask: StorageTransferTask,
-                     startTransfer: Bool = true) async {
+    func startUpload(
+        preSignedURL: URL,
+        fileURL: URL,
+        contentType: String,
+        transferTask: StorageTransferTask,
+        startTransfer: Bool = true
+    ) async {
         guard case .upload = transferTask.transferType else {
             fatalError("Transfer type must be upload")
         }
@@ -63,7 +73,7 @@ extension AWSS3StorageService {
         request.networkServiceType = .responsiveData
 
         request.setValue(contentType, forHTTPHeaderField: "Content-Type")
-        request.setValue(await userAgent, forHTTPHeaderField: "User-Agent")
+        await request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
 
         request.setHTTPRequestHeaders(transferTask: transferTask)
 

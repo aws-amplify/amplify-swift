@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
-@testable import AWSS3StoragePlugin
+import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSPluginsTestCommon
+@testable import AWSS3StoragePlugin
 
 class AWSS3StoragePluginTests: XCTestCase {
     var storagePlugin: AWSS3StoragePlugin!
@@ -33,9 +33,11 @@ class AWSS3StoragePluginTests: XCTestCase {
         authService = MockAWSAuthService()
         queue = MockOperationQueue()
 
-        storagePlugin.configure(storageService: storageService,
-                                authService: authService,
-                                defaultAccessLevel: defaultAccessLevel,
-                                queue: queue)
+        storagePlugin.configure(
+            storageService: storageService,
+            authService: authService,
+            defaultAccessLevel: defaultAccessLevel,
+            queue: queue
+        )
     }
 }

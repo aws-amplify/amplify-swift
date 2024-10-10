@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 // swiftlint:disable line_length
 /// File System implementation which wraps FileManager.
@@ -33,9 +33,7 @@ class FileSystem {
     /// Caches directory for files which can be recreated and can be cleared when app is not running.
     let cachesURL: URL
 
-    static let `default`: FileSystem = {
-        FileSystem()
-    }()
+    static let `default`: FileSystem = .init()
 
     init() {
         // Note: This API supports many values for directories. The ones used here will always be available to an app.
@@ -168,7 +166,8 @@ class FileSystem {
     /// - Returns: size of file in bytes
     func getFileSize(fileURL: URL) -> UInt64 {
         guard let attributes = try? FileManager.default.attributesOfItem(atPath: fileURL.path),
-              let size = attributes[.size] as? UInt64 else {
+              let size = attributes[.size] as? UInt64
+        else {
             Fatal.require("File size should always be accessible")
         }
         return size
@@ -191,7 +190,7 @@ class FileSystem {
 
         // Move work off current context
         DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             // seek to the offset, read bytes and write data to a file
             do {
                 let fileHandle = try FileHandle(forReadingFrom: fileURL)
@@ -200,7 +199,7 @@ class FileSystem {
                 }
                 try fileHandle.seek(toOffset: offset)
                 let data = try fileHandle.read(bytes: length)
-                let fileURL = try self.createTemporaryFile(data: data)
+                let fileURL = try createTemporaryFile(data: data)
                 completionHandler(.success(fileURL))
             } catch {
                 completionHandler(.failure(error))

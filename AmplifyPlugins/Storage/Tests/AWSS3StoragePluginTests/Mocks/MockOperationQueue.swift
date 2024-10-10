@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 public class MockOperationQueue: OperationQueue {
 
     public var size = 0

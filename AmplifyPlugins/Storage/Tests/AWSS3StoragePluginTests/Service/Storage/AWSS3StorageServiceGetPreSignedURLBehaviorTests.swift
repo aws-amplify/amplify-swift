@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSS3StoragePlugin
-@testable import AWSPluginsTestCommon
 @testable import AmplifyTestCommon
+@testable import AWSPluginsTestCommon
+@testable import AWSS3StoragePlugin
 
 import Amplify
 import AWSS3
@@ -16,7 +16,7 @@ import XCTest
 
 // swiftlint:disable:next type_name
 class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
-    
+
     var systemUnderTest: AWSS3StorageService!
     var authService: MockAWSAuthService!
     var database: MockStorageTransferDatabase!
@@ -27,7 +27,7 @@ class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
     var serviceKey: String!
     var presignedURL: URL!
     var expires: Int!
-    
+
     override func setUpWithError() throws {
         authService = MockAWSAuthService()
         database = MockStorageTransferDatabase()
@@ -38,19 +38,21 @@ class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
         serviceKey = UUID().uuidString
         presignedURL = URL(fileURLWithPath: NSTemporaryDirectory().appendingPathComponent(serviceKey))
         expires = Int(Date.distantFuture.timeIntervalSince1970)
-        systemUnderTest = try AWSS3StorageService(authService: authService,
-                                                  region: region,
-                                                  bucket: bucket,
-                                                  storageTransferDatabase: database)
+        systemUnderTest = try AWSS3StorageService(
+            authService: authService,
+            region: region,
+            bucket: bucket,
+            storageTransferDatabase: database
+        )
         systemUnderTest.preSignedURLBuilder = builder
         systemUnderTest.client = client
-        
+
         let url = try XCTUnwrap(presignedURL)
-        builder.getPreSignedURLHandler = { (_,_,_) in
+        builder.getPreSignedURLHandler = { _, _, _ in
             return url
         }
     }
-    
+
     override func tearDownWithError() throws {
         authService = nil
         builder = nil
@@ -61,63 +63,71 @@ class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
         expires = nil
         systemUnderTest = nil
     }
-    
+
     /// - Given: A storage service configured to use a AWSS3PreSignedURLBuilder
     /// - When: A presigned URL is requested for a **AWSS3SigningOperation.getObject** operation
     /// - Then: A valid URL is returned
     func testForGetObject() async throws {
-        let url = try await systemUnderTest.getPreSignedURL(serviceKey: serviceKey,
-                                                            signingOperation: .getObject,
-                                                            metadata: nil,
-                                                            accelerate: nil,
-                                                            expires: expires)
+        let url = try await systemUnderTest.getPreSignedURL(
+            serviceKey: serviceKey,
+            signingOperation: .getObject,
+            metadata: nil,
+            accelerate: nil,
+            expires: expires
+        )
         XCTAssertEqual(url, presignedURL)
         XCTAssertEqual(builder.interactions, [
             "getPreSignedURL(key:signingOperation:metadata:accelerate:expires:) \(serviceKey ?? "") \(AWSS3SigningOperation.getObject) nil \(String(describing: expires))"
         ])
     }
-    
+
     /// - Given: A storage service configured to use a AWSS3PreSignedURLBuilder
     /// - When: A presigned URL is requested for a **AWSS3SigningOperation.putObject** operation
     /// - Then: A valid URL is returned
     func testForPutObject() async throws {
-        let url = try await systemUnderTest.getPreSignedURL(serviceKey: serviceKey,
-                                                            signingOperation: .putObject,
-                                                            metadata: nil,
-                                                            accelerate: nil,
-                                                            expires: expires)
+        let url = try await systemUnderTest.getPreSignedURL(
+            serviceKey: serviceKey,
+            signingOperation: .putObject,
+            metadata: nil,
+            accelerate: nil,
+            expires: expires
+        )
         XCTAssertEqual(url, presignedURL)
         XCTAssertEqual(builder.interactions, [
             "getPreSignedURL(key:signingOperation:metadata:accelerate:expires:) \(serviceKey ?? "") \(AWSS3SigningOperation.putObject) nil \(String(describing: expires))"
         ])
     }
-    
+
     /// - Given: A storage service configured to use a AWSS3PreSignedURLBuilder
     /// - When: A presigned URL is requested for a **AWSS3SigningOperation.putObject** operation with metadata
     /// - Then: A valid URL is returned
     func testForPutObjectWithMetadata() async throws {
         let metadata: [String: String]? = ["test": "value"]
-        let url = try await systemUnderTest.getPreSignedURL(serviceKey: serviceKey,
-                                                            signingOperation: .putObject,
-                                                            metadata: metadata,
-                                                            accelerate: nil,
-                                                            expires: expires)
+        let url = try await systemUnderTest.getPreSignedURL(
+            serviceKey: serviceKey,
+            signingOperation: .putObject,
+            metadata: metadata,
+            accelerate: nil,
+            expires: expires
+        )
         XCTAssertEqual(url, presignedURL)
         XCTAssertEqual(builder.interactions, [
             "getPreSignedURL(key:signingOperation:metadata:accelerate:expires:) \(serviceKey ?? "") \(AWSS3SigningOperation.putObject) \(String(describing: metadata)) \(String(describing: expires))"
         ])
     }
-    
+
     /// - Given: A storage service configured to use a AWSS3PreSignedURLBuilder
     /// - When: A presigned URL is requested for a **AWSS3SigningOperation.uploadPart** operation
     /// - Then: A valid URL is returned
     func testForUploadPart() async throws {
         let operation = AWSS3SigningOperation.uploadPart(partNumber: 0, uploadId: UUID().uuidString)
-        let url = try await systemUnderTest.getPreSignedURL(serviceKey: serviceKey,
-                                                            signingOperation: operation,
-                                                            metadata: nil,
-                                                            accelerate: nil,
-                                                            expires: expires)
+        let url = try await systemUnderTest.getPreSignedURL(
+            serviceKey: serviceKey,
+            signingOperation: operation,
+            metadata: nil,
+            accelerate: nil,
+            expires: expires
+        )
         XCTAssertEqual(url, presignedURL)
         XCTAssertEqual(builder.interactions, [
             "getPreSignedURL(key:signingOperation:metadata:accelerate:expires:) \(serviceKey ?? "") \(operation) nil \(String(describing: expires))"

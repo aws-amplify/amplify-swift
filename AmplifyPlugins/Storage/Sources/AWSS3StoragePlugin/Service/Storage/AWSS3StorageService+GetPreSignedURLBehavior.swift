@@ -5,18 +5,20 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import AWSS3
 import ClientRuntime
 import Foundation
-import Amplify
 
 extension AWSS3StorageService {
 
-    func getPreSignedURL(serviceKey: String,
-                         signingOperation: AWSS3SigningOperation,
-                         metadata: [String: String]?,
-                         accelerate: Bool?,
-                         expires: Int) async throws -> URL {
+    func getPreSignedURL(
+        serviceKey: String,
+        signingOperation: AWSS3SigningOperation,
+        metadata: [String: String]?,
+        accelerate: Bool?,
+        expires: Int
+    ) async throws -> URL {
         return try await preSignedURLBuilder.getPreSignedURL(
             key: serviceKey,
             signingOperation: signingOperation,
@@ -28,8 +30,8 @@ extension AWSS3StorageService {
 
     func validateObjectExistence(serviceKey: String) async throws {
         do {
-            _ = try await self.client.headObject(input: .init(
-                bucket: self.bucket,
+            _ = try await client.headObject(input: .init(
+                bucket: bucket,
                 key: serviceKey
             ))
         } catch is AWSS3.NotFound {

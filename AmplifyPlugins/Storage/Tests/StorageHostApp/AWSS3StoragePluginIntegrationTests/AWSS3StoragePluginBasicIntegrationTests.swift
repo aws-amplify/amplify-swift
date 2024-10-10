@@ -67,7 +67,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.remove(key: key)
 
         // Only the remove operation results in an SDK request
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method } , [.delete])
+        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method }, [.delete])
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
         XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, ["PUT"])
@@ -101,7 +101,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.remove(key: key)
 
         // Only the remove operation results in an SDK request
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method} , [.delete])
+        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method}, [.delete])
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
         XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, ["PUT"])
@@ -130,9 +130,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     func testUploadLargeData() async throws {
         let key = UUID().uuidString
 
-        let uploadKey = try await Amplify.Storage.uploadData(key: key,
-                                                             data: AWSS3StoragePluginTestBase.largeDataObject,
-                                                             options: nil).value
+        let uploadKey = try await Amplify.Storage.uploadData(
+            key: key,
+            data: AWSS3StoragePluginTestBase.largeDataObject,
+            options: nil
+        ).value
         XCTAssertEqual(uploadKey, key)
 
         try await Amplify.Storage.remove(key: key)
@@ -153,9 +155,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
 
-        FileManager.default.createFile(atPath: filePath,
-                                       contents: AWSS3StoragePluginTestBase.largeDataObject,
-                                       attributes: nil)
+        FileManager.default.createFile(
+            atPath: filePath,
+            contents: AWSS3StoragePluginTestBase.largeDataObject,
+            attributes: nil
+        )
 
         _ = try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
         _ = try await Amplify.Storage.remove(key: key)
@@ -214,7 +218,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let remoteURL = try await Amplify.Storage.getURL(key: key)
 
         // The presigned URL generation does not result in an SDK or HTTP call.
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method} , [])
+        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method}, [])
 
         let (data, response) = try await URLSession.shared.data(from: remoteURL)
         let httpResponse = try XCTUnwrap(response as? HTTPURLResponse)
@@ -264,7 +268,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         XCTAssertNotNil(url)
 
         // No SDK or URLRequest calls expected
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method} , [])
+        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method}, [])
         XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, [])
     }
 
@@ -275,9 +279,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let key = UUID().uuidString
         let expectedMD5Hex = "\"\(key.md5())\""
         try await uploadData(key: key, dataString: key)
-        let options = StorageListRequest.Options(accessLevel: .guest,
-                                                 targetIdentityId: nil,
-                                                 path: key)
+        let options = StorageListRequest.Options(
+            accessLevel: .guest,
+            targetIdentityId: nil,
+            path: key
+        )
         let result = try await Amplify.Storage.list(options: options)
         let items = try XCTUnwrap(result.items)
 
@@ -304,11 +310,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     ///      corresponding token options.
     /// Then: All objects are listed.
     func testListTwoPages() async throws {
-        let objectCount = UInt.random(in: 16..<32)
+        let objectCount = UInt.random(in: 16 ..< 32)
         // One more than half in order to ensure there are only two pages
-        let pageSize = UInt(objectCount/2) + 1
+        let pageSize = UInt(objectCount / 2) + 1
         let path = "pagination-\(UUID().uuidString)"
-        for i in 0..<objectCount {
+        for i in 0 ..< objectCount {
             let key = "\(path)/\(i).txt"
             let data = Data("\(i)".utf8)
             try await uploadData(key: key, data: data)
@@ -356,9 +362,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully with empty list of keys returned
     func testListEmpty() async throws {
         let key = UUID().uuidString
-        let options = StorageListRequest.Options(accessLevel: .guest,
-                                                 targetIdentityId: nil,
-                                                 path: key)
+        let options = StorageListRequest.Options(
+            accessLevel: .guest,
+            targetIdentityId: nil,
+            path: key
+        )
         let result = try await Amplify.Storage.list(options: options)
 
         XCTAssertNotNil(result)
@@ -384,9 +392,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             keys.append(key)
             try await uploadData(key: key, dataString: key)
         }
-        let options = StorageListRequest.Options(accessLevel: .guest,
-                                                 targetIdentityId: nil,
-                                                 path: folder)
+        let options = StorageListRequest.Options(
+            accessLevel: .guest,
+            targetIdentityId: nil,
+            path: folder
+        )
         let result = try await Amplify.Storage.list(options: options)
         let items = result.items
 
@@ -394,7 +404,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         for item in items {
             XCTAssertTrue(keys.contains(item.key), "The key that was uploaded should match the key listed")
         }
-        
+
         _ = try await Amplify.Storage.remove(key: key)
 
         XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method}, [.get, .delete])
@@ -420,17 +430,19 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             try await uploadData(key: key, dataString: key)
         }
 
-        let options = StorageListRequest.Options(accessLevel: .guest,
-                                                 targetIdentityId: nil,
-                                                 path: key1)
+        let options = StorageListRequest.Options(
+            accessLevel: .guest,
+            targetIdentityId: nil,
+            path: key1
+        )
         let result = try await Amplify.Storage.list(options: options)
         let items = result.items
-        
+
         XCTAssertEqual(items.count, keys.count)
         for item in items {
             XCTAssertTrue(keys.contains(item.key), "The key that was uploaded should match the key listed")
         }
-        
+
         for key in keys {
             _ = try await Amplify.Storage.remove(key: key)
         }
@@ -530,7 +542,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     private func assertUserAgentComponents(sdkRequests: [SdkHttpRequest], file: StaticString = #filePath, line: UInt = #line) throws {
         for request in sdkRequests {
             let headers = request.headers.dictionary
-            let userAgent = try XCTUnwrap(headers["User-Agent"]?.joined(separator:","))
+            let userAgent = try XCTUnwrap(headers["User-Agent"]?.joined(separator: ","))
             for component in SdkUserAgentComponent.allCases {
                 XCTAssertTrue(userAgent.contains(component.rawValue), "\(userAgent.description) does not contain \(component)", file: file, line: line)
             }

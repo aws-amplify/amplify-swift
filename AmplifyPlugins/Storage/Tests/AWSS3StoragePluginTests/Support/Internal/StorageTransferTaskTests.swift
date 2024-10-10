@@ -6,8 +6,8 @@
 //
 
 import Amplify
-@testable import AWSS3StoragePlugin
 import XCTest
+@testable import AWSS3StoragePlugin
 
 class StorageTransferTaskTests: XCTestCase {
 
@@ -30,7 +30,7 @@ class StorageTransferTaskTests: XCTestCase {
             proxyStorageTask: nil
         )
         XCTAssertEqual(task.status, .paused)
-        
+
         task.resume()
         await fulfillment(of: [expectation], timeout: 0.5)
 
@@ -58,7 +58,7 @@ class StorageTransferTaskTests: XCTestCase {
         )
         task.sessionTask = nil // Remove the session task
         XCTAssertEqual(task.status, .paused)
-        
+
         task.resume()
         await fulfillment(of: [expectation], timeout: 0.5)
 
@@ -86,7 +86,7 @@ class StorageTransferTaskTests: XCTestCase {
             proxyStorageTask: storageTask
         )
         XCTAssertEqual(task.status, .paused)
-        
+
         task.resume()
         await fulfillment(of: [expectation], timeout: 0.5)
 
@@ -112,14 +112,14 @@ class StorageTransferTaskTests: XCTestCase {
         )
         task.sessionTask = nil // Remove the sessionTask
         XCTAssertEqual(task.status, .paused)
-        
+
         task.resume()
         await fulfillment(of: [expectation], timeout: 0.5)
 
         XCTAssertEqual(sessionTask.resumeCount, 0)
         XCTAssertEqual(task.status, .paused)
     }
-    
+
     /// Given: A StorageTransferTask with status not being paused
     /// When: resume is invoked
     /// Then: No event is reported and the task is not set to .inProgress
@@ -135,10 +135,10 @@ class StorageTransferTaskTests: XCTestCase {
             proxyStorageTask: nil
         )
         XCTAssertEqual(task.status, .unknown)
-        
+
         task.resume()
         await fulfillment(of: [expectation], timeout: 0.5)
-        
+
         XCTAssertEqual(task.status, .unknown)
     }
 
@@ -204,7 +204,7 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(storageTask.pauseCount, 0)
         XCTAssertEqual(task.status, .paused)
     }
-    
+
     /// Given: A StorageTransferTask without a sessionTask and without a proxyStorageTask
     /// When: suspend is invoked
     /// Then: The task remains .inProgress
@@ -222,7 +222,7 @@ class StorageTransferTaskTests: XCTestCase {
 
         XCTAssertEqual(task.status, .inProgress)
     }
-    
+
     /// Given: A StorageTransferTask with status completed
     /// When: suspend is invoked
     /// Then: The task remains completed
@@ -242,7 +242,7 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(sessionTask.suspendCount, 0)
         XCTAssertEqual(task.status, .completed)
     }
-    
+
     /// Given: A StorageTransferTask
     /// When: pause is invoked
     /// Then: The task is set to .paused
@@ -274,17 +274,17 @@ class StorageTransferTaskTests: XCTestCase {
             sessionTask: sessionTask,
             proxyStorageTask: MockStorageTask()
         )
-        
+
         // Set the task to completed by setting a multiPartUpload.completed
         XCTAssertNotEqual(task.status, .completed)
-        
+
         task.cancel()
 
         XCTAssertEqual(task.status, .cancelled)
         XCTAssertEqual(sessionTask.cancelCount, 1)
         XCTAssertNil(task.proxyStorageTask)
     }
-    
+
     /// Given: A StorageTransferTask with a proxyStorageTask
     /// When: cancel is invoked
     /// Then: The task is set to .cancelled
@@ -295,7 +295,7 @@ class StorageTransferTaskTests: XCTestCase {
             sessionTask: nil,
             proxyStorageTask: storageTask
         )
-        
+
         task.cancel()
         XCTAssertEqual(task.status, .cancelled)
         XCTAssertEqual(storageTask.cancelCount, 1)
@@ -311,7 +311,7 @@ class StorageTransferTaskTests: XCTestCase {
             sessionTask: nil,
             proxyStorageTask: nil
         )
-        
+
         task.cancel()
         XCTAssertNotEqual(task.status, .cancelled)
     }
@@ -329,7 +329,7 @@ class StorageTransferTaskTests: XCTestCase {
         // Set the task to completed by setting a multiPartUpload.completed
         task.multipartUpload = .completed(uploadId: "")
         XCTAssertEqual(task.status, .completed)
-        
+
         task.cancel()
         XCTAssertNotEqual(task.status, .cancelled)
         XCTAssertEqual(sessionTask.cancelCount, 0)
@@ -347,7 +347,7 @@ class StorageTransferTaskTests: XCTestCase {
             sessionTask: sessionTask,
             proxyStorageTask: MockStorageTask()
         )
-        
+
         task.complete()
         XCTAssertEqual(task.status, .completed)
         XCTAssertNil(task.proxyStorageTask)
@@ -365,11 +365,11 @@ class StorageTransferTaskTests: XCTestCase {
         )
         task.cancel()
         XCTAssertEqual(task.status, .cancelled)
-       
+
         task.complete()
         XCTAssertEqual(task.status, .cancelled)
     }
-    
+
     /// Given: A StorageTransferTask with status completed
     /// When: complete is invoked
     /// Then: The task is remains .completed
@@ -383,12 +383,12 @@ class StorageTransferTaskTests: XCTestCase {
         // Set the task to completed by setting a multiPartUpload.completed
         task.multipartUpload = .completed(uploadId: "")
         XCTAssertEqual(task.status, .completed)
-        
+
         task.complete()
 
         XCTAssertNotNil(task.proxyStorageTask)
     }
-    
+
     // MARK: - Fail Tests
     /// Given: A StorageTransferTask
     /// When: fail is invoked
@@ -413,7 +413,7 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertTrue(task.isFailed)
         XCTAssertNil(task.proxyStorageTask)
     }
-    
+
     /// Given: A StorageTransferTask with status .failed
     /// When: fail is invoked
     /// Then: No event is reported
@@ -428,7 +428,7 @@ class StorageTransferTaskTests: XCTestCase {
             sessionTask: MockSessionTask(),
             proxyStorageTask: MockStorageTask()
         )
-        
+
         // Set the task to error by setting a multiPartUpload.failed
         task.multipartUpload = .failed(uploadId: "", parts: nil, error: CancellationError())
         XCTAssertEqual(task.status, .error)
@@ -437,7 +437,7 @@ class StorageTransferTaskTests: XCTestCase {
         await fulfillment(of: [expectation], timeout: 0.5)
         XCTAssertNotNil(task.proxyStorageTask)
     }
-    
+
     // MARK: - Response Tests
     /// Given: A StorageTransferTask with a valid responseData
     /// When: responseText is invoked
@@ -452,7 +452,7 @@ class StorageTransferTaskTests: XCTestCase {
 
         XCTAssertEqual(task.responseText, "Test")
     }
-    
+
     /// Given: A StorageTransferTask with an invalid responseData
     /// When: responseText is invoked
     /// Then: nil is returned
@@ -462,11 +462,11 @@ class StorageTransferTaskTests: XCTestCase {
             sessionTask: nil,
             proxyStorageTask: nil
         )
-        task.responseData = Data(count: 9999)
+        task.responseData = Data(count: 9_999)
 
         XCTAssertNil(task.responseText)
     }
-    
+
     /// Given: A StorageTransferTask with a nil responseData
     /// When: responseText is invoked
     /// Then: nil is returned
@@ -480,7 +480,7 @@ class StorageTransferTaskTests: XCTestCase {
 
         XCTAssertNil(task.responseText)
     }
-    
+
     // MARK: - PartNumber Tests
     /// Given: A StorageTransferTask of type .multiPartUploadPart
     /// When: partNumber is invoked
@@ -495,7 +495,7 @@ class StorageTransferTaskTests: XCTestCase {
 
         XCTAssertEqual(task.partNumber, partNumber)
     }
-    
+
     /// Given: A StorageTransferTask of type .upload
     /// When: partNumber is invoked
     /// Then: nil is returned
@@ -526,13 +526,13 @@ class StorageTransferTaskTests: XCTestCase {
 
         var request = URLRequest(url: FileManager.default.temporaryDirectory)
         XCTAssertNil(request.allHTTPHeaderFields)
-        
+
         request.setHTTPRequestHeaders(transferTask: task)
         XCTAssertEqual(request.allHTTPHeaderFields?.count, 2)
         XCTAssertEqual(request.allHTTPHeaderFields?["header1"], "value1")
         XCTAssertEqual(request.allHTTPHeaderFields?["header2"], "value2")
     }
-    
+
     /// Given: A StorageTransferTask with nil requestHeaders
     /// When: URLRequest.setHTTPRequestHeaders is invoked with said task
     /// Then: The request does not adds headers
@@ -546,7 +546,7 @@ class StorageTransferTaskTests: XCTestCase {
 
         var request = URLRequest(url: FileManager.default.temporaryDirectory)
         XCTAssertNil(request.allHTTPHeaderFields)
-        
+
         request.setHTTPRequestHeaders(transferTask: task)
         XCTAssertNil(request.allHTTPHeaderFields)
     }
@@ -585,12 +585,12 @@ private class MockStorageTask: StorageTask {
     func pause() {
         pauseCount += 1
     }
-    
+
     var resumeCount = 0
     func resume() {
         resumeCount += 1
     }
-    
+
     var cancelCount = 0
     func cancel() {
         cancelCount += 1
@@ -608,17 +608,17 @@ private class MockSessionTask: StorageSessionTask {
         self.taskIdentifier = taskIdentifier
         self.state = state
     }
-    
+
     var resumeCount = 0
     func resume() {
         resumeCount += 1
     }
-    
+
     var suspendCount = 0
     func suspend() {
         suspendCount += 1
     }
-    
+
     var cancelCount = 0
     func cancel() {
         cancelCount += 1
@@ -627,31 +627,31 @@ private class MockSessionTask: StorageSessionTask {
 
 class MockLogger: Logger {
     var logLevel: LogLevel = .verbose
-    
+
     func error(_ message: @autoclosure () -> String) {
         print(message())
     }
-    
+
     func error(error: Error) {
         print(error)
     }
-    
+
     var warnCount = 0
     func warn(_ message: @autoclosure () -> String) {
         print(message())
         warnCount += 1
     }
-    
+
     var infoCount = 0
     func info(_ message: @autoclosure () -> String) {
         print(message())
         infoCount += 1
     }
-    
+
     func debug(_ message: @autoclosure () -> String) {
         print(message())
     }
-    
+
     func verbose(_ message: @autoclosure () -> String) {
         print(message())
     }

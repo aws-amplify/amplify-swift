@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSS3
+import XCTest
 @testable import Amplify
 @testable import func AmplifyTestCommon.XCTAssertThrowFatalError
 @testable import AWSS3StoragePlugin
-import AWSS3
-import XCTest
 
 class DefaultStorageMultipartUploadClientTests: XCTestCase {
     private var defaultClient: DefaultStorageMultipartUploadClient!
@@ -155,7 +155,8 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
                 uploadFile: .init(
                     fileURL: FileManager.default.temporaryDirectory.appendingPathComponent("noFile.txt"),
                     temporaryFileCreated: false,
-                    size: 1024),
+                    size: 1_024
+                ),
                 partSize: .default,
                 parts: [
                     .pending(bytes: 10),
@@ -180,7 +181,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
     /// When: serviceProxy is set to nil and uploadPart is invoked
     /// Then: A fatal error is thrown
     func testUploadPart_withoutServiceProxy_shouldThrowFatalError() throws {
-        self.serviceProxy = nil
+        serviceProxy = nil
         try XCTAssertThrowFatalError {
             try? self.client.uploadPart(
                 partNumber: 1,
@@ -324,7 +325,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
     /// Then: The tasks are unregistered
     func testCancelUploadTasks_shouldSucceed() async throws {
         let cancelExpectation = expectation(description: "Cancel Upload Tasks")
-        client.cancelUploadTasks(taskIdentifiers: [0, 1,2], done: {
+        client.cancelUploadTasks(taskIdentifiers: [0, 1, 2], done: {
             cancelExpectation.fulfill()
         })
 

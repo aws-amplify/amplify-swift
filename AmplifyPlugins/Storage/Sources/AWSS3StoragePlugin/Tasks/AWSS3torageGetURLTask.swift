@@ -6,9 +6,9 @@
 //
 
 import Amplify
-import Foundation
-import AWSS3
 import AWSPluginsCore
+import AWSS3
+import Foundation
 
 protocol StorageGetURLTask: AmplifyTaskExecution where Request == StorageGetURLRequest, Success == URL, Failure == StorageError {}
 
@@ -17,8 +17,10 @@ class AWSS3StorageGetURLTask: StorageGetURLTask, DefaultLogger {
     let request: StorageGetURLRequest
     let storageBehaviour: AWSS3StorageServiceBehavior
 
-    init(_ request: StorageGetURLRequest,
-         storageBehaviour: AWSS3StorageServiceBehavior) {
+    init(
+        _ request: StorageGetURLRequest,
+        storageBehaviour: AWSS3StorageServiceBehavior
+    ) {
         self.request = request
         self.storageBehaviour = storageBehaviour
     }
@@ -36,7 +38,8 @@ class AWSS3StorageGetURLTask: StorageGetURLTask, DefaultLogger {
             throw StorageError.validation(
                 "path",
                 "`path` is required field",
-                "Make sure that a valid `path` is passed for removing an object")
+                "Make sure that a valid `path` is passed for removing an object"
+            )
         }
 
         // Validate object if needed
@@ -57,11 +60,12 @@ class AWSS3StorageGetURLTask: StorageGetURLTask, DefaultLogger {
             )
         } catch let error as StorageErrorConvertible {
             throw error.storageError
-        } catch let error {
+        } catch {
             throw StorageError.service(
                 "Service error occurred.",
                 "Please inspect the underlying error for more details.",
-                error)
+                error
+            )
         }
 
     }

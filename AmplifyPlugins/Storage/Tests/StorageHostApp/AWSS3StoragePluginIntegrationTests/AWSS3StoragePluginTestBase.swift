@@ -37,7 +37,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     override func setUp() async throws {
         Self.logger.debug("setUp")
-        self.requestRecorder = AWSS3StoragePluginRequestRecorder()
+        requestRecorder = AWSS3StoragePluginRequestRecorder()
         do {
             await Amplify.reset()
 
@@ -52,7 +52,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
             } else {
                 try Amplify.configure()
             }
-            if (try? await Amplify.Auth.getCurrentUser()) != nil {
+            if await (try? Amplify.Auth.getCurrentUser()) != nil {
                 await signOut()
             }
             await signUp()
@@ -65,7 +65,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         Self.logger.debug("tearDown")
         invalidateCurrentSession()
         await Amplify.reset()
-        self.requestRecorder = nil
+        requestRecorder = nil
         // `sleep` has been added here to get more consistent test runs.
         // The plugin will always create a URLSession with the same key, so we need to invalidate it first.
         // However, it needs some time to properly clean up before creating and using a new session.
@@ -102,10 +102,10 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
         await fulfillment(of: [completeInvoked], timeout: 60)
     }
-    
+
     func remove(key: String, accessLevel: StorageAccessLevel? = nil) async {
         var removeOptions: StorageRemoveRequest.Options? = nil
-        if let accessLevel = accessLevel {
+        if let accessLevel {
             removeOptions = .init(accessLevel: accessLevel)
         }
 
@@ -153,9 +153,11 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         let registerFirstUserComplete = expectation(description: "register firt user completed")
         Task {
             do {
-                try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user1,
-                                                      password: AWSS3StoragePluginTestBase.password,
-                                                      email: AWSS3StoragePluginTestBase.email1)
+                try await AuthSignInHelper.signUpUser(
+                    username: AWSS3StoragePluginTestBase.user1,
+                    password: AWSS3StoragePluginTestBase.password,
+                    email: AWSS3StoragePluginTestBase.email1
+                )
                 Self.isFirstUserSignedUp = true
                 registerFirstUserComplete.fulfill()
             } catch {
@@ -167,9 +169,11 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         let registerSecondUserComplete = expectation(description: "register second user completed")
         Task {
             do {
-                try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user2,
-                                                      password: AWSS3StoragePluginTestBase.password,
-                                                      email: AWSS3StoragePluginTestBase.email2)
+                try await AuthSignInHelper.signUpUser(
+                    username: AWSS3StoragePluginTestBase.user2,
+                    password: AWSS3StoragePluginTestBase.password,
+                    email: AWSS3StoragePluginTestBase.email2
+                )
                 Self.isSecondUserSignedUp = true
                 registerSecondUserComplete.fulfill()
             } catch {
@@ -178,8 +182,10 @@ class AWSS3StoragePluginTestBase: XCTestCase {
             }
         }
 
-        await fulfillment(of: [registerFirstUserComplete, registerSecondUserComplete],
-                                  timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(
+            of: [registerFirstUserComplete, registerSecondUserComplete],
+            timeout: TestCommonConstants.networkTimeout
+        )
     }
 
     func getURL(key: String, options: StorageGetURLRequest.Options? = nil) async -> URL? {
@@ -197,7 +203,8 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     private func invalidateCurrentSession() {
         Self.logger.debug("Invalidating URLSession")
         guard let plugin = try? Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin,
-              let service = plugin.storageService as? AWSS3StorageService else {
+              let service = plugin.storageService as? AWSS3StorageService
+        else {
             print("Unable to to cast to AWSS3StorageService")
             return
         }

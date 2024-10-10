@@ -7,14 +7,14 @@
 
 import Foundation
 
-import AWSS3
 import Amplify
 import AWSPluginsCore
+import AWSS3
 
-extension AWSS3StoragePlugin {
+public extension AWSS3StoragePlugin {
 
     @discardableResult
-    public func getURL(
+    func getURL(
         key: String,
         options: StorageGetURLOperation.Request.Options? = nil
     ) async throws -> URL {
@@ -24,8 +24,10 @@ extension AWSS3StoragePlugin {
             throw error
         }
         let prefixResolver = storageConfiguration.prefixResolver ?? StorageAccessLevelAwarePrefixResolver(authService: authService)
-        let prefix = try await prefixResolver.resolvePrefix(for: options.accessLevel,
-                                                            targetIdentityId: options.targetIdentityId)
+        let prefix = try await prefixResolver.resolvePrefix(
+            for: options.accessLevel,
+            targetIdentityId: options.targetIdentityId
+        )
         let serviceKey = prefix + request.key
         if let pluginOptions = options.pluginOptions as? AWSStorageGetURLOptions, pluginOptions.validateObjectExistence {
             try await storageService.validateObjectExistence(serviceKey: serviceKey)
@@ -37,7 +39,8 @@ extension AWSS3StoragePlugin {
             signingOperation: .getObject,
             metadata: nil,
             accelerate: accelerate,
-            expires: options.expires)
+            expires: options.expires
+        )
 
         let channel = HubChannel(from: categoryType)
         let payload = HubPayload(eventName: HubPayload.EventName.Storage.getURL, context: options, data: result)
@@ -45,7 +48,7 @@ extension AWSS3StoragePlugin {
         return result
     }
 
-    public func getURL(
+    func getURL(
         path: any StoragePath,
         options: StorageGetURLOperation.Request.Options? = nil
     ) async throws -> URL {
@@ -53,20 +56,23 @@ extension AWSS3StoragePlugin {
         let request = StorageGetURLRequest(path: path, options: options)
         let task = AWSS3StorageGetURLTask(
             request,
-            storageBehaviour: storageService)
+            storageBehaviour: storageService
+        )
         return try await task.value
     }
 
-    public func downloadData(
+    func downloadData(
         path: any StoragePath,
         options: StorageDownloadDataOperation.Request.Options? = nil
     ) -> StorageDownloadDataTask {
         let options = options ?? StorageDownloadDataRequest.Options()
         let request = StorageDownloadDataRequest(path: path, options: options)
-        let operation = AWSS3StorageDownloadDataOperation(request,
-                                                          storageConfiguration: storageConfiguration,
-                                                          storageService: storageService,
-                                                          authService: authService)
+        let operation = AWSS3StorageDownloadDataOperation(
+            request,
+            storageConfiguration: storageConfiguration,
+            storageService: storageService,
+            authService: authService
+        )
         let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
         queue.addOperation(operation)
 
@@ -74,16 +80,18 @@ extension AWSS3StoragePlugin {
     }
 
     @discardableResult
-    public func downloadData(
+    func downloadData(
         key: String,
         options: StorageDownloadDataOperation.Request.Options? = nil
     ) -> StorageDownloadDataTask {
         let options = options ?? StorageDownloadDataRequest.Options()
         let request = StorageDownloadDataRequest(key: key, options: options)
-        let operation = AWSS3StorageDownloadDataOperation(request,
-                                                          storageConfiguration: storageConfiguration,
-                                                          storageService: storageService,
-                                                          authService: authService)
+        let operation = AWSS3StorageDownloadDataOperation(
+            request,
+            storageConfiguration: storageConfiguration,
+            storageService: storageService,
+            authService: authService
+        )
         let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
         queue.addOperation(operation)
 
@@ -91,17 +99,19 @@ extension AWSS3StoragePlugin {
     }
 
     @discardableResult
-    public func downloadFile(
+    func downloadFile(
         key: String,
         local: URL,
         options: StorageDownloadFileOperation.Request.Options? = nil
     ) -> StorageDownloadFileTask {
         let options = options ?? StorageDownloadFileRequest.Options()
         let request = StorageDownloadFileRequest(key: key, local: local, options: options)
-        let operation = AWSS3StorageDownloadFileOperation(request,
-                                                          storageConfiguration: storageConfiguration,
-                                                          storageService: storageService,
-                                                          authService: authService)
+        let operation = AWSS3StorageDownloadFileOperation(
+            request,
+            storageConfiguration: storageConfiguration,
+            storageService: storageService,
+            authService: authService
+        )
         let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
         queue.addOperation(operation)
 
@@ -109,17 +119,19 @@ extension AWSS3StoragePlugin {
     }
 
     @discardableResult
-    public func downloadFile(
+    func downloadFile(
         path: any StoragePath,
         local: URL,
         options: StorageDownloadFileOperation.Request.Options? = nil
     ) -> StorageDownloadFileTask {
         let options = options ?? StorageDownloadFileRequest.Options()
         let request = StorageDownloadFileRequest(path: path, local: local, options: options)
-        let operation = AWSS3StorageDownloadFileOperation(request,
-                                                          storageConfiguration: storageConfiguration,
-                                                          storageService: storageService,
-                                                          authService: authService)
+        let operation = AWSS3StorageDownloadFileOperation(
+            request,
+            storageConfiguration: storageConfiguration,
+            storageService: storageService,
+            authService: authService
+        )
         let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
         queue.addOperation(operation)
 
@@ -127,17 +139,19 @@ extension AWSS3StoragePlugin {
     }
 
     @discardableResult
-    public func uploadData(
+    func uploadData(
         key: String,
         data: Data,
         options: StorageUploadDataOperation.Request.Options? = nil
     ) -> StorageUploadDataTask {
         let options = options ?? StorageUploadDataRequest.Options()
         let request = StorageUploadDataRequest(key: key, data: data, options: options)
-        let operation = AWSS3StorageUploadDataOperation(request,
-                                                        storageConfiguration: storageConfiguration,
-                                                        storageService: storageService,
-                                                        authService: authService)
+        let operation = AWSS3StorageUploadDataOperation(
+            request,
+            storageConfiguration: storageConfiguration,
+            storageService: storageService,
+            authService: authService
+        )
         let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
         queue.addOperation(operation)
 
@@ -145,17 +159,19 @@ extension AWSS3StoragePlugin {
     }
 
     @discardableResult
-    public func uploadData(
+    func uploadData(
         path: any StoragePath,
         data: Data,
         options: StorageUploadDataOperation.Request.Options? = nil
     ) -> StorageUploadDataTask {
         let options = options ?? StorageUploadDataRequest.Options()
         let request = StorageUploadDataRequest(path: path, data: data, options: options)
-        let operation = AWSS3StorageUploadDataOperation(request,
-                                                        storageConfiguration: storageConfiguration,
-                                                        storageService: storageService,
-                                                        authService: authService)
+        let operation = AWSS3StorageUploadDataOperation(
+            request,
+            storageConfiguration: storageConfiguration,
+            storageService: storageService,
+            authService: authService
+        )
         let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
         queue.addOperation(operation)
 
@@ -163,17 +179,19 @@ extension AWSS3StoragePlugin {
     }
 
     @discardableResult
-    public func uploadFile(
+    func uploadFile(
         key: String,
         local: URL,
         options: StorageUploadFileOperation.Request.Options? = nil
     ) -> StorageUploadFileTask {
         let options = options ?? StorageUploadFileRequest.Options()
         let request = StorageUploadFileRequest(key: key, local: local, options: options)
-        let operation = AWSS3StorageUploadFileOperation(request,
-                                                        storageConfiguration: storageConfiguration,
-                                                        storageService: storageService,
-                                                        authService: authService)
+        let operation = AWSS3StorageUploadFileOperation(
+            request,
+            storageConfiguration: storageConfiguration,
+            storageService: storageService,
+            authService: authService
+        )
         let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
         queue.addOperation(operation)
 
@@ -181,17 +199,19 @@ extension AWSS3StoragePlugin {
     }
 
     @discardableResult
-    public func uploadFile(
+    func uploadFile(
         path: any StoragePath,
         local: URL,
         options: StorageUploadFileOperation.Request.Options? = nil
     ) -> StorageUploadFileTask {
         let options = options ?? StorageUploadFileRequest.Options()
         let request = StorageUploadFileRequest(path: path, local: local, options: options)
-        let operation = AWSS3StorageUploadFileOperation(request,
-                                                        storageConfiguration: storageConfiguration,
-                                                        storageService: storageService,
-                                                        authService: authService)
+        let operation = AWSS3StorageUploadFileOperation(
+            request,
+            storageConfiguration: storageConfiguration,
+            storageService: storageService,
+            authService: authService
+        )
         let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
         queue.addOperation(operation)
 
@@ -199,16 +219,18 @@ extension AWSS3StoragePlugin {
     }
 
     @discardableResult
-    public func remove(
+    func remove(
         key: String,
         options: StorageRemoveOperation.Request.Options? = nil
     ) async throws -> String {
         let options = options ?? StorageRemoveRequest.Options()
         let request = StorageRemoveRequest(key: key, options: options)
-        let operation = AWSS3StorageRemoveOperation(request,
-                                                    storageConfiguration: storageConfiguration,
-                                                    storageService: storageService,
-                                                    authService: authService)
+        let operation = AWSS3StorageRemoveOperation(
+            request,
+            storageConfiguration: storageConfiguration,
+            storageService: storageService,
+            authService: authService
+        )
         let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
         queue.addOperation(operation)
 
@@ -216,7 +238,7 @@ extension AWSS3StoragePlugin {
     }
 
     @discardableResult
-    public func remove(
+    func remove(
         path: any StoragePath,
         options: StorageRemoveOperation.Request.Options? = nil
     ) async throws -> String {
@@ -225,11 +247,12 @@ extension AWSS3StoragePlugin {
         let task = AWSS3StorageRemoveTask(
             request,
             storageConfiguration: storageConfiguration,
-            storageBehaviour: storageService)
+            storageBehaviour: storageService
+        )
         return try await task.value
     }
 
-    public func list(
+    func list(
         options: StorageListRequest.Options? = nil
     ) async throws -> StorageListResult {
         let options = options ?? StorageListRequest.Options()
@@ -244,7 +267,7 @@ extension AWSS3StoragePlugin {
         return result
     }
 
-    public func list(
+    func list(
         path: any StoragePath,
         options: StorageListRequest.Options? = nil
     ) async throws -> StorageListResult {
@@ -253,11 +276,12 @@ extension AWSS3StoragePlugin {
         let task = AWSS3StorageListObjectsTask(
             request,
             storageConfiguration: storageConfiguration,
-            storageBehaviour: storageService)
+            storageBehaviour: storageService
+        )
         return try await task.value
     }
 
-    public func handleBackgroundEvents(identifier: String) async -> Bool {
+    func handleBackgroundEvents(identifier: String) async -> Bool {
         await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
             StorageBackgroundEventsRegistry.handleBackgroundEvents(identifier: identifier, continuation: continuation)
         }

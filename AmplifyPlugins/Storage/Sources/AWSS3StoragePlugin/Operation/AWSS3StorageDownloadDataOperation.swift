@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 /// Storage Download Data Operation.
 ///
@@ -30,21 +30,25 @@ class AWSS3StorageDownloadDataOperation: AmplifyInProcessReportingOperation<
     // Serial queue for synchronizing access to `storageTaskReference`.
     private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
-    init(_ request: StorageDownloadDataRequest,
-         storageConfiguration: AWSS3StoragePluginConfiguration,
-         storageService: AWSS3StorageServiceBehavior,
-         authService: AWSAuthServiceBehavior,
-         progressListener: InProcessListener? = nil,
-         resultListener: ResultListener? = nil) {
+    init(
+        _ request: StorageDownloadDataRequest,
+        storageConfiguration: AWSS3StoragePluginConfiguration,
+        storageService: AWSS3StorageServiceBehavior,
+        authService: AWSAuthServiceBehavior,
+        progressListener: InProcessListener? = nil,
+        resultListener: ResultListener? = nil
+    ) {
 
         self.storageConfiguration = storageConfiguration
         self.storageService = storageService
         self.authService = authService
-        super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.downloadData,
-                   request: request,
-                   inProcessListener: progressListener,
-                   resultListener: resultListener)
+        super.init(
+            categoryType: .storage,
+            eventName: HubPayload.EventName.Storage.downloadData,
+            request: request,
+            inProcessListener: progressListener,
+            resultListener: resultListener
+        )
     }
 
     /// Pauses operation.

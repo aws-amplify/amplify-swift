@@ -32,21 +32,26 @@ extension AWSS3StoragePlugin {
         } else {
             throw PluginError.pluginConfigurationError(
                 PluginErrorConstants.decodeConfigurationError.errorDescription,
-                PluginErrorConstants.decodeConfigurationError.recoverySuggestion)
+                PluginErrorConstants.decodeConfigurationError.recoverySuggestion
+            )
         }
 
         do {
             let authService = AWSAuthService()
             let defaultAccessLevel = try configClosures.retrieveDefaultAccessLevel()
-            let storageService = try AWSS3StorageService(authService: authService,
-                                                         region: configClosures.retrieveRegion(),
-                                                         bucket: configClosures.retrieveBucket(),
-                                                         httpClientEngineProxy: self.httpClientEngineProxy)
-            storageService.urlRequestDelegate = self.urlRequestDelegate
+            let storageService = try AWSS3StorageService(
+                authService: authService,
+                region: configClosures.retrieveRegion(),
+                bucket: configClosures.retrieveBucket(),
+                httpClientEngineProxy: httpClientEngineProxy
+            )
+            storageService.urlRequestDelegate = urlRequestDelegate
 
-            configure(storageService: storageService, 
-                      authService: authService,
-                      defaultAccessLevel: defaultAccessLevel)
+            configure(
+                storageService: storageService,
+                authService: authService,
+                defaultAccessLevel: defaultAccessLevel
+            )
         } catch let storageError as StorageError {
             throw storageError
         } catch {
@@ -55,7 +60,8 @@ extension AWSS3StoragePlugin {
                 """
                 There was an error configuring the plugin. See the underlying error for more details.
                 """,
-                error)
+                error
+            )
             throw amplifyError
         }
     }
@@ -71,10 +77,12 @@ extension AWSS3StoragePlugin {
     ///   - authService: The authentication service object.
     ///   - defaultAccessLevel: The access level to be used for all API calls by default.
     ///   - queue: The queue which operations are stored and dispatched for asychronous processing.
-    func configure(storageService: AWSS3StorageServiceBehavior,
-                   authService: AWSAuthServiceBehavior,
-                   defaultAccessLevel: StorageAccessLevel,
-                   queue: OperationQueue = OperationQueue()) {
+    func configure(
+        storageService: AWSS3StorageServiceBehavior,
+        authService: AWSAuthServiceBehavior,
+        defaultAccessLevel: StorageAccessLevel,
+        queue: OperationQueue = OperationQueue()
+    ) {
         self.storageService = storageService
         self.authService = authService
         self.queue = queue
@@ -93,7 +101,8 @@ extension AWSS3StoragePlugin {
         guard let storage = configuration.storage else {
             throw PluginError.pluginConfigurationError(
                 PluginErrorConstants.missingStorageCategoryConfiguration.errorDescription,
-                PluginErrorConstants.missingStorageCategoryConfiguration.recoverySuggestion)
+                PluginErrorConstants.missingStorageCategoryConfiguration.recoverySuggestion
+            )
         }
 
         let regionClosure = {
@@ -106,37 +115,46 @@ extension AWSS3StoragePlugin {
             return storage.bucketName
         }
 
-        return ConfigurationClosures(retrieveRegion: regionClosure,
-                                     retrieveBucket: bucketClosure,
-                                     retrieveDefaultAccessLevel: { .guest })
+        return ConfigurationClosures(
+            retrieveRegion: regionClosure,
+            retrieveBucket: bucketClosure,
+            retrieveDefaultAccessLevel: { .guest }
+        )
     }
 
     private func retrieveConfiguration(_ configuration: JSONValue) throws -> ConfigurationClosures {
         guard case let .object(configObject) = configuration else {
             throw StorageError.configuration(
                 PluginErrorConstants.configurationObjectExpected.errorDescription,
-                PluginErrorConstants.configurationObjectExpected.recoverySuggestion)
+                PluginErrorConstants.configurationObjectExpected.recoverySuggestion
+            )
         }
 
         let regionClosure = { try AWSS3StoragePlugin.getRegion(configObject) }
         let bucketClosure = { try AWSS3StoragePlugin.getBucket(configObject) }
         let defaultAccessLevelClosure = { try AWSS3StoragePlugin.getDefaultAccessLevel(configObject) }
 
-        return ConfigurationClosures(retrieveRegion: regionClosure,
-                                     retrieveBucket: bucketClosure,
-                                     retrieveDefaultAccessLevel: defaultAccessLevelClosure)
+        return ConfigurationClosures(
+            retrieveRegion: regionClosure,
+            retrieveBucket: bucketClosure,
+            retrieveDefaultAccessLevel: defaultAccessLevelClosure
+        )
     }
 
     /// Retrieves the region from configuration, validates, and returns it.
     private static func getRegion(_ configuration: [String: JSONValue]) throws -> String {
         guard let region = configuration[PluginConstants.region] else {
-            throw PluginError.pluginConfigurationError(PluginErrorConstants.missingRegion.errorDescription,
-                                                       PluginErrorConstants.missingRegion.recoverySuggestion)
+            throw PluginError.pluginConfigurationError(
+                PluginErrorConstants.missingRegion.errorDescription,
+                PluginErrorConstants.missingRegion.recoverySuggestion
+            )
         }
 
         guard case let .string(regionValue) = region else {
-            throw PluginError.pluginConfigurationError(PluginErrorConstants.invalidRegion.errorDescription,
-                                                       PluginErrorConstants.invalidRegion.recoverySuggestion)
+            throw PluginError.pluginConfigurationError(
+                PluginErrorConstants.invalidRegion.errorDescription,
+                PluginErrorConstants.invalidRegion.recoverySuggestion
+            )
         }
 
         try validateRegionNonEmpty(regionValue)
@@ -146,21 +164,27 @@ extension AWSS3StoragePlugin {
 
     private static func validateRegionNonEmpty(_ region: String) throws {
         if region.isEmpty {
-            throw PluginError.pluginConfigurationError(PluginErrorConstants.emptyRegion.errorDescription,
-                                                       PluginErrorConstants.emptyRegion.recoverySuggestion)
+            throw PluginError.pluginConfigurationError(
+                PluginErrorConstants.emptyRegion.errorDescription,
+                PluginErrorConstants.emptyRegion.recoverySuggestion
+            )
         }
     }
 
     /// Retrieves the bucket from configuration, validates, and returns it.
     private static func getBucket(_ configuration: [String: JSONValue]) throws -> String {
         guard let bucket = configuration[PluginConstants.bucket] else {
-            throw PluginError.pluginConfigurationError(PluginErrorConstants.missingBucket.errorDescription,
-                                                       PluginErrorConstants.missingBucket.recoverySuggestion)
+            throw PluginError.pluginConfigurationError(
+                PluginErrorConstants.missingBucket.errorDescription,
+                PluginErrorConstants.missingBucket.recoverySuggestion
+            )
         }
 
         guard case let .string(bucketValue) = bucket else {
-            throw PluginError.pluginConfigurationError(PluginErrorConstants.invalidBucket.errorDescription,
-                                                       PluginErrorConstants.invalidBucket.recoverySuggestion)
+            throw PluginError.pluginConfigurationError(
+                PluginErrorConstants.invalidBucket.errorDescription,
+                PluginErrorConstants.invalidBucket.recoverySuggestion
+            )
         }
 
         try validateBucketNonEmpty(bucketValue)
@@ -170,8 +194,10 @@ extension AWSS3StoragePlugin {
 
     private static func validateBucketNonEmpty(_ bucket: String) throws {
         if bucket.isEmpty {
-            throw PluginError.pluginConfigurationError(PluginErrorConstants.emptyBucket.errorDescription,
-                                                       PluginErrorConstants.emptyBucket.recoverySuggestion)
+            throw PluginError.pluginConfigurationError(
+                PluginErrorConstants.emptyBucket.errorDescription,
+                PluginErrorConstants.emptyBucket.recoverySuggestion
+            )
         }
     }
 
@@ -182,14 +208,16 @@ extension AWSS3StoragePlugin {
             guard case let .string(defaultAccessLevelString) = defaultAccessLevelConfig else {
                 throw PluginError.pluginConfigurationError(
                     PluginErrorConstants.invalidDefaultAccessLevel.errorDescription,
-                    PluginErrorConstants.invalidDefaultAccessLevel.recoverySuggestion)
+                    PluginErrorConstants.invalidDefaultAccessLevel.recoverySuggestion
+                )
             }
 
             let defaultAccessLevelOptional = StorageAccessLevel.init(rawValue: defaultAccessLevelString)
             guard let defaultAccessLevel = defaultAccessLevelOptional else {
                 throw PluginError.pluginConfigurationError(
                     PluginErrorConstants.invalidDefaultAccessLevel.errorDescription,
-                    PluginErrorConstants.invalidDefaultAccessLevel.recoverySuggestion)
+                    PluginErrorConstants.invalidDefaultAccessLevel.recoverySuggestion
+                )
             }
 
             return defaultAccessLevel
