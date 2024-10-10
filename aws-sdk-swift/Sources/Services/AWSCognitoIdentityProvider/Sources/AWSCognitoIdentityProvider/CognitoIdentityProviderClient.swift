@@ -3968,7 +3968,6 @@ extension CognitoIdentityProviderClient {
     /// - Throws: One of the exceptions listed below __Possible Exceptions__.
     ///
     /// __Possible Exceptions:__
-    /// - `CredentialDeletionNotAllowedException` : [no documentation found]
     /// - `ForbiddenException` : This exception is thrown when WAF doesn't allow your request based on a web ACL that's associated with your user pool.
     /// - `InternalErrorException` : This exception is thrown when Amazon Cognito encounters an internal error.
     /// - `InvalidParameterException` : This exception is thrown when the Amazon Cognito service encounters an invalid parameter.
@@ -5396,6 +5395,83 @@ extension CognitoIdentityProviderClient {
         return try await op.execute(input: input)
     }
 
+    /// Performs the `GetUserAuthFactors` operation on the `AWSCognitoIdentityProviderService` service.
+    ///
+    ///
+    /// - Parameter GetUserAuthFactorsInput : [no documentation found]
+    ///
+    /// - Returns: `GetUserAuthFactorsOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `ForbiddenException` : This exception is thrown when WAF doesn't allow your request based on a web ACL that's associated with your user pool.
+    /// - `InternalErrorException` : This exception is thrown when Amazon Cognito encounters an internal error.
+    /// - `InvalidParameterException` : This exception is thrown when the Amazon Cognito service encounters an invalid parameter.
+    /// - `NotAuthorizedException` : This exception is thrown when a user isn't authorized.
+    /// - `PasswordResetRequiredException` : This exception is thrown when a password reset is required.
+    /// - `ResourceNotFoundException` : This exception is thrown when the Amazon Cognito service can't find the requested resource.
+    /// - `TooManyRequestsException` : This exception is thrown when the user has made too many requests for a given operation.
+    /// - `UserNotConfirmedException` : This exception is thrown when a user isn't confirmed successfully.
+    /// - `UserNotFoundException` : This exception is thrown when a user isn't found.
+    public func getUserAuthFactors(input: GetUserAuthFactorsInput) async throws -> GetUserAuthFactorsOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "getUserAuthFactors")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "cognito-idp")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<GetUserAuthFactorsInput, GetUserAuthFactorsOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<GetUserAuthFactorsInput, GetUserAuthFactorsOutput>(GetUserAuthFactorsInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<GetUserAuthFactorsInput, GetUserAuthFactorsOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<GetUserAuthFactorsInput, GetUserAuthFactorsOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<GetUserAuthFactorsOutput>(GetUserAuthFactorsOutput.httpOutput(from:), GetUserAuthFactorsOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<GetUserAuthFactorsInput, GetUserAuthFactorsOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<GetUserAuthFactorsOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetUserAuthFactorsOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetUserAuthFactorsInput, GetUserAuthFactorsOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<GetUserAuthFactorsInput, GetUserAuthFactorsOutput>(xAmzTarget: "AWSCognitoIdentityProviderService.GetUserAuthFactors"))
+        builder.serialize(ClientRuntime.BodyMiddleware<GetUserAuthFactorsInput, GetUserAuthFactorsOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: GetUserAuthFactorsInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<GetUserAuthFactorsInput, GetUserAuthFactorsOutput>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GetUserAuthFactorsOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GetUserAuthFactorsInput, GetUserAuthFactorsOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GetUserAuthFactorsInput, GetUserAuthFactorsOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "CognitoIdentityProvider")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "GetUserAuthFactors")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
     /// Performs the `GetUserPoolMfaConfig` operation on the `AWSCognitoIdentityProviderService` service.
     ///
     /// Gets the user pool multi-factor authentication (MFA) configuration.
@@ -5483,10 +5559,10 @@ extension CognitoIdentityProviderClient {
     /// - `ForbiddenException` : This exception is thrown when WAF doesn't allow your request based on a web ACL that's associated with your user pool.
     /// - `InternalErrorException` : This exception is thrown when Amazon Cognito encounters an internal error.
     /// - `InvalidParameterException` : This exception is thrown when the Amazon Cognito service encounters an invalid parameter.
-    /// - `InvalidWebAuthnConfigurationException` : [no documentation found]
     /// - `LimitExceededException` : This exception is thrown when a user exceeds the limit for a requested Amazon Web Services resource.
     /// - `NotAuthorizedException` : This exception is thrown when a user isn't authorized.
     /// - `TooManyRequestsException` : This exception is thrown when the user has made too many requests for a given operation.
+    /// - `WebAuthnConfigurationMissingException` : [no documentation found]
     /// - `WebAuthnNotEnabledException` : [no documentation found]
     public func getWebAuthnRegistrationOptions(input: GetWebAuthnRegistrationOptionsInput) async throws -> GetWebAuthnRegistrationOptionsOutput {
         let context = Smithy.ContextBuilder()
@@ -8524,14 +8600,15 @@ extension CognitoIdentityProviderClient {
     /// - Throws: One of the exceptions listed below __Possible Exceptions__.
     ///
     /// __Possible Exceptions:__
-    /// - `CredentialAlreadyExistsException` : [no documentation found]
     /// - `ForbiddenException` : This exception is thrown when WAF doesn't allow your request based on a web ACL that's associated with your user pool.
     /// - `InternalErrorException` : This exception is thrown when Amazon Cognito encounters an internal error.
     /// - `InvalidParameterException` : This exception is thrown when the Amazon Cognito service encounters an invalid parameter.
     /// - `NotAuthorizedException` : This exception is thrown when a user isn't authorized.
     /// - `TooManyRequestsException` : This exception is thrown when the user has made too many requests for a given operation.
-    /// - `WebAuthnAuthenticatorSelectionMismatchException` : [no documentation found]
-    /// - `WebAuthnChallengeMismatchException` : [no documentation found]
+    /// - `WebAuthnChallengeNotFoundException` : [no documentation found]
+    /// - `WebAuthnCredentialNotSupportedException` : [no documentation found]
+    /// - `WebAuthnNotEnabledException` : [no documentation found]
+    /// - `WebAuthnOriginNotAllowedException` : [no documentation found]
     /// - `WebAuthnRelyingPartyMismatchException` : [no documentation found]
     public func verifyWebAuthnRegistrationResult(input: VerifyWebAuthnRegistrationResultInput) async throws -> VerifyWebAuthnRegistrationResultOutput {
         let context = Smithy.ContextBuilder()
