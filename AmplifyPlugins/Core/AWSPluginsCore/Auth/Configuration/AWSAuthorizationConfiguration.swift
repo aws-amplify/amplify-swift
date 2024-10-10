@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 public enum AWSAuthorizationConfiguration {
     case none
@@ -21,9 +21,11 @@ public enum AWSAuthorizationConfiguration {
 extension AWSAuthorizationConfiguration {
     private static func awsIAMAuthorizationConfiguration(region: String?)
         throws -> AWSAuthorizationConfiguration {
-            guard let region = region else {
-                throw PluginError.pluginConfigurationError("Region is not set for IAM",
-                                                           "Set the region")
+            guard let region else {
+                throw PluginError.pluginConfigurationError(
+                    "Region is not set for IAM",
+                    "Set the region"
+                )
             }
             return .awsIAM(AWSIAMConfiguration(region: region))
     }
@@ -31,7 +33,7 @@ extension AWSAuthorizationConfiguration {
     private static func apiKeyAuthorizationConfiguration(apiKey: String?)
         throws -> AWSAuthorizationConfiguration {
 
-            guard let apiKey = apiKey else {
+            guard let apiKey else {
                 throw PluginError.pluginConfigurationError(
                     "Could not get `ApiKey` from plugin configuration",
                     """
@@ -53,9 +55,11 @@ extension AWSAuthorizationConfiguration {
     /// - Throws: if the region is not valid and `authType` is `iam`
     ///           or if `apiKey` is not valid and `authType` is `apiKey`
     /// - Returns: an `AWSAuthorizationConfiguration` according to the provided `authType`
-    public static func makeConfiguration(authType: AWSAuthorizationType,
-                                         region: String?,
-                                         apiKey: String?) throws -> AWSAuthorizationConfiguration {
+    public static func makeConfiguration(
+        authType: AWSAuthorizationType,
+        region: String?,
+        apiKey: String?
+    ) throws -> AWSAuthorizationConfiguration {
         switch authType {
         case .none:
             return .none

@@ -5,12 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import XCTest
 import Combine
+import XCTest
 @testable @_spi(WebSocket) import AWSPluginsCore
 
-fileprivate let timeout: TimeInterval = 5
+private let timeout: TimeInterval = 5
 
 class WebSocketClientTests: XCTestCase {
     var localWebSocketServer: LocalWebSocketServer?
@@ -196,7 +195,7 @@ class WebSocketClientTests: XCTestCase {
 }
 
 
-fileprivate class MockNetworkMonitor: WebSocketNetworkMonitorProtocol {
+private class MockNetworkMonitor: WebSocketNetworkMonitorProtocol {
     typealias State = AmplifyNetworkMonitor.State
     let subject = PassthroughSubject<State, Never>()
     var publisher: AnyPublisher<(State, State), Never> {
@@ -208,6 +207,6 @@ fileprivate class MockNetworkMonitor: WebSocketNetworkMonitorProtocol {
     func updateState(_ nextState: AmplifyNetworkMonitor.State) async {
         subject.send(nextState)
     }
-    
+
 
 }

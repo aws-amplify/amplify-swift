@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(InternalAmplifyPluginExtension) @_spi(InternalHttpEngineProxy) import InternalAmplifyCredentials
 import ClientRuntime
+@_spi(InternalAmplifyPluginExtension) @_spi(InternalHttpEngineProxy) import InternalAmplifyCredentials
 import XCTest
 
 class UserAgentSuffixAppenderTests: XCTestCase {

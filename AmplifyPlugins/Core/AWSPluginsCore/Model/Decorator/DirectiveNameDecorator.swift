@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 /// Replaces the directive name of the GraphQL document based on Amplify GraphQL operation types such as "get", "list",
 /// "sync", "create", "update", "delete", "onCreate", "onUpdate", and "onDelete". The GraphQL name is constructed based
@@ -35,23 +35,27 @@ public struct DirectiveNameDecorator: ModelBasedGraphQLDocumentDecorator {
         self.subscriptionType = type
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelType: Model.Type
+    ) -> SingleDirectiveGraphQLDocument {
         decorate(document, modelSchema: modelType.schema)
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelSchema: ModelSchema
+    ) -> SingleDirectiveGraphQLDocument {
 
-        if let queryType = queryType {
+        if let queryType {
             return document.copy(name: modelSchema.graphQLName(queryType: queryType))
         }
 
-        if let mutationType = mutationType {
+        if let mutationType {
             return document.copy(name: modelSchema.graphQLName(mutationType: mutationType))
         }
 
-        if let subscriptionType = subscriptionType {
+        if let subscriptionType {
             return document.copy(name: modelSchema.graphQLName(subscriptionType: subscriptionType))
         }
 

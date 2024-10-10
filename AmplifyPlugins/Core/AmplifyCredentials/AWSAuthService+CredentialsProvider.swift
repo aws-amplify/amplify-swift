@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSClientRuntime
 import AWSPluginsCore
+import Foundation
 
 extension AWSAuthService: AWSAuthCredentialsProviderBehavior {
     public func getCredentialsProvider() -> AWSClientRuntime.CredentialsProviding {

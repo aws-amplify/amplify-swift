@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import ClientRuntime
-import AWSClientRuntime
 import Amplify
+import AWSClientRuntime
+import ClientRuntime
 import InternalAmplifyCredentials
 
 public class MockAWSAuthService: AWSAuthCredentialsProviderBehavior {
@@ -66,6 +66,7 @@ struct MyCustomCredentialsProvider: CredentialsProviding {
         AWSCredentials(
             accessKey: "AKIDEXAMPLE",
             secret: "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY",
-            expirationTimeout: Date().addingTimeInterval(30))
+            expirationTimeout: Date().addingTimeInterval(30)
+        )
     }
 }

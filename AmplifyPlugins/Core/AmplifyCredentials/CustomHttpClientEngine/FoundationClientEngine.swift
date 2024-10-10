@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import ClientRuntime
 import Amplify
+import ClientRuntime
+import Foundation
 
 @_spi(FoundationClientEngine)
 public struct FoundationClientEngine: HTTPClient {

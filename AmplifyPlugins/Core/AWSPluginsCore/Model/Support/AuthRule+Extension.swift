@@ -7,11 +7,11 @@
 
 import Amplify
 
-extension AuthRuleProvider {
+public extension AuthRuleProvider {
 
     /// Returns corresponding `AWSAuthorizationType` for each `AuthRuleProvider`
     /// - Returns: AWS authorization type
-    public func toAWSAuthorizationType() -> AWSAuthorizationType {
+    func toAWSAuthorizationType() -> AWSAuthorizationType {
         var authType: AWSAuthorizationType
         switch self {
         case .apiKey:
@@ -31,7 +31,7 @@ extension AuthRuleProvider {
 
 extension AuthRule {
     func getOwnerFieldOrDefault() -> String {
-        guard let ownerField = ownerField else {
+        guard let ownerField else {
             return "owner"
         }
         return ownerField
@@ -53,7 +53,7 @@ extension AuthRule {
     }
 
     public func identityClaimOrDefault() -> String {
-        guard let identityClaim = self.identityClaim else {
+        guard let identityClaim else {
             return "username"
         }
         if identityClaim == "cognito:username" {
@@ -63,7 +63,7 @@ extension AuthRule {
     }
 }
 
-extension Array where Element == AuthRule {
+extension [AuthRule] {
 
     // This function returns a map of all of the read restricting static groups defined for your app's schema
     // Example 1: Single group with implicit read restriction
@@ -95,7 +95,7 @@ extension Array where Element == AuthRule {
         let readRestrictingGroupRules = filter { $0.isReadRestrictingStaticGroup() }
         for groupRule in readRestrictingGroupRules {
             let groupClaim = groupRule.groupClaim ?? "cognito:groups"
-            groupRule.groups.forEach { group in
+            for group in groupRule.groups {
                 if var existingSet = readRestrictingStaticGroupsMap[groupClaim] {
                     existingSet.insert(group)
                     readRestrictingStaticGroupsMap[groupClaim] = existingSet

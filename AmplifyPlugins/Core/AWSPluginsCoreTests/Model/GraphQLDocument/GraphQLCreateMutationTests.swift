@@ -33,10 +33,12 @@ class GraphQLCreateMutationTests: XCTestCase {
     ///     - it contains an `input` of type `CreatePostInput`
     ///     - it has a list of fields with no nested models
     func testCreateGraphQLMutationFromSimpleModel() {
-        let post = Post(title: "title",
-                        content: "content",
-                        createdAt: .now(),
-                        status: .private)
+        let post = Post(
+            title: "title",
+            content: "content",
+            createdAt: .now(),
+            status: .private
+        )
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .create))
@@ -118,7 +120,7 @@ class GraphQLCreateMutationTests: XCTestCase {
         }
         XCTAssertEqual(input["commentPostId"] as? String, post.id)
     }
-    
+
     /// - Given: a `Model` instance
     /// - When:
     ///   - the model is of type `Comment`
@@ -276,7 +278,7 @@ class GraphQLCreateMutationTests: XCTestCase {
         }
         XCTAssertEqual(input["commentPostId"] as? String, post.id)
     }
-    
+
     /// - Given: a `Model` instance
     /// - When:
     ///   - the model is of type `Comment`
@@ -341,8 +343,10 @@ class GraphQLCreateMutationTests: XCTestCase {
     func testCreateGraphQLMutationFromModelWithReadonlyFields() {
         let recordCover = RecordCover(artist: "artist")
         let record = Record(name: "name", description: "description", cover: recordCover)
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Record.schema,
-                                                               operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: Record.schema,
+            operationType: .mutation
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: record, mutationType: .create))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))

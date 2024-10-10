@@ -22,7 +22,7 @@ public class UserAgentSuffixAppender: AWSPluginExtension {
 @_spi(InternalHttpEngineProxy)
 extension UserAgentSuffixAppender: HTTPClient {
     public func send(request: SdkHttpRequest) async throws -> HttpResponse {
-        guard let target = target  else {
+        guard let target  else {
             throw ClientError.unknownError("HttpClientEngine is not set")
         }
 

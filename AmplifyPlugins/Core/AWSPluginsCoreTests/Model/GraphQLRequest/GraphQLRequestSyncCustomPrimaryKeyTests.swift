@@ -22,8 +22,10 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
 
     func testQueryGraphQLRequest() throws {
         let order = CustomerOrder(orderId: "testOrderId", email: "testEmail@provider.com")
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: order.modelName,
-                                                               operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelName: order.modelName,
+            operationType: .query
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: order.id, fields: ["orderId": "testOrderId"]))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
@@ -44,10 +46,12 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
 
         XCTAssertEqual(document.stringValue, documentStringValue)
 
-        let request = GraphQLRequest<MutationSyncResult>(document: document.stringValue,
-                                                          variables: document.variables,
-                                                          responseType: MutationSyncResult.self,
-                                                          decodePath: document.name)
+        let request = GraphQLRequest<MutationSyncResult>(
+            document: document.stringValue,
+            variables: document.variables,
+            responseType: MutationSyncResult.self,
+            decodePath: document.name
+        )
 
         XCTAssertEqual(request.document, document.stringValue)
         XCTAssert(request.responseType == MutationSyncResult.self)
@@ -61,8 +65,10 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
 
     func testCreateMutationGraphQLRequest() throws {
         let order = CustomerOrder(orderId: "testOrderId", email: "testEmail@provider.com")
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: order.modelName,
-                                                               operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelName: order.modelName,
+            operationType: .mutation
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: order, mutationType: .create))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
@@ -112,8 +118,10 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
 
     func testUpdateMutationGraphQLRequest() throws {
         let order = CustomerOrder(orderId: "testOrderId", email: "testEmail@provider.com")
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: order.modelName,
-                                                               operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelName: order.modelName,
+            operationType: .mutation
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: order, mutationType: .create))
         documentBuilder.add(decorator: ConflictResolutionDecorator(version: 1, lastSync: nil, graphQLType: .mutation))
@@ -139,9 +147,11 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
             return
         }
 
-        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: order,
-                                                                        modelSchema: order.schema,
-                                                                        version: 1)
+        let request = GraphQLRequest<MutationSyncResult>.updateMutation(
+            of: order,
+            modelSchema: order.schema,
+            version: 1
+        )
 
         XCTAssertEqual(request.document, document.stringValue)
         XCTAssert(request.responseType == MutationSyncResult.self)
@@ -168,8 +178,10 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
 
     func testDeleteMutationGraphQLRequest() throws {
         let order = CustomerOrder(orderId: "testOrderId", email: "testEmail@provider.com")
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: order.modelName,
-                                                               operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelName: order.modelName,
+            operationType: .mutation
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(model: order))
         documentBuilder.add(decorator: ConflictResolutionDecorator(version: 1, lastSync: nil, graphQLType: .mutation))
@@ -195,9 +207,11 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
             return
         }
 
-        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: order,
-                                                                        modelSchema: order.schema,
-                                                                        version: 1)
+        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(
+            of: order,
+            modelSchema: order.schema,
+            version: 1
+        )
 
         XCTAssertEqual(request.document, document.stringValue)
         XCTAssert(request.responseType == MutationSyncResult.self)

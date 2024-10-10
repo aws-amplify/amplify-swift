@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 public typealias SelectionSet = Tree<SelectionSetField>
 
@@ -43,11 +43,11 @@ extension SelectionSet {
     }
 
     func withModelFields(_ fields: [ModelField], recursive: Bool = true, primaryKeysOnly: Bool) {
-        fields.forEach { field in
+        for field in fields {
             if field.isEmbeddedType, let embeddedTypeSchema = field.embeddedTypeSchema {
                 let child = SelectionSet(value: .init(name: field.name, fieldType: .embedded))
                 child.withEmbeddableFields(embeddedTypeSchema.sortedFields)
-                self.addChild(settingParentOf: child)
+                addChild(settingParentOf: child)
             } else if field._isBelongsToOrHasOne,
                       let associatedModelName = field.associatedModelName,
                       let schema = ModelRegistry.modelSchema(from: associatedModelName) {
@@ -64,10 +64,10 @@ extension SelectionSet {
                         child.withModelFields(schema.graphQLFields, recursive: recursive, primaryKeysOnly: primaryKeysOnly)
                     }
 
-                    self.addChild(settingParentOf: child)
+                    addChild(settingParentOf: child)
                 }
             } else {
-                self.addChild(settingParentOf: .init(value: .init(name: field.graphQLName, fieldType: .value)))
+                addChild(settingParentOf: .init(value: .init(name: field.graphQLName, fieldType: .value)))
             }
         }
 
@@ -75,13 +75,13 @@ extension SelectionSet {
     }
 
     func withEmbeddableFields(_ fields: [ModelField]) {
-        fields.forEach { field in
+        for field in fields {
             if field.isEmbeddedType, let embeddedTypeSchema = field.embeddedTypeSchema {
                 let child = SelectionSet(value: .init(name: field.name, fieldType: .embedded))
                 child.withEmbeddableFields(embeddedTypeSchema.sortedFields)
-                self.addChild(settingParentOf: child)
+                addChild(settingParentOf: child)
             } else {
-                self.addChild(settingParentOf: .init(value: .init(name: field.name, fieldType: .value)))
+                addChild(settingParentOf: .init(value: .init(name: field.name, fieldType: .value)))
             }
         }
         addChild(settingParentOf: .init(value: .typename))
@@ -112,12 +112,12 @@ extension SelectionSet {
         case .model, .pagination, .embedded:
             if let name = value.name {
                 result.append(indent + name + " {")
-                children.forEach { innerSelectionSetField in
+                for innerSelectionSetField in children {
                     result.append(innerSelectionSetField.stringValue(indentSize: indentSize + 1))
                 }
                 result.append(indent + "}")
             } else {
-                children.forEach { innerSelectionSetField in
+                for innerSelectionSetField in children {
                     result.append(innerSelectionSetField.stringValue(indentSize: indentSize))
                 }
             }
@@ -125,7 +125,7 @@ extension SelectionSet {
             let doubleIndent = String(repeating: indentValue, count: indentSize + 1)
             result.append(indent + (value.name ?? "") + " {")
             result.append(doubleIndent + "items {")
-            children.forEach { innerSelectionSetField in
+            for innerSelectionSetField in children {
                 result.append(innerSelectionSetField.stringValue(indentSize: indentSize + 2))
             }
             result.append(doubleIndent + "}")
@@ -181,7 +181,7 @@ extension SelectionSet {
         let name = selectionSet.value.name ?? ""
         if let existingField = findChild(byName: name) {
             var replaceFields: [SelectionSet] = []
-            selectionSet.children.forEach { child in
+            for child in selectionSet.children {
                 if child.value.fieldType != .value, let childName = child.value.name {
                     if existingField.findChild(byName: childName) != nil {
                         existingField.merge(with: child)

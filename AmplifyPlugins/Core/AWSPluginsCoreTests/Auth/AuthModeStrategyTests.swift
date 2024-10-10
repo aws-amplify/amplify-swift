@@ -89,9 +89,11 @@ class AuthModeStrategyTests: XCTestCase {
         let authMode = AWSMultiAuthModeStrategy()
         let delegate = UnauthenticatedUserDelegate()
         authMode.authDelegate = delegate
-        
-        var authTypesIterator = await authMode.authTypesFor(schema: ModelWithOwnerAndPublicAuth.schema,
-                                                            operation: .create)
+
+        var authTypesIterator = await authMode.authTypesFor(
+            schema: ModelWithOwnerAndPublicAuth.schema,
+            operation: .create
+        )
         XCTAssertEqual(authTypesIterator.count, 1)
         XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .apiKey)
     }
@@ -101,8 +103,10 @@ class AuthModeStrategyTests: XCTestCase {
     // Then: applicable auth types returned respect the priority rules
     func testMultiAuthPriorityWithCustomStrategy() async {
         let authMode = AWSMultiAuthModeStrategy()
-        var authTypesIterator = await authMode.authTypesFor(schema: ModelWithCustomStrategy.schema,
-                                                            operation: .create)
+        var authTypesIterator = await authMode.authTypesFor(
+            schema: ModelWithCustomStrategy.schema,
+            operation: .create
+        )
         XCTAssertEqual(authTypesIterator.count, 3)
         XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .function)
         XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .amazonCognitoUserPools)
@@ -117,8 +121,10 @@ class AuthModeStrategyTests: XCTestCase {
         let delegate = UnauthenticatedUserDelegate()
         authMode.authDelegate = delegate
 
-        var authTypesIterator = await authMode.authTypesFor(schema: ModelWithCustomStrategy.schema,
-                                                            operation: .create)
+        var authTypesIterator = await authMode.authTypesFor(
+            schema: ModelWithCustomStrategy.schema,
+            operation: .create
+        )
         XCTAssertEqual(authTypesIterator.count, 2)
         XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .function)
         XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .awsIAM)
