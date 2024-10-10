@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCognitoAuthPlugin
 import Foundation
+@testable import AWSCognitoAuthPlugin
 
 extension AuthenticationState: Codable {
 
@@ -31,7 +31,7 @@ extension AuthenticationState: Codable {
             let signedOutData = SignedOutData(lastKnownUserName: nil)
             self = .signedOut(signedOutData)
         } else if type == "AuthenticationState.SigningIn" {
-            self = .signingIn(try values.decode(SignInState.self, forKey: .SignInState))
+            self = try .signingIn(values.decode(SignInState.self, forKey: .SignInState))
         } else {
             fatalError("Decoding not supported")
         }

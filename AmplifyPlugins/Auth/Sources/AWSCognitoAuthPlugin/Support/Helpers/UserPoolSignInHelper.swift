@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct UserPoolSignInHelper: DefaultLogger {
 
@@ -56,8 +56,10 @@ struct UserPoolSignInHelper: DefaultLogger {
         return nil
     }
 
-    private static func validateResult(for challengeType: AuthChallengeType,
-                                       with challenge: RespondToAuthChallenge)
+    private static func validateResult(
+        for challengeType: AuthChallengeType,
+        with challenge: RespondToAuthChallenge
+    )
     throws -> AuthSignInResult {
         switch challengeType {
         case .smsMfa:
@@ -92,33 +94,38 @@ struct UserPoolSignInHelper: DefaultLogger {
         request: RespondToAuthChallengeInput,
         for username: String,
         signInMethod: SignInMethod,
-        environment: UserPoolEnvironment) async throws -> StateMachineEvent {
+        environment: UserPoolEnvironment
+    ) async throws -> StateMachineEvent {
 
             let client = try environment.cognitoUserPoolFactory()
             let response = try await client.respondToAuthChallenge(input: request)
-            let event = self.parseResponse(response, for: username, signInMethod: signInMethod)
+            let event = parseResponse(response, for: username, signInMethod: signInMethod)
             return event
         }
 
     static func parseResponse(
         _ response: SignInResponseBehavior,
         for username: String,
-        signInMethod: SignInMethod) -> StateMachineEvent {
+        signInMethod: SignInMethod
+    ) -> StateMachineEvent {
 
             if let authenticationResult = response.authenticationResult,
                let idToken = authenticationResult.idToken,
                let accessToken = authenticationResult.accessToken,
                let refreshToken = authenticationResult.refreshToken {
 
-                let userPoolTokens = AWSCognitoUserPoolTokens(idToken: idToken,
-                                                              accessToken: accessToken,
-                                                              refreshToken: refreshToken,
-                                                              expiresIn: authenticationResult.expiresIn)
+                let userPoolTokens = AWSCognitoUserPoolTokens(
+                    idToken: idToken,
+                    accessToken: accessToken,
+                    refreshToken: refreshToken,
+                    expiresIn: authenticationResult.expiresIn
+                )
                 let signedInData = SignedInData(
                     signedInDate: Date(),
                     signInMethod: signInMethod,
                     deviceMetadata: authenticationResult.deviceMetadata,
-                    cognitoUserPoolTokens: userPoolTokens)
+                    cognitoUserPoolTokens: userPoolTokens
+                )
 
                 switch signedInData.deviceMetadata {
                 case .noData:
@@ -133,7 +140,8 @@ struct UserPoolSignInHelper: DefaultLogger {
                     challenge: challengeName,
                     username: username,
                     session: response.session,
-                    parameters: parameters)
+                    parameters: parameters
+                )
 
                 switch challengeName {
                 case .smsMfa, .customChallenge, .newPasswordRequired, .softwareTokenMfa, .selectMfaType:

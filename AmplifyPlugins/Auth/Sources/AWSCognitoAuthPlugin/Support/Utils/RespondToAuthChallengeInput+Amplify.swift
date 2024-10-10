@@ -5,27 +5,30 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 extension RespondToAuthChallengeInput {
 
     // swiftlint:disable:next function_parameter_count
-    static func passwordVerifier(username: String,
-                                 stateData: SRPStateData,
-                                 session: String?,
-                                 secretBlock: String,
-                                 signature: String,
-                                 clientMetadata: ClientMetadata,
-                                 deviceMetadata: DeviceMetadata,
-                                 asfDeviceId: String?,
-                                 environment: UserPoolEnvironment) async -> RespondToAuthChallengeInput {
+    static func passwordVerifier(
+        username: String,
+        stateData: SRPStateData,
+        session: String?,
+        secretBlock: String,
+        signature: String,
+        clientMetadata: ClientMetadata,
+        deviceMetadata: DeviceMetadata,
+        asfDeviceId: String?,
+        environment: UserPoolEnvironment
+    ) async -> RespondToAuthChallengeInput {
         let dateStr = stateData.clientTimestamp.utcString
         let challengeResponses = [
             "USERNAME": username,
             "TIMESTAMP": dateStr,
             "PASSWORD_CLAIM_SECRET_BLOCK": secretBlock,
-            "PASSWORD_CLAIM_SIGNATURE": signature]
+            "PASSWORD_CLAIM_SIGNATURE": signature
+        ]
         return await buildInput(
             username: username,
             challengeType: .passwordVerifier,
@@ -34,16 +37,19 @@ extension RespondToAuthChallengeInput {
             clientMetadata: clientMetadata,
             asfDeviceId: asfDeviceId,
             deviceMetadata: deviceMetadata,
-            environment: environment)
+            environment: environment
+        )
     }
 
     // swiftlint:disable:next function_parameter_count
-    static func deviceSRP(username: String,
-                          environment: UserPoolEnvironment,
-                          deviceMetadata: DeviceMetadata,
-                          asfDeviceId: String?,
-                          session: String?,
-                          publicHexValue: String) async -> RespondToAuthChallengeInput {
+    static func deviceSRP(
+        username: String,
+        environment: UserPoolEnvironment,
+        deviceMetadata: DeviceMetadata,
+        asfDeviceId: String?,
+        session: String?,
+        publicHexValue: String
+    ) async -> RespondToAuthChallengeInput {
         let challengeResponses = [
             "USERNAME": username,
             "SRP_A": publicHexValue
@@ -56,24 +62,28 @@ extension RespondToAuthChallengeInput {
             clientMetadata: [:],
             asfDeviceId: asfDeviceId,
             deviceMetadata: deviceMetadata,
-            environment: environment)
+            environment: environment
+        )
     }
 
-    static func devicePasswordVerifier(username: String,
-                                       stateData: SRPStateData,
-                                       session: String?,
-                                       secretBlock: String,
-                                       signature: String,
-                                       deviceMetadata: DeviceMetadata,
-                                       asfDeviceId: String?,
-                                       environment: UserPoolEnvironment) async
+    static func devicePasswordVerifier(
+        username: String,
+        stateData: SRPStateData,
+        session: String?,
+        secretBlock: String,
+        signature: String,
+        deviceMetadata: DeviceMetadata,
+        asfDeviceId: String?,
+        environment: UserPoolEnvironment
+    ) async
     -> RespondToAuthChallengeInput {
         let dateStr = stateData.clientTimestamp.utcString
         let challengeResponses = [
             "USERNAME": username,
             "TIMESTAMP": dateStr,
             "PASSWORD_CLAIM_SECRET_BLOCK": secretBlock,
-            "PASSWORD_CLAIM_SIGNATURE": signature]
+            "PASSWORD_CLAIM_SIGNATURE": signature
+        ]
         return await buildInput(
             username: username,
             challengeType: .devicePasswordVerifier,
@@ -82,7 +92,8 @@ extension RespondToAuthChallengeInput {
             clientMetadata: [:],
             asfDeviceId: asfDeviceId,
             deviceMetadata: deviceMetadata,
-            environment: environment)
+            environment: environment
+        )
     }
 
     // swiftlint:disable:next function_parameter_count
@@ -96,7 +107,8 @@ extension RespondToAuthChallengeInput {
         asfDeviceId: String?,
         attributes: [String: String],
         deviceMetadata: DeviceMetadata,
-        environment: UserPoolEnvironment) async -> RespondToAuthChallengeInput {
+        environment: UserPoolEnvironment
+    ) async -> RespondToAuthChallengeInput {
 
             var challengeResponses = [
                 "USERNAME": username,
@@ -104,8 +116,8 @@ extension RespondToAuthChallengeInput {
             ]
 
             // Add the attributes to the challenge response
-            attributes.forEach {
-                challengeResponses[$0.key] = $0.value
+            for attribute in attributes {
+                challengeResponses[attribute.key] = attribute.value
             }
             return await buildInput(
                 username: username,
@@ -115,7 +127,8 @@ extension RespondToAuthChallengeInput {
                 clientMetadata: clientMetadata ?? [:],
                 asfDeviceId: asfDeviceId,
                 deviceMetadata: deviceMetadata,
-                environment: environment)
+                environment: environment
+            )
         }
 
     static func buildInput(
@@ -126,7 +139,8 @@ extension RespondToAuthChallengeInput {
         clientMetadata: ClientMetadata,
         asfDeviceId: String?,
         deviceMetadata: DeviceMetadata,
-        environment: UserPoolEnvironment) async -> RespondToAuthChallengeInput {
+        environment: UserPoolEnvironment
+    ) async -> RespondToAuthChallengeInput {
             var challengeResponses = challengeResponses
             let userPoolClientId = environment.userPoolConfiguration.clientId
             if let clientSecret = environment.userPoolConfiguration.clientSecret {
@@ -144,12 +158,13 @@ extension RespondToAuthChallengeInput {
             }
 
             var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
-            if let asfDeviceId = asfDeviceId,
+            if let asfDeviceId,
                let encodedData = await CognitoUserPoolASF.encodedContext(
-                username: username,
-                asfDeviceId: asfDeviceId,
-                asfClient: environment.cognitoUserPoolASFFactory(),
-                userPoolConfiguration: environment.userPoolConfiguration) {
+                   username: username,
+                   asfDeviceId: asfDeviceId,
+                   asfClient: environment.cognitoUserPoolASFFactory(),
+                   userPoolConfiguration: environment.userPoolConfiguration
+               ) {
                 userContextData = .init(encodedData: encodedData)
             }
 
@@ -164,7 +179,8 @@ extension RespondToAuthChallengeInput {
                 clientId: userPoolClientId,
                 clientMetadata: clientMetadata,
                 session: session,
-                userContextData: userContextData)
+                userContextData: userContextData
+            )
 
         }
 }

@@ -21,11 +21,15 @@ struct ValidateCredentialsAndConfiguration: Action {
         var event: StateMachineEvent
         switch authConfiguration {
         case .identityPools:
-            event = AuthEvent(eventType: .configureAuthorization(authConfiguration,
-                                                                 cachedCredentials))
+            event = AuthEvent(eventType: .configureAuthorization(
+                authConfiguration,
+                cachedCredentials
+            ))
         default:
-            event = AuthEvent(eventType: .configureAuthentication(authConfiguration,
-                                                                  cachedCredentials))
+            event = AuthEvent(eventType: .configureAuthentication(
+                authConfiguration,
+                cachedCredentials
+            ))
         }
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         await dispatcher.send(event)

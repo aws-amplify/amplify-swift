@@ -7,23 +7,27 @@
 
 import Foundation
 
-import XCTest
 import Amplify
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import XCTest
+@testable import AWSCognitoAuthPlugin
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
 class AuthenticationProviderConfirmSigninTests: BasePluginTest {
-    
+
     override var initialState: AuthState {
         AuthState.configured(
             AuthenticationState.signingIn(
-                .resolvingChallenge(.waitingForAnswer(.testData(), .apiBased(.userSRP)),
-                                    .smsMfa, .apiBased(.userSRP))),
-            AuthorizationState.sessionEstablished(.testData))
+                .resolvingChallenge(
+                    .waitingForAnswer(.testData(), .apiBased(.userSRP)),
+                    .smsMfa,
+                    .apiBased(.userSRP)
+                )),
+            AuthorizationState.sessionEstablished(.testData)
+        )
     }
-    
+
     /// Test a successful confirmSignIn call with .done as next step
     ///
     /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
@@ -33,14 +37,14 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a successful result with .done as the next step
     ///
     func testSuccessfulConfirmSignIn() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { request in
                 XCTAssertEqual(request.challengeName, .smsMfa)
                 XCTAssertEqual(request.challengeResponses?["SMS_MFA_CODE"], "code")
                 return .testData()
             })
-        
+
         do {
             let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "code")
             guard case .done = confirmSignInResult.nextStep else {
@@ -52,7 +56,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             XCTFail("Received failure with error \(error)")
         }
     }
-    
+
     /// Test a confirmSignIn call with an empty confirmation code
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a successful response
@@ -62,13 +66,13 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get an .validation error
     ///
     func testConfirmSignInWithEmptyResponse() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 XCTFail("Cognito service should not be called")
                 return .testData()
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "")
             XCTFail("Should not succeed")
@@ -79,7 +83,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a confirmSignIn call with an empty confirmation code followed by a second valid confirmSignIn call
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a successful response
@@ -89,12 +93,12 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a successful result with .done as the next step
     ///
     func testSuccessfullyConfirmSignInAfterAFailedConfirmSignIn() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 return .testData()
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "")
             XCTFail("Should not succeed")
@@ -103,7 +107,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Should produce validation error instead of \(error)")
                 return
             }
-            
+
             do {
                 let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "code")
                 XCTAssertTrue(confirmSignInResult.isSignedIn, "Signin result should be complete")
@@ -125,10 +129,11 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
 
         let confirmSignInOptions = AWSAuthConfirmSignInOptions(
             userAttributes: [.init(.email, value: "some@some.com")],
-            metadata: ["metadata": "test"])
+            metadata: ["metadata": "test"]
+        )
 
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { input in
                 XCTAssertEqual(confirmSignInOptions.metadata, input.clientMetadata)
                 XCTAssertEqual(input.challengeResponses?["userAttributes.email"], "some@some.com")
@@ -138,7 +143,8 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         do {
             let confirmSignInResult = try await plugin.confirmSignIn(
                 challengeResponse: "code",
-                options: .init(pluginOptions: confirmSignInOptions))
+                options: .init(pluginOptions: confirmSignInOptions)
+            )
             guard case .done = confirmSignInResult.nextStep else {
                 XCTFail("Result should be .done for next step")
                 return
@@ -148,9 +154,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             XCTFail("Received failure with error \(error)")
         }
     }
-    
+
     // MARK: Service error handling test
-    
+
     /// Test a confirmSignIn call with aliasExistsException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -161,14 +167,14 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a .service error with .aliasExists as underlyingError
     ///
     func testConfirmSignInWithAliasExistsException() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.AliasExistsException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -180,7 +186,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             XCTAssertEqual(underlyingError as? AWSCognitoAuthError, .aliasExists)
         }
     }
-    
+
     /// Test a confirmSignIn call with CodeMismatchException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -191,13 +197,13 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a .service error with .codeMismatch as underlyingError
     ///
     func testConfirmSignInWithCodeMismatchException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.CodeMismatchException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -214,7 +220,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     }
 
     func testConfirmSignInRetryWithCodeMismatchException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.CodeMismatchException(
                     message: "Exception"
@@ -234,7 +240,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 return
             }
 
-            self.mockIdentityProvider = MockIdentityProvider(
+            mockIdentityProvider = MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
                     return .testData()
                 })
@@ -247,7 +253,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
 
         }
     }
-    
+
     /// Test a confirmSignIn call with CodeExpiredException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -258,14 +264,14 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a .service error with .codeExpired as underlyingError
     ///
     func testConfirmSignInWithExpiredCodeException() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.ExpiredCodeException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -280,7 +286,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a confirmSignIn call with InternalErrorException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a InternalErrorException response
@@ -290,14 +296,14 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get an .unknown error
     ///
     func testConfirmSignInWithInternalErrorException() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InternalErrorException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -308,7 +314,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a confirmSignIn call with InvalidLambdaResponseException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -319,13 +325,13 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a .service error with .lambda as underlyingError
     ///
     func testConfirmSignInWithInvalidLambdaResponseException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InvalidLambdaResponseException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -340,7 +346,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a confirmSignIn call with InvalidParameterException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -352,14 +358,14 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a .service error with  .invalidParameter as underlyingError
     ///
     func testConfirmSignInWithInvalidParameterException() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InvalidParameterException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -374,7 +380,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a confirmSignIn call with InvalidPasswordException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -386,14 +392,14 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a .service error with  .invalidPassword as underlyingError
     ///
     func testConfirmSignInWithInvalidPasswordException() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InvalidPasswordException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -408,7 +414,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a confirmSignIn call with InvalidSmsRoleAccessPolicy response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -419,13 +425,13 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testConfirmSignInWithinvalidSmsRoleAccessPolicyException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InvalidSmsRoleAccessPolicyException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -440,7 +446,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a confirmSignIn call with InvalidSmsRoleTrustRelationship response from service
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
@@ -451,13 +457,13 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testConfirmSignInWithInvalidSmsRoleTrustRelationshipException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InvalidSmsRoleTrustRelationshipException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -486,7 +492,8 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         let identityPoolConfigData = Defaults.makeIdentityConfigData()
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: identityPoolConfigData,
-            cognitoIdentityFactory: Defaults.makeIdentity)
+            cognitoIdentityFactory: Defaults.makeIdentity
+        )
         let environment = AuthEnvironment(
             configuration: .identityPools(identityPoolConfigData),
             userPoolConfigData: nil,
@@ -496,8 +503,10 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             credentialsClient: Defaults.makeCredentialStoreOperationBehavior(),
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
-        let stateMachine = Defaults.authStateMachineWith(environment: environment,
-                                                         initialState: .notConfigured)
+        let stateMachine = Defaults.authStateMachineWith(
+            environment: environment,
+            initialState: .notConfigured
+        )
         let plugin = AWSCognitoAuthPlugin()
         plugin.configure(
             authConfiguration: .identityPools(identityPoolConfigData),
@@ -505,7 +514,8 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             authStateMachine: stateMachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior(),
-            analyticsHandler: MockAnalyticsHandler())
+            analyticsHandler: MockAnalyticsHandler()
+        )
 
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
@@ -530,14 +540,14 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a .service error with  .mfaMethodNotFound as underlyingError
     ///
     func testCofirmSignInWithMFAMethodNotFoundException() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.MFAMethodNotFoundException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should not succeed")
@@ -552,7 +562,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a confirmSignIn call with NotAuthorizedException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -564,14 +574,14 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a .notAuthorized error
     ///
     func testConfirmSignInWithNotAuthorizedException() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.NotAuthorizedException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -582,7 +592,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a confirmSignIn with PasswordResetRequiredException from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -594,14 +604,14 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a .resetPassword as next step
     ///
     func testConfirmSignInWithPasswordResetRequiredException() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "code")
             guard case .resetPassword = confirmSignInResult.nextStep else {
@@ -613,7 +623,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         }
     }
 
-    
+
     /// Test a confirmSignIn call with SoftwareTokenMFANotFoundException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -625,14 +635,14 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a .service error with .softwareTokenMFANotEnabled as underlyingError
     ///
     func testConfirmSignInWithSoftwareTokenMFANotFoundException() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -647,7 +657,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a confirmSignIn call with TooManyRequestsException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -659,14 +669,14 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a .service error with .requestLimitExceeded as underlyingError
     ///
     func testConfirmSignInWithTooManyRequestsException() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.TooManyRequestsException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -681,7 +691,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a confirmSignIn call with UnexpectedLambdaException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -693,14 +703,14 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a .service error with .lambda as underlyingError
     ///
     func testConfirmSignInWithUnexpectedLambdaException() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.UnexpectedLambdaException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -715,7 +725,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a confirmSignIn call with UserLambdaValidationException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -727,14 +737,14 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a .service error with .lambda as underlyingError
     ///
     func testConfirmSignInWithUserLambdaValidationException() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.UserLambdaValidationException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -749,7 +759,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a confirmSignIn call with UserNotConfirmedException response from service
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
@@ -761,14 +771,14 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get .confirmSignUp as next step
     ///
     func testConfirmSignInWithUserNotConfirmedException() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.UserNotConfirmedException(
                     message: "Exception"
                 )
             })
-        
+
         do {
             let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "code")
             guard case .confirmSignUp = confirmSignInResult.nextStep else {
@@ -779,7 +789,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             XCTFail("Should not return error \(error)")
         }
     }
-    
+
     /// Test a confirmSignIn call with UserNotFound response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -791,14 +801,14 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     ///    - I should get a .userNotFound error
     ///
     func testConfirmSignInWithUserNotFoundException() async {
-        
-        self.mockIdentityProvider = MockIdentityProvider(
+
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.UserNotFoundException(
                      message: "Exception"
                 )
             })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")

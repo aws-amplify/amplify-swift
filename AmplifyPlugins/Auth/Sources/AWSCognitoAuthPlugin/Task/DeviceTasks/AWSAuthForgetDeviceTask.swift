@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
-import AWSCognitoIdentityProvider
+import Foundation
 
 class AWSAuthForgetDeviceTask: AuthForgetDeviceTask, DefaultLogger {
 
@@ -22,9 +22,11 @@ class AWSAuthForgetDeviceTask: AuthForgetDeviceTask, DefaultLogger {
         HubPayload.EventName.Auth.forgetDeviceAPI
     }
 
-    init(_ request: AuthForgetDeviceRequest,
-         authStateMachine: AuthStateMachine,
-         environment: AuthEnvironment) {
+    init(
+        _ request: AuthForgetDeviceRequest,
+        authStateMachine: AuthStateMachine,
+        environment: AuthEnvironment
+    ) {
 
         self.request = request
         self.authStateMachine = authStateMachine
@@ -42,7 +44,7 @@ class AWSAuthForgetDeviceTask: AuthForgetDeviceTask, DefaultLogger {
             throw error.authError
         } catch let error as AuthError {
             throw error
-        } catch let error {
+        } catch {
             throw AuthError.unknown("Unable to execute auth task", error)
         }
     }
@@ -61,7 +63,8 @@ class AWSAuthForgetDeviceTask: AuthForgetDeviceTask, DefaultLogger {
         guard let device = request.device else {
             let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: username,
-                with: environment)
+                with: environment
+            )
             if case .metadata(let data) = deviceMetadata {
                 let input = ForgetDeviceInput(accessToken: accessToken, deviceKey: data.deviceKey)
                 _ = try await userPoolService.forgetDevice(input: input)

@@ -18,9 +18,11 @@ struct HostedUIConfigurationData: Equatable {
     // OAuth related information
     let oauth: OAuthConfigurationData
 
-    init(clientId: String,
-                oauth: OAuthConfigurationData,
-                clientSecret: String? = nil) {
+    init(
+        clientId: String,
+        oauth: OAuthConfigurationData,
+        clientSecret: String? = nil
+    ) {
         self.clientId = clientId
         self.oauth = oauth
         self.clientSecret = clientSecret

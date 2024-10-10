@@ -12,13 +12,13 @@ class ASFCognitoTests: XCTestCase {
 
     func testTimeZoneOffetNegative() {
         let asf = CognitoUserPoolASF()
-        let timezoneOffet = asf.timeZoneOffet(seconds: -25200)
+        let timezoneOffet = asf.timeZoneOffet(seconds: -25_200)
         XCTAssertEqual("-07:00", timezoneOffet)
     }
 
     func testTimeZoneOffetPositive() {
         let asf = CognitoUserPoolASF()
-        let timezoneOffet = asf.timeZoneOffet(seconds: 25200)
+        let timezoneOffet = asf.timeZoneOffet(seconds: 25_200)
         XCTAssertEqual("+07:00", timezoneOffet)
     }
 

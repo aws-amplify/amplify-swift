@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
 import AWSCognitoAuthPlugin
+import XCTest
 
 class MFAPreferenceTests: AWSAuthBaseTest {
 
@@ -34,7 +34,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
             username: username,
             password: password,
             email: email ?? defaultTestEmail,
-            phoneNumber: phoneNumber)
+            phoneNumber: phoneNumber
+        )
 
         XCTAssertTrue(didSucceed, "Signup and sign in should succeed")
     }
@@ -88,7 +89,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
             // Test enabled
             try await authCognitoPlugin.updateMFAPreference(
                 sms: nil,
-                totp: .enabled)
+                totp: .enabled
+            )
 
             fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
             XCTAssertNotNil(fetchMFAResult.enabled)
@@ -98,7 +100,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
             // Test preferred
             try await authCognitoPlugin.updateMFAPreference(
                 sms: nil,
-                totp: .preferred)
+                totp: .preferred
+            )
 
             fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
             XCTAssertNotNil(fetchMFAResult.enabled)
@@ -109,7 +112,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
             // Test notPreferred
             try await authCognitoPlugin.updateMFAPreference(
                 sms: nil,
-                totp: .notPreferred)
+                totp: .notPreferred
+            )
 
             fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
             XCTAssertNotNil(fetchMFAResult.enabled)
@@ -119,7 +123,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
             // Test disabled
             try await authCognitoPlugin.updateMFAPreference(
                 sms: nil,
-                totp: .disabled)
+                totp: .disabled
+            )
 
             fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
             XCTAssertNil(fetchMFAResult.enabled)
@@ -151,7 +156,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
             // Test enabled
             try await authCognitoPlugin.updateMFAPreference(
                 sms: .enabled,
-                totp: nil)
+                totp: nil
+            )
 
             fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
             XCTAssertNotNil(fetchMFAResult.enabled)
@@ -161,7 +167,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
             // Test preferred
             try await authCognitoPlugin.updateMFAPreference(
                 sms: .preferred,
-                totp: nil)
+                totp: nil
+            )
 
             fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
             XCTAssertNotNil(fetchMFAResult.enabled)
@@ -172,7 +179,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
             // Test notPreferred
             try await authCognitoPlugin.updateMFAPreference(
                 sms: .notPreferred,
-                totp: nil)
+                totp: nil
+            )
 
             fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
             XCTAssertNotNil(fetchMFAResult.enabled)
@@ -182,7 +190,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
             // Test disabled
             try await authCognitoPlugin.updateMFAPreference(
                 sms: .disabled,
-                totp: nil)
+                totp: nil
+            )
 
             fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
             XCTAssertNil(fetchMFAResult.enabled)
@@ -201,8 +210,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
     ///    - I should get valid fetchMFAPreference results corresponding to the updateMFAPreference
     ///
     func testFetchAndUpdateMFAPreferenceForSMSAndTOTP() async throws {
-        let randomPhoneNumber = "+1" + (1...10)
-            .map { _ in String(Int.random(in: 0...9)) }
+        let randomPhoneNumber = "+1" + (1 ... 10)
+            .map { _ in String(Int.random(in: 0 ... 9)) }
             .joined()
 
         try await signUpAndSignIn(
@@ -223,7 +232,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
         // Test both MFA types as enabled
         try await authCognitoPlugin.updateMFAPreference(
             sms: .enabled,
-            totp: .enabled)
+            totp: .enabled
+        )
 
         fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
         XCTAssertNotNil(fetchMFAResult.enabled)
@@ -233,7 +243,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
         // Test SMS as preferred, TOTP as enabled
         try await authCognitoPlugin.updateMFAPreference(
             sms: .preferred,
-            totp: .enabled)
+            totp: .enabled
+        )
 
         fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
         XCTAssertNotNil(fetchMFAResult.enabled)
@@ -244,7 +255,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
         // Test SMS as notPreferred, TOTP as preferred
         try await authCognitoPlugin.updateMFAPreference(
             sms: .notPreferred,
-            totp: .preferred)
+            totp: .preferred
+        )
 
         fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
         XCTAssertNotNil(fetchMFAResult.enabled)
@@ -255,7 +267,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
         // Test SMS as disabled, no change to TOTP
         try await authCognitoPlugin.updateMFAPreference(
             sms: .disabled,
-            totp: nil)
+            totp: nil
+        )
 
         fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
         XCTAssertNotNil(fetchMFAResult.enabled)
@@ -266,7 +279,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
         // Test SMS as preferred, no change to TOTP (which should remove TOTP from preferred list)
         try await authCognitoPlugin.updateMFAPreference(
             sms: .preferred,
-            totp: nil)
+            totp: nil
+        )
 
         fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
         XCTAssertNotNil(fetchMFAResult.enabled)
@@ -297,12 +311,14 @@ class MFAPreferenceTests: AWSAuthBaseTest {
             // Test both MFA types as enabled
             try await authCognitoPlugin.updateMFAPreference(
                 sms: .preferred,
-                totp: .preferred)
+                totp: .preferred
+            )
 
             XCTFail("Should not proceed, because MFA types cannot be marked as preferred")
         } catch {
             guard let authError = error as? AuthError,
-                  case .service(_, _, let underlyingError) = authError else {
+                  case .service(_, _, let underlyingError) = authError
+            else {
                 XCTFail("Should throw service error")
                 return
             }
@@ -340,7 +356,8 @@ class MFAPreferenceTests: AWSAuthBaseTest {
             // Test SMS as preferred, TOTP as enabled
             try await authCognitoPlugin.updateMFAPreference(
                 sms: .preferred,
-                totp: .enabled)
+                totp: .enabled
+            )
 
             fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
             XCTAssertEqual(fetchMFAResult.enabled, [.sms, .totp])

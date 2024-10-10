@@ -6,8 +6,8 @@
 //
 
 import AWSClientRuntime
-import ClientRuntime
 import AWSCognitoIdentityProvider
+import ClientRuntime
 
 struct AWSEndpointResolving: AWSCognitoIdentityProvider.EndpointResolver {
     func resolve(params: AWSCognitoIdentityProvider.EndpointParams) throws -> ClientRuntime.Endpoint {

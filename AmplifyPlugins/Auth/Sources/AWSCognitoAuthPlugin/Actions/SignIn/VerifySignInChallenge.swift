@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct VerifySignInChallenge: Action {
 
@@ -33,11 +33,13 @@ struct VerifySignInChallenge: Action {
 
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
-                credentialStoreClient: environment.authEnvironment().credentialsClient)
+                credentialStoreClient: environment.authEnvironment().credentialsClient
+            )
 
             deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
-                            for: username,
-                            with: environment)
+                for: username,
+                with: environment
+            )
 
             let input = await RespondToAuthChallengeInput.verifyChallenge(
                 username: username,
@@ -49,15 +51,19 @@ struct VerifySignInChallenge: Action {
                 asfDeviceId: asfDeviceId,
                 attributes: confirmSignEventData.attributes,
                 deviceMetadata: deviceMetadata,
-                environment: userpoolEnv)
+                environment: userpoolEnv
+            )
 
             let responseEvent = try await UserPoolSignInHelper.sendRespondToAuth(
                 request: input,
                 for: username,
                 signInMethod: signInMethod,
-                environment: userpoolEnv)
-            logVerbose("\(#fileID) Sending event \(responseEvent)",
-                       environment: environment)
+                environment: userpoolEnv
+            )
+            logVerbose(
+                "\(#fileID) Sending event \(responseEvent)",
+                environment: environment
+            )
             await dispatcher.send(responseEvent)
         } catch let error where deviceNotFound(error: error, deviceMetadata: deviceMetadata) {
             logVerbose("\(#fileID) Received device not found \(error)", environment: environment)
@@ -70,14 +76,18 @@ struct VerifySignInChallenge: Action {
             await dispatcher.send(event)
         } catch let error as SignInError {
             let errorEvent = SignInEvent(eventType: .throwAuthError(error))
-            logVerbose("\(#fileID) Sending event \(errorEvent)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(errorEvent)",
+                environment: environment
+            )
             await dispatcher.send(errorEvent)
         } catch {
             let error = SignInError.service(error: error)
             let errorEvent = SignInEvent(eventType: .throwAuthError(error))
-            logVerbose("\(#fileID) Sending event \(errorEvent)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(errorEvent)",
+                environment: environment
+            )
             await dispatcher.send(errorEvent)
         }
     }

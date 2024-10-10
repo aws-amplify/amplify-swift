@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
 import AWSCognitoAuthPlugin
+import XCTest
 
 class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
 
@@ -54,7 +54,8 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
             let result = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init())
+                options: .init()
+            )
             guard case .continueSignInWithTOTPSetup(let totpSetupDetails) = result.nextStep else {
                 XCTFail("Next step should be continueSignInWithTOTPSetup")
                 return
@@ -96,7 +97,8 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
             let result = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init())
+                options: .init()
+            )
             guard case .confirmSignInWithSMSMFACode(let codeDeliveryDetails, _) = result.nextStep else {
                 XCTFail("Next step should be confirmSignInWithSMSMFACode")
                 return
@@ -146,7 +148,8 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
             let result = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init())
+                options: .init()
+            )
             guard case .continueSignInWithTOTPSetup(let totpSetupDetails) = result.nextStep else {
                 XCTFail("Next step should be continueSignInWithTOTPSetup")
                 return
@@ -157,7 +160,7 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
             let confirmSignInResult = try await Amplify.Auth.confirmSignIn(
                 challengeResponse: totpCode)
             XCTAssertTrue(confirmSignInResult.isSignedIn)
-            
+
         } catch {
             XCTFail("SignIn should successfully complete. \(error)")
         }
@@ -195,7 +198,8 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
             let result = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init())
+                options: .init()
+            )
             guard case .continueSignInWithTOTPSetup(let details) = result.nextStep else {
                 XCTFail("Next step should be continueSignInWithTOTPSetup")
                 return
@@ -209,7 +213,8 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
         } catch {
 
             guard let authError = error as? AuthError,
-                  case .service(_, _, let underlyingError) = authError else {
+                  case .service(_, _, let underlyingError) = authError
+            else {
                 XCTFail("Should throw service error")
                 return
             }
@@ -263,7 +268,8 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
             let result = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init())
+                options: .init()
+            )
             guard case .continueSignInWithTOTPSetup(let details) = result.nextStep else {
                 XCTFail("Next step should be continueSignInWithTOTPSetup")
                 return
@@ -277,7 +283,8 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
         } catch {
 
             guard let authError = error as? AuthError,
-                  case .service(_, _, let underlyingError) = authError else {
+                  case .service(_, _, let underlyingError) = authError
+            else {
                 XCTFail("Should throw service error")
                 return
             }

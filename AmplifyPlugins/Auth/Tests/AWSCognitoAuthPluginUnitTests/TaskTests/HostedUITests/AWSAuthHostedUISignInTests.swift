@@ -9,11 +9,11 @@
 
 import Foundation
 
+import AuthenticationServices
+import AWSCognitoIdentityProvider
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AuthenticationServices
-import AWSCognitoIdentityProvider
 
 class AWSAuthHostedUISignInTests: XCTestCase {
 
@@ -21,10 +21,12 @@ class AWSAuthHostedUISignInTests: XCTestCase {
     let networkTimeout = TimeInterval(5)
     var mockIdentityProvider: CognitoUserPoolBehavior!
     var mockHostedUIResult: Result<[URLQueryItem], HostedUIError>!
-    var mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.testData.idToken,
-                           "access_token": AWSCognitoUserPoolTokens.testData.accessToken,
-                           "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken,
-                           "expires_in": 10] as [String: Any]
+    var mockTokenResult = [
+        "id_token": AWSCognitoUserPoolTokens.testData.idToken,
+        "access_token": AWSCognitoUserPoolTokens.testData.accessToken,
+        "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken,
+        "expires_in": 10
+    ] as [String: Any]
     var mockState = "someState"
     var mockProof = "someProof"
     var mockJson: Data!
@@ -57,13 +59,16 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             return MockRandomStringGenerator(mockString: mockState, mockUUID: mockState)
         }
 
-        let environment = BasicHostedUIEnvironment(configuration: configuration,
-                                                   hostedUISessionFactory: sessionFactory,
-                                                   urlSessionFactory: urlSessionMock,
-                                                   randomStringFactory: mockRandomString)
+        let environment = BasicHostedUIEnvironment(
+            configuration: configuration,
+            hostedUISessionFactory: sessionFactory,
+            urlSessionFactory: urlSessionMock,
+            randomStringFactory: mockRandomString
+        )
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: { self.mockIdentityProvider },
-            hostedUIEnvironment: environment)
+            hostedUIEnvironment: environment
+        )
         let stateMachine = Defaults.authStateMachineWith(
             environment: authEnvironment,
             initialState: initialState
@@ -75,7 +80,8 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             authStateMachine: stateMachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior(),
-            analyticsHandler: MockAnalyticsHandler())
+            analyticsHandler: MockAnalyticsHandler()
+        )
     }
 
     @MainActor
@@ -90,9 +96,11 @@ class AWSAuthHostedUISignInTests: XCTestCase {
 
     @MainActor
     func testSuccessfulSignIn_missingExpiresIn() async throws {
-        mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.testData.idToken,
-                           "access_token": AWSCognitoUserPoolTokens.testData.accessToken,
-                           "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken] as [String: Any]
+        mockTokenResult = [
+            "id_token": AWSCognitoUserPoolTokens.testData.idToken,
+            "access_token": AWSCognitoUserPoolTokens.testData.accessToken,
+            "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken
+        ] as [String: Any]
         mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
         MockURLProtocol.requestHandler = { _ in
             return (HTTPURLResponse(), self.mockJson)
@@ -108,9 +116,11 @@ class AWSAuthHostedUISignInTests: XCTestCase {
 
     @MainActor
     func testSuccessfulSignIn_missingExpiresIn_testTokenMissingExp() async throws {
-        mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.testDataWithoutExp.idToken,
-                           "access_token": AWSCognitoUserPoolTokens.testData.accessToken,
-                           "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken] as [String: Any]
+        mockTokenResult = [
+            "id_token": AWSCognitoUserPoolTokens.testDataWithoutExp.idToken,
+            "access_token": AWSCognitoUserPoolTokens.testData.accessToken,
+            "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken
+        ] as [String: Any]
         mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
         MockURLProtocol.requestHandler = { _ in
             return (HTTPURLResponse(), self.mockJson)
@@ -126,9 +136,11 @@ class AWSAuthHostedUISignInTests: XCTestCase {
 
     @MainActor
     func testSuccessfulSignIn_missingExpiresIn_testBothTokenMissingExp() async throws {
-        mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.testDataWithoutExp.idToken,
-                           "access_token": AWSCognitoUserPoolTokens.testDataWithoutExp.accessToken,
-                           "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken] as [String: Any]
+        mockTokenResult = [
+            "id_token": AWSCognitoUserPoolTokens.testDataWithoutExp.idToken,
+            "access_token": AWSCognitoUserPoolTokens.testDataWithoutExp.accessToken,
+            "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken
+        ] as [String: Any]
         mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
         MockURLProtocol.requestHandler = { _ in
             return (HTTPURLResponse(), self.mockJson)
@@ -151,7 +163,8 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
+                  case .userCancelled = (underlyingError as? AWSCognitoAuthError)
+            else {
                 XCTFail("Should not fail with error = \(error)")
                 return
             }
@@ -169,7 +182,8 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
+                  case .userCancelled = (underlyingError as? AWSCognitoAuthError)
+            else {
                 XCTFail("Should not fail with error = \(error)")
                 return
             }
@@ -253,7 +267,8 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         ])
         mockTokenResult = [
             "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken,
-            "expires_in": 10] as [String: Any]
+            "expires_in": 10
+        ] as [String: Any]
         mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
         MockURLProtocol.requestHandler = { _ in
             return (HTTPURLResponse(), self.mockJson)
@@ -324,18 +339,20 @@ class AWSAuthHostedUISignInTests: XCTestCase {
     @MainActor
     func testRestartSignInWithWebUI() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .smsMfa,
                 challengeParameters: [:],
-                session: "session")
+                session: "session"
+            )
         })
 
         let pluginOptions = AWSAuthSignInOptions(metadata: ["somekey": "somevalue"])

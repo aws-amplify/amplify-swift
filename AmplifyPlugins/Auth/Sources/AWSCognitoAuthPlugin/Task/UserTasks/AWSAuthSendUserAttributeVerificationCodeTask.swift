@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import AWSPluginsCore
 import AWSCognitoIdentityProvider
+import AWSPluginsCore
+import Foundation
 
 class AWSAuthSendUserAttributeVerificationCodeTask: AuthSendUserAttributeVerificationCodeTask, DefaultLogger {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
@@ -22,9 +22,11 @@ class AWSAuthSendUserAttributeVerificationCodeTask: AuthSendUserAttributeVerific
         HubPayload.EventName.Auth.sendUserAttributeVerificationCodeAPI
     }
 
-    init(_ request: AuthSendUserAttributeVerificationCodeRequest,
-         authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory) {
+    init(
+        _ request: AuthSendUserAttributeVerificationCodeRequest,
+        authStateMachine: AuthStateMachine,
+        userPoolFactory: @escaping CognitoUserPoolFactory
+    ) {
         self.request = request
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
@@ -55,7 +57,8 @@ class AWSAuthSendUserAttributeVerificationCodeTask: AuthSendUserAttributeVerific
         let input = GetUserAttributeVerificationCodeInput(
             accessToken: accessToken,
             attributeName: request.attributeKey.rawValue,
-            clientMetadata: clientMetaData)
+            clientMetadata: clientMetaData
+        )
 
         let result = try await userPoolService.getUserAttributeVerificationCode(input: input)
         guard let deliveryDetails = result.codeDeliveryDetails?.toAuthCodeDeliveryDetails() else {

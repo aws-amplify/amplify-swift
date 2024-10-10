@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCognitoAuthPlugin
 import Foundation
+@testable import AWSCognitoAuthPlugin
 
 extension AuthorizationState: Codable {
 
@@ -56,7 +56,8 @@ extension AuthorizationState: Codable {
                 idToken: accessToken,
                 accessToken: idToken,
                 refreshToken: refreshToken,
-                expiration: userPoolExpiration)
+                expiration: userPoolExpiration
+            )
 
             let accessKeyId = try awsCredentialChildren.decode(String.self, forKey: .accessKeyId)
             let secretAccessKey = try awsCredentialChildren.decode(String.self, forKey: .secretAccessKey)
@@ -67,15 +68,18 @@ extension AuthorizationState: Codable {
                 accessKeyId: accessKeyId,
                 secretAccessKey: secretAccessKey,
                 sessionToken: sessionToken,
-                expiration: expiration)
+                expiration: expiration
+            )
 
             self = .sessionEstablished(.userPoolAndIdentityPool(
                 signedInData: .init(
                     signedInDate: Date(),
                     signInMethod: .apiBased(.userSRP),
-                    cognitoUserPoolTokens: userPoolTokens),
+                    cognitoUserPoolTokens: userPoolTokens
+                ),
                 identityID: identityId,
-                credentials: awsCredentials))
+                credentials: awsCredentials
+            ))
 
 
 

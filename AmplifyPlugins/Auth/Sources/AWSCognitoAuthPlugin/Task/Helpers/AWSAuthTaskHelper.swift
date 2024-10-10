@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import AWSPluginsCore
 import AWSCognitoIdentityProvider
+import AWSPluginsCore
+import Foundation
 
 class AWSAuthTaskHelper: DefaultLogger {
 
@@ -48,7 +48,8 @@ class AWSAuthTaskHelper: DefaultLogger {
                     return AWSCognitoSignOutResult.partial(
                         revokeTokenError: data.revokeTokenError,
                         globalSignOutError: data.globalSignOutError,
-                        hostedUIError: data.hostedUIError)
+                        hostedUIError: data.hostedUIError
+                    )
                 }
                 return AWSCognitoSignOutResult.complete
             case .signingIn:
@@ -89,7 +90,8 @@ class AWSAuthTaskHelper: DefaultLogger {
         guard case .configured(let authenticationState, _) = authState else {
             throw AuthError.configuration(
                 "Plugin not configured",
-                AuthPluginErrorConstants.configurationError)
+                AuthPluginErrorConstants.configurationError
+            )
         }
 
         switch authenticationState {
@@ -101,7 +103,8 @@ class AWSAuthTaskHelper: DefaultLogger {
         case .signedOut, .configured:
             throw AuthError.signedOut(
                 "There is no user signed in to retrieve current user",
-                "Call Auth.signIn to sign in a user and then call Auth.getCurrentUser", nil)
+                "Call Auth.signIn to sign in a user and then call Auth.getCurrentUser", nil
+            )
         case .error(let authNError):
             throw authNError.authError
         default:

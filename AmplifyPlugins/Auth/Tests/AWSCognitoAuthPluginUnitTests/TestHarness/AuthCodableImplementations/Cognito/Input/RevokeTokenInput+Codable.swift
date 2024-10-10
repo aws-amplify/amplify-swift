@@ -24,7 +24,8 @@ extension RevokeTokenInput: Decodable {
         self.init(
             clientId: clientId,
             clientSecret: clientSecret,
-            token: token)
+            token: token
+        )
 
     }
 }

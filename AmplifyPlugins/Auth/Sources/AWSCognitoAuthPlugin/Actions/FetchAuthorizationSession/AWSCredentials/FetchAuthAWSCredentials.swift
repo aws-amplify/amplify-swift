@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCognitoIdentity
-import Foundation
 import Amplify
+import AWSCognitoIdentity
 import ClientRuntime
+import Foundation
 
 struct FetchAuthAWSCredentials: Action {
 
@@ -32,8 +32,10 @@ struct FetchAuthAWSCredentials: Action {
             return
         }
 
-        let getCredentialsInput = GetCredentialsForIdentityInput(identityId: identityID,
-                                                                 logins: loginsMap)
+        let getCredentialsInput = GetCredentialsForIdentityInput(
+            identityId: identityID,
+            logins: loginsMap
+        )
 
         do {
             let response = try await client.getCredentialsForIdentity(input: getCredentialsInput)
@@ -54,10 +56,12 @@ struct FetchAuthAWSCredentials: Action {
                 logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
                 return
             }
-            let awsCognitoCredentials = AuthAWSCognitoCredentials(accessKeyId: accessKey,
-                                                                  secretAccessKey: secretKey,
-                                                                  sessionToken: sessionKey,
-                                                                  expiration: expiration)
+            let awsCognitoCredentials = AuthAWSCognitoCredentials(
+                accessKeyId: accessKey,
+                secretAccessKey: secretKey,
+                sessionToken: sessionKey,
+                expiration: expiration
+            )
             let event = FetchAuthSessionEvent(
                 eventType: .fetchedAWSCredentials(identityId, awsCognitoCredentials))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)

@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
-import AWSCognitoIdentityProvider
+import Foundation
 
 class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
 
@@ -23,8 +23,10 @@ class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
         HubPayload.EventName.Auth.setUpTOTPAPI
     }
 
-    init(authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory) {
+    init(
+        authStateMachine: AuthStateMachine,
+        userPoolFactory: @escaping CognitoUserPoolFactory
+    ) {
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
@@ -62,10 +64,13 @@ class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
             throw AuthError.invalidState(
                 "Auth State not in a valid state for the user",
                 AuthPluginErrorConstants.invalidStateError,
-                nil)
+                nil
+            )
         }
-        return .init(sharedSecret: secretCode,
-                     username: authUser.username)
+        return .init(
+            sharedSecret: secretCode,
+            username: authUser.username
+        )
 
     }
 }

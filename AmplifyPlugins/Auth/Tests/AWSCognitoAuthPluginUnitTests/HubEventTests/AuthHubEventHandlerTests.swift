@@ -4,13 +4,14 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import  Foundation
 
+import AWSCognitoIdentity
+import AWSCognitoIdentityProvider
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentity
-import AWSCognitoIdentityProvider
 
 class AuthHubEventHandlerTests: XCTestCase {
 
@@ -312,7 +313,8 @@ class AuthHubEventHandlerTests: XCTestCase {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .init(
@@ -321,10 +323,12 @@ class AuthHubEventHandlerTests: XCTestCase {
                     idToken: "idToken",
                     newDeviceMetadata: nil,
                     refreshToken: "refreshToken",
-                    tokenType: ""),
+                    tokenType: ""
+                ),
                 challengeName: .none,
                 challengeParameters: [:],
-                session: "session")
+                session: "session"
+            )
         })
 
         let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
@@ -337,8 +341,10 @@ class AuthHubEventHandlerTests: XCTestCase {
             AuthenticationState.signingIn(.resolvingChallenge(
                 .waitingForAnswer(.testData(), .apiBased(.userSRP)),
                 .smsMfa,
-                .apiBased(.userSRP))),
-            AuthorizationState.sessionEstablished(.testData))
+                .apiBased(.userSRP)
+            )),
+            AuthorizationState.sessionEstablished(.testData)
+        )
 
         let mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -351,10 +357,13 @@ class AuthHubEventHandlerTests: XCTestCase {
     private func configurePluginForDeleteUserEvent() {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(
-                SignedInData(signedInDate: Date(),
-                             signInMethod: .apiBased(.userSRP),
-                             cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData)),
-            AuthorizationState.sessionEstablished(AmplifyCredentials.testData))
+                SignedInData(
+                    signedInDate: Date(),
+                    signInMethod: .apiBased(.userSRP),
+                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
+                )),
+            AuthorizationState.sessionEstablished(AmplifyCredentials.testData)
+        )
 
         let mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
@@ -373,10 +382,13 @@ class AuthHubEventHandlerTests: XCTestCase {
     private func configurePluginForSignOutEvent() {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(
-                SignedInData(signedInDate: Date(),
-                             signInMethod: .apiBased(.userSRP),
-                             cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData)),
-            AuthorizationState.sessionEstablished(AmplifyCredentials.testData))
+                SignedInData(
+                    signedInDate: Date(),
+                    signInMethod: .apiBased(.userSRP),
+                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
+                )),
+            AuthorizationState.sessionEstablished(AmplifyCredentials.testData)
+        )
 
         let mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
@@ -393,7 +405,8 @@ class AuthHubEventHandlerTests: XCTestCase {
     private func configurePluginForFederationEvent() {
         let initialState = AuthState.configured(
             AuthenticationState.signedOut(.testData),
-            AuthorizationState.configured)
+            AuthorizationState.configured
+        )
 
         let mockIdentityProvider = MockIdentityProvider()
 
@@ -403,7 +416,8 @@ class AuthHubEventHandlerTests: XCTestCase {
     private func configurePluginForClearedFederationEvent() {
         let initialState = AuthState.configured(
             AuthenticationState.federatedToIdentityPool,
-            AuthorizationState.sessionEstablished(AmplifyCredentials.testData))
+            AuthorizationState.sessionEstablished(AmplifyCredentials.testData)
+        )
 
         let mockIdentityProvider = MockIdentityProvider()
 
@@ -414,7 +428,8 @@ class AuthHubEventHandlerTests: XCTestCase {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataWithExpiredTokens))
+                AmplifyCredentials.testDataWithExpiredTokens)
+        )
 
         let mockIdentityProvider = MockIdentityProvider(
             mockInitiateAuthResponse: { _ in
@@ -435,10 +450,12 @@ class AuthHubEventHandlerTests: XCTestCase {
     private func configurePlugin(initialState: AuthState, userPoolFactory: CognitoUserPoolBehavior) {
         plugin = AWSCognitoAuthPlugin()
 
-        let mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.testData.idToken,
-                               "access_token": AWSCognitoUserPoolTokens.testData.accessToken,
-                               "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken,
-                               "expires_in": 10] as [String: Any]
+        let mockTokenResult = [
+            "id_token": AWSCognitoUserPoolTokens.testData.idToken,
+            "access_token": AWSCognitoUserPoolTokens.testData.accessToken,
+            "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken,
+            "expires_in": 10
+        ] as [String: Any]
         let mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
         let mockState = "someState"
         let mockProof = "someProof"
@@ -463,37 +480,44 @@ class AuthHubEventHandlerTests: XCTestCase {
             return MockRandomStringGenerator(mockString: mockState, mockUUID: mockState)
         }
 
-        let hostedUIEnv = BasicHostedUIEnvironment(configuration: hostedUIconfig,
-                                                   hostedUISessionFactory: sessionFactory,
-                                                   urlSessionFactory: urlSessionMock,
-                                                   randomStringFactory: mockRandomString)
+        let hostedUIEnv = BasicHostedUIEnvironment(
+            configuration: hostedUIconfig,
+            hostedUISessionFactory: sessionFactory,
+            urlSessionFactory: urlSessionMock,
+            randomStringFactory: mockRandomString
+        )
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
         }
 
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
-                                                                     expiration: Date(),
-                                                                     secretKey: "secret",
-                                                                     sessionToken: "session")
+            let credentials = CognitoIdentityClientTypes.Credentials(
+                accessKeyId: "accessKey",
+                expiration: Date(),
+                secretKey: "secret",
+                sessionToken: "session"
+            )
             return .init(credentials: credentials, identityId: "responseIdentityID")
         }
 
         let mockIdentity = MockIdentity(
             mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
+            mockGetCredentialsResponse: getCredentials
+        )
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             identityPoolFactory: { mockIdentity },
             userPoolFactory: { userPoolFactory },
-            hostedUIEnvironment: hostedUIEnv)
+            hostedUIEnvironment: hostedUIEnv
+        )
 
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
             identityPoolFactory: { mockIdentity },
             userPoolFactory: { userPoolFactory },
-            hostedUIEnvironment: hostedUIEnv)
+            hostedUIEnvironment: hostedUIEnv
+        )
 
         let authHandler = AuthHubEventHandler()
 
@@ -503,7 +527,8 @@ class AuthHubEventHandlerTests: XCTestCase {
             authStateMachine: statemachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: authHandler,
-            analyticsHandler: MockAnalyticsHandler())
+            analyticsHandler: MockAnalyticsHandler()
+        )
     }
 
     override func tearDown() async throws {

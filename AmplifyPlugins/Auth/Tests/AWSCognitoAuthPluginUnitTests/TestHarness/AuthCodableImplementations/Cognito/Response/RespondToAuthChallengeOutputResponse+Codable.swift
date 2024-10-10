@@ -16,7 +16,7 @@ extension RespondToAuthChallengeOutput: Codable {
         case session = "Session"
     }
 
-    public init (from decoder: Swift.Decoder) throws {
+    public init(from decoder: Swift.Decoder) throws {
         self.init()
         let containerValues = try decoder.container(keyedBy: CodingKeys.self)
         let challengeNameDecoded = try containerValues.decodeIfPresent(CognitoIdentityProviderClientTypes.ChallengeNameType.self, forKey: .challengeName)
@@ -24,11 +24,11 @@ extension RespondToAuthChallengeOutput: Codable {
         let sessionDecoded = try containerValues.decodeIfPresent(Swift.String.self, forKey: .session)
         session = sessionDecoded
         let challengeParametersContainer = try containerValues.decodeIfPresent([Swift.String: Swift.String?].self, forKey: .challengeParameters)
-        var challengeParametersDecoded0: [Swift.String:Swift.String]? = nil
-        if let challengeParametersContainer = challengeParametersContainer {
-            challengeParametersDecoded0 = [Swift.String:Swift.String]()
+        var challengeParametersDecoded0: [Swift.String: Swift.String]? = nil
+        if let challengeParametersContainer {
+            challengeParametersDecoded0 = [Swift.String: Swift.String]()
             for (key0, stringtype0) in challengeParametersContainer {
-                if let stringtype0 = stringtype0 {
+                if let stringtype0 {
                     challengeParametersDecoded0?[key0] = stringtype0
                 }
             }

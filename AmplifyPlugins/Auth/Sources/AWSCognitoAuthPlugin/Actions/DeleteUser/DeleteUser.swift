@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct DeleteUser: Action {
 
@@ -50,11 +50,12 @@ struct DeleteUser: Action {
             } catch let error as AuthErrorConvertible {
                 event = DeleteUserEvent(eventType: .throwError(error.authError))
                 logVerbose("\(#fileID) Delete User failed \(error)", environment: environment)
-            } catch let error {
+            } catch {
                 let authError = AuthError.service(
                     "Delete user failed with service error",
                     AmplifyErrorMessages.reportBugToAWS(),
-                    error)
+                    error
+                )
                 event = DeleteUserEvent(eventType: .throwError(authError))
                 logVerbose("\(#fileID) Delete user failed \(error)", environment: environment)
             }

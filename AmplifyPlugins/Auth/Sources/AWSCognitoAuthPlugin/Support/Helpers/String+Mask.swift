@@ -42,7 +42,7 @@ public extension String {
     }
 }
 
-public extension Optional where Wrapped == String {
+public extension String? {
     func masked(
         using character: Character = "*",
         interiorCount: Int = .max,

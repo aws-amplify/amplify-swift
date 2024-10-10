@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import AWSPluginsCore
 import Amplify
+import AWSPluginsCore
+import XCTest
 @testable import AWSCognitoAuthPlugin
 
 class ClearCredentialsTests: XCTestCase {
@@ -35,20 +35,27 @@ class ClearCredentialsTests: XCTestCase {
         let amplifyCredentialStoreFactory: BasicCredentialStoreEnvironment.AmplifyAuthCredentialStoreFactory = {
             return mockAmplifyCredentialStoreBehavior
         }
-        let authConfig = AuthConfiguration.userPoolsAndIdentityPools(Defaults.makeDefaultUserPoolConfigData(),
-                                                                     Defaults.makeIdentityConfigData())
+        let authConfig = AuthConfiguration.userPoolsAndIdentityPools(
+            Defaults.makeDefaultUserPoolConfigData(),
+            Defaults.makeIdentityConfigData()
+        )
 
-        let credentialStoreEnv = BasicCredentialStoreEnvironment(amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
-                                                                 legacyKeychainStoreFactory: legacyKeychainStoreFactory)
+        let credentialStoreEnv = BasicCredentialStoreEnvironment(
+            amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
+            legacyKeychainStoreFactory: legacyKeychainStoreFactory
+        )
 
         let environment = CredentialEnvironment(
             authConfiguration: authConfig,
             credentialStoreEnvironment: credentialStoreEnv,
-            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
+            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+        )
 
         let action = ClearCredentialStore(dataStoreType: .amplifyCredentials)
-        await action.execute(withDispatcher: MockDispatcher { _ in },
-                        environment: environment)
+        await action.execute(
+            withDispatcher: MockDispatcher { _ in },
+            environment: environment
+        )
 
         await fulfillment(
             of: [expectation],
@@ -116,16 +123,21 @@ class ClearCredentialsTests: XCTestCase {
         let amplifyCredentialStoreFactory: BasicCredentialStoreEnvironment.AmplifyAuthCredentialStoreFactory = {
             return mockAmplifyCredentialStoreBehavior
         }
-        let authConfig = AuthConfiguration.userPoolsAndIdentityPools(Defaults.makeDefaultUserPoolConfigData(),
-                                                                     Defaults.makeIdentityConfigData())
+        let authConfig = AuthConfiguration.userPoolsAndIdentityPools(
+            Defaults.makeDefaultUserPoolConfigData(),
+            Defaults.makeIdentityConfigData()
+        )
 
-        let credentialStoreEnv = BasicCredentialStoreEnvironment(amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
-                                                                 legacyKeychainStoreFactory: legacyKeychainStoreFactory)
+        let credentialStoreEnv = BasicCredentialStoreEnvironment(
+            amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
+            legacyKeychainStoreFactory: legacyKeychainStoreFactory
+        )
 
         let environment = CredentialEnvironment(
             authConfiguration: authConfig,
             credentialStoreEnvironment: credentialStoreEnv,
-            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
+            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+        )
 
         let action = ClearCredentialStore(dataStoreType: .amplifyCredentials)
         await action.execute(withDispatcher: MockDispatcher { event in
@@ -174,16 +186,21 @@ class ClearCredentialsTests: XCTestCase {
         let amplifyCredentialStoreFactory: BasicCredentialStoreEnvironment.AmplifyAuthCredentialStoreFactory = {
             return mockAmplifyCredentialStoreBehavior
         }
-        let authConfig = AuthConfiguration.userPoolsAndIdentityPools(Defaults.makeDefaultUserPoolConfigData(),
-                                                                     Defaults.makeIdentityConfigData())
+        let authConfig = AuthConfiguration.userPoolsAndIdentityPools(
+            Defaults.makeDefaultUserPoolConfigData(),
+            Defaults.makeIdentityConfigData()
+        )
 
-        let credentialStoreEnv = BasicCredentialStoreEnvironment(amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
-                                                                 legacyKeychainStoreFactory: legacyKeychainStoreFactory)
+        let credentialStoreEnv = BasicCredentialStoreEnvironment(
+            amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
+            legacyKeychainStoreFactory: legacyKeychainStoreFactory
+        )
 
         let environment = CredentialEnvironment(
             authConfiguration: authConfig,
             credentialStoreEnvironment: credentialStoreEnv,
-            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
+            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+        )
 
         let action = ClearCredentialStore(dataStoreType: .amplifyCredentials)
         await action.execute(withDispatcher: MockDispatcher { event in

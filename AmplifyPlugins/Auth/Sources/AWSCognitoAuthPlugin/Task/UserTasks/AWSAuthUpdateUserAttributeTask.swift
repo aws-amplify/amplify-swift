@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import AWSPluginsCore
 import AWSCognitoIdentityProvider
+import AWSPluginsCore
+import Foundation
 
 class AWSAuthUpdateUserAttributeTask: AuthUpdateUserAttributeTask, DefaultLogger {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
@@ -48,7 +48,8 @@ class AWSAuthUpdateUserAttributeTask: AuthUpdateUserAttributeTask, DefaultLogger
             attributes: [request.userAttribute],
             accessToken: accessToken,
             userPoolFactory: userPoolFactory,
-            clientMetaData: clientMetaData)
+            clientMetaData: clientMetaData
+        )
 
         guard let attributeResult = finalResult[request.userAttribute.key] else {
             let authError = AuthError.unknown("Attribute to be updated does not exist in the result", nil)

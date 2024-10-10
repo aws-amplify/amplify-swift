@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSCognitoIdentityProvider
+import Foundation
 
 class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
 
@@ -31,16 +31,19 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
 
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: request.username,
-                credentialStoreClient: authEnvironment.credentialsClient)
+                credentialStoreClient: authEnvironment.credentialsClient
+            )
             let metadata = (request.options.pluginOptions as? AWSAuthConfirmSignUpOptions)?.metadata
             let forceAliasCreation = (request.options.pluginOptions as? AWSAuthConfirmSignUpOptions)?.forceAliasCreation
             let client = try userPoolEnvironment.cognitoUserPoolFactory()
-            let input = await ConfirmSignUpInput(username: request.username,
-                                           confirmationCode: request.code,
-                                           clientMetadata: metadata,
-                                           asfDeviceId: asfDeviceId,
-                                           forceAliasCreation: forceAliasCreation,
-                                           environment: userPoolEnvironment)
+            let input = await ConfirmSignUpInput(
+                username: request.username,
+                confirmationCode: request.code,
+                clientMetadata: metadata,
+                asfDeviceId: asfDeviceId,
+                forceAliasCreation: forceAliasCreation,
+                environment: userPoolEnvironment
+            )
             _ = try await client.confirmSignUp(input: input)
             log.verbose("Received success")
             return AuthSignUpResult(.done, userID: nil)

@@ -5,26 +5,29 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import CryptoKit
+import Foundation
 
 extension VerifyDevicePasswordSRP {
 
     // swiftlint:disable:next function_parameter_count identifier_name
-    func signature(deviceGroupKey: String,
-                   deviceKey: String,
-                   deviceSecret: String,
-                   saltHex: String,
-                   secretBlock: Data,
-                   serverPublicBHexString: String,
-                   srpClient: SRPClientBehavior) throws -> String {
+    func signature(
+        deviceGroupKey: String,
+        deviceKey: String,
+        deviceSecret: String,
+        saltHex: String,
+        secretBlock: Data,
+        serverPublicBHexString: String,
+        srpClient: SRPClientBehavior
+    ) throws -> String {
 
         let sharedSecret = try sharedSecret(
             username: "\(deviceGroupKey)\(deviceKey)",
             password: deviceSecret,
             saltHex: saltHex,
             serverPublicBHexString: serverPublicBHexString,
-            srpClient: srpClient)
+            srpClient: srpClient
+        )
 
         do {
             let dateStr = stateData.clientTimestamp.utcString
@@ -32,11 +35,13 @@ extension VerifyDevicePasswordSRP {
             // swiftlint:disable:next identifier_name
             let u = try clientClass.calculateUHexValue(
                 clientPublicKeyHexValue: stateData.srpKeyPair.publicKeyHexValue,
-                serverPublicKeyHexValue: serverPublicBHexString)
+                serverPublicKeyHexValue: serverPublicBHexString
+            )
             // HKDF
             let authenticationKey = try clientClass.generateAuthenticationKey(
                 sharedSecretHexValue: sharedSecret,
-                uHexValue: u)
+                uHexValue: u
+            )
 
             // Signature
             let signature = generateSignature(
@@ -44,7 +49,8 @@ extension VerifyDevicePasswordSRP {
                 authenticationKey: authenticationKey,
                 deviceKey: deviceKey,
                 deviceGroupKey: deviceGroupKey,
-                serviceSecretBlock: secretBlock)
+                serviceSecretBlock: secretBlock
+            )
 
             return signature.base64EncodedString()
         } catch let error as SRPError {
@@ -57,11 +63,13 @@ extension VerifyDevicePasswordSRP {
         }
     }
 
-    func sharedSecret(username: String,
-                      password: String,
-                      saltHex: String,
-                      serverPublicBHexString: String,
-                      srpClient: SRPClientBehavior) throws -> String {
+    func sharedSecret(
+        username: String,
+        password: String,
+        saltHex: String,
+        serverPublicBHexString: String,
+        srpClient: SRPClientBehavior
+    ) throws -> String {
         do {
             let srpKeyPair = stateData.srpKeyPair
             return try srpClient.calculateSharedSecret(
@@ -70,7 +78,8 @@ extension VerifyDevicePasswordSRP {
                 saltHexValue: saltHex,
                 clientPrivateKeyHexValue: srpKeyPair.privateKeyHexValue,
                 clientPublicKeyHexValue: srpKeyPair.publicKeyHexValue,
-                serverPublicKeyHexValue: serverPublicBHexString)
+                serverPublicKeyHexValue: serverPublicBHexString
+            )
         } catch let error as SRPError {
             let authError = SignInError.calculation(error)
             throw authError
@@ -81,11 +90,13 @@ extension VerifyDevicePasswordSRP {
         }
     }
 
-    func generateSignature(srpTimeStamp: String,
-                           authenticationKey: Data,
-                           deviceKey: String,
-                           deviceGroupKey: String,
-                           serviceSecretBlock: Data) -> Data {
+    func generateSignature(
+        srpTimeStamp: String,
+        authenticationKey: Data,
+        deviceKey: String,
+        deviceGroupKey: String,
+        serviceSecretBlock: Data
+    ) -> Data {
         let key = SymmetricKey(data: authenticationKey)
         var hmac = HMAC<SHA256>.init(key: key)
         hmac.update(data: Data(deviceGroupKey.utf8))

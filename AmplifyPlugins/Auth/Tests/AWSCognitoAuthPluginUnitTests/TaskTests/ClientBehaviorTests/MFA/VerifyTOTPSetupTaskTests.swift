@@ -7,11 +7,11 @@
 
 import Foundation
 
-import XCTest
 import Amplify
-@testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
 import AWSClientRuntime
+import AWSCognitoIdentityProvider
+import XCTest
+@testable import AWSCognitoAuthPlugin
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -27,7 +27,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     ///
     func testSuccessfulVerifyTOTPSetupRequest() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 XCTAssertEqual(request.userCode, "123456")
                 XCTAssertEqual(request.friendlyDeviceName, "device")
@@ -37,7 +37,8 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
         do {
             let pluginOptions = VerifyTOTPSetupOptions(friendlyDeviceName: "device")
             try await plugin.verifyTOTPSetup(
-                code: "123456", options: .init(pluginOptions: pluginOptions))
+                code: "123456", options: .init(pluginOptions: pluginOptions)
+            )
         } catch {
             XCTFail("Received failure with error \(error)")
         }
@@ -56,7 +57,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     ///
     func testVerifyTOTPSetupWithForbiddenException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.ForbiddenException(
                     message: "Exception"
@@ -88,7 +89,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     ///
     func testVerifyTOTPSetupWithInternalErrorException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.InternalErrorException(
                     message: "Exception"
@@ -120,7 +121,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     ///
     func testVerifyTOTPSetupWithInvalidParameterException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.InvalidParameterException(
                     message: "Exception"
@@ -154,7 +155,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     ///
     func testVerifyTOTPSetupWithNotAuthorizedException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.NotAuthorizedException(
                     message: "Exception"
@@ -184,7 +185,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     ///
     func testVerifyTOTPSetupWithSoftwareTokenMFANotFoundException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException(
                     message: "Exception"
@@ -216,7 +217,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     ///    - I should get a .service error with .resourceNotFound as underlyingError
     ///
     func testVerifyTOTPSetupInWithResourceNotFoundException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.ResourceNotFoundException(
                     message: "Exception"
@@ -249,7 +250,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     ///
     func testVerifyTOTPSetupWithUnknownException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSClientRuntime.UnknownAWSHTTPServiceError(
                     httpResponse: .init(body: .empty, statusCode: .ok),
@@ -281,7 +282,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     ///    - I should get a .service error with .codeMismatch as underlyingError
     ///
     func testVerifyTOTPSetupInWithCodeMismatchException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.CodeMismatchException(
                     message: "Exception"
@@ -313,7 +314,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     ///    - I should get a .service error with .softwareTokenMFANotEnabled as underlyingError
     ///
     func testVerifyTOTPSetupInWithEnableSoftwareTokenMFAException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.EnableSoftwareTokenMFAException(
                     message: "Exception"
@@ -345,7 +346,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     ///    - I should get a .service error with .passwordResetRequired as underlyingError
     ///
     func testVerifyTOTPSetupInWithPasswordResetRequiredException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
                     message: "Exception"
@@ -377,7 +378,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     ///    - I should get a .service error with .requestLimitExceeded as underlyingError
     ///
     func testVerifyTOTPSetupInWithTooManyRequestsException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.TooManyRequestsException(
                     message: "Exception"
@@ -409,7 +410,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     ///    - I should get a .service error with .userNotFound as underlyingError
     ///
     func testVerifyTOTPSetupInWithUserNotFoundException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.UserNotFoundException(
                     message: "Exception"
@@ -441,7 +442,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     ///    - I should get a .service error with .userNotConfirmed as underlyingError
     ///
     func testVerifyTOTPSetupInWithUserNotConfirmedException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.UserNotConfirmedException(
                     message: "Exception"
@@ -473,7 +474,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     ///    - I should get a .service error
     ///
     func testVerifyTOTPSetupInWithInvalidUserPoolConfigurationException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.InvalidUserPoolConfigurationException(
                     message: "Exception"

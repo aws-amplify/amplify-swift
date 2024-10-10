@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCognitoAuthPlugin
 import Foundation
+@testable import AWSCognitoAuthPlugin
 
 
 extension SignInState: Codable {
-    
+
     enum CodingKeys: String, CodingKey {
         case type
         case SignInChallengeState
@@ -21,10 +21,11 @@ extension SignInState: Codable {
 
         let type = try values.decode(String.self, forKey: .type)
         if type == "SignInState.ResolvingChallenge" {
-            self = .resolvingChallenge(
-                try values.decode(SignInChallengeState.self, forKey: .SignInChallengeState),
+            self = try .resolvingChallenge(
+                values.decode(SignInChallengeState.self, forKey: .SignInChallengeState),
                 .smsMfa,
-                .apiBased(.userSRP))
+                .apiBased(.userSRP)
+            )
         } else {
             fatalError("Decoding not supported")
         }

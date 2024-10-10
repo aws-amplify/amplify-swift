@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension AmplifyCredentials {
     static let expiryBufferInSeconds = TimeInterval.seconds(2 * 60)
@@ -20,11 +20,13 @@ extension AmplifyCredentials {
                 isSignedIn: true,
                 identityIdResult: .failure(identityError),
                 awsCredentialsResult: .failure(credentialsError),
-                cognitoTokensResult: .success(signedInData.cognitoUserPoolTokens))
+                cognitoTokensResult: .success(signedInData.cognitoUserPoolTokens)
+            )
         case .identityPoolOnly(let identityID, let credentials):
             return AuthCognitoSignedOutSessionHelper.makeSignedOutSession(
                 identityId: identityID,
-                awsCredentials: credentials)
+                awsCredentials: credentials
+            )
         case .identityPoolWithFederation(_, let identityId, let awsCredentials):
             return AWSAuthCognitoSession(
                 isSignedIn: true,
@@ -43,7 +45,8 @@ extension AmplifyCredentials {
                 isSignedIn: true,
                 identityIdResult: .success(identityID),
                 awsCredentialsResult: .success(credentials),
-                cognitoTokensResult: .success(signedInData.cognitoUserPoolTokens))
+                cognitoTokensResult: .success(signedInData.cognitoUserPoolTokens)
+            )
         case .noCredentials:
             return AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
         }
@@ -64,9 +67,11 @@ extension AmplifyCredentials {
         case .identityPoolOnly(identityID: _, credentials: let awsCredentials):
             doesExpire = awsCredentials.doesExpire(in: expiryBuffer)
 
-        case .userPoolAndIdentityPool(signedInData: let data,
-                                      identityID: _,
-                                      credentials: let awsCredentials):
+        case .userPoolAndIdentityPool(
+            signedInData: let data,
+            identityID: _,
+            credentials: let awsCredentials
+        ):
             doesExpire = (
                 data.cognitoUserPoolTokens.doesExpire(in: expiryBuffer) ||
                 awsCredentials.doesExpire(in: expiryBuffer)

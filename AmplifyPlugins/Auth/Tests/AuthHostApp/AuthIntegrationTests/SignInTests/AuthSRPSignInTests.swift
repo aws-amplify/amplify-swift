@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-@testable import Amplify
 import AWSCognitoAuthPlugin
 import AWSPluginsCore
+import XCTest
+@testable import Amplify
 
 class AuthSRPSignInTests: AWSAuthBaseTest {
 
@@ -33,9 +33,11 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     func testSuccessfulSignIn() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.signUpUser(username: username,
-                                                               password: password,
-                                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.signUpUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "Signup operation failed")
         do {
             let signInResult = try await Amplify.Auth.signIn(username: username, password: password)
@@ -56,9 +58,11 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     func testSignInWithWrongPassword() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.signUpUser(username: username,
-                                    password: password,
-                                    email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.signUpUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "Signup operation failed")
 
         do {
@@ -129,8 +133,11 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let didSucceed = try await AuthSignInHelper.signUpUser(username: username, password: password,
-                                    email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.signUpUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "Signup operation failed")
 
         let awsAuthSignInOptions = AWSAuthSignInOptions(metadata: ["mySignInData": "myvalue"])
@@ -186,8 +193,11 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     func testSignInWhenAlreadySignedIn() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         do {
@@ -264,10 +274,12 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
                 userAttributes: [
                     AuthUserAttribute(.email, value: defaultTestEmail)
                 ],
-                metadata: nil)
+                metadata: nil
+            )
             let result = try await Amplify.Auth.confirmSignIn(
                 challengeResponse: newPassword,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             if case .done = result.nextStep {
                 confirmOperationExpectation.fulfill()
             }
@@ -311,7 +323,8 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
             let didSucceed = try await AuthSignInHelper.signUpUser(
                 username: username,
                 password: password,
-                email: defaultTestEmail)
+                email: defaultTestEmail
+            )
             XCTAssertTrue(didSucceed, "Signup operation failed")
             do {
                 let signInResult = try await Amplify.Auth.signIn(username: username, password: password)

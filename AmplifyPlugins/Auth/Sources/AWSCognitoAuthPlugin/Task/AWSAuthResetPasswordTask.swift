@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
-import AWSCognitoIdentityProvider
+import Foundation
 
 class AWSAuthResetPasswordTask: AuthResetPasswordTask, DefaultLogger {
 
@@ -61,12 +61,14 @@ class AWSAuthResetPasswordTask: AuthResetPasswordTask, DefaultLogger {
         }
         let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
             for: request.username,
-            credentialStoreClient: environment.credentialsClient)
+            credentialStoreClient: environment.credentialsClient
+        )
         let encodedData = await CognitoUserPoolASF.encodedContext(
             username: request.username,
             asfDeviceId: asfDeviceId,
             asfClient: environment.cognitoUserPoolASFFactory(),
-            userPoolConfiguration: userPoolConfigurationData)
+            userPoolConfiguration: userPoolConfigurationData
+        )
         let userContextData = CognitoIdentityProviderClientTypes.UserContextDataType(
             encodedData: encodedData)
         let analyticsMetadata = userPoolEnvironment
@@ -82,7 +84,8 @@ class AWSAuthResetPasswordTask: AuthResetPasswordTask, DefaultLogger {
             clientMetadata: clientMetaData,
             secretHash: secretHash,
             userContextData: userContextData,
-            username: request.username)
+            username: request.username
+        )
 
         let result = try await userPoolService.forgotPassword(input: input)
 

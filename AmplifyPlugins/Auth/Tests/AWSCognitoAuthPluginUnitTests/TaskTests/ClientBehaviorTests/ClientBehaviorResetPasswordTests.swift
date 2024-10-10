@@ -7,12 +7,12 @@
 
 import Foundation
 
-import XCTest
 import AWSCognitoIdentity
-@testable import Amplify
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import ClientRuntime
+import XCTest
+@testable import Amplify
+@testable import AWSCognitoAuthPlugin
 
 class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
 
@@ -60,9 +60,11 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     ///    - I should get a successful result
     ///
     func testSuccessfulResetPassword() async throws {
-        let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(attributeName: "attribute",
-                                                                                             deliveryMedium: .email,
-                                                                                             destination: "Amplify@amazon.com")
+        let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(
+            attributeName: "attribute",
+            deliveryMedium: .email,
+            destination: "Amplify@amazon.com"
+        )
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutput: { _ in
                 ForgotPasswordOutput(codeDeliveryDetails: codeDeliveryDetails)
@@ -108,9 +110,11 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     ///
     func testResetPasswordWithEmptyUsername() async throws {
 
-        let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(attributeName: "attribute",
-                                                                                             deliveryMedium: .email,
-                                                                                             destination: "Amplify@amazon.com")
+        let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(
+            attributeName: "attribute",
+            deliveryMedium: .email,
+            destination: "Amplify@amazon.com"
+        )
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutput: { _ in
                 ForgotPasswordOutput(codeDeliveryDetails: codeDeliveryDetails)

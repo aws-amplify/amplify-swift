@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import SwiftUI
 import Amplify
 import AWSCognitoAuthPlugin
+import SwiftUI
 
 struct SignedInView: View {
 

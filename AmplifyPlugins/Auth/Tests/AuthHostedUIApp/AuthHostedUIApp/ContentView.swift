@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import SwiftUI
 import Amplify
+import SwiftUI
 
 struct ContentView: View {
 
@@ -17,7 +17,7 @@ struct ContentView: View {
         NavigationView {
             if !loading {
                 VStack {
-                    if self.username != nil {
+                    if username != nil {
                         SignedInView(username: $username)
                     } else {
                         SignedOutView()
@@ -28,7 +28,7 @@ struct ContentView: View {
 
         }.onAppear {
             Task {
-                await self.configureAuth()
+                await configureAuth()
             }
         }
     }
@@ -36,11 +36,11 @@ struct ContentView: View {
     func configureAuth() async {
         do {
             let user = try await Amplify.Auth.getCurrentUser()
-            self.username = user.username
+            username = user.username
         } catch {
-            self.username = nil
+            username = nil
         }
-        self.loading = false
+        loading = false
     }
 }
 

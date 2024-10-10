@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import ClientRuntime
+import Foundation
 
 extension ClientError: AuthErrorConvertible {
     var fallbackDescription: String { "Client Error" }

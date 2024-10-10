@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 struct HostedUIOptions {
 
@@ -32,10 +32,10 @@ extension HostedUIOptions: Codable {
 
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        scopes = try values.decode(Array.self, forKey: .scopes)
-        providerInfo = try values.decode(HostedUIProviderInfo.self, forKey: .providerInfo)
-        preferPrivateSession = try values.decode(Bool.self, forKey: .preferPrivateSession)
-        presentationAnchor = nil
+        self.scopes = try values.decode(Array.self, forKey: .scopes)
+        self.providerInfo = try values.decode(HostedUIProviderInfo.self, forKey: .providerInfo)
+        self.preferPrivateSession = try values.decode(Bool.self, forKey: .preferPrivateSession)
+        self.presentationAnchor = nil
     }
 
     func encode(to encoder: Encoder) throws {

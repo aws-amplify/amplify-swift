@@ -7,8 +7,8 @@
 
 import XCTest
 
-import AWSCognitoIdentity
 import Amplify
+import AWSCognitoIdentity
 
 @testable import AWSCognitoAuthPlugin
 
@@ -47,7 +47,8 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: IdentityPoolConfigurationData.testData,
-            cognitoIdentityFactory: identityProviderFactory)
+            cognitoIdentityFactory: identityProviderFactory
+        )
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             authZEnvironment: authorizationEnvironment)
 
@@ -80,7 +81,8 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: IdentityPoolConfigurationData.testData,
-            cognitoIdentityFactory: identityProviderFactory)
+            cognitoIdentityFactory: identityProviderFactory
+        )
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             authZEnvironment: authorizationEnvironment)
 
@@ -122,13 +124,16 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
                         accessKeyId: expectedAccessKey,
                         expiration: Date(),
                         secretKey: expectedSecretKey,
-                        sessionToken: expectedSessionToken),
-                    identityId: expectedIdentityId)
+                        sessionToken: expectedSessionToken
+                    ),
+                    identityId: expectedIdentityId
+                )
             })
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: IdentityPoolConfigurationData.testData,
-            cognitoIdentityFactory: identityProviderFactory)
+            cognitoIdentityFactory: identityProviderFactory
+        )
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             authZEnvironment: authorizationEnvironment)
 
@@ -162,7 +167,8 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: IdentityPoolConfigurationData.testData,
-            cognitoIdentityFactory: identityProviderFactory)
+            cognitoIdentityFactory: identityProviderFactory
+        )
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             authZEnvironment: authorizationEnvironment)
 

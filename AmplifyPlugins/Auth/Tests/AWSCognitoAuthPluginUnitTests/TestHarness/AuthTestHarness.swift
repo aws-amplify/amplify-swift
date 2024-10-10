@@ -38,18 +38,20 @@ class AuthTestHarness {
         }
 
         guard let authConfiguration = try? ConfigurationHelper
-            .authConfiguration(jsonValueConfiguration) else {
+            .authConfiguration(jsonValueConfiguration)
+        else {
             fatalError("Unable to create auth configuarion")
         }
 
-        testHarnessInput = await AuthTestHarnessInput.createInput(
+        self.testHarnessInput = await AuthTestHarnessInput.createInput(
             from: featureSpecification)
 
-        mockedCognitoHelper = MockedAuthCognitoPluginHelper(
+        self.mockedCognitoHelper = MockedAuthCognitoPluginHelper(
             authConfiguration: authConfiguration,
             initialAuthState: testHarnessInput.initialAuthState,
             mockIdentityProvider: testHarnessInput.getMockIdentityProvider(),
-            mockIdentity: testHarnessInput.getMockIdentity())
+            mockIdentity: testHarnessInput.getMockIdentity()
+        )
     }
 
 }

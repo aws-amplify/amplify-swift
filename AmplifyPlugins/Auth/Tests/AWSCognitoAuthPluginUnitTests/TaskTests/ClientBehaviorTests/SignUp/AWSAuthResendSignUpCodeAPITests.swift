@@ -7,12 +7,12 @@
 
 import Foundation
 
-import XCTest
 import AWSCognitoIdentity
-@testable import Amplify
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import ClientRuntime
+import XCTest
+@testable import Amplify
+@testable import AWSCognitoAuthPlugin
 
 class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
 
@@ -61,9 +61,11 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
     ///
     func testResendSignupCodeWithSuccess() async throws {
 
-        let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(attributeName: nil,
-                                                                                             deliveryMedium: .email,
-                                                                                             destination: nil)
+        let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(
+            attributeName: nil,
+            deliveryMedium: .email,
+            destination: nil
+        )
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutput: { _ in
                 ResendConfirmationCodeOutput(codeDeliveryDetails: codeDeliveryDetails)
@@ -87,9 +89,11 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
     ///
     func testResendSignupCodeWithEmptyUsername() async throws {
 
-        let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(attributeName: nil,
-                                                                                             deliveryMedium: .email,
-                                                                                             destination: nil)
+        let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(
+            attributeName: nil,
+            deliveryMedium: .email,
+            destination: nil
+        )
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutput: { _ in
                 ResendConfirmationCodeOutput(codeDeliveryDetails: codeDeliveryDetails)
