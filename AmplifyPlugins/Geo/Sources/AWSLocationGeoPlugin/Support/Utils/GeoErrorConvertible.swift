@@ -6,9 +6,9 @@
 //
 
 import Amplify
-import Foundation
-import AWSLocation
 import AWSClientRuntime
+import AWSLocation
+import Foundation
 
 protocol GeoErrorConvertible {
     var geoError: Geo.Error { get }

@@ -33,9 +33,9 @@ final class GeoStressTests: XCTestCase {
     override func tearDown() async throws {
         await Amplify.reset()
     }
-    
+
     // MARK: - Stress Tests
-    
+
     /// Test if concurrent execution of search(for: text) is successful
     /// - Given: Geo plugin with a valid configuration.
     /// - When:
@@ -44,9 +44,9 @@ final class GeoStressTests: XCTestCase {
     ///    - Place results are returned.
     ///
     func testMultipleSearchForText() async {
-        let successExpectation = expectation(description: "searchForText was successful") 
+        let successExpectation = expectation(description: "searchForText was successful")
         successExpectation.expectedFulfillmentCount = concurrencyLimit
-        for _ in 1...concurrencyLimit {
+        for _ in 1 ... concurrencyLimit {
             Task {
                 do {
                     let options = Geo.SearchForTextOptions(area: .near(coordinates))
@@ -58,10 +58,10 @@ final class GeoStressTests: XCTestCase {
                 }
             }
         }
-        
+
         await fulfillment(of: [successExpectation], timeout: timeout)
     }
-    
+
     /// Test if concurrent execution of search(for: coordinates) is successful
     /// - Given: Geo plugin with a valid configuration.
     /// - When:
@@ -72,7 +72,7 @@ final class GeoStressTests: XCTestCase {
     func testMultipleSearchForCoordinates() async {
         let successExpectation = expectation(description: "searchForCoordinates was successful")
         successExpectation.expectedFulfillmentCount = concurrencyLimit
-        for _ in 1...concurrencyLimit {
+        for _ in 1 ... concurrencyLimit {
             Task {
                 do {
                     let places = try await Amplify.Geo.search(for: coordinates, options: nil)
@@ -84,7 +84,7 @@ final class GeoStressTests: XCTestCase {
                 }
             }
         }
-        
+
         await fulfillment(of: [successExpectation], timeout: timeout)
     }
 
