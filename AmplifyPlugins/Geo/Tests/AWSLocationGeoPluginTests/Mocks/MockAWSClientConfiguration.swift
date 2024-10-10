@@ -6,8 +6,8 @@
 //
 
 import AWSClientRuntime
-import ClientRuntime
 import AWSLocation
+import ClientRuntime
 import Foundation
 import XCTest
 import SmithyHTTPAPI

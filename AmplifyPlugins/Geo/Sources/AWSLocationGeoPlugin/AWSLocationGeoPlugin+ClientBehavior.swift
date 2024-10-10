@@ -10,7 +10,7 @@ import Foundation
 
 import AWSLocation
 
-extension AWSLocationGeoPlugin {
+public extension AWSLocationGeoPlugin {
 
     // MARK: - Search
 
@@ -30,8 +30,10 @@ extension AWSLocationGeoPlugin {
     ///     `Geo.Error.networkError` if request failed or network unavailable
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
-    public func search(for text: String,
-                       options: Geo.SearchForTextOptions? = nil) async throws -> [Geo.Place] {
+    func search(
+        for text: String,
+        options: Geo.SearchForTextOptions? = nil
+    ) async throws -> [Geo.Place] {
 
         var request = SearchPlaceIndexForTextInput()
 
@@ -41,7 +43,8 @@ extension AWSLocationGeoPlugin {
         guard request.indexName != nil else {
             throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingDefaultSearchIndex.errorDescription,
-                GeoPluginErrorConstants.missingDefaultSearchIndex.recoverySuggestion)
+                GeoPluginErrorConstants.missingDefaultSearchIndex.recoverySuggestion
+            )
         }
 
         request.text = text
@@ -49,13 +52,17 @@ extension AWSLocationGeoPlugin {
         if let area = options?.area {
             switch area {
             case .near(let coordinates):
-                request.biasPosition = [coordinates.longitude,
-                                        coordinates.latitude]
+                request.biasPosition = [
+                    coordinates.longitude,
+                    coordinates.latitude
+                ]
             case .within(let boundingBox):
-                request.filterBBox = [boundingBox.southwest.longitude,
-                                      boundingBox.southwest.latitude,
-                                      boundingBox.northeast.longitude,
-                                      boundingBox.northeast.latitude]
+                request.filterBBox = [
+                    boundingBox.southwest.longitude,
+                    boundingBox.southwest.latitude,
+                    boundingBox.northeast.longitude,
+                    boundingBox.northeast.latitude
+                ]
             }
         }
 
@@ -73,9 +80,7 @@ extension AWSLocationGeoPlugin {
             let response = try await locationService.searchPlaceIndex(forText: request)
             var results = [LocationClientTypes.Place]()
             if let responseResults = response.results {
-                results = responseResults.compactMap {
-                    $0.place
-                }
+                results = responseResults.compactMap(\.place)
             }
 
             let places: [Geo.Place] = results.compactMap {
@@ -85,16 +90,18 @@ extension AWSLocationGeoPlugin {
                     return nil
                 }
 
-                return Geo.Place(coordinates: Geo.Coordinates(latitude: lat, longitude: long),
-                                 label: $0.label,
-                                 addressNumber: $0.addressNumber,
-                                 street: $0.street,
-                                 municipality: $0.municipality,
-                                 neighborhood: $0.neighborhood,
-                                 region: $0.region,
-                                 subRegion: $0.subRegion,
-                                 postalCode: $0.postalCode,
-                                 country: $0.country)
+                return Geo.Place(
+                    coordinates: Geo.Coordinates(latitude: lat, longitude: long),
+                    label: $0.label,
+                    addressNumber: $0.addressNumber,
+                    street: $0.street,
+                    municipality: $0.municipality,
+                    neighborhood: $0.neighborhood,
+                    region: $0.region,
+                    subRegion: $0.subRegion,
+                    postalCode: $0.postalCode,
+                    country: $0.country
+                )
             }
             return places
         } catch let error as GeoErrorConvertible {
@@ -123,8 +130,10 @@ extension AWSLocationGeoPlugin {
     ///     `Geo.Error.networkError` if request failed or network unavailable
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
-    public func search(for coordinates: Geo.Coordinates,
-                       options: Geo.SearchForCoordinatesOptions? = nil) async throws -> [Geo.Place] {
+    func search(
+        for coordinates: Geo.Coordinates,
+        options: Geo.SearchForCoordinatesOptions? = nil
+    ) async throws -> [Geo.Place] {
 
         var request = SearchPlaceIndexForPositionInput()
 
@@ -134,11 +143,14 @@ extension AWSLocationGeoPlugin {
         guard request.indexName != nil else {
             throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingDefaultSearchIndex.errorDescription,
-                GeoPluginErrorConstants.missingDefaultSearchIndex.recoverySuggestion)
+                GeoPluginErrorConstants.missingDefaultSearchIndex.recoverySuggestion
+            )
         }
 
-        request.position = [coordinates.longitude,
-                            coordinates.latitude]
+        request.position = [
+            coordinates.longitude,
+            coordinates.latitude
+        ]
 
         if let maxResults = options?.maxResults {
             request.maxResults = maxResults as Int
@@ -148,9 +160,7 @@ extension AWSLocationGeoPlugin {
             let response = try await locationService.searchPlaceIndex(forPosition: request)
             var results = [LocationClientTypes.Place]()
             if let responseResults = response.results {
-                results = responseResults.compactMap {
-                    $0.place
-                }
+                results = responseResults.compactMap(\.place)
             }
 
             let places: [Geo.Place] = results.compactMap {
@@ -160,16 +170,18 @@ extension AWSLocationGeoPlugin {
                     return nil
                 }
 
-                return Geo.Place(coordinates: Geo.Coordinates(latitude: lat, longitude: long),
-                                 label: $0.label,
-                                 addressNumber: $0.addressNumber,
-                                 street: $0.street,
-                                 municipality: $0.municipality,
-                                 neighborhood: $0.neighborhood,
-                                 region: $0.region,
-                                 subRegion: $0.subRegion,
-                                 postalCode: $0.postalCode,
-                                 country: $0.country)
+                return Geo.Place(
+                    coordinates: Geo.Coordinates(latitude: lat, longitude: long),
+                    label: $0.label,
+                    addressNumber: $0.addressNumber,
+                    street: $0.street,
+                    municipality: $0.municipality,
+                    neighborhood: $0.neighborhood,
+                    region: $0.region,
+                    subRegion: $0.subRegion,
+                    postalCode: $0.postalCode,
+                    country: $0.country
+                )
             }
             return places
         } catch let error as GeoErrorConvertible {
@@ -194,12 +206,13 @@ extension AWSLocationGeoPlugin {
     ///     `Geo.Error.networkError` if request failed or network unavailable
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
-    public func availableMaps() async throws -> [Geo.MapStyle] {
+    func availableMaps() async throws -> [Geo.MapStyle] {
         let mapStyles = Array(pluginConfig.maps.values)
         guard !mapStyles.isEmpty else {
             throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingMaps.errorDescription,
-                GeoPluginErrorConstants.missingMaps.recoverySuggestion)
+                GeoPluginErrorConstants.missingMaps.recoverySuggestion
+            )
         }
         return mapStyles
     }
@@ -213,11 +226,12 @@ extension AWSLocationGeoPlugin {
     ///     `Geo.Error.networkError` if request failed or network unavailable
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
-    public func defaultMap() async throws -> Geo.MapStyle {
+    func defaultMap() async throws -> Geo.MapStyle {
         guard let mapName = pluginConfig.defaultMap, let mapStyle = pluginConfig.maps[mapName] else {
             throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingDefaultMap.errorDescription,
-                GeoPluginErrorConstants.missingDefaultMap.recoverySuggestion)
+                GeoPluginErrorConstants.missingDefaultMap.recoverySuggestion
+            )
         }
         return mapStyle
     }
