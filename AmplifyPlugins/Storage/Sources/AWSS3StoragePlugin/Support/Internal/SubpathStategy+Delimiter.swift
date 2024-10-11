@@ -8,7 +8,7 @@
 import Amplify
 
 extension StorageListRequest.Options.SubpathStrategy {
-    /// The delimiter for this strategy 
+    /// The delimiter for this strategy
     var delimiter: String? {
         switch self {
         case .exclude(let delimiter):

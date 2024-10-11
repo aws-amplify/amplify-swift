@@ -7,11 +7,11 @@
 
 import Foundation
 
-import AWSS3
 import Amplify
 import AWSPluginsCore
+import AWSS3
 
-extension AWSS3StoragePlugin {
+public extension AWSS3StoragePlugin {
 
     /// Retrieve the escape hatch to perform low level operations on S3.
     ///

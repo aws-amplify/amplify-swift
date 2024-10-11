@@ -44,14 +44,15 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
     weak var session: StorageMultipartUploadSession?
     let metadata: [String: String]?
 
-    init(serviceProxy: StorageServiceProxy,
-         fileSystem: FileSystem = .default,
-         bucket: String,
-         key: String,
-         uploadFile: UploadFile,
-         contentType: String? = nil,
-         requestHeaders: RequestHeaders? = nil,
-         metadata: [String: String]? = nil
+    init(
+        serviceProxy: StorageServiceProxy,
+        fileSystem: FileSystem = .default,
+        bucket: String,
+        key: String,
+        uploadFile: UploadFile,
+        contentType: String? = nil,
+        requestHeaders: RequestHeaders? = nil,
+        metadata: [String: String]? = nil
     ) {
         self.serviceProxy = serviceProxy
         self.fileSystem = fileSystem
@@ -69,8 +70,8 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
 
     // https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateMultipartUpload.html
     func createMultipartUpload() throws {
-        guard let serviceProxy = serviceProxy,
-            let session = session else { fatalError() }
+        guard let serviceProxy,
+            let session else { fatalError() }
 
         // The AWS S3 SDK handles the request so there will be not taskIdentifier
         session.handle(multipartUploadEvent: .creating)
@@ -89,11 +90,11 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             metadata: metadata
         )
         serviceProxy.awsS3.createMultipartUpload(request) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let response):
                 serviceProxy.register(multipartUploadSession: session)
-                session.handle(multipartUploadEvent: .created(uploadFile: self.uploadFile, uploadId: response.uploadId))
+                session.handle(multipartUploadEvent: .created(uploadFile: uploadFile, uploadId: response.uploadId))
             case .failure(let error):
                 session.fail(error: error)
             }
@@ -102,7 +103,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
 
     // https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPart.html
     func uploadPart(partNumber: PartNumber, multipartUpload: StorageMultipartUpload, subTask: StorageTransferTask) throws {
-        guard let serviceProxy = serviceProxy else { fatalError("Service Proxy is required") }
+        guard let serviceProxy else { fatalError("Service Proxy is required") }
 
         guard let uploadId = multipartUpload.uploadId,
               let uploadFile = multipartUpload.uploadFile,
@@ -112,7 +113,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
               }
 
         let startUploadPart: (URL, URL) async -> Void = { [weak self] partialFileURL, preSignedURL in
-            guard let self = self else { return }
+            guard let self else { return }
             var request = URLRequest(url: preSignedURL)
             request.cachePolicy = .reloadIgnoringLocalCacheData
             request.httpMethod = "PUT"
@@ -136,13 +137,13 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             self.serviceProxy?.register(task: subTask)
 
             // tell the session the upload part has started
-            self.session?.handle(uploadPartEvent: .started(partNumber: partNumber, taskIdentifier: uploadTask.taskIdentifier))
+            session?.handle(uploadPartEvent: .started(partNumber: partNumber, taskIdentifier: uploadTask.taskIdentifier))
 
             uploadTask.resume()
         }
 
         let partialFileResultHandler: (Result<URL, Error>) -> Void = { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             Task {
                 do {
                     let partialFileURL = try result.get()
@@ -174,8 +175,8 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
 
     // https://docs.aws.amazon.com/AmazonS3/latest/API/API_CompleteMultipartUpload.html
     func completeMultipartUpload(uploadId: UploadID) {
-        guard let serviceProxy = serviceProxy,
-            let session = session else { fatalError() }
+        guard let serviceProxy,
+            let session else { fatalError() }
 
         let completedParts = session.completedParts ?? []
         let parts = AWSS3MultipartUploadRequestCompletedParts(completedParts: completedParts)
@@ -194,8 +195,8 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
 
     // https://docs.aws.amazon.com/AmazonS3/latest/API/API_AbortMultipartUpload.html
     func abortMultipartUpload(uploadId: UploadID, error: Error? = nil) {
-        guard let serviceProxy = serviceProxy,
-            let session = session else { fatalError() }
+        guard let serviceProxy,
+            let session else { fatalError() }
 
         serviceProxy.awsS3.abortMultipartUpload(.init(bucket: bucket, key: key, uploadId: uploadId)) { result in
             switch result {

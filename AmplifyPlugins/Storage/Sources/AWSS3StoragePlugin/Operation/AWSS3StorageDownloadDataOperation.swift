@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 /// Storage Download Data Operation.
 ///
@@ -46,11 +46,13 @@ class AWSS3StorageDownloadDataOperation: AmplifyInProcessReportingOperation<
         self.storageConfiguration = storageConfiguration
         self.storageServiceProvider = storageServiceProvider
         self.authService = authService
-        super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.downloadData,
-                   request: request,
-                   inProcessListener: progressListener,
-                   resultListener: resultListener)
+        super.init(
+            categoryType: .storage,
+            eventName: HubPayload.EventName.Storage.downloadData,
+            request: request,
+            inProcessListener: progressListener,
+            resultListener: resultListener
+        )
     }
 
     /// Pauses operation.

@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
-import AWSS3StoragePlugin
 import AWSS3
+import AWSS3StoragePlugin
 import Combine
+import XCTest
 
 // swiftlint:disable:next type_name
 class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBase {

@@ -9,7 +9,7 @@ import Amplify
 
 typealias CompletionType = (Bool, AuthError?) -> Void
 
-struct AuthSignInHelper {
+enum AuthSignInHelper {
 
     @discardableResult
     static func signUpUser(username: String, password: String, email: String) async throws -> AuthSignUpResult {
@@ -22,10 +22,12 @@ struct AuthSignInHelper {
         return try await Amplify.Auth.signIn(username: username, password: password, options: nil)
     }
 
-    static func registerAndSignInUser(username: String,
-                                             password: String,
-                                             email: String) async throws -> Bool {
-        try await Self.signUpUser(username: username, password: password, email: email)
+    static func registerAndSignInUser(
+        username: String,
+        password: String,
+        email: String
+    ) async throws -> Bool {
+        try await signUpUser(username: username, password: password, email: email)
         let result = try await Self.signInUser(username: username, password: password)
         return result.isSignedIn
     }

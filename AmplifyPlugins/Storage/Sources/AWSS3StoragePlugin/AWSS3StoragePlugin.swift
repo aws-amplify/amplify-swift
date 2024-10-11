@@ -14,7 +14,7 @@ import InternalAmplifyCredentials
 /// Plugin APIs for AWS S3.
 ///
 /// - Tag: AWSS3StoragePlugin
-final public class AWSS3StoragePlugin: StorageCategoryPlugin {
+public final class AWSS3StoragePlugin: StorageCategoryPlugin {
 
     /// The default S3 storage service.
     var defaultStorageService: AWSS3StorageServiceBehavior! {
@@ -54,10 +54,10 @@ final public class AWSS3StoragePlugin: StorageCategoryPlugin {
     let storageConfiguration: AWSS3StoragePluginConfiguration
 
     /// See [HttpClientEngineProxy](x-source-tag://HttpClientEngineProxy)
-    internal var httpClientEngineProxy: HttpClientEngineProxy?
+    var httpClientEngineProxy: HttpClientEngineProxy?
 
     /// See [URLRequestDelegate](x-source-tag://URLRequestDelegate)
-    internal weak var urlRequestDelegate: URLRequestDelegate?
+    weak var urlRequestDelegate: URLRequestDelegate?
 
     /// Instantiates an instance of the AWSS3StoragePlugin.
     ///

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension StorageUploadFileRequest {
     /// Performs client side validation and returns a `StorageError` for any validation failures.
@@ -16,7 +16,7 @@ extension StorageUploadFileRequest {
             // at during execution of request operation where the path is resolved
             return nil
         }
-        
+
         if let error = StorageRequestUtils.validateKey(key) {
             return error
         }

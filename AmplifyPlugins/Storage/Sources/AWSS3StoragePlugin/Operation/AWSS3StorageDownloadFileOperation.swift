@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 // TODO: thread safety: everything has to be locked down
 // TODO verify no retain cycle
@@ -49,11 +49,13 @@ class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
         self.storageConfiguration = storageConfiguration
         self.storageServiceProvider = storageServiceProvider
         self.authService = authService
-        super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.downloadFile,
-                   request: request,
-                   inProcessListener: progressListener,
-                   resultListener: resultListener)
+        super.init(
+            categoryType: .storage,
+            eventName: HubPayload.EventName.Storage.downloadFile,
+            request: request,
+            inProcessListener: progressListener,
+            resultListener: resultListener
+        )
     }
 
     /// Pauses operation.

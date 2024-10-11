@@ -6,7 +6,8 @@
 //
 
 import Foundation
-struct PluginConstants {
+
+enum PluginConstants {
     static let awsS3StoragePluginKey = "awsS3StoragePlugin"
     static let bucket = "bucket"
     static let region = "region"

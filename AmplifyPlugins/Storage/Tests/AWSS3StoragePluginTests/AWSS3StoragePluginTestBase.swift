@@ -5,9 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
-@testable import AWSS3StoragePlugin
+import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSPluginsTestCommon
 import InternalAmplifyCredentials

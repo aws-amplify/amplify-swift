@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 // Each part must be at least 5 MB in size, except the last part.
 // https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPart.html
@@ -75,57 +75,53 @@ enum StorageUploadPart {
     }
 
     var progress: Double {
-        let result: Double
-        switch self {
+        let result: Double = switch self {
         case .pending, .queued:
-            result = 0.0
+            0.0
         case .inProgress(let bytes, let bytesTransferred, _):
-            result = bytes > 0 ? Double(bytesTransferred) / Double(bytes) : 0.0
+            bytes > 0 ? Double(bytesTransferred) / Double(bytes) : 0.0
         case .failed:
-            result = 0.0
+            0.0
         case .completed:
-            result = 1.0
+            1.0
         }
 
         return result
     }
 
     var bytes: UInt64 {
-        let result: UInt64
-        switch self {
+        let result: UInt64 = switch self {
         case .pending(let bytes), .queued(let bytes):
-            result = bytes
+            bytes
         case .inProgress(let bytes, _, _):
-            result = bytes
+            bytes
         case .failed(let bytes, _, _):
-            result = bytes
+            bytes
         case .completed(let bytes, _):
-            result = bytes
+            bytes
         }
 
         return result
     }
 
     var bytesTransferred: UInt64 {
-        let result: UInt64
-        switch self {
+        let result: UInt64 = switch self {
         case .pending, .queued, .failed:
-            result = 0
+            0
         case .inProgress(_, let bytesTransferred, _):
-            result = bytesTransferred
+            bytesTransferred
         case .completed(let bytes, _):
-            result = bytes
+            bytes
         }
 
         return result
     }
 
     var eTag: String? {
-        let result: String?
-        if case .completed(_, let eTag) = self {
-            result = eTag
+        let result: String? = if case .completed(_, let eTag) = self {
+            eTag
         } else {
-            result = nil
+            nil
         }
         return result
     }
@@ -159,7 +155,7 @@ struct StorageUploadPartSize {
     }
     let size: UInt64
 
-    static let `default`: StorageUploadPartSize = StorageUploadPartSize()
+    static let `default`: StorageUploadPartSize = .init()
 
     private init() {
         self.size = minimumPartSize
@@ -222,7 +218,7 @@ struct StorageUploadPartSize {
 
 }
 
-extension Array where Element == StorageUploadPart {
+extension [StorageUploadPart] {
     enum Failure: Error {
         case invalidPartNumber
         case partNotFound
@@ -262,7 +258,7 @@ extension Array where Element == StorageUploadPart {
     }
 }
 
-extension Sequence where Element == StorageUploadPart {
+extension Sequence<StorageUploadPart> {
 
     /// Indicates that no parts are pending or in progress, but could also be failed.
     var isDone: Bool {
@@ -283,19 +279,19 @@ extension Sequence where Element == StorageUploadPart {
     }
 
     var pending: StorageUploadParts {
-        filter { $0.isPending }
+        filter(\.isPending)
     }
 
     var inProgress: StorageUploadParts {
-        filter { $0.inProgress }
+        filter(\.inProgress)
     }
 
     var failed: StorageUploadParts {
-        filter { $0.failed }
+        filter(\.failed)
     }
 
     var completed: StorageUploadParts {
-        filter { $0.completed }
+        filter(\.completed)
     }
 
     var totalBytes: UInt64 {

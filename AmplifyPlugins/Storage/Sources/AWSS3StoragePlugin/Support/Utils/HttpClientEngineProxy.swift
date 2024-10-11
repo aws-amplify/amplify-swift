@@ -16,7 +16,7 @@ import SmithyHTTPAPI
 /// the AWSS3StoragePlugin is necessary so this protocol is not exposed via the SPI.
 ///
 /// See:
-/// 
+///
 /// * [URLRequestDelegate](x-source-tag://URLRequestDelegate)
 /// * [CommonRuntime.HttpClientEngine](x-source-tag://HttpClientEngine)
 ///

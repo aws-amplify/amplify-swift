@@ -7,12 +7,13 @@
 
 @testable import Amplify
 
+import AWSClientRuntime
+import AWSS3
 import AWSS3StoragePlugin
 import ClientRuntime
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 import CryptoKit
 import XCTest
-import AWSS3
 
 class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
 
@@ -31,7 +32,7 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(firstListResult.items.filter({ $0.key == uniqueStringPath}).count, 1)
+        XCTAssertEqual(firstListResult.items.filter { $0.key == uniqueStringPath}.count, 1)
 
         // Validate
         _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath))
@@ -39,7 +40,7 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
         let secondListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(secondListResult.items.filter({ $0.key == uniqueStringPath}).count, 0)
+        XCTAssertEqual(secondListResult.items.filter { $0.key == uniqueStringPath}.count, 0)
 
     }
 
@@ -67,7 +68,7 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(firstListResult.items.filter({ $0.key == uniqueStringPath}).count, 1)
+        XCTAssertEqual(firstListResult.items.filter { $0.key == uniqueStringPath}.count, 1)
 
         // Validate
         _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath))
@@ -75,7 +76,7 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
         let secondListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(secondListResult.items.filter({ $0.key == uniqueStringPath}).count, 0)
+        XCTAssertEqual(secondListResult.items.filter { $0.key == uniqueStringPath}.count, 0)
 
     }
 
@@ -103,7 +104,7 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(firstListResult.items.filter({ $0.key == uniqueStringPath}).count, 1)
+        XCTAssertEqual(firstListResult.items.filter { $0.key == uniqueStringPath}.count, 1)
 
         // Validate
         _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath))
@@ -111,7 +112,7 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
         let secondListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(secondListResult.items.filter({ $0.key == uniqueStringPath}).count, 0)
+        XCTAssertEqual(secondListResult.items.filter { $0.key == uniqueStringPath}.count, 0)
 
     }
 
@@ -124,8 +125,7 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
 
         do {
             _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath))
-        }
-        catch {
+        } catch {
             guard let storageError = error as? StorageError else {
                 XCTFail("Error should be of type StorageError but got \(error)")
                 return
@@ -134,7 +134,7 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
                 XCTFail("Error should be of type keyNotFound but got \(error)")
                 return
             }
-            
+
             guard underlyingError is AWSS3.NotFound else {
                 XCTFail("Underlying error should be of type AWSS3.NotFound but got \(error)")
                 return
@@ -151,8 +151,7 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
 
         do {
             _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath))
-        }
-        catch {
+        } catch {
             guard let storageError = error as? StorageError else {
                 XCTFail("Error should be of type StorageError but got \(error)")
                 return

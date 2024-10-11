@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
-extension AWSS3StoragePlugin {
+public extension AWSS3StoragePlugin {
 
     /// Resets the state of the plugin.
     ///
