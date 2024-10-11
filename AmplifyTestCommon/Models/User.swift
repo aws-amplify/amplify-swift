@@ -15,10 +15,12 @@ public struct User: Model {
   public var following: List<UserFollowing>?
   public var followers: List<UserFollowers>?
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       name: String,
       following: List<UserFollowing>? = [],
-      followers: List<UserFollowers>? = []) {
+      followers: List<UserFollowers>? = []
+  ) {
       self.id = id
       self.name = name
       self.following = following

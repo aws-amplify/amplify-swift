@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 
 // These tests must be run with ThreadSanitizer enabled
 class AtomicValueTests: XCTestCase {

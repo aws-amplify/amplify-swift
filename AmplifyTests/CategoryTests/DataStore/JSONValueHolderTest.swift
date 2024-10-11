@@ -5,14 +5,16 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 
 class JSONValueHolderTest: XCTestCase {
 
-    var jsonValueHodler = DynamicModel(values: ["id": 123,
-                                                "name": nil,
-                                                "comment": "here is a comment"])
+    var jsonValueHodler = DynamicModel(values: [
+        "id": 123,
+        "name": nil,
+        "comment": "here is a comment"
+    ])
 
     func testJsonDoubleValue() {
         guard let id = jsonValueHodler.jsonValue(for: "id") as? Double else {

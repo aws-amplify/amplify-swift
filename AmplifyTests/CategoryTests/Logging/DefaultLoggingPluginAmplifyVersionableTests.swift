@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 
 // swiftlint:disable:next type_name
 class DefaultLoggingPluginAmplifyVersionableTests: XCTestCase {
