@@ -4,9 +4,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 #if canImport(Speech) && canImport(Vision)
-import XCTest
 import Amplify
+import XCTest
 @testable import CoreMLPredictionsPlugin
 
 class CoreMLPredictionsPluginTests: CoreMLPredictionsPluginTestBase {

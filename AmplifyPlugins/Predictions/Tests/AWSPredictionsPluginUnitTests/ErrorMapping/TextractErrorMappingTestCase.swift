@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import AWSTextract
 import Amplify
+import AWSTextract
+import XCTest
 @testable import AWSPredictionsPlugin
 
 final class TextractErrorMappingTestCase: XCTestCase {
@@ -26,8 +26,7 @@ final class TextractErrorMappingTestCase: XCTestCase {
             guard case .service(expectedServiceError) = error.predictionsError else {
                 return XCTFail(unexpected(error.predictionsError))
             }
-        }
-        catch {
+        } catch {
             XCTFail(unexpected(error))
         }
 

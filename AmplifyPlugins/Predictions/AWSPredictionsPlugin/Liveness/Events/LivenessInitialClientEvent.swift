@@ -24,7 +24,7 @@ public struct InitialClientEvent {
     let videoStartTimestamp: UInt64
 }
 
-extension LivenessEvent where T == InitialClientEvent {
+public extension LivenessEvent where T == InitialClientEvent {
     @_spi(PredictionsFaceLiveness)
     public static func initialFaceDetected(
         event: InitialClientEvent,

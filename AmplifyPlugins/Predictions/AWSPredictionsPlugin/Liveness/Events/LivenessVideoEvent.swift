@@ -18,9 +18,9 @@ public struct VideoEvent {
     }
 }
 
-extension LivenessEvent where T == VideoEvent {
+public extension LivenessEvent where T == VideoEvent {
     @_spi(PredictionsFaceLiveness)
-    public static func video(event: VideoEvent) throws -> Self {
+    static func video(event: VideoEvent) throws -> Self {
         let clientEvent = LivenessVideoEvent(
             timestampMillis: event.timestamp,
             videoChunk: event.chunk

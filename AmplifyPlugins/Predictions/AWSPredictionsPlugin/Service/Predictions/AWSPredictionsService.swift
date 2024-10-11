@@ -7,12 +7,16 @@
 
 import protocol Amplify.Logger
 import Amplify
-import AWSRekognition
-import AWSTranslate
-import AWSTextract
+import AWSClientRuntime
 import AWSComprehend
-import AWSPolly
 import AWSPluginsCore
+import AWSPolly
+import AWSRekognition
+import AWSTextract
+import AWSTranscribeStreaming
+import AWSTranslate
+import ClientRuntime
+import Foundation
 @_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 import Foundation
 import AwsCommonRuntimeKit

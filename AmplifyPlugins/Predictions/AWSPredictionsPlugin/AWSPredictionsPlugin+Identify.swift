@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 @_spi(PredictionsConvertRequestKind) import Amplify
 import AWSPolly
 
-extension AWSPredictionsPlugin {
-    public func identify<Output>(
+public extension AWSPredictionsPlugin {
+    func identify<Output>(
         _ request: Predictions.Identify.Request<Output>,
         in image: URL,
         options: Predictions.Identify.Options?

@@ -6,9 +6,9 @@
 //
 
 #if canImport(Speech) && canImport(Vision)
-import Foundation
 import Amplify
 import CoreMLPredictionsPlugin
+import Foundation
 
 class CoreMLPredictionService: CoreMLPredictionBehavior {
     let coreMLPlugin: CoreMLPredictionsPlugin
