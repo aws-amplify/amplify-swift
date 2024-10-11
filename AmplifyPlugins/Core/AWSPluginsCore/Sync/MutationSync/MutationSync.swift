@@ -37,12 +37,14 @@ public struct MutationSync<ModelType: Model>: Decodable {
             guard case let .string(modelName) = json["__typename"] else {
                 throw DataStoreError.decodingError(
                     "The key `__typename` was not found",
-                    "Check if the parsed JSON contains the expected `__typename`")
+                    "Check if the parsed JSON contains the expected `__typename`"
+                )
             }
             guard let actualModelType = ModelRegistry.modelType(from: modelName) else {
                 throw DataStoreError.decodingError(
                     "Model named `\(modelName)` could not be resolved.",
-                    "Make sure `\(modelName)` was registered using `ModelRegistry.register`")
+                    "Make sure `\(modelName)` was registered using `ModelRegistry.register`"
+                )
             }
             let model = try actualModelType.init(from: decoder)
             guard let anyModel = try model.eraseToAnyModel() as? ModelType else {
@@ -52,7 +54,8 @@ public struct MutationSync<ModelType: Model>: Decodable {
                     Please take a look at https://github.com/aws-amplify/amplify-ios/issues
                     to see if there are any existing issues that match your scenario,
                     and file an issue with the details of the bug if there isn't.
-                    """)
+                    """
+                )
             }
             self.model = anyModel
             resolvedModelName = modelName
@@ -67,10 +70,10 @@ public struct MutationSync<ModelType: Model>: Decodable {
                   // TODO query name could be useful for the message, but re-creating it here is not great
                   let queryName = modelType.schema.syncPluralName ?? modelType.schema.pluralName ?? modelType.modelName
                   throw DataStoreError.decodingError(
-                """
+                      """
                 Error decoding the the sync metadata from the delta sync query result.
                 """,
-                """
+                      """
                 The sync metadata should contain fields named `_deleted`, `_lastChangedAt` and `_version`.
                 Check your sync`\(queryName)` query and make sure it returns the correct set of sync fields.
                 """
@@ -84,10 +87,12 @@ public struct MutationSync<ModelType: Model>: Decodable {
 
         let modelIdentifier = model.identifier(schema: modelSchema).stringValue
 
-        self.syncMetadata = MutationSyncMetadata(modelId: modelIdentifier,
-                                                 modelName: resolvedModelName,
-                                                 deleted: deleted,
-                                                 lastChangedAt: Int64(lastChangedAt),
-                                                 version: Int(version))
+        self.syncMetadata = MutationSyncMetadata(
+            modelId: modelIdentifier,
+            modelName: resolvedModelName,
+            deleted: deleted,
+            lastChangedAt: Int64(lastChangedAt),
+            version: Int(version)
+        )
     }
 }

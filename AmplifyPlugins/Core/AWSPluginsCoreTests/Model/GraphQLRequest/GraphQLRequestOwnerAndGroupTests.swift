@@ -25,11 +25,15 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnCreateSubscriptionScenarioBInAdmins() {
         let modelType = OGCScenarioBPost.self as Model.Type
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "cognito:groups": ["Admins"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "cognito:groups": ["Admins"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: modelType.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
@@ -48,9 +52,11 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
-                                                                      subscriptionType: .onCreate,
-                                                                      claims: claims)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: modelType.schema,
+            subscriptionType: .onCreate,
+            claims: claims
+        )
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
@@ -59,11 +65,15 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnUpdateSubscriptionScenarioBInAdmins() {
         let modelType = OGCScenarioBPost.self as Model.Type
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "cognito:groups": ["Admins"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "cognito:groups": ["Admins"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: modelType.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, claims)))
@@ -82,9 +92,11 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
-                                                                      subscriptionType: .onUpdate,
-                                                                      claims: claims)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: modelType.schema,
+            subscriptionType: .onUpdate,
+            claims: claims
+        )
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
@@ -93,11 +105,15 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnDeleteSubscriptionScenarioBInAdmins() {
         let modelType = OGCScenarioBPost.self as Model.Type
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "cognito:groups": ["Admins"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "cognito:groups": ["Admins"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: modelType.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, claims)))
@@ -116,9 +132,11 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
-                                                                      subscriptionType: .onDelete,
-                                                                      claims: claims)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: modelType.schema,
+            subscriptionType: .onDelete,
+            claims: claims
+        )
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
@@ -127,11 +145,15 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnCreateSubscriptionScenarioBInAdminsAndAnotherGroup() {
         let modelType = OGCScenarioBPost.self as Model.Type
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "cognito:groups": ["Admins", "GroupX"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "cognito:groups": ["Admins", "GroupX"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: modelType.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
@@ -150,9 +172,11 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
-                                                                      subscriptionType: .onCreate,
-                                                                      claims: claims)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: modelType.schema,
+            subscriptionType: .onCreate,
+            claims: claims
+        )
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
@@ -161,11 +185,15 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnCreateSubscriptionScenarioBNotInAdmins() {
         let modelType = OGCScenarioBPost.self as Model.Type
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "cognito:groups": ["GroupX"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "cognito:groups": ["GroupX"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: modelType.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
@@ -184,9 +212,11 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
-                                                                      subscriptionType: .onCreate,
-                                                                      claims: claims)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: modelType.schema,
+            subscriptionType: .onCreate,
+            claims: claims
+        )
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
@@ -203,11 +233,15 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnUpdateSubscriptionScenarioBNotInAdmins() {
         let modelType = OGCScenarioBPost.self as Model.Type
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "cognito:groups": ["GroupX"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "cognito:groups": ["GroupX"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: modelType.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, claims)))
@@ -226,9 +260,11 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
-                                                                      subscriptionType: .onUpdate,
-                                                                      claims: claims)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: modelType.schema,
+            subscriptionType: .onUpdate,
+            claims: claims
+        )
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
@@ -245,11 +281,15 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnDeleteSubscriptionScenarioBNotInAdmins() {
         let modelType = OGCScenarioBPost.self as Model.Type
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "cognito:groups": ["GroupX"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "cognito:groups": ["GroupX"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: modelType.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, claims)))
@@ -268,9 +308,11 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
-                                                                      subscriptionType: .onDelete,
-                                                                      claims: claims)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: modelType.schema,
+            subscriptionType: .onDelete,
+            claims: claims
+        )
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
@@ -287,12 +329,16 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnDeleteSubscriptionScenarioBNoGroupClaim() {
         let modelType = OGCScenarioBPost.self as Model.Type
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000"
+        ] as IdentityClaimsDictionary
         // Specifically, leave this out:
         //                     "cognito:groups": ["GroupX"]]
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: modelType.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, claims)))
@@ -311,9 +357,11 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
-                                                                      subscriptionType: .onDelete,
-                                                                      claims: claims)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: modelType.schema,
+            subscriptionType: .onDelete,
+            claims: claims
+        )
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
@@ -330,11 +378,15 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnCreateSubscriptionScenarioBMGroupInAdmins() {
         let modelType = OGCScenarioBMGroupPost.self as Model.Type
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "cognito:groups": ["Admins"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "cognito:groups": ["Admins"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: modelType.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
@@ -353,9 +405,11 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
-                                                                      subscriptionType: .onCreate,
-                                                                      claims: claims)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: modelType.schema,
+            subscriptionType: .onCreate,
+            claims: claims
+        )
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
@@ -364,11 +418,15 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnCreateSubscriptionScenarioBMGroupInAdminsAndAnotherGroup() {
         let modelType = OGCScenarioBMGroupPost.self as Model.Type
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "cognito:groups": ["Admins", "GroupX"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "cognito:groups": ["Admins", "GroupX"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: modelType.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
@@ -387,9 +445,11 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
-                                                                      subscriptionType: .onCreate,
-                                                                      claims: claims)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: modelType.schema,
+            subscriptionType: .onCreate,
+            claims: claims
+        )
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)

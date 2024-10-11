@@ -7,7 +7,6 @@
 
 @preconcurrency import Foundation
 import Security
-import Amplify
 
 // swiftlint:disable identifier_name
 public protocol KeychainStoreBehavior {
@@ -236,7 +235,7 @@ public struct KeychainStore: KeychainStoreBehavior {
 }
 
 extension KeychainStore {
-    struct Constants {
+    enum Constants {
         /** Class Key Constant */
         static let Class = String(kSecClass)
         static let ClassGenericPassword = String(kSecClassGenericPassword)

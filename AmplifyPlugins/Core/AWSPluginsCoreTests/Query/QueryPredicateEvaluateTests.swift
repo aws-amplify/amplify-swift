@@ -10,6 +10,7 @@ import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
+
 class QueryPredicateEvaluateTests: XCTestCase {
     override func setUp() {
         ModelRegistry.register(modelType: QPredGen.self)

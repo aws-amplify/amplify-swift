@@ -22,7 +22,7 @@ public struct UserAgentSettingClientEngine: AWSPluginExtension {
 
 @_spi(PluginHTTPClientEngine)
 extension UserAgentSettingClientEngine: HTTPClient {
-    
+
     // CI updates the `platformName` property in `AmplifyAWSServiceConfiguration`.
     // We can / probably should move this in the future
     // as it's no longer necessary there.

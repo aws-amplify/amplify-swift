@@ -126,8 +126,10 @@ class GraphQLUpdateMutationTests: XCTestCase {
     func testUpdateGraphQLMutationModelWithReadOnlyFields() {
         let recordCover = RecordCover(artist: "artist")
         let record = Record(name: "name", description: "description", cover: recordCover)
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Record.schema,
-                                                               operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: Record.schema,
+            operationType: .mutation
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: record, mutationType: .update))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))

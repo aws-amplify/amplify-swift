@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSSDKHTTPAuth
 import SmithyHTTPAPI
@@ -36,9 +35,11 @@ public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
         do {
             let credentialIdentity = try await credentialIdentityResolver.getIdentity()
 
-            let flags = SigningFlags(useDoubleURIEncode: true,
-                                     shouldNormalizeURIPath: true,
-                                     omitSessionToken: false)
+            let flags = SigningFlags(
+                useDoubleURIEncode: true,
+                shouldNormalizeURIPath: true,
+                omitSessionToken: false
+            )
             let signedBodyHeader: AWSSignedBodyHeader = .none
             let signedBodyValue: AWSSignedBodyValue = .empty
             let signingConfig = AWSSigningConfig(credentials: credentialIdentity,
@@ -56,7 +57,7 @@ public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
                 signingConfig: signingConfig
             )
             return httpRequest
-        } catch let error {
+        } catch {
             throw AuthError.unknown("Unable to sign request", error)
         }
     }

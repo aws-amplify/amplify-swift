@@ -11,10 +11,12 @@ import Foundation
 /// A concrete implementation of `SingleDirectiveGraphQLDocument` that represents a subscription operation.
 public struct GraphQLSubscription: SingleDirectiveGraphQLDocument {
 
-    public init(operationType: GraphQLOperationType,
-                name: String,
-                inputs: [GraphQLParameterName: GraphQLDocumentInput],
-                selectionSet: SelectionSet?) {
+    public init(
+        operationType: GraphQLOperationType,
+        name: String,
+        inputs: [GraphQLParameterName: GraphQLDocumentInput],
+        selectionSet: SelectionSet?
+    ) {
         self.operationType = operationType
         self.name = name
         self.inputs = inputs

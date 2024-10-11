@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSClientRuntime
 import AWSPluginsCore
 import AwsCommonRuntimeKit
 import InternalAmplifyCredentials
