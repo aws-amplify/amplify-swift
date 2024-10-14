@@ -5,11 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
+import AWSClientRuntime
 import AWSCognitoIdentityProvider
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 @testable import AWSPluginsTestCommon
-@testable import AWSCognitoAuthPlugin
 
 class VerifySignInChallengeTests: XCTestCase {
 

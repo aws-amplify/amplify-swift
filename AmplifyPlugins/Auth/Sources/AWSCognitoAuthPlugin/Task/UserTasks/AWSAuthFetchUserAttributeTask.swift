@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
-import AWSCognitoIdentityProvider
+import Foundation
 
 class AWSAuthFetchUserAttributeTask: AuthFetchUserAttributeTask, DefaultLogger {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
@@ -54,11 +54,14 @@ class AWSAuthFetchUserAttributeTask: AuthFetchUserAttributeTask, DefaultLogger {
 
         let mappedAttributes: [AuthUserAttribute] = attributes.compactMap { oldAttribute in
             guard let attributeName = oldAttribute.name,
-                  let attributeValue = oldAttribute.value else {
+                  let attributeValue = oldAttribute.value
+            else {
                 return nil
             }
-            return AuthUserAttribute(AuthUserAttributeKey(rawValue: attributeName),
-                                     value: attributeValue)
+            return AuthUserAttribute(
+                AuthUserAttributeKey(rawValue: attributeName),
+                value: attributeValue
+            )
         }
         return mappedAttributes
     }

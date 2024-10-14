@@ -6,9 +6,9 @@
 //
 
 import Amplify
-import Foundation
-import CryptoKit
 import AWSCognitoIdentityProvider
+import CryptoKit
+import Foundation
 
 struct InitiateAuthSRP: Action {
     let identifier = "InitiateAuthSRP"
@@ -34,8 +34,10 @@ struct InitiateAuthSRP: Action {
         self.respondToAuthChallenge = respondToAuthChallenge
     }
 
-    func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+    func execute(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
             let authEnv = try environment.authEnvironment()
@@ -53,11 +55,13 @@ struct InitiateAuthSRP: Action {
                 NHexValue: nHexValue,
                 gHexValue: gHexValue,
                 srpKeyPair: srpKeyPair,
-                clientTimestamp: Date())
+                clientTimestamp: Date()
+            )
 
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
-                credentialStoreClient: authEnv.credentialsClient)
+                credentialStoreClient: authEnv.credentialsClient
+            )
 
             let responseEvent: SignInEvent
             if case .userAuth = authFlowType,
@@ -121,9 +125,22 @@ struct InitiateAuthSRP: Action {
         return SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response, clientMetadata))
     }
 
-    private func sendRequest(request: InitiateAuthInput,
+    private func sendRequest(request: RespondToAuthChallengeInput,
                              environment: UserPoolEnvironment,
                              srpStateData: SRPStateData) async throws -> SignInEvent {
+
+        let cognitoClient = try environment.cognitoUserPoolFactory()
+        logVerbose("\(#fileID) Starting execution", environment: environment)
+        let response = try await cognitoClient.respondToAuthChallenge(input: request)
+        logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
+        return SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response, clientMetadata))
+    }
+
+    private func sendRequest(
+        request: InitiateAuthInput,
+        environment: UserPoolEnvironment,
+        srpStateData: SRPStateData
+    ) async throws -> SignInEvent {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
         logVerbose("\(#fileID) Starting execution", environment: environment)
@@ -137,7 +154,8 @@ struct InitiateAuthSRP: Action {
                 availableChallenges: [],
                 username: username,
                 session: response.session,
-                parameters: parameters)
+                parameters: parameters
+            )
             return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
         }
         return SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response, clientMetadata))

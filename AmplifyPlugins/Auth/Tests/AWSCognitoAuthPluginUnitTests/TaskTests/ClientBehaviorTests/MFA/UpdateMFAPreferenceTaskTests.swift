@@ -7,8 +7,10 @@
 
 import Foundation
 
-import XCTest
 import Amplify
+import AWSClientRuntime
+import AWSCognitoIdentityProvider
+import XCTest
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
@@ -33,7 +35,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
         // Test all the combinations for preference types
         for smsPreference in allSMSPreferences {
             for totpPreference in allTOTPPreference {
-                self.mockIdentityProvider = MockIdentityProvider(
+                mockIdentityProvider = MockIdentityProvider(
                     mockGetUserAttributeResponse: { request in
                         return .init(
                             userMFASettingList: ["SOFTWARE_TOKEN_MFA", "SMS_MFA"]
@@ -48,12 +50,14 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                             totpPreference.softwareTokenSetting().preferredMfa)
 
                         return .init()
-                    })
+                    }
+                )
 
                 do {
                     try await plugin.updateMFAPreference(
                         sms: smsPreference,
-                        totp: totpPreference)
+                        totp: totpPreference
+                    )
                 } catch {
                     XCTFail("Received failure with error \(error)")
                 }

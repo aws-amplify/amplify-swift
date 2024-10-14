@@ -5,6 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSClientRuntime
+import AWSCognitoIdentityProvider
+import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
@@ -26,9 +29,12 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             UpdateUserAttributesOutput(codeDeliveryDetailsList: [
-                .init(attributeName: "attributeName",
-                      deliveryMedium: .email,
-                      destination: "destination")])
+                .init(
+                    attributeName: "attributeName",
+                    deliveryMedium: .email,
+                    destination: "destination"
+                )
+            ])
         })
 
         let attributes = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))

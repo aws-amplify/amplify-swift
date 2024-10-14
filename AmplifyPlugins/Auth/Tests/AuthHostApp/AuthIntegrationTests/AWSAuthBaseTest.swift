@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoAuthPlugin
 import XCTest
 @_spi(InternalAmplifyConfiguration) @testable import Amplify
-import AWSCognitoAuthPlugin
 
 fileprivate let internalTestDomain = "@amplify-swift-gamma.awsapps.com"
 
@@ -23,8 +23,8 @@ class AWSAuthBaseTest: XCTestCase {
     }
 
     var randomPhoneNumber: String {
-        "+1" + (1...10)
-            .map { _ in String(Int.random(in: 0...9)) }
+        "+1" + (1 ... 10)
+            .map { _ in String(Int.random(in: 0 ... 9)) }
             .joined()
     }
 
@@ -51,7 +51,7 @@ class AWSAuthBaseTest: XCTestCase {
         initializeAmplify()
         _ = await Amplify.Auth.signOut()
     }
-    
+
     override func tearDown() async throws {
         try await super.tearDown()
         subscription?.cancel()
@@ -112,7 +112,8 @@ class AWSAuthBaseTest: XCTestCase {
                             "AppClientId": userPooldAppClientID,
                             "Region": region
                         ]
-                    ]]]
+                    ]]
+            ]
             )
             let configuration = AmplifyConfiguration(auth: authConfiguration)
             let authPlugin = AWSCognitoAuthPlugin()

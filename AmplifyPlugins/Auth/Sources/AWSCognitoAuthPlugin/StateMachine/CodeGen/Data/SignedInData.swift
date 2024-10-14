@@ -16,10 +16,11 @@ struct SignedInData {
     let cognitoUserPoolTokens: AWSCognitoUserPoolTokens
     var isRefreshTokenExpired: Bool?
 
-    init(signedInDate: Date,
-         signInMethod: SignInMethod,
-         deviceMetadata: DeviceMetadata = .noData,
-         cognitoUserPoolTokens: AWSCognitoUserPoolTokens
+    init(
+        signedInDate: Date,
+        signInMethod: SignInMethod,
+        deviceMetadata: DeviceMetadata = .noData,
+        cognitoUserPoolTokens: AWSCognitoUserPoolTokens
     ) {
         let user = try? TokenParserHelper.getAuthUser(accessToken: cognitoUserPoolTokens.accessToken)
         self.userId = user?.userId ?? "unknown"

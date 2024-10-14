@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import Foundation
 
 
-struct TestHarnessAPIDecoder {
+enum TestHarnessAPIDecoder {
 
     static func decode(
         specification: FeatureSpecification) -> AmplifyAPI {
@@ -40,32 +40,38 @@ struct TestHarnessAPIDecoder {
                 return signInAPI(
                     params: specification.api.params,
                     responseType: responseType,
-                    data: data)
+                    data: data
+                )
             case .signUp:
                 return signUpAPI(
                     params: specification.api.params,
                     responseType: responseType,
-                    data: data)
+                    data: data
+                )
             case .deleteUser:
                 return deleteUserAPI(
                     params: specification.api.params,
                     responseType: responseType,
-                    data: data)
+                    data: data
+                )
             case .confirmSignIn:
                 return confirmSignInAPI(
                     params: specification.api.params,
                     responseType: responseType,
-                    data: data)
+                    data: data
+                )
             case .fetchAuthSession:
                 return fetchAuthSession(
                     params: specification.api.params,
                     responseType: responseType,
-                    data: data)
+                    data: data
+                )
             case .signOut:
                 return signOutApi(
                     options: specification.api.options,
                     responseType: responseType,
-                    data: data)
+                    data: data
+                )
             default:
                 fatalError()
             }
@@ -86,8 +92,10 @@ struct TestHarnessAPIDecoder {
         return .signIn(
             input: .init(
                 username: username,
-                password: inputPassword, options: .init()),
-            expectedOutput: generateResult(responseType: responseType, data: data))
+                password: inputPassword, options: .init()
+            ),
+            expectedOutput: generateResult(responseType: responseType, data: data)
+        )
     }
 
     private static func signUpAPI(
@@ -105,8 +113,10 @@ struct TestHarnessAPIDecoder {
         return .signUp(
             input: .init(
                 username: username,
-                password: inputPassword, options: .init()),
-            expectedOutput: generateResult(responseType: responseType, data: data))
+                password: inputPassword, options: .init()
+            ),
+            expectedOutput: generateResult(responseType: responseType, data: data)
+        )
     }
 
     private static func resetPasswordAPI(
@@ -118,9 +128,12 @@ struct TestHarnessAPIDecoder {
             fatalError("missing username parameter")
         }
         return .resetPassword(
-            input: .init(username: username,
-                         options: .init()),
-            expectedOutput: generateResult(responseType: responseType, data: data))
+            input: .init(
+                username: username,
+                options: .init()
+            ),
+            expectedOutput: generateResult(responseType: responseType, data: data)
+        )
     }
 
     private static func confirmSignInAPI(
@@ -133,7 +146,8 @@ struct TestHarnessAPIDecoder {
         }
         return .confirmSignIn(
             input: .init(challengeResponse: challengeResponse, options: .init()),
-            expectedOutput: generateResult(responseType: responseType, data: data))
+            expectedOutput: generateResult(responseType: responseType, data: data)
+        )
     }
 
     private static func fetchAuthSession(
@@ -143,11 +157,13 @@ struct TestHarnessAPIDecoder {
     ) -> AmplifyAPI {
 
         let result: Result<AWSAuthCognitoSession, AuthError>? = generateResult(
-            responseType: responseType, data: data)
+            responseType: responseType, data: data
+        )
 
         return .fetchAuthSession(
             input: .init(options: .init()),
-            expectedOutput: result)
+            expectedOutput: result
+        )
     }
 
     private static func signOutApi(
@@ -162,11 +178,13 @@ struct TestHarnessAPIDecoder {
         }
 
         let result: Result<AWSCognitoSignOutResult, AuthError>? = generateResult(
-            responseType: responseType, data: data)
+            responseType: responseType, data: data
+        )
 
         return .signOut(
             input: .init(options: .init(globalSignOut: globalSignOut)),
-            expectedOutput: result)
+            expectedOutput: result
+        )
     }
 
     private static func deleteUserAPI(
@@ -175,10 +193,11 @@ struct TestHarnessAPIDecoder {
         data: Data?
     ) -> AmplifyAPI {
 
-        guard let responseType = responseType, let data = data else {
+        guard let responseType, let data else {
             return .deleteUser(
                 input: (),
-                expectedOutput: nil)
+                expectedOutput: nil
+            )
         }
 
         let result: Result<Void, AuthError>
@@ -186,7 +205,8 @@ struct TestHarnessAPIDecoder {
         switch responseType {
         case "failure":
             let authError = try! JSONDecoder().decode(
-                AuthError.self, from: data)
+                AuthError.self, from: data
+            )
             result = .failure(authError)
         case "success":
             result = .success(())
@@ -195,13 +215,15 @@ struct TestHarnessAPIDecoder {
         }
         return .deleteUser(
             input: (),
-            expectedOutput: result)
+            expectedOutput: result
+        )
     }
 
     private static func generateResult<Output: Decodable>(
-        responseType: String?, data: Data?) -> Result<Output, AuthError>? {
+        responseType: String?, data: Data?
+    ) -> Result<Output, AuthError>? {
 
-            guard let responseType = responseType, let data = data else {
+            guard let responseType, let data else {
                 return nil
             }
 
@@ -210,11 +232,13 @@ struct TestHarnessAPIDecoder {
             switch responseType {
             case "failure":
                 let authError = try! JSONDecoder().decode(
-                    AuthError.self, from: data)
+                    AuthError.self, from: data
+                )
                 result = .failure(authError)
             case "success":
                 let output = try! JSONDecoder().decode(
-                    Output.self, from: data)
+                    Output.self, from: data
+                )
                 result = .success(output)
             default:
                 fatalError("invalid response type")

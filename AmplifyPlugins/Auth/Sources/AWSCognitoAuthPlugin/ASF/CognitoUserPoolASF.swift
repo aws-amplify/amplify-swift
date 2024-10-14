@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import CryptoKit
+import Foundation
 
 struct CognitoUserPoolASF: AdvancedSecurityBehavior {
 
@@ -73,10 +73,12 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
         return contextData
     }
 
-    func prepareJsonPayload(username: String,
-                            contextData: [String: String],
-                            userPoolId: String) throws -> String {
-        let timestamp = String(format: "%lli", floor(Date().timeIntervalSince1970 * 1000))
+    func prepareJsonPayload(
+        username: String,
+        contextData: [String: String],
+        userPoolId: String
+    ) throws -> String {
+        let timestamp = String(format: "%lli", floor(Date().timeIntervalSince1970 * 1_000))
         let payload = [
             "contextData": contextData,
             "username": username,
@@ -92,8 +94,8 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
 
     func timeZoneOffet(seconds: Int = TimeZone.current.secondsFromGMT()) -> String {
 
-        let hours = seconds/3600
-        let minutes = abs(seconds/60) % 60
+        let hours = seconds / 3_600
+        let minutes = abs(seconds / 60) % 60
         return String(format: "%+.2d:%.2d", hours, minutes)
     }
 

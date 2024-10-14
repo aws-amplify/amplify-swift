@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import SwiftUI
 import Amplify
 import AWSCognitoAuthPlugin
+import SwiftUI
 
 @main
 struct AuthHostedUIAppApp: App {
@@ -42,7 +42,7 @@ struct AuthHostedUIAppApp: App {
             print("Failed to initialize Amplify with \(error)")
         }
     }
-    
+
     func retreiveConfiguration() -> AmplifyConfiguration {
         do {
             return try ConfigurationHelper.retrieveAmplifyConfiguration(

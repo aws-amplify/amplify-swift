@@ -27,7 +27,8 @@ extension ChangePasswordInput: Decodable {
         self.init(
             accessToken: accessTokenDecoded,
             previousPassword: previousPasswordDecoded,
-            proposedPassword: proposedPasswordDecoded)
+            proposedPassword: proposedPasswordDecoded
+        )
 
     }
 }

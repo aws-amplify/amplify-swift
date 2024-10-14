@@ -6,8 +6,8 @@
 //
 
 import Amplify
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+@testable import AWSCognitoAuthPlugin
 
 struct MockAnalyticsHandler: UserPoolAnalyticsBehavior {
 

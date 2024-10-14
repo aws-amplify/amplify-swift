@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
-import AWSCognitoIdentityProvider
+import Foundation
 
 protocol AuthUpdateMFAPreferenceTask: AmplifyAuthTask where Request == Never,
                                                             Success == Void,
@@ -68,7 +68,8 @@ class UpdateMFAPreferenceTask: AuthUpdateMFAPreferenceTask, DefaultLogger {
             accessToken: accessToken,
             emailMfaSettings: emailPreference?.emailSetting(isCurrentlyPreferred: preferredMFAType == .email), 
             smsMfaSettings: smsPreference?.smsSetting(isCurrentlyPreferred: preferredMFAType == .sms),
-            softwareTokenMfaSettings: totpPreference?.softwareTokenSetting(isCurrentlyPreferred: preferredMFAType == .totp))
+            softwareTokenMfaSettings: totpPreference?.softwareTokenSetting(isCurrentlyPreferred: preferredMFAType == .totp)
+        )
         _ = try await userPoolService.setUserMFAPreference(input: input)
     }
 }

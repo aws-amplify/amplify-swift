@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSCognitoIdentityProvider
 #if os(iOS) || os(macOS) || os(visionOS)
 import typealias Amplify.AuthUIPresentationAnchor
@@ -94,9 +93,11 @@ struct SignInEvent: StateMachineEvent {
         }
     }
 
-    init(id: String = UUID().uuidString,
-         eventType: EventType,
-         time: Date? = nil) {
+    init(
+        id: String = UUID().uuidString,
+        eventType: EventType,
+        time: Date? = nil
+    ) {
         self.id = id
         self.eventType = eventType
         self.time = time

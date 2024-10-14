@@ -11,41 +11,40 @@ extension SignInState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
 
-        let additionalMetadataDictionary: [String: Any]
-
-        switch self {
+        let additionalMetadataDictionary: [String: Any] = switch self {
 
         case .signingInWithSRP(let srpSignInState, let signInEventData):
-            additionalMetadataDictionary = srpSignInState.debugDictionary.merging(
+            srpSignInState.debugDictionary.merging(
                 signInEventData.debugDictionary, uniquingKeysWith: {$1}
             )
         case .signingInWithHostedUI(let substate):
-            additionalMetadataDictionary = substate.debugDictionary
+            substate.debugDictionary
         case .resolvingChallenge(let challengeState, let challengeType, let signInMethod):
 
-            additionalMetadataDictionary = challengeState.debugDictionary.merging(
+            challengeState.debugDictionary.merging(
                 [
                     "challengeType": challengeType,
                     "signInMethod": signInMethod
                 ],
-                uniquingKeysWith: {$1})
+                uniquingKeysWith: {$1}
+            )
 
         case .notStarted:
-            additionalMetadataDictionary = [:]
+            [:]
         case .signingInWithSRPCustom(let srpstate, _):
-            additionalMetadataDictionary = ["SRPSignInStaet": srpstate.debugDictionary]
+            ["SRPSignInStaet": srpstate.debugDictionary]
         case .signingInWithCustom(let customSignIn, _):
-            additionalMetadataDictionary = ["CustomSignInState": customSignIn.debugDictionary]
+            ["CustomSignInState": customSignIn.debugDictionary]
         case .signingInViaMigrateAuth(let migrateSignInState, _):
-            additionalMetadataDictionary = ["MigrateSignInState": migrateSignInState.debugDictionary]
+            ["MigrateSignInState": migrateSignInState.debugDictionary]
         case .confirmingDevice:
-            additionalMetadataDictionary = [:]
+            [:]
         case .resolvingDeviceSrpa(let deviceSRPState):
-            additionalMetadataDictionary = ["DeviceSRPState": deviceSRPState.debugDictionary]
+            ["DeviceSRPState": deviceSRPState.debugDictionary]
         case .signedIn(let data):
-            additionalMetadataDictionary = ["SignedInData": data.debugDictionary]
+            ["SignedInData": data.debugDictionary]
         case .resolvingTOTPSetup(let signInTOTPSetupState, let signInEventData):
-            additionalMetadataDictionary = [
+            [
                 "SignInTOTPSetupState": signInTOTPSetupState.debugDictionary,
                 "SignInEventData": signInEventData.debugDictionary]
         case .autoSigningIn(let data):

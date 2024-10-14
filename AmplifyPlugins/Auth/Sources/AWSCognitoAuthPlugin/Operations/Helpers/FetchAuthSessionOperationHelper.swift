@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 import Amplify
 import AWSPluginsCore
@@ -14,8 +15,10 @@ class FetchAuthSessionOperationHelper {
     typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> Void
     var environment: Environment? = nil
 
-    func fetch(_ authStateMachine: AuthStateMachine,
-               forceRefresh: Bool = false) async throws -> AuthSession {
+    func fetch(
+        _ authStateMachine: AuthStateMachine,
+        forceRefresh: Bool = false
+    ) async throws -> AuthSession {
         let state = await authStateMachine.currentState
         guard case .configured(_, let authorizationState, _) = state  else {
             let message = "Auth state machine not in configured state: \(state)"
@@ -38,7 +41,8 @@ class FetchAuthSessionOperationHelper {
             return try await refreshIfRequired(
                 existingCredentials: credentials,
                 authStateMachine: authStateMachine,
-                forceRefresh: forceRefresh)
+                forceRefresh: forceRefresh
+            )
 
         case .error(let error):
             if case .sessionExpired(let error) = error {
@@ -50,7 +54,8 @@ class FetchAuthSessionOperationHelper {
                 return try await refreshIfRequired(
                     existingCredentials: credentials,
                     authStateMachine: authStateMachine,
-                    forceRefresh: forceRefresh)
+                    forceRefresh: forceRefresh
+                )
             } else {
                 log.verbose("Session is in error state \(error)")
                 let event = AuthorizationEvent(eventType: .fetchUnAuthSession)
@@ -66,17 +71,17 @@ class FetchAuthSessionOperationHelper {
     func refreshIfRequired(
         existingCredentials credentials: AmplifyCredentials,
         authStateMachine: AuthStateMachine,
-        forceRefresh: Bool) async throws -> AuthSession {
+        forceRefresh: Bool
+    ) async throws -> AuthSession {
 
             if forceRefresh || !credentials.areValid() {
-                var event: AuthorizationEvent
-                switch credentials {
+                var event = switch credentials {
                 case .identityPoolWithFederation(let federatedToken, let identityId, _):
-                    event = AuthorizationEvent(eventType: .startFederationToIdentityPool(federatedToken, identityId))
+                    AuthorizationEvent(eventType: .startFederationToIdentityPool(federatedToken, identityId))
                 case .noCredentials:
-                    event = AuthorizationEvent(eventType: .fetchUnAuthSession)
+                    AuthorizationEvent(eventType: .fetchUnAuthSession)
                 case .userPoolOnly, .identityPoolOnly, .userPoolAndIdentityPool:
-                    event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
+                    AuthorizationEvent(eventType: .refreshSession(forceRefresh))
                 }
                 await authStateMachine.send(event)
                 return try await listenForSession(authStateMachine: authStateMachine)
@@ -102,12 +107,15 @@ class FetchAuthSessionOperationHelper {
             case .error(let authorizationError):
                 return try await sessionResultWithError(
                     authorizationError,
-                    authenticationState: authenticationState)
+                    authenticationState: authenticationState
+                )
             default: continue
             }
         }
-        throw AuthError.invalidState("Could not fetch session due to internal error",
-                                     "Auth plugin is in an invalid state")
+        throw AuthError.invalidState(
+            "Could not fetch session due to internal error",
+            "Auth plugin is in an invalid state"
+        )
     }
 
     func sessionResultWithError(

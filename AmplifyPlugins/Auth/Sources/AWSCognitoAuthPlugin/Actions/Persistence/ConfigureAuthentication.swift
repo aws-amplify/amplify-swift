@@ -32,8 +32,10 @@ struct ConfigureAuthentication: Action {
         logVerbose("\(#fileID) Sending event \(authenticationEvent.type)", environment: environment)
         await dispatcher.send(authenticationEvent)
 
-        let authStateEvent = AuthEvent(eventType: .authenticationConfigured(configuration,
-                                                                            storedCredentials))
+        let authStateEvent = AuthEvent(eventType: .authenticationConfigured(
+            configuration,
+            storedCredentials
+        ))
         logVerbose("\(#fileID) Sending event \(authStateEvent.type)", environment: environment)
         await dispatcher.send(authStateEvent)
     }

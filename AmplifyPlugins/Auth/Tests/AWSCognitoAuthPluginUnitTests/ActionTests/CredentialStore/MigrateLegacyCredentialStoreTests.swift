@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 @testable import AWSCognitoAuthPlugin
 
 class MigrateLegacyCredentialStoreTests: XCTestCase {
@@ -31,9 +31,10 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
             saveCredentialHandler: { codableCredentials in
                 guard let credentials = codableCredentials as? AmplifyCredentials,
                       case .userPoolAndIdentityPool(
-                        signedInData: let signedInData,
-                        identityID: let identityID,
-                        credentials: let awsCredentials) = credentials else {
+                          signedInData: let signedInData,
+                          identityID: let identityID,
+                          credentials: let awsCredentials
+                      ) = credentials else {
                     XCTFail("The credentials saved should be of type AmplifyCredentials")
                     return
                 }
@@ -58,16 +59,19 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         }
         let authConfig = AuthConfiguration.userPoolsAndIdentityPools(
             Defaults.makeDefaultUserPoolConfigData(),
-            Defaults.makeIdentityConfigData())
+            Defaults.makeIdentityConfigData()
+        )
 
         let credentialStoreEnv = BasicCredentialStoreEnvironment(
             amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
-            legacyKeychainStoreFactory: legacyKeychainStoreFactory)
+            legacyKeychainStoreFactory: legacyKeychainStoreFactory
+        )
 
         let environment = CredentialEnvironment(
             authConfiguration: authConfig,
             credentialStoreEnvironment: credentialStoreEnv,
-            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
+            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+        )
 
         let action = MigrateLegacyCredentialStore()
         await action.execute(withDispatcher: MockDispatcher { _ in }, environment: environment)
@@ -105,23 +109,26 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         }
         let authConfig = AuthConfiguration.userPoolsAndIdentityPools(
             Defaults.makeDefaultUserPoolConfigData(),
-            Defaults.makeIdentityConfigData())
+            Defaults.makeIdentityConfigData()
+        )
 
         let credentialStoreEnv = BasicCredentialStoreEnvironment(
             amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
-            legacyKeychainStoreFactory: legacyKeychainStoreFactory)
+            legacyKeychainStoreFactory: legacyKeychainStoreFactory
+        )
 
         let environment = CredentialEnvironment(
             authConfiguration: authConfig,
             credentialStoreEnvironment: credentialStoreEnv,
-            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
+            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+        )
 
         let action = MigrateLegacyCredentialStore()
         await action.execute(withDispatcher: MockDispatcher { _ in }, environment: environment)
 
         await fulfillment(
             of: [migrationCompletionInvoked],
-    
+
             timeout: 0.1
         )
     }
@@ -147,10 +154,10 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         )
         await fulfillment(of: [expectation], timeout: 1)
     }
-    
+
     /// - Given: A credential store with an environment that only has identity pool
     /// - When: The migration legacy store action is executed
-    /// - Then: 
+    /// - Then:
     ///     - A .loadCredentialStore event with type .amplifyCredentials is dispatched
     ///     - An .identityPoolOnly credential is saved
     func testExecute_withoutUserPool_andWithoutLoginsTokens_shouldDispatchLoadEvent() async {
@@ -184,13 +191,14 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
                     },
                     legacyKeychainStoreFactory: { _ in
                         MockKeychainStoreBehavior(data: "hostedUI")
-                    }),
+                    }
+                ),
                 logger: MigrateLegacyCredentialStore.log
             )
         )
         await fulfillment(of: [expectation], timeout: 1)
     }
-    
+
     /// - Given: A credential store with an environment that only has identity pool
     /// - When: The migration legacy store action is executed
     ///     - A .loadCredentialStore event with type .amplifyCredentials is dispatched
@@ -233,7 +241,8 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
                         return MockKeychainStoreBehavior(
                             data: String(decoding: data, as: UTF8.self)
                         )
-                    }),
+                    }
+                ),
                 logger: action.log
             )
         )

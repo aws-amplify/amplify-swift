@@ -7,10 +7,10 @@
 
 import Foundation
 
-import XCTest
 import Amplify
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import XCTest
+@testable import AWSCognitoAuthPlugin
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -24,12 +24,13 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
     }
 
     func testSuccessfullSignOut() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 return .testData
             }, mockGlobalSignOutResponse: { _ in
                 return .testData
-            })
+            }
+        )
         guard let result = await plugin.signOut() as? AWSCognitoSignOutResult,
               case .complete = result else {
             XCTFail("Did not return complete signOut")
@@ -38,16 +39,19 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
     }
 
     func testGlobalSignOutFailed() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 return .testData
             }, mockGlobalSignOutResponse: { _ in
                 throw AWSCognitoIdentityProvider.InternalErrorException()
-            })
+            }
+        )
         guard let result = await plugin.signOut(options: .init(globalSignOut: true)) as? AWSCognitoSignOutResult,
-              case .partial(revokeTokenError: let revokeTokenError,
-                            globalSignOutError: let globalSignOutError,
-                            hostedUIError: let hostedUIError) = result else {
+              case .partial(
+                  revokeTokenError: let revokeTokenError,
+                  globalSignOutError: let globalSignOutError,
+                  hostedUIError: let hostedUIError
+              ) = result else {
             XCTFail("Did not return partial signOut")
             return
         }
@@ -58,16 +62,19 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
     }
 
     func testRevokeSignOutFailed() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 throw AWSCognitoIdentityProvider.InternalErrorException()
             }, mockGlobalSignOutResponse: { _ in
                 return .testData
-            })
+            }
+        )
         guard let result = await plugin.signOut(options: .init(globalSignOut: true)) as? AWSCognitoSignOutResult,
-              case .partial(revokeTokenError: let revokeTokenError,
-                            globalSignOutError: let globalSignOutError,
-                            hostedUIError: let hostedUIError) = result else {
+              case .partial(
+                  revokeTokenError: let revokeTokenError,
+                  globalSignOutError: let globalSignOutError,
+                  hostedUIError: let hostedUIError
+              ) = result else {
             XCTFail("Did not return partial signOut")
             return
         }

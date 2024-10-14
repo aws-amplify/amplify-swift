@@ -24,7 +24,7 @@ extension Encodable where Self: SmithyHTTPAPI.HTTPResponse {
 
 extension Decodable where Self: SmithyHTTPAPI.HTTPResponse {
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
 
         let containerValues = try decoder.container(keyedBy: HTTPResponseCodingKeys.self)
         let httpStatusCode = try containerValues.decodeIfPresent(Int.self, forKey: .statusCode)

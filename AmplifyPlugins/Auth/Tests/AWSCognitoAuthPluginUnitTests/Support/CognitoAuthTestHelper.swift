@@ -8,7 +8,7 @@
 import CryptoKit
 import Foundation
 
-struct CognitoAuthTestHelper {
+enum CognitoAuthTestHelper {
 
     /// Helper to build a JWT Token
     static func buildToken(for payload: [String: String]) -> String {
@@ -38,7 +38,7 @@ struct CognitoAuthTestHelper {
     }
 }
 
-fileprivate extension Data {
+private extension Data {
     func urlSafeBase64EncodedString() -> String {
         return base64EncodedString()
             .replacingOccurrences(of: "+", with: "-")

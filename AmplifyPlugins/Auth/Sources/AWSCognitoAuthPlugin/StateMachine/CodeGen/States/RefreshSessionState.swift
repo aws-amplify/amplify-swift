@@ -39,8 +39,10 @@ extension RefreshSessionState: Equatable {
             (.refreshed, .refreshed),
             (.error, .error):
             return true
-        case  (.fetchingAuthSessionWithUserPool(let lhsFetchState, _),
-            .fetchingAuthSessionWithUserPool(let rhsFetchState, _)):
+        case  (
+            .fetchingAuthSessionWithUserPool(let lhsFetchState, _),
+            .fetchingAuthSessionWithUserPool(let rhsFetchState, _)
+        ):
             return lhsFetchState == rhsFetchState
         default:
             return false

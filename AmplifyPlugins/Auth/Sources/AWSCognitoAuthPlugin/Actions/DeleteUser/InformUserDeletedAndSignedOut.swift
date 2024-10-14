@@ -19,12 +19,11 @@ struct InformUserDeletedAndSignedOut: Action {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
-        let event: DeleteUserEvent
-        switch result {
+        let event = switch result {
         case .success(let signedOutData):
-            event = DeleteUserEvent(eventType: .userSignedOutAndDeleted(signedOutData))
+            DeleteUserEvent(eventType: .userSignedOutAndDeleted(signedOutData))
         case .failure(let error):
-            event = DeleteUserEvent(eventType: .throwError(error))
+            DeleteUserEvent(eventType: .throwError(error))
         }
 
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)

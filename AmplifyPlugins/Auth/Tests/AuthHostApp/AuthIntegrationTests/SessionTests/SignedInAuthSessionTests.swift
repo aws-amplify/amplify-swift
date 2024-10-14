@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-@testable import Amplify
 import AWSCognitoAuthPlugin
 import AWSPluginsCore
+import XCTest
+@testable import Amplify
 
 class SignedInAuthSessionTests: AWSAuthBaseTest {
 
@@ -33,26 +33,33 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     func testSuccessfulForceSessionFetch() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let firstCognitoSession = try await AuthSessionHelper.getCurrentAmplifySession(
             for: self,
-            with: networkTimeout)
+            with: networkTimeout
+        )
 
         let secondCognitoSession = try await AuthSessionHelper.getCurrentAmplifySession(
             for: self,
-            with: networkTimeout)
+            with: networkTimeout
+        )
 
         let thirdCognitoSession = try await AuthSessionHelper.getCurrentAmplifySession(
             shouldForceRefresh: true,
             for: self,
-            with: networkTimeout)
+            with: networkTimeout
+        )
 
         let fourthCognitoSession = try await AuthSessionHelper.getCurrentAmplifySession(
             for: self,
-            with: networkTimeout)
+            with: networkTimeout
+        )
 
         // First 2 sessions should match
         XCTAssertEqual(firstCognitoSession, secondCognitoSession)
@@ -75,8 +82,11 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     func testSuccessfulSessionFetch() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let session = try await Amplify.Auth.fetchAuthSession()
@@ -95,8 +105,11 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         throw XCTSkip("TODO: fix this test. We need to find a way to mock credential store")
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let session = try await Amplify.Auth.fetchAuthSession()
@@ -108,7 +121,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         }
 
         // Manually invalidate the tokens and then try to fetch the session.
-        AuthSessionHelper.invalidateSession(with: self.amplifyConfiguration)
+        AuthSessionHelper.invalidateSession(with: amplifyConfiguration)
         let anotherSession = try await Amplify.Auth.fetchAuthSession()
         do {
             let authSession = anotherSession as? AuthCognitoTokensProvider
@@ -116,7 +129,8 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
             XCTFail("Should not receive a valid token")
         } catch {
             guard let authError = error as? AuthError,
-                  case .sessionExpired = authError else {
+                  case .sessionExpired = authError
+            else {
                 XCTFail("Should receive a session expired error but received \(error)")
                 return
             }
@@ -135,8 +149,11 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         throw XCTSkip("TODO: fix this test. We need to find a way to mock credential store")
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let session = try await Amplify.Auth.fetchAuthSession()
@@ -155,7 +172,8 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
             XCTFail("Should not receive a valid token")
         } catch {
             guard let authError = error as? AuthError,
-                  case .signedOut = authError else {
+                  case .signedOut = authError
+            else {
                 XCTFail("Should receive a session expired error but received \(error)")
                 return
             }
@@ -173,8 +191,11 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     func testMultipleSuccessfulSessionFetch() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let firstSession = try await Amplify.Auth.fetchAuthSession()
@@ -205,16 +226,17 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
 
         let identityIDExpectation = expectation(description: "Identity id should be fetched")
         identityIDExpectation.expectedFulfillmentCount = 100
-        for index in 1...100 {
+        for index in 1 ... 100 {
             Task {
 
                 // Randomly yield the task so that below execution of signOut happen
-                if index%6 == 0 {
+                if index % 6 == 0 {
                     await Task.yield()
                 }
                 let firstSession = try await Amplify.Auth.fetchAuthSession()
                 guard let cognitoSession = firstSession as? AWSAuthCognitoSession,
-                     let _ = try? cognitoSession.identityIdResult.get() else {
+                     let _ = try? cognitoSession.identityIdResult.get()
+                else {
                     XCTFail("Could not fetch Identity ID")
                     return
                 }
@@ -226,7 +248,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         _ = await Amplify.Auth.signOut()
         let fetchSessionExptectation = expectation(description: "Session should be fetched")
         fetchSessionExptectation.expectedFulfillmentCount = 50
-        for _ in 1...50 {
+        for _ in 1 ... 50 {
             Task {
                 let firstSession = try await Amplify.Auth.fetchAuthSession()
                 XCTAssertFalse(firstSession.isSignedIn, "Session state should be signed out")
@@ -265,7 +287,8 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         session = try await Amplify.Auth.fetchAuthSession()

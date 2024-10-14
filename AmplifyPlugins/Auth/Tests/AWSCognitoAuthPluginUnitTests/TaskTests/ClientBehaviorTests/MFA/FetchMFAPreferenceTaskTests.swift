@@ -7,8 +7,10 @@
 
 import Foundation
 
-import XCTest
 import Amplify
+import AWSClientRuntime
+import AWSCognitoIdentityProvider
+import XCTest
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
@@ -27,7 +29,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     ///
     func testSuccessfulPreferenceFetchWithTOTPPreferred() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockGetUserAttributeResponse: { request in
                 return .init(
                     preferredMfaSetting: "SOFTWARE_TOKEN_MFA",
@@ -54,7 +56,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     ///
     func testSuccessfulPreferenceFetchWithSMSPreferred() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockGetUserAttributeResponse: { request in
                 return .init(
                     preferredMfaSetting: "SMS_MFA",
@@ -81,7 +83,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     ///
     func testSuccessfulPreferenceFetchWithNonePreferred() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockGetUserAttributeResponse: { request in
                 return .init(
                     userMFASettingList: ["SOFTWARE_TOKEN_MFA", "SMS_MFA"]
@@ -107,7 +109,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     ///
     func testInvalidResponseForUserMFASettingsList() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockGetUserAttributeResponse: { request in
                 return .init(
                     userMFASettingList: ["DUMMY"]
@@ -133,7 +135,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     ///
     func testInvalidResponseForUserMFAPreference() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockGetUserAttributeResponse: { request in
                 return .init(
                     preferredMfaSetting: "DUMMY",
@@ -160,7 +162,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     ///
     func testSuccessfulPreferenceFetchWithNonePreferredAndNoneEnabled() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockGetUserAttributeResponse: { request in
                 return .init()
             })

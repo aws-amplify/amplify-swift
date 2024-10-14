@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 class AWSAuthFetchSessionTask: AuthFetchSessionTask, DefaultLogger {
     private let request: AuthFetchSessionRequest
@@ -45,8 +45,10 @@ class AWSAuthFetchSessionTask: AuthFetchSessionTask, DefaultLogger {
         }
         await taskHelper.didStateMachineConfigured()
         let doesNeedForceRefresh = request.options.forceRefresh
-        return try await fetchAuthSessionHelper.fetch(authStateMachine,
-                                                      forceRefresh: doesNeedForceRefresh)
+        return try await fetchAuthSessionHelper.fetch(
+            authStateMachine,
+            forceRefresh: doesNeedForceRefresh
+        )
     }
 
 }

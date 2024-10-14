@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSPluginsCore
+import Foundation
 
 struct LoadCredentialStore: Action {
 
@@ -27,8 +27,10 @@ struct LoadCredentialStore: Action {
             return
         }
 
-        logVerbose("\(#fileID) Retreiving credential \(credentialStoreType)",
-                   environment: environment)
+        logVerbose(
+            "\(#fileID) Retreiving credential \(credentialStoreType)",
+            environment: environment
+        )
         let credentialStoreEnvironment = credentialEnvironment.credentialStoreEnvironment
         let amplifyCredentialStore = credentialStoreEnvironment.amplifyCredentialStoreFactory()
 

@@ -86,7 +86,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
                             accessToken: "accessTokenNew",
                             expiresIn: 100,
                             idToken: "idTokenNew",
-                            refreshToken: "refreshTokenNew"))
+                            refreshToken: "refreshTokenNew"
+                        ))
                 }
             )
         }
@@ -130,7 +131,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
             userPoolConfiguration: UserPoolConfigurationData.testData,
             cognitoUserPoolFactory: identityProviderFactory,
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
-            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
+            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics
+        )
 
         let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
 

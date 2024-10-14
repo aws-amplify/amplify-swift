@@ -52,10 +52,11 @@ class AWSCognitoAuthPluginAmplifyOutputsConfigTests: XCTestCase {
         try Amplify.add(plugin: plugin)
 
         let amplifyConfig = AmplifyOutputsData(auth: .init(
-                awsRegion: "us-east-1",
-                userPoolId: "xx",
-                userPoolClientId: "xx",
-                identityPoolId: "xx"))
+            awsRegion: "us-east-1",
+            userPoolId: "xx",
+            userPoolClientId: "xx",
+            identityPoolId: "xx"
+        ))
         do {
             try Amplify.configure(amplifyConfig)
         } catch {
@@ -76,9 +77,10 @@ class AWSCognitoAuthPluginAmplifyOutputsConfigTests: XCTestCase {
         try Amplify.add(plugin: plugin)
 
         let amplifyConfig = AmplifyOutputsData(auth: .init(
-                awsRegion: "us-east-1",
-                userPoolId: "xx",
-                userPoolClientId: "xx"))
+            awsRegion: "us-east-1",
+            userPoolId: "xx",
+            userPoolClientId: "xx"
+        ))
         do {
             try Amplify.configure(amplifyConfig)
         } catch {
@@ -99,14 +101,16 @@ class AWSCognitoAuthPluginAmplifyOutputsConfigTests: XCTestCase {
             networkPreferences: .init(
                 maxRetryCount: 2,
                 timeoutIntervalForRequest: 60,
-                timeoutIntervalForResource: 60))
+                timeoutIntervalForResource: 60
+            ))
         try Amplify.add(plugin: plugin)
 
         let amplifyConfig = AmplifyOutputsData(auth: .init(
-                awsRegion: "us-east-1",
-                userPoolId: "xx",
-                userPoolClientId: "xx",
-                identityPoolId: "xx"))
+            awsRegion: "us-east-1",
+            userPoolId: "xx",
+            userPoolClientId: "xx",
+            identityPoolId: "xx"
+        ))
 
         do {
             try Amplify.configure(amplifyConfig)

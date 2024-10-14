@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import SwiftUI
 import Amplify
+import SwiftUI
 
 struct SignedOutView: View {
 
@@ -42,11 +42,11 @@ struct SignedOutView: View {
             }
             .accessibility(identifier: Identifiers.signUpNav)
             Spacer()
-            if let error = self.errorLabel {
+            if let error = errorLabel {
                 Text("Error occured: \(error)")
                     .accessibilityLabel(Identifiers.errorLabel)
             }
-            if let successLabel = self.successLabel {
+            if let successLabel {
                 Text("Succeeded: \(successLabel)")
                     .accessibilityLabel(Identifiers.successLabel)
             }
@@ -59,11 +59,11 @@ struct SignedOutView: View {
         do {
             let signInResult = try await Amplify.Auth.signInWithWebUI(presentationAnchor: anchor)
             if signInResult.isSignedIn {
-                self.successLabel = "SignedIn"
+                successLabel = "SignedIn"
             }
         } catch {
             print("Unexpected error: \(error)")
-            self.errorLabel = error.info()
+            errorLabel = error.info()
         }
     }
 

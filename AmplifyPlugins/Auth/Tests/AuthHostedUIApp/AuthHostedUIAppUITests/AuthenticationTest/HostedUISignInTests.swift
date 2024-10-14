@@ -26,7 +26,7 @@ class HostedUISignInTests: UITestCase {
             .dismissSignInAlert()
             .signIn(username: username, password: password)
             .testSignInSucceeded()
-            
+
     }
 
     func testSignInWithoutPresentationAnchorSuccess() throws {

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 @_spi(KeychainStore) import AWSPluginsCore
 
 struct UserPoolAnalytics: UserPoolAnalyticsBehavior {
@@ -15,14 +15,16 @@ struct UserPoolAnalytics: UserPoolAnalyticsBehavior {
     static let AWSPinpointContextKeychainUniqueIdKey = "com.amazonaws.AWSPinpointContextKeychainUniqueIdKey"
     let pinpointEndpoint: String?
 
-    init(_ configuration: UserPoolConfigurationData?,
-         credentialStoreEnvironment: CredentialStoreEnvironment) throws {
+    init(
+        _ configuration: UserPoolConfigurationData?,
+        credentialStoreEnvironment: CredentialStoreEnvironment
+    ) throws {
 
         if let pinpointId = configuration?.pinpointAppId, !pinpointId.isEmpty {
-            pinpointEndpoint = try UserPoolAnalytics.getInternalPinpointEndpoint(
+            self.pinpointEndpoint = try UserPoolAnalytics.getInternalPinpointEndpoint(
                 credentialStoreEnvironment)
         } else {
-            pinpointEndpoint = nil
+            self.pinpointEndpoint = nil
         }
     }
 
@@ -37,15 +39,17 @@ struct UserPoolAnalytics: UserPoolAnalyticsBehavior {
                 AWSPinpointContextKeychainUniqueIdKey)
             else {
                 let uniqueValue = UUID().uuidString.lowercased()
-                try legacyKeychainStore._set(AWSPinpointContextKeychainUniqueIdKey,
-                                              key: uniqueValue)
+                try legacyKeychainStore._set(
+                    AWSPinpointContextKeychainUniqueIdKey,
+                    key: uniqueValue
+                )
                 return uniqueValue
             }
             return value
         }
 
     func analyticsMetadata() -> CognitoIdentityProviderClientTypes.AnalyticsMetadataType? {
-        if let pinpointEndpoint = pinpointEndpoint {
+        if let pinpointEndpoint {
             return .init(analyticsEndpointId: pinpointEndpoint)
         }
         return nil

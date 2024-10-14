@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AuthTestHarnessConstants {
+enum AuthTestHarnessConstants {
     static let authConfigurationResourcePath = "TestResources/configuration"
     static let authStatesResourcePath = "TestResources/states"
     static let testSuitesPath = "TestResources/testSuites"

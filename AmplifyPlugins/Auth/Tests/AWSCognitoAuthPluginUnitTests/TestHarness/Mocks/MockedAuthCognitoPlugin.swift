@@ -33,11 +33,13 @@ struct MockedAuthCognitoPluginHelper {
         let authStateMachine = StateMachine(
             resolver: authResolver,
             environment: authEnvironment,
-            initialState: initialAuthState)
+            initialState: initialAuthState
+        )
 
         let credentialStoreMachine = StateMachine(
             resolver: credentialStoreResolver,
-            environment: credentialEnvironment)
+            environment: credentialEnvironment
+        )
 
         let plugin = AWSCognitoAuthPlugin()
 
@@ -47,7 +49,8 @@ struct MockedAuthCognitoPluginHelper {
             authStateMachine: authStateMachine,
             credentialStoreStateMachine: credentialStoreMachine,
             hubEventHandler: MockAuthHubEventBehavior(),
-            analyticsHandler: MockAnalyticsHandler())
+            analyticsHandler: MockAnalyticsHandler()
+        )
 
         return plugin
     }
@@ -57,7 +60,7 @@ struct MockedAuthCognitoPluginHelper {
     private func makeUserPool() throws -> CognitoUserPoolBehavior {
         switch authConfiguration {
         case .userPools, .userPoolsAndIdentityPools:
-            return self.mockIdentityProvider
+            return mockIdentityProvider
         default:
             fatalError()
         }
@@ -124,7 +127,8 @@ struct MockedAuthCognitoPluginHelper {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: nil,
                 credentialsClient: makeCredentialStoreClient(),
-                logger: log)
+                logger: log
+            )
 
         case .identityPools(let identityPoolConfigurationData):
             let authorizationEnvironment = authorizationEnvironment(
@@ -136,10 +140,13 @@ struct MockedAuthCognitoPluginHelper {
                 authenticationEnvironment: nil,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: makeCredentialStoreClient(),
-                logger: log)
+                logger: log
+            )
 
-        case .userPoolsAndIdentityPools(let userPoolConfigurationData,
-                                        let identityPoolConfigurationData):
+        case .userPoolsAndIdentityPools(
+            let userPoolConfigurationData,
+            let identityPoolConfigurationData
+        ):
             let authenticationEnvironment = authenticationEnvironment(
                 userPoolConfigData: userPoolConfigurationData)
             let authorizationEnvironment = authorizationEnvironment(
@@ -151,40 +158,50 @@ struct MockedAuthCognitoPluginHelper {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: makeCredentialStoreClient(),
-                logger: log)
+                logger: log
+            )
         }
     }
 
     private func authenticationEnvironment(userPoolConfigData: UserPoolConfigurationData) -> AuthenticationEnvironment {
 
-        let srpAuthEnvironment = BasicSRPAuthEnvironment(userPoolConfiguration: userPoolConfigData,
-                                                         cognitoUserPoolFactory: makeUserPool)
+        let srpAuthEnvironment = BasicSRPAuthEnvironment(
+            userPoolConfiguration: userPoolConfigData,
+            cognitoUserPoolFactory: makeUserPool
+        )
         let srpSignInEnvironment = BasicSRPSignInEnvironment(srpAuthEnvironment: srpAuthEnvironment)
         let userPoolEnvironment = BasicUserPoolEnvironment(
             userPoolConfiguration: userPoolConfigData,
             cognitoUserPoolFactory: makeUserPool,
             cognitoUserPoolASFFactory: makeCognitoASF,
-            cognitoUserPoolAnalyticsHandlerFactory: makeUserPoolAnalytics)
+            cognitoUserPoolAnalyticsHandlerFactory: makeUserPoolAnalytics
+        )
         let hostedUIEnvironment = hostedUIEnvironment(userPoolConfigData)
-        return BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
-                                              userPoolEnvironment: userPoolEnvironment,
-                                              hostedUIEnvironment: hostedUIEnvironment)
+        return BasicAuthenticationEnvironment(
+            srpSignInEnvironment: srpSignInEnvironment,
+            userPoolEnvironment: userPoolEnvironment,
+            hostedUIEnvironment: hostedUIEnvironment
+        )
     }
 
     private func hostedUIEnvironment(_ configuration: UserPoolConfigurationData) -> HostedUIEnvironment? {
         guard let hostedUIConfig = configuration.hostedUIConfig else {
             return nil
         }
-        return BasicHostedUIEnvironment(configuration: hostedUIConfig,
-                                        hostedUISessionFactory: makeHostedUISession,
-                                        urlSessionFactory: makeURLSession,
-                                        randomStringFactory: makeRandomString)
+        return BasicHostedUIEnvironment(
+            configuration: hostedUIConfig,
+            hostedUISessionFactory: makeHostedUISession,
+            urlSessionFactory: makeURLSession,
+            randomStringFactory: makeRandomString
+        )
     }
 
     private func authorizationEnvironment(
         identityPoolConfigData: IdentityPoolConfigurationData) -> BasicAuthorizationEnvironment {
-            BasicAuthorizationEnvironment(identityPoolConfiguration: identityPoolConfigData,
-                                          cognitoIdentityFactory: makeIdentityClient)
+            BasicAuthorizationEnvironment(
+                identityPoolConfiguration: identityPoolConfigData,
+                cognitoIdentityFactory: makeIdentityClient
+            )
         }
 
     private func credentialStoreEnvironment(authConfiguration: AuthConfiguration) -> CredentialEnvironment {

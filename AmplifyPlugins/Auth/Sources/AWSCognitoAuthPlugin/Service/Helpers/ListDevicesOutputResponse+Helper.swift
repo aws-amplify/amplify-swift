@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
+import Foundation
 
 extension CognitoIdentityProviderClientTypes.DeviceType {
 
@@ -27,6 +27,7 @@ extension CognitoIdentityProviderClientTypes.DeviceType {
             attributes: attributes,
             createdDate: deviceCreateDate,
             lastAuthenticatedDate: deviceLastAuthenticatedDate,
-            lastModifiedDate: deviceLastModifiedDate)
+            lastModifiedDate: deviceLastModifiedDate
+        )
     }
 }

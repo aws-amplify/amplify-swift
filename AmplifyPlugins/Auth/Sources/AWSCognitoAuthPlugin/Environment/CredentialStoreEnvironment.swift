@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSPluginsCore
 import Amplify
+import AWSPluginsCore
 
 struct CredentialEnvironment: Environment, LoggerProvider {
     let authConfiguration: AuthConfiguration
@@ -35,9 +35,11 @@ struct BasicCredentialStoreEnvironment: CredentialStoreEnvironment {
     // Optional
     let eventIDFactory: EventIDFactory
 
-    init(amplifyCredentialStoreFactory: @escaping AmplifyAuthCredentialStoreFactory,
-         legacyKeychainStoreFactory: @escaping KeychainStoreFactory,
-         eventIDFactory: @escaping EventIDFactory = UUIDFactory.factory) {
+    init(
+        amplifyCredentialStoreFactory: @escaping AmplifyAuthCredentialStoreFactory,
+        legacyKeychainStoreFactory: @escaping KeychainStoreFactory,
+        eventIDFactory: @escaping EventIDFactory = UUIDFactory.factory
+    ) {
         self.amplifyCredentialStoreFactory = amplifyCredentialStoreFactory
         self.legacyKeychainStoreFactory = legacyKeychainStoreFactory
         self.eventIDFactory = eventIDFactory

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 class AWSAuthSignOutTask: AuthSignOutTask, DefaultLogger {
 
@@ -38,7 +38,8 @@ class AWSAuthSignOutTask: AuthSignOutTask, DefaultLogger {
         } else if case .federatedToIdentityPool = authNState {
             let invalidStateError = AuthError.invalidState(
                 "The user is currently federated to identity pool. You must call clearFederationToIdentityPool to clear credentials.",
-                AuthPluginErrorConstants.invalidStateError, nil)
+                AuthPluginErrorConstants.invalidStateError, nil
+            )
             return AWSCognitoSignOutResult.failed(invalidStateError)
         } else {
             return invalidStateResult()

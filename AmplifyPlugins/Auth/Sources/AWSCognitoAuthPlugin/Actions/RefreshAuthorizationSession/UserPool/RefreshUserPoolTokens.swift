@@ -34,7 +34,8 @@ struct RefreshUserPoolTokens: Action {
 
             let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: existingSignedIndata.username,
-                with: environment)
+                with: environment
+            )
 
             let deviceKey: String? = {
                 if case .metadata(let data) = deviceMetadata {
@@ -79,14 +80,16 @@ struct RefreshUserPoolTokens: Action {
             let signedInData = SignedInData(
                 signedInDate: existingSignedIndata.signedInDate,
                 signInMethod: existingSignedIndata.signInMethod,
-                cognitoUserPoolTokens: userPoolTokens)
+                cognitoUserPoolTokens: userPoolTokens
+            )
             let event: RefreshSessionEvent
 
             if ((environment as? AuthEnvironment)?.identityPoolConfigData) != nil {
                 let provider = CognitoUserPoolLoginsMap(
                     idToken: idToken,
                     region: config.region,
-                    poolId: config.poolId)
+                    poolId: config.poolId
+                )
                 event = .init(eventType: .refreshIdentityInfo(signedInData, provider))
             } else {
                 event = .init(eventType: .refreshedCognitoUserPool(signedInData))

@@ -19,9 +19,11 @@ public enum AWSCognitoSignOutResult: AuthSignOutResult {
 
     case complete
 
-    case partial(revokeTokenError: AWSCognitoRevokeTokenError?,
-                 globalSignOutError: AWSCognitoGlobalSignOutError?,
-                 hostedUIError: AWSCognitoHostedUIError?)
+    case partial(
+        revokeTokenError: AWSCognitoRevokeTokenError?,
+        globalSignOutError: AWSCognitoGlobalSignOutError?,
+        hostedUIError: AWSCognitoHostedUIError?
+    )
 
     case failed(AuthError)
 }

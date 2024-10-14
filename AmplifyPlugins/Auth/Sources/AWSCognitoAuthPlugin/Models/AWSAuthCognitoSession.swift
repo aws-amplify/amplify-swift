@@ -27,10 +27,12 @@ public struct AWSAuthCognitoSession: AuthSession,
 
     public let userPoolTokensResult: Result<AuthCognitoTokens, AuthError>
 
-    init(isSignedIn: Bool,
-         identityIdResult: Result<String, AuthError>,
-         awsCredentialsResult: Result<AWSCredentials, AuthError>,
-         cognitoTokensResult: Result<AuthCognitoTokens, AuthError>) {
+    init(
+        isSignedIn: Bool,
+        identityIdResult: Result<String, AuthError>,
+        awsCredentialsResult: Result<AWSCredentials, AuthError>,
+        cognitoTokensResult: Result<AuthCognitoTokens, AuthError>
+    ) {
         self.isSignedIn = isSignedIn
         self.identityIdResult = identityIdResult
         self.awsCredentialsResult = awsCredentialsResult

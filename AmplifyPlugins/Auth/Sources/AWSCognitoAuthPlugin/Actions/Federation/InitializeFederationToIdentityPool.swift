@@ -19,11 +19,12 @@ struct InitializeFederationToIdentityPool: Action {
         let authProviderLoginsMap = AuthProviderLoginsMap(federatedToken: federatedToken)
         let event: FetchAuthSessionEvent
 
-        if let developerProvidedIdentityId = developerProvidedIdentityId {
+        if let developerProvidedIdentityId {
             event = FetchAuthSessionEvent.init(
                 eventType: .fetchAWSCredentials(
                     developerProvidedIdentityId,
-                    authProviderLoginsMap))
+                    authProviderLoginsMap
+                ))
         } else {
             event = FetchAuthSessionEvent.init(
                 eventType: .fetchAuthenticatedIdentityID(authProviderLoginsMap))

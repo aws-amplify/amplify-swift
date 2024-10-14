@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-@testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
 import AWSCognitoIdentity
-import ClientRuntime
-@testable import Amplify
+import AWSCognitoIdentityProvider
 import AWSPluginsCore
+import ClientRuntime
+import Foundation
+@testable import Amplify
+@testable import AWSCognitoAuthPlugin
 
 enum Defaults {
 
@@ -72,17 +72,19 @@ enum Defaults {
     static func makeUserPoolAnalytics() -> UserPoolAnalyticsBehavior {
         MockAnalyticsHandler()
     }
-    
+
     static func makeIdentity() throws -> CognitoIdentityBehavior {
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
         }
 
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
-                                                                     expiration: Date(),
-                                                                     secretKey: "secret",
-                                                                     sessionToken: "session")
+            let credentials = CognitoIdentityClientTypes.Credentials(
+                accessKeyId: "accessKey",
+                expiration: Date(),
+                secretKey: "secret",
+                sessionToken: "session"
+            )
             return .init(credentials: credentials, identityId: "responseIdentityID")
         }
         return MockIdentity(mockGetIdResponse: getId, mockGetCredentialsResponse: getCredentials)
@@ -90,17 +92,21 @@ enum Defaults {
 
     static func makeDefaultUserPoolConfigData(withHostedUI: HostedUIConfigurationData? = nil)
     -> UserPoolConfigurationData {
-        UserPoolConfigurationData(poolId: userPoolId,
-                                  clientId: appClientId,
-                                  region: regionString,
-                                  clientSecret: appClientSecret,
-                                  pinpointAppId: "",
-                                  hostedUIConfig: withHostedUI)
+        UserPoolConfigurationData(
+            poolId: userPoolId,
+            clientId: appClientId,
+            region: regionString,
+            clientSecret: appClientSecret,
+            pinpointAppId: "",
+            hostedUIConfig: withHostedUI
+        )
     }
 
     static func makeIdentityConfigData() -> IdentityPoolConfigurationData {
-        IdentityPoolConfigurationData(poolId: identityPoolId,
-                                      region: regionString)
+        IdentityPoolConfigurationData(
+            poolId: identityPoolId,
+            region: regionString
+        )
     }
 
     static func makeDefaultAuthConfigData(withHostedUI: HostedUIConfigurationData? = nil) -> AuthConfiguration {
@@ -148,13 +154,17 @@ enum Defaults {
             userPoolConfiguration: userPoolConfigData,
             cognitoUserPoolFactory: userPoolFactory,
             cognitoUserPoolASFFactory: makeDefaultASF,
-            cognitoUserPoolAnalyticsHandlerFactory: makeUserPoolAnalytics)
-        let authenticationEnvironment = BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
-                                                                       userPoolEnvironment: userPoolEnvironment,
-                                                                       hostedUIEnvironment: hostedUIEnvironment)
+            cognitoUserPoolAnalyticsHandlerFactory: makeUserPoolAnalytics
+        )
+        let authenticationEnvironment = BasicAuthenticationEnvironment(
+            srpSignInEnvironment: srpSignInEnvironment,
+            userPoolEnvironment: userPoolEnvironment,
+            hostedUIEnvironment: hostedUIEnvironment
+        )
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: identityPoolConfigData,
-            cognitoIdentityFactory: identityPoolFactory)
+            cognitoIdentityFactory: identityPoolFactory
+        )
         let authEnv = AuthEnvironment(
             configuration: Defaults.makeDefaultAuthConfigData(),
             userPoolConfigData: userPoolConfigData,
@@ -172,38 +182,53 @@ enum Defaults {
         initialState: AuthState? = nil,
         identityPoolFactory: @escaping () throws -> CognitoIdentityBehavior = makeIdentity,
         userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool,
-        hostedUIEnvironment: HostedUIEnvironment? = nil) ->
+        hostedUIEnvironment: HostedUIEnvironment? = nil
+    ) ->
     AuthStateMachine {
 
-        let environment = makeDefaultAuthEnvironment(identityPoolFactory: identityPoolFactory,
-                                                     userPoolFactory: userPoolFactory,
-                                                     hostedUIEnvironment: hostedUIEnvironment)
-        return AuthStateMachine(resolver: AuthState.Resolver(),
-                                environment: environment,
-                                initialState: initialState)
+        let environment = makeDefaultAuthEnvironment(
+            identityPoolFactory: identityPoolFactory,
+            userPoolFactory: userPoolFactory,
+            hostedUIEnvironment: hostedUIEnvironment
+        )
+        return AuthStateMachine(
+            resolver: AuthState.Resolver(),
+            environment: environment,
+            initialState: initialState
+        )
     }
 
     static func makeDefaultCredentialStateMachine() -> CredentialStoreStateMachine {
-        return CredentialStoreStateMachine(resolver: CredentialStoreState.Resolver(),
-                                           environment: makeDefaultCredentialStoreEnvironment(),
-                                           initialState: .idle)
+        return CredentialStoreStateMachine(
+            resolver: CredentialStoreState.Resolver(),
+            environment: makeDefaultCredentialStoreEnvironment(),
+            initialState: .idle
+        )
     }
 
-    static func authStateMachineWith(environment: AuthEnvironment = makeDefaultAuthEnvironment(),
-                                     initialState: AuthState? = nil)
+    static func authStateMachineWith(
+        environment: AuthEnvironment = makeDefaultAuthEnvironment(),
+        initialState: AuthState? = nil
+    )
     -> AuthStateMachine {
-        return AuthStateMachine(resolver: AuthState.Resolver(),
-                                environment: environment,
-                                initialState: initialState)
+        return AuthStateMachine(
+            resolver: AuthState.Resolver(),
+            environment: environment,
+            initialState: initialState
+        )
     }
 
-    static func makeAuthState(tokens: AWSCognitoUserPoolTokens,
-                              signedInDate: Date = Date(),
-                              signInMethod: SignInMethod = .apiBased(.userSRP)) -> AuthState {
+    static func makeAuthState(
+        tokens: AWSCognitoUserPoolTokens,
+        signedInDate: Date = Date(),
+        signInMethod: SignInMethod = .apiBased(.userSRP)
+    ) -> AuthState {
 
-        let signedInData = SignedInData(signedInDate: signedInDate,
-                                        signInMethod: signInMethod,
-                                        cognitoUserPoolTokens: tokens)
+        let signedInData = SignedInData(
+            signedInDate: signedInDate,
+            signInMethod: signInMethod,
+            cognitoUserPoolTokens: tokens
+        )
 
         let authNState: AuthenticationState = .signedIn(signedInData)
         let authZState: AuthorizationState = .configured
@@ -219,10 +244,12 @@ enum Defaults {
         )
     }
 
-    static func makeCognitoUserPoolTokens(idToken: String = "XX",
-                                          accessToken: String = "",
-                                          refreshToken: String = "XX",
-                                          expiresIn: Int = 300) -> AWSCognitoUserPoolTokens {
+    static func makeCognitoUserPoolTokens(
+        idToken: String = "XX",
+        accessToken: String = "",
+        refreshToken: String = "XX",
+        expiresIn: Int = 300
+    ) -> AWSCognitoUserPoolTokens {
         AWSCognitoUserPoolTokens(idToken: idToken, accessToken: accessToken, refreshToken: refreshToken, expiresIn: expiresIn)
     }
 
@@ -246,8 +273,7 @@ struct MockCredentialStoreOperationClient: CredentialStoreStateBehavior {
                 let device = try mockAmplifyStore.retrieveASFDevice(for: username)
                 return .asfDeviceId(device, username)
             }
-        }
-        catch KeychainStoreError.itemNotFound {
+        } catch KeychainStoreError.itemNotFound {
             switch type {
             case .amplifyCredentials:
                 return .amplifyCredentials(.testData)
@@ -255,12 +281,12 @@ struct MockCredentialStoreOperationClient: CredentialStoreStateBehavior {
                 return .deviceMetadata(.metadata(.init(
                     deviceKey: "key",
                     deviceGroupKey: "key",
-                    deviceSecret: "secret")), username)
+                    deviceSecret: "secret"
+                )), username)
             case .asfDeviceId(username: let username):
                 return .asfDeviceId("id", username)
             }
-        }
-        catch {
+        } catch {
             fatalError()
         }
     }
@@ -292,7 +318,8 @@ class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
 
     func retrieveCredential() throws -> AmplifyCredentials {
         guard let data = Self.dict.getValue(forKey: credentialsKey),
-              let cred = (try? JSONDecoder().decode(AmplifyCredentials.self, from: data)) else {
+              let cred = (try? JSONDecoder().decode(AmplifyCredentials.self, from: data))
+        else {
             throw KeychainStoreError.itemNotFound
         }
         return cred
@@ -313,7 +340,8 @@ class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
 
     func retrieveDevice(for username: String) throws -> DeviceMetadata {
         guard let data = Self.dict.getValue(forKey: username),
-              let device = (try? JSONDecoder().decode(DeviceMetadata.self, from: data)) else {
+              let device = (try? JSONDecoder().decode(DeviceMetadata.self, from: data))
+        else {
             throw KeychainStoreError.itemNotFound
         }
         return device
@@ -331,7 +359,8 @@ class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
 
     func retrieveASFDevice(for username: String) throws -> String {
         guard let data = Self.dict.getValue(forKey: username),
-              let device = (try? JSONDecoder().decode(String.self, from: data)) else {
+              let device = (try? JSONDecoder().decode(String.self, from: data))
+        else {
             throw KeychainStoreError.itemNotFound
         }
         return device
@@ -370,10 +399,12 @@ struct MockLegacyStore: KeychainStoreBehavior {
 }
 
 struct MockASF: AdvancedSecurityBehavior {
-    func userContextData(for username: String,
-                         deviceInfo: ASFDeviceBehavior,
-                         appInfo: ASFAppInfoBehavior,
-                         configuration: UserPoolConfigurationData) throws -> String {
+    func userContextData(
+        for username: String,
+        deviceInfo: ASFDeviceBehavior,
+        appInfo: ASFAppInfoBehavior,
+        configuration: UserPoolConfigurationData
+    ) throws -> String {
         return ""
     }
 

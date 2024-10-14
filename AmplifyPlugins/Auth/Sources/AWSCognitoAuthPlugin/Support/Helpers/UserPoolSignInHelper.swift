@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct UserPoolSignInHelper: DefaultLogger {
 
@@ -73,11 +73,12 @@ struct UserPoolSignInHelper: DefaultLogger {
         request: RespondToAuthChallengeInput,
         for username: String,
         signInMethod: SignInMethod,
-        environment: UserPoolEnvironment) async throws -> StateMachineEvent {
+        environment: UserPoolEnvironment
+    ) async throws -> StateMachineEvent {
 
             let client = try environment.cognitoUserPoolFactory()
             let response = try await client.respondToAuthChallenge(input: request)
-            let event = self.parseResponse(response, for: username, signInMethod: signInMethod)
+            let event = parseResponse(response, for: username, signInMethod: signInMethod)
             return event
         }
 
@@ -102,7 +103,8 @@ struct UserPoolSignInHelper: DefaultLogger {
                     signedInDate: Date(),
                     signInMethod: signInMethod,
                     deviceMetadata: authenticationResult.deviceMetadata,
-                    cognitoUserPoolTokens: userPoolTokens)
+                    cognitoUserPoolTokens: userPoolTokens
+                )
 
                 switch signedInData.deviceMetadata {
                 case .noData:
@@ -118,7 +120,8 @@ struct UserPoolSignInHelper: DefaultLogger {
                     availableChallenges: response.availableChallenges ?? [],
                     username: username,
                     session: response.session,
-                    parameters: parameters)
+                    parameters: parameters
+                )
 
                 switch challengeName {
                 case .smsMfa, .customChallenge, .newPasswordRequired, .softwareTokenMfa, .selectMfaType, .smsOtp, .emailOtp, .selectChallenge:

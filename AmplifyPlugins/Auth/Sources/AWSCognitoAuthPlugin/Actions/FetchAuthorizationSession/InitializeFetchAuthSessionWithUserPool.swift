@@ -27,9 +27,11 @@ struct InitializeFetchAuthSessionWithUserPool: Action {
         case .userPoolsAndIdentityPools(let userPoolData, _):
             let region = userPoolData.region
             let poolId = userPoolData.poolId
-            let loginsMapProvider = CognitoUserPoolLoginsMap(idToken: tokens.idToken,
-                                                             region: region,
-                                                             poolId: poolId)
+            let loginsMapProvider = CognitoUserPoolLoginsMap(
+                idToken: tokens.idToken,
+                region: region,
+                poolId: poolId
+            )
             event = .init(eventType: .fetchAuthenticatedIdentityID(loginsMapProvider))
         default:
             event = .init(eventType: .throwError(.noUserPool))

@@ -59,14 +59,17 @@ extension AuthSignUpStep: Codable {
 
             let codeDeliveryDetails = try values.decode(
                 AuthCodeDeliveryDetails.self,
-                forKey: .codeDeliveryDetails)
+                forKey: .codeDeliveryDetails
+            )
             let additionalInfo = try values.decode(
                 AdditionalInfo.self,
-                forKey: .additionalInfo)
+                forKey: .additionalInfo
+            )
             self = .confirmUser(
                 codeDeliveryDetails,
                 additionalInfo,
-                nil)
+                nil
+            )
         } else {
             fatalError("next step type not supported")
         }

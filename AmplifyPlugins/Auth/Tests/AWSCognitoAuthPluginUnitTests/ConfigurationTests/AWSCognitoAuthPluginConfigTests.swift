@@ -56,8 +56,10 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
         let categoryConfig = AuthCategoryConfiguration(plugins: [
             "awsCognitoAuthPlugin": [
                 "CredentialsProvider": ["CognitoIdentity": ["Default":
-                    ["PoolId": "xx",
-                     "Region": "us-east-1"]
+                    [
+                        "PoolId": "xx",
+                        "Region": "us-east-1"
+                    ]
                     ]],
                 "CognitoUserPool": ["Default": [
                     "PoolId": "xx",
@@ -89,8 +91,10 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
         let categoryConfig = AuthCategoryConfiguration(plugins: [
             "awsCognitoAuthPlugin": [
                 "CredentialsProvider": ["CognitoIdentity": ["Default":
-                    ["PoolId": "cc",
-                     "Region": "us-east-1"]
+                    [
+                        "PoolId": "cc",
+                        "Region": "us-east-1"
+                    ]
                     ]]
             ]
         ])
@@ -146,8 +150,10 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
         let categoryConfig = AuthCategoryConfiguration(plugins: [
             "awsCognitoAuthPlugin": [
                 "CredentialsProvider": ["CognitoIdentity": ["Default":
-                    ["xx": "xx",
-                     "xx2": "us-east-1"]
+                    [
+                        "xx": "xx",
+                        "xx2": "us-east-1"
+                    ]
                     ]],
                 "CognitoUserPool": ["Default": [
                     "xx": "xx",
@@ -203,14 +209,17 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
             networkPreferences: .init(
                 maxRetryCount: 2,
                 timeoutIntervalForRequest: 60,
-                timeoutIntervalForResource: 60))
+                timeoutIntervalForResource: 60
+            ))
         try Amplify.add(plugin: plugin)
 
         let categoryConfig = AuthCategoryConfiguration(plugins: [
             "awsCognitoAuthPlugin": [
                 "CredentialsProvider": ["CognitoIdentity": ["Default":
-                                                                ["PoolId": "xx",
-                                                                 "Region": "us-east-1"]
+                                                                [
+                                                                    "PoolId": "xx",
+                                                                    "Region": "us-east-1"
+                                                                ]
                                                            ]],
                 "CognitoUserPool": ["Default": [
                     "PoolId": "xx",
@@ -222,7 +231,7 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
         do {
             try Amplify.configure(amplifyConfig)
-            
+
             let escapeHatch = plugin.getEscapeHatch()
             guard case .userPoolAndIdentityPool(let userPoolClient, let identityPoolClient) = escapeHatch else {
                 XCTFail("Expected .userPool, got \(escapeHatch)")

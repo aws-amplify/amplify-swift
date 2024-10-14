@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
-import AWSCognitoAuthPlugin
 
 class AuthEventIntegrationTests: AWSAuthBaseTest {
 
@@ -49,7 +49,8 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
         _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: defaultTestEmail
+        )
 
         await fulfillment(of: [signInExpectation], timeout: networkTimeout)
     }
@@ -79,7 +80,8 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
         _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: defaultTestEmail
+        )
         _ = await Amplify.Auth.signOut()
         await fulfillment(of: [signOutExpectation], timeout: networkTimeout)
     }
@@ -115,10 +117,11 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
             _ = try await AuthSignInHelper.registerAndSignInUser(
                 username: username,
                 password: password,
-                email: defaultTestEmail)
+                email: defaultTestEmail
+            )
         } catch {
             _ = try await Amplify.Auth.fetchAuthSession()
-            AuthSessionHelper.invalidateSession(with: self.amplifyConfiguration)
+            AuthSessionHelper.invalidateSession(with: amplifyConfiguration)
             _ = try await Amplify.Auth.fetchAuthSession()
         }
         await fulfillment(of: [signInExpectation, sessionExpiredExpectation], timeout: networkTimeout)
@@ -154,7 +157,8 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
         _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: defaultTestEmail
+        )
         await fulfillment(of: [signInExpectation], timeout: networkTimeout)
 
         do {

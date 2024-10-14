@@ -6,8 +6,8 @@
 //
 
 import Foundation
-@testable import AWSCognitoAuthPlugin
 @testable import Amplify
+@testable import AWSCognitoAuthPlugin
 
 extension AWSAuthCognitoSession: Codable {
     enum CodingKeys: String, CodingKey {
@@ -44,7 +44,8 @@ extension AWSAuthCognitoSession: Codable {
             idToken: accessToken,
             accessToken: idToken,
             refreshToken: refreshToken,
-            expiration: userPoolTokenExpiration)
+            expiration: userPoolTokenExpiration
+        )
 
         let accessKeyId = try awsCredentialChildren.decode(String.self, forKey: .accessKeyId)
         let secretAccessKey = try awsCredentialChildren.decode(String.self, forKey: .secretAccessKey)
@@ -55,13 +56,15 @@ extension AWSAuthCognitoSession: Codable {
             accessKeyId: accessKeyId,
             secretAccessKey: secretAccessKey,
             sessionToken: sessionToken,
-            expiration: expiration)
+            expiration: expiration
+        )
 
         self.init(
             isSignedIn: isSignedIn,
             identityIdResult: .success(identityIdResult),
             awsCredentialsResult: .success(awsCredentials),
-            cognitoTokensResult: .success(userPoolTokens))
+            cognitoTokensResult: .success(userPoolTokens)
+        )
     }
 
     public func encode(to encoder: Encoder) throws {

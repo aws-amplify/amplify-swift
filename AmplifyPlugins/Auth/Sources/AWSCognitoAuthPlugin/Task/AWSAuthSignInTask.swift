@@ -4,9 +4,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-import Foundation
+
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
 
@@ -19,9 +20,11 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
         HubPayload.EventName.Auth.signInAPI
     }
 
-    init(_ request: AuthSignInRequest,
-         authStateMachine: AuthStateMachine,
-         configuration: AuthConfiguration) {
+    init(
+        _ request: AuthSignInRequest,
+        authStateMachine: AuthStateMachine,
+        configuration: AuthConfiguration
+    ) {
         self.request = request
         self.authStateMachine = authStateMachine
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
@@ -35,7 +38,8 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
             let message = AuthPluginErrorConstants.configurationError
             let authError = AuthError.configuration(
                 "Could not find user pool configuration",
-                message)
+                message
+            )
             throw authError
         }
 
@@ -66,7 +70,8 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
             case .signedIn:
                 let error = AuthError.invalidState(
                     "There is already a user in signedIn state. SignOut the user first before calling signIn",
-                    AuthPluginErrorConstants.invalidStateError, nil)
+                    AuthPluginErrorConstants.invalidStateError, nil
+                )
                 throw error
             case .signingIn:
                 log.verbose("Cancelling existing signIn flow")

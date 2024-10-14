@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import Foundation
 
 extension SignInChallengeState {
@@ -15,7 +16,8 @@ extension SignInChallengeState {
 
         func resolve(
             oldState: SignInChallengeState,
-            byApplying event: StateMachineEvent)
+            byApplying event: StateMachineEvent
+        )
         -> StateResolution<SignInChallengeState> {
 
             switch oldState {
@@ -56,8 +58,10 @@ extension SignInChallengeState {
                 }
 
                 if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
-                    return .init(newState: .verified,
-                                 actions: [SignInComplete(signedInData: signedInData)])
+                    return .init(
+                        newState: .verified,
+                        actions: [SignInComplete(signedInData: signedInData)]
+                    )
                 }
 
                 if case .throwAuthError(let error) = event.isSignInEvent {

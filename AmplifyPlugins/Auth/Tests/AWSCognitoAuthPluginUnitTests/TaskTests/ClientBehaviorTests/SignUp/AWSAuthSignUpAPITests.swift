@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSCognitoIdentity
-@testable import Amplify
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import ClientRuntime
+import XCTest
+@testable import Amplify
+@testable import AWSCognitoAuthPlugin
 
 class AWSAuthSignUpAPITests: BasePluginTest {
 
@@ -27,18 +27,21 @@ class AWSAuthSignUpAPITests: BasePluginTest {
     /// Then: Sign up is successful with `.done` as the next step
     func testSuccessfulSignUp() async throws {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
-                return .init(codeDeliveryDetails: nil,
-                             userConfirmed: true,
-                             userSub: UUID().uuidString)
+                return .init(
+                    codeDeliveryDetails: nil,
+                    userConfirmed: true,
+                    userSub: UUID().uuidString
+                )
             }
         )
 
-        let result = try await self.plugin.signUp(
+        let result = try await plugin.signUp(
             username: "jeffb",
             password: "Valid&99",
-            options: options)
+            options: options
+        )
 
         guard case .done = result.nextStep else {
             XCTFail("Result should be .done for next step")
@@ -277,17 +280,18 @@ class AWSAuthSignUpAPITests: BasePluginTest {
     /// Then: Sign up fails with error
     func testSignUpWithEmptyUsername() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
                 XCTFail("Sign up API should not be called")
                 return .init(codeDeliveryDetails: nil, userConfirmed: true, userSub: nil)
             }
         )
 
-        do { _ = try await self.plugin.signUp(
+        do { _ = try await plugin.signUp(
             username: "",
             password: "Valid&99",
-            options: options)
+            options: options
+        )
 
         } catch {
             guard let authError = error as? AuthError else {
@@ -329,22 +333,25 @@ class AWSAuthSignUpAPITests: BasePluginTest {
     /// Then: Sign up is successful with `.confirmUser` as next step
     func testSignUpWithUserConfirmationRequired() async throws {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
                 return .init(
                     codeDeliveryDetails: .init(
                         attributeName: "some attribute",
                         deliveryMedium: .email,
-                        destination: "random@random.com"),
+                        destination: "random@random.com"
+                    ),
                     userConfirmed: false,
-                    userSub: "userId")
+                    userSub: "userId"
+                )
             }
         )
 
-        let result = try await self.plugin.signUp(
+        let result = try await plugin.signUp(
             username: "jeffb",
             password: "Valid&99",
-            options: options)
+            options: options
+        )
 
         guard case .confirmUser(let deliveryDetails, let additionalInfo, let userId) = result.nextStep else {
             XCTFail("Result should be .confirmUser for next step")
@@ -398,6 +405,40 @@ class AWSAuthSignUpAPITests: BasePluginTest {
     /// Then: Sign up is successful with `.confirmUser` as next step
     func testSignUpNilCognitoResponse() async throws {
 
+        mockIdentityProvider = MockIdentityProvider(
+            mockSignUpResponse: { _ in
+                return .init(
+                    codeDeliveryDetails: nil,
+                    userConfirmed: false,
+                    userSub: nil
+                )
+            }
+        )
+
+        let result = try await plugin.signUp(
+            username: "jeffb",
+            password: "Valid&99",
+            options: options
+        )
+
+        guard case .confirmUser(let deliveryDetails, let additionalInfo, let userId) = result.nextStep else {
+            XCTFail("Result should be .done for next step")
+            return
+        }
+
+        XCTAssertNil(deliveryDetails?.destination)
+        XCTAssertNil(deliveryDetails?.attributeKey)
+        XCTAssertEqual(additionalInfo, nil)
+        XCTAssertEqual(userId, nil)
+        XCTAssertFalse(result.isSignUpComplete, "Signin result should be complete")
+    }
+    
+    /// Given: Configured auth machine in `.notStarted` sign up state and a mocked success response with
+    /// with `nil` responses
+    /// When: `Auth.signUp(username:password:options:)` is invoked without a password
+    /// Then: Sign up is successful with `.confirmUser` as next step
+    func testSignUpPasswordlessNilCognitoResponse() async throws {
+
         self.mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
                 return .init(
@@ -409,7 +450,6 @@ class AWSAuthSignUpAPITests: BasePluginTest {
 
         let result = try await self.plugin.signUp(
             username: "jeffb",
-            password: "Valid&99",
             options: options)
 
         guard case .confirmUser(let deliveryDetails, let additionalInfo, let userId) = result.nextStep else {
@@ -578,26 +618,29 @@ class AWSAuthSignUpAPITests: BasePluginTest {
     /// Then: Sign up fails with error as `.notAuthorized`
     func testSignUpWithNotAuthorizedException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
                 throw AWSCognitoIdentityProvider.NotAuthorizedException()
             }
         )
 
         do {
-            _ = try await self.plugin.signUp(
+            _ = try await plugin.signUp(
                 username: "username",
                 password: "Valid&99",
-                options: options)
+                options: options
+            )
         } catch {
             guard let authError = error as? AuthError else {
                 XCTFail("Should throw Auth error")
                 return
             }
 
-            guard case .notAuthorized(let errorDescription,
-                                      let recoverySuggestion,
-                                      let notAuthorizedError) = authError else {
+            guard case .notAuthorized(
+                let errorDescription,
+                let recoverySuggestion,
+                let notAuthorizedError
+            ) = authError else {
                 XCTFail("Auth error should be of type notAuthorized")
                 return
             }
@@ -649,17 +692,18 @@ class AWSAuthSignUpAPITests: BasePluginTest {
     /// Then: Sign up fails with error as `.unknown`
     func testSignUpWithInternalErrorException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
                 throw AWSCognitoIdentityProvider.InternalErrorException()
             }
         )
 
         do {
-            _ = try await self.plugin.signUp(
+            _ = try await plugin.signUp(
                 username: "username",
                 password: "Valid&99",
-                options: options)
+                options: options
+            )
         } catch {
             guard let authError = error as? AuthError else {
                 XCTFail("Should throw Auth error")
@@ -808,24 +852,26 @@ class AWSAuthSignUpAPITests: BasePluginTest {
 
     func validateSignUpServiceErrors(
         signUpOutputError: Error,
-        expectedCognitoError: AWSCognitoAuthError) async {
-            self.mockIdentityProvider = MockIdentityProvider(
+        expectedCognitoError: AWSCognitoAuthError
+    ) async {
+            mockIdentityProvider = MockIdentityProvider(
                 mockSignUpResponse: { _ in
                     throw signUpOutputError
                 }
             )
             
             do {
-                _ = try await self.plugin.signUp(
+                _ = try await plugin.signUp(
                     username: "username",
                     password: "Valid&99",
-                    options: options)
+                    options: options
+                )
             } catch {
                 guard let authError = error as? AuthError else {
                     XCTFail("Should throw Auth error")
                     return
                 }
-                
+
                 guard case .service(let errorMessage,
                                     let recovery,
                                     let serviceError) = authError else {
@@ -863,9 +909,11 @@ class AWSAuthSignUpAPITests: BasePluginTest {
                     return
                 }
 
-                guard case .service(let errorMessage,
-                                    let recovery,
-                                    let serviceError) = authError else {
+                guard case .service(
+                    let errorMessage,
+                    let recovery,
+                    let serviceError
+                ) = authError else {
                     XCTFail("Auth error should be of type service error")
                     return
                 }

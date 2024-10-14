@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSPluginsCore
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSPluginsCore
 @_spi(KeychainStore) import AWSPluginsCore
 import CryptoKit
 import Foundation
@@ -18,7 +18,8 @@ struct AuthSessionHelper {
     static func getCurrentAmplifySession(
         shouldForceRefresh: Bool = false,
         for testCase: XCTestCase,
-        with timeout: TimeInterval) async throws -> AWSAuthCognitoSession? {
+        with timeout: TimeInterval
+    ) async throws -> AWSAuthCognitoSession? {
             var cognitoSession: AWSAuthCognitoSession?
             let session = try await Amplify.Auth.fetchAuthSession(options: .init(forceRefresh: shouldForceRefresh))
             cognitoSession = (session as? AWSAuthCognitoSession)
@@ -38,25 +39,30 @@ struct AuthSessionHelper {
             return
         }
         switch credentials {
-        case .userPoolAndIdentityPool(signedInData: let signedInData,
-                                      identityID: let identityID,
-                                      credentials: let awsCredentials):
+        case .userPoolAndIdentityPool(
+            signedInData: let signedInData,
+            identityID: let identityID,
+            credentials: let awsCredentials
+        ):
             let updatedToken = updateTokenWithPastExpiry(signedInData.cognitoUserPoolTokens)
             let signedInData = SignedInData(
                 signedInDate: signedInData.signedInDate,
                 signInMethod: signedInData.signInMethod,
-                cognitoUserPoolTokens: updatedToken)
+                cognitoUserPoolTokens: updatedToken
+            )
             let updatedCredentials = AmplifyCredentials.userPoolAndIdentityPool(
                 signedInData: signedInData,
                 identityID: identityID,
-                credentials: awsCredentials)
+                credentials: awsCredentials
+            )
             try! credentialStore.saveCredential(updatedCredentials)
         case  .userPoolOnly(signedInData: let signedInData):
             let updatedToken = updateTokenWithPastExpiry(signedInData.cognitoUserPoolTokens)
             let signedInData = SignedInData(
                 signedInDate: signedInData.signedInDate,
                 signInMethod: signedInData.signInMethod,
-                cognitoUserPoolTokens: updatedToken)
+                cognitoUserPoolTokens: updatedToken
+            )
             let updatedCredentials = AmplifyCredentials.userPoolOnly(signedInData: signedInData)
             try! credentialStore.saveCredential(updatedCredentials)
         default: break
@@ -64,33 +70,37 @@ struct AuthSessionHelper {
 
     }
 
-    static private func updateTokenWithPastExpiry(_ tokens: AWSCognitoUserPoolTokens)
+    private static func updateTokenWithPastExpiry(_ tokens: AWSCognitoUserPoolTokens)
     -> AWSCognitoUserPoolTokens {
         var idToken = tokens.idToken
         var accessToken = tokens.accessToken
         if var idTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: idToken).get(),
            var accessTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: accessToken).get() {
 
-            idTokenClaims["exp"] = String(Date(timeIntervalSinceNow: -3000).timeIntervalSince1970) as AnyObject
-            accessTokenClaims["exp"] = String(Date(timeIntervalSinceNow: -3000).timeIntervalSince1970) as AnyObject
+            idTokenClaims["exp"] = String(Date(timeIntervalSinceNow: -3_000).timeIntervalSince1970) as AnyObject
+            accessTokenClaims["exp"] = String(Date(timeIntervalSinceNow: -3_000).timeIntervalSince1970) as AnyObject
             idToken = CognitoAuthTestHelper.buildToken(for: idTokenClaims)
             accessToken = CognitoAuthTestHelper.buildToken(for: accessTokenClaims)
         }
-        return AWSCognitoUserPoolTokens(idToken: idToken,
-                                        accessToken: accessToken,
-                                        refreshToken: "invalid",
-                                        expiration: Date().addingTimeInterval(-50000))
+        return AWSCognitoUserPoolTokens(
+            idToken: idToken,
+            accessToken: accessToken,
+            refreshToken: "invalid",
+            expiration: Date().addingTimeInterval(-50_000)
+        )
     }
 
-    static private func getAuthConfiguration(configuration: AmplifyConfiguration) -> AuthConfiguration {
+    private static func getAuthConfiguration(configuration: AmplifyConfiguration) -> AuthConfiguration {
         let jsonValueConfiguration = configuration.auth!.plugins["awsCognitoAuthPlugin"]!
         let userPoolConfigData = parseUserPoolConfigData(jsonValueConfiguration)
         let identityPoolConfigData = parseIdentityPoolConfigData(jsonValueConfiguration)
-        return try! authConfiguration(userPoolConfig: userPoolConfigData,
-                                      identityPoolConfig: identityPoolConfigData)
+        return try! authConfiguration(
+            userPoolConfig: userPoolConfigData,
+            identityPoolConfig: identityPoolConfigData
+        )
     }
 
-    static private func parseUserPoolConfigData(_ config: JSONValue) -> UserPoolConfigurationData? {
+    private static func parseUserPoolConfigData(_ config: JSONValue) -> UserPoolConfigurationData? {
         // TODO: Use JSON serialization here to convert.
         guard let cognitoUserPoolJSON = config.value(at: "CognitoUserPool.Default") else {
             Amplify.Logging.info("Could not find Cognito User Pool configuration")
@@ -107,13 +117,15 @@ struct AuthSessionHelper {
         if case .string(let clientSecretFromConfig) = cognitoUserPoolJSON.value(at: "AppClientSecret") {
             clientSecret = clientSecretFromConfig
         }
-        return UserPoolConfigurationData(poolId: poolId,
-                                         clientId: appClientId,
-                                         region: region,
-                                         clientSecret: clientSecret)
+        return UserPoolConfigurationData(
+            poolId: poolId,
+            clientId: appClientId,
+            region: region,
+            clientSecret: clientSecret
+        )
     }
 
-    static private func parseIdentityPoolConfigData(_ config: JSONValue) -> IdentityPoolConfigurationData? {
+    private static func parseIdentityPoolConfigData(_ config: JSONValue) -> IdentityPoolConfigurationData? {
 
         guard let cognitoIdentityPoolJSON = config.value(at: "CredentialsProvider.CognitoIdentity.Default") else {
             Amplify.Logging.info("Could not find Cognito Identity Pool configuration")
@@ -127,8 +139,10 @@ struct AuthSessionHelper {
         return IdentityPoolConfigurationData(poolId: poolId, region: region)
     }
 
-    static private func authConfiguration(userPoolConfig: UserPoolConfigurationData?,
-                                          identityPoolConfig: IdentityPoolConfigurationData?) throws -> AuthConfiguration {
+    private static func authConfiguration(
+        userPoolConfig: UserPoolConfigurationData?,
+        identityPoolConfig: IdentityPoolConfigurationData?
+    ) throws -> AuthConfiguration {
 
         if let userPoolConfigNonNil = userPoolConfig, let identityPoolConfigNonNil = identityPoolConfig {
             return .userPoolsAndIdentityPools(userPoolConfigNonNil, identityPoolConfigNonNil)
@@ -148,7 +162,7 @@ struct AuthSessionHelper {
     }
 }
 
-struct CognitoAuthTestHelper {
+enum CognitoAuthTestHelper {
 
     /// Helper to build a JWT Token
     static func buildToken(for payload: [String: AnyObject]) -> String {
@@ -184,7 +198,7 @@ struct CognitoAuthTestHelper {
     }
 }
 
-fileprivate extension Data {
+private extension Data {
     func urlSafeBase64EncodedString() -> String {
         return base64EncodedString()
             .replacingOccurrences(of: "+", with: "-")

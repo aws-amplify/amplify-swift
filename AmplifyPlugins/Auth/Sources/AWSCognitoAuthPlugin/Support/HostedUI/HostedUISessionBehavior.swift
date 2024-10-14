@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import AuthenticationServices
 import Amplify
+import AuthenticationServices
+import Foundation
 
 protocol HostedUISessionBehavior {
 

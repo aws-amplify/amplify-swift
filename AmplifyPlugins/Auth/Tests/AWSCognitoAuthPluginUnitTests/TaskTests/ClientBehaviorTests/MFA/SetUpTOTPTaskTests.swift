@@ -7,8 +7,10 @@
 
 import Foundation
 
-import XCTest
 import Amplify
+import AWSClientRuntime
+import AWSCognitoIdentityProvider
+import XCTest
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
@@ -27,7 +29,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///
     func testSuccessfulSetUpTOTPRequest() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 return .init(secretCode: "sharedSecret")
             })
@@ -53,7 +55,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///
     func testSetUpTOTPWithConcurrentModificationException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.ConcurrentModificationException(
                     message: "Exception"
@@ -85,7 +87,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///
     func testSetUpTOTPWithForbiddenException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.ForbiddenException(
                     message: "Exception"
@@ -117,7 +119,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///
     func testSetUpTOTPWithInternalErrorException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.InternalErrorException(
                     message: "Exception"
@@ -149,7 +151,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///
     func testSetUpTOTPWithInvalidParameterException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.InvalidParameterException(
                     message: "Exception"
@@ -183,7 +185,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///
     func testSetUpTOTPWithNotAuthorizedException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.NotAuthorizedException(
                     message: "Exception"
@@ -213,7 +215,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///
     func testSetUpWithSoftwareTokenMFANotFoundException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException(
                     message: "Exception"
@@ -245,7 +247,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///    - I should get a .service error with .resourceNotFound as underlyingError
     ///
     func testSetUpTOTPInWithResourceNotFoundException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.ResourceNotFoundException(
                     message: "Exception"
@@ -278,7 +280,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///
     func testSetUpWithUnknownException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 throw AWSClientRuntime.UnknownAWSHTTPServiceError(
                     httpResponse: .init(body: .empty, statusCode: .ok),

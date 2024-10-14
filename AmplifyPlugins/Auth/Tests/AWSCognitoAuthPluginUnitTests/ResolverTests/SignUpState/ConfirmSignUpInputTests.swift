@@ -16,15 +16,18 @@ class ConfirmSignUpInputTests: XCTestCase {
     func testConfirmSignUpInputWithClientSecretAndAsfDeviceId() async throws {
         let username = "jeff"
         let clientSecret = UUID().uuidString
-        let userPoolConfiguration = UserPoolConfigurationData(poolId: "",
-                                                              clientId: "123456",
-                                                              region: "",
-                                                              clientSecret: clientSecret)
+        let userPoolConfiguration = UserPoolConfigurationData(
+            poolId: "",
+            clientId: "123456",
+            region: "",
+            clientSecret: clientSecret
+        )
         let environment = BasicUserPoolEnvironment(
             userPoolConfiguration: userPoolConfiguration,
             cognitoUserPoolFactory: Defaults.makeDefaultUserPool,
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
-            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
+            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics
+        )
 
         let confirmSignUpInput = await ConfirmSignUpInput(
             username: username,
@@ -42,15 +45,18 @@ class ConfirmSignUpInputTests: XCTestCase {
     func testConfirmSignUpInputWithoutClientSecretAndAsfDeviceId() async throws {
         let username = "jeff"
 
-        let userPoolConfiguration = UserPoolConfigurationData(poolId: "",
-                                                              clientId: "123456",
-                                                              region: "",
-                                                              clientSecret: nil)
+        let userPoolConfiguration = UserPoolConfigurationData(
+            poolId: "",
+            clientId: "123456",
+            region: "",
+            clientSecret: nil
+        )
         let environment = BasicUserPoolEnvironment(
             userPoolConfiguration: userPoolConfiguration,
             cognitoUserPoolFactory: Defaults.makeDefaultUserPool,
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
-            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
+            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics
+        )
 
         let confirmSignUpInput = await ConfirmSignUpInput(
             username: username,

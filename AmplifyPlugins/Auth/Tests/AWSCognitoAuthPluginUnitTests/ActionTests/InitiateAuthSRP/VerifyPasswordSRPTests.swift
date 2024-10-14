@@ -5,11 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
+import AWSClientRuntime
 import AWSCognitoIdentityProvider
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 @testable import AWSPluginsTestCommon
-@testable import AWSCognitoAuthPlugin
 
 class VerifyPasswordSRPTests: XCTestCase {
 
@@ -39,9 +38,11 @@ class VerifyPasswordSRPTests: XCTestCase {
             userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutput.validTestData
-        let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data,
-                                       clientMetadata: [:])
+        let action = VerifyPasswordSRP(
+            stateData: SRPStateData.testData,
+            authResponse: data,
+            clientMetadata: [:]
+        )
 
         await action.execute(
             withDispatcher: MockDispatcher { _ in },
@@ -75,9 +76,11 @@ class VerifyPasswordSRPTests: XCTestCase {
             userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutput.validTestData
-        let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data,
-                                       clientMetadata: [:])
+        let action = VerifyPasswordSRP(
+            stateData: SRPStateData.testData,
+            authResponse: data,
+            clientMetadata: [:]
+        )
 
         let passwordVerifierError = expectation(description: "passwordVerifierError")
 
@@ -126,9 +129,11 @@ class VerifyPasswordSRPTests: XCTestCase {
             userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutput.invalidChallenge
-        let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data,
-                                       clientMetadata: [:])
+        let action = VerifyPasswordSRP(
+            stateData: SRPStateData.testData,
+            authResponse: data,
+            clientMetadata: [:]
+        )
 
         let passwordVerifierError = expectation(
             description: "passwordVerifierError")
@@ -177,9 +182,11 @@ class VerifyPasswordSRPTests: XCTestCase {
             userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutput.invalidTestDataWithNoSalt
-        let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data,
-                                       clientMetadata: [:])
+        let action = VerifyPasswordSRP(
+            stateData: SRPStateData.testData,
+            authResponse: data,
+            clientMetadata: [:]
+        )
 
         let passwordVerifierError = expectation(
             description: "passwordVerifierError")
@@ -228,9 +235,11 @@ class VerifyPasswordSRPTests: XCTestCase {
             userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutput.invalidTestDataWithNoSecretBlock
-        let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data,
-                                       clientMetadata: [:])
+        let action = VerifyPasswordSRP(
+            stateData: SRPStateData.testData,
+            authResponse: data,
+            clientMetadata: [:]
+        )
 
         let passwordVerifierError = expectation(
             description: "passwordVerifierError")
@@ -279,9 +288,11 @@ class VerifyPasswordSRPTests: XCTestCase {
             userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutput.invalidTestDataWithNoSRPB
-        let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data,
-                                       clientMetadata: [:])
+        let action = VerifyPasswordSRP(
+            stateData: SRPStateData.testData,
+            authResponse: data,
+            clientMetadata: [:]
+        )
 
         let passwordVerifierError = expectation(
             description: "passwordVerifierError")
@@ -330,9 +341,11 @@ class VerifyPasswordSRPTests: XCTestCase {
             userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutput.invalidTestDataForException
-        let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data,
-                                       clientMetadata: [:])
+        let action = VerifyPasswordSRP(
+            stateData: SRPStateData.testData,
+            authResponse: data,
+            clientMetadata: [:]
+        )
 
         let passwordVerifierError = expectation(
             description: "passwordVerifierError")
@@ -380,9 +393,11 @@ class VerifyPasswordSRPTests: XCTestCase {
             userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutput.validTestData
-        let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data,
-                                       clientMetadata: [:])
+        let action = VerifyPasswordSRP(
+            stateData: SRPStateData.testData,
+            authResponse: data,
+            clientMetadata: [:]
+        )
 
         let passwordVerifierCompletion = expectation(
             description: "passwordVerifierCompletion"
@@ -433,9 +448,11 @@ class VerifyPasswordSRPTests: XCTestCase {
             userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutput.validTestData
-        let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data,
-                                       clientMetadata: [:])
+        let action = VerifyPasswordSRP(
+            stateData: SRPStateData.testData,
+            authResponse: data,
+            clientMetadata: [:]
+        )
 
         let passwordVerifierError = expectation(
             description: "passwordVerifierError")
@@ -484,9 +501,11 @@ class VerifyPasswordSRPTests: XCTestCase {
             userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutput.validTestData
-        let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data,
-                                       clientMetadata: [:])
+        let action = VerifyPasswordSRP(
+            stateData: SRPStateData.testData,
+            authResponse: data,
+            clientMetadata: [:]
+        )
 
         let passwordVerifierError = expectation(description: "passwordVerifierError")
 
@@ -532,9 +551,11 @@ class VerifyPasswordSRPTests: XCTestCase {
             userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutput.validTestData
-        let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data,
-                                       clientMetadata: [:])
+        let action = VerifyPasswordSRP(
+            stateData: SRPStateData.testData,
+            authResponse: data,
+            clientMetadata: [:]
+        )
 
         let passwordVerifierCompletion = expectation(
             description: "passwordVerifierCompletion")
@@ -578,9 +599,11 @@ class VerifyPasswordSRPTests: XCTestCase {
             userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutput.validTestData
-        let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data,
-                                       clientMetadata: [:])
+        let action = VerifyPasswordSRP(
+            stateData: SRPStateData.testData,
+            authResponse: data,
+            clientMetadata: [:]
+        )
 
         let passwordVerifierCompletion = expectation(
             description: "passwordVerifierCompletion")

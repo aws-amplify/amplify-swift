@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import CryptoKit
+import Foundation
 
-struct SRPSignInHelper {
+enum SRPSignInHelper {
 
     static func srpClient(_ environment: SRPAuthEnvironment) throws
     -> SRPClientBehavior {
