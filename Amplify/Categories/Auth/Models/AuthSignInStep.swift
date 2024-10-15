@@ -43,14 +43,14 @@ public enum AuthSignInStep {
     ///
     case continueSignInWithEmailMFASetup
 
-    /// Auth step is EMAIL multi factor authentication.
-    ///
-    /// Confirmation code for the MFA will be send to the provided EMAIL.
-    case confirmSignInWithEmailMFACode(AuthCodeDeliveryDetails)
-
     /// Auth step is for continuing sign in by selecting multi factor authentication type to setup
     ///
     case continueSignInWithMFASetupSelection(AllowedMFATypes)
+
+    /// Auth step is for confirming sign in with OTP
+    ///
+    /// OTP for the factor will be sent to the delivery medium.
+    case confirmSignInWithOTP(AuthCodeDeliveryDetails)
 
     /// Auth step required the user to change their password.
     ///
