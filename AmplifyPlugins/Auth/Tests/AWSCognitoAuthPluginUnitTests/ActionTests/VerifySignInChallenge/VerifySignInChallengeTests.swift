@@ -49,7 +49,8 @@ class VerifySignInChallengeTests: XCTestCase {
             userPoolFactory: identityProviderFactory)
         let action = VerifySignInChallenge(challenge: mockRespondAuthChallenge,
                                            confirmSignEventData: mockConfirmEvent,
-                                           signInMethod: .apiBased(.userSRP))
+                                           signInMethod: .apiBased(.userSRP),
+                                           currentSignInStep: .confirmSignInWithTOTPCode)
 
         await action.execute(
             withDispatcher: MockDispatcher { _ in },
@@ -84,7 +85,8 @@ class VerifySignInChallengeTests: XCTestCase {
 
         let action = VerifySignInChallenge(challenge: mockRespondAuthChallenge,
                                            confirmSignEventData: mockConfirmEvent,
-                                           signInMethod: .apiBased(.userSRP))
+                                           signInMethod: .apiBased(.userSRP),
+                                           currentSignInStep: .confirmSignInWithTOTPCode)
 
         let passwordVerifierError = expectation(description: "passwordVerifierError")
 
@@ -133,7 +135,8 @@ class VerifySignInChallengeTests: XCTestCase {
 
         let action = VerifySignInChallenge(challenge: mockRespondAuthChallenge,
                                            confirmSignEventData: mockConfirmEvent,
-                                           signInMethod: .apiBased(.userSRP))
+                                           signInMethod: .apiBased(.userSRP),
+                                           currentSignInStep: .confirmSignInWithTOTPCode)
 
         let verifyChallengeComplete = expectation(description: "verifyChallengeComplete")
 
@@ -183,7 +186,8 @@ class VerifySignInChallengeTests: XCTestCase {
 
         let action = VerifySignInChallenge(challenge: mockRespondAuthChallenge,
                                            confirmSignEventData: mockConfirmEvent,
-                                           signInMethod: .apiBased(.userSRP))
+                                           signInMethod: .apiBased(.userSRP),
+                                           currentSignInStep: .confirmSignInWithTOTPCode)
 
         let passwordVerifierError = expectation(
             description: "passwordVerifierError")
@@ -233,7 +237,8 @@ class VerifySignInChallengeTests: XCTestCase {
 
         let action = VerifySignInChallenge(challenge: mockRespondAuthChallenge,
                                            confirmSignEventData: mockConfirmEvent,
-                                           signInMethod: .apiBased(.userSRP))
+                                           signInMethod: .apiBased(.userSRP),
+                                           currentSignInStep: .confirmSignInWithTOTPCode)
         let passwordVerifierError = expectation(description: "passwordVerifierError")
 
         let dispatcher = MockDispatcher { event in
@@ -279,7 +284,8 @@ class VerifySignInChallengeTests: XCTestCase {
 
         let action = VerifySignInChallenge(challenge: mockRespondAuthChallenge,
                                            confirmSignEventData: mockConfirmEvent,
-                                           signInMethod: .apiBased(.userSRP))
+                                           signInMethod: .apiBased(.userSRP),
+                                           currentSignInStep: .confirmSignInWithTOTPCode)
 
         let verifyChallengeComplete = expectation(description: "verifyChallengeComplete")
 
@@ -323,7 +329,8 @@ class VerifySignInChallengeTests: XCTestCase {
 
         let action = VerifySignInChallenge(challenge: mockRespondAuthChallenge,
                                            confirmSignEventData: mockConfirmEvent,
-                                           signInMethod: .apiBased(.userSRP))
+                                           signInMethod: .apiBased(.userSRP),
+                                           currentSignInStep: .confirmSignInWithTOTPCode)
 
         let verifyChallengeComplete = expectation(description: "verifyChallengeComplete")
 

@@ -12,7 +12,7 @@ import AWSCognitoIdentityProvider
 struct SetUpTOTP: Action {
 
     var identifier: String = "SetUpTOTP"
-    let authResponse: SignInResponseBehavior
+    let authResponse: RespondToAuthChallenge
     let signInEventData: SignInEventData
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
@@ -65,9 +65,9 @@ extension SetUpTOTP: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
-            "challengeName": authResponse.challengeName?.rawValue ?? "",
+            "challengeName": authResponse.challenge.rawValue,
             "session": authResponse.session?.masked() ?? "",
-            "challengeParameters": authResponse.challengeParameters ?? [:],
+            "challengeParameters": authResponse.parameters ?? [:],
             "signInEventData": signInEventData.debugDictionary
         ]
     }

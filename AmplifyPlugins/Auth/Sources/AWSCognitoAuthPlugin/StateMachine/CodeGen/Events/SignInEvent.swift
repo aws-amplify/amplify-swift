@@ -38,7 +38,7 @@ struct SignInEvent: StateMachineEvent {
 
         case respondDevicePasswordVerifier(SRPStateData, SignInResponseBehavior)
 
-        case initiateTOTPSetup(Username, SignInResponseBehavior)
+        case initiateTOTPSetup(Username, RespondToAuthChallenge)
 
         case throwPasswordVerifierError(SignInError)
 

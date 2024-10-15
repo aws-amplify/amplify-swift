@@ -22,7 +22,8 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
                 .resolvingChallenge(
                     .waitingForAnswer(
                         .testData(challenge: .softwareTokenMfa),
-                        .apiBased(.userSRP)
+                        .apiBased(.userSRP),
+                        .confirmSignInWithTOTPCode
                     ),
                     .totpMFA,
                     .apiBased(.userSRP))),

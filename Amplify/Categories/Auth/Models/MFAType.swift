@@ -12,4 +12,7 @@ public enum MFAType: String {
 
     /// Time-based One Time Password linked with an authenticator app
     case totp
+
+    /// Email Service linked with an email
+    case email
 }
