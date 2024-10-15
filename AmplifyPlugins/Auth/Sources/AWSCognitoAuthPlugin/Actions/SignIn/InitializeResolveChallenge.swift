@@ -51,7 +51,7 @@ struct InitializeResolveChallenge: Action {
         case .selectMFAType:
             return .continueSignInWithMFASelection(challenge.getAllowedMFATypesForSelection)
         case .emailMFA:
-            return .confirmSignInWithEmailMFACode(challenge.codeDeliveryDetails)
+            return .confirmSignInWithOTP(challenge.codeDeliveryDetails)
         case .setUpMFA:
             var allowedMFATypesForSetup = challenge.getAllowedMFATypesForSetup
             // remove SMS, as it is not supported and should not be sent back to the customer, since it could be misleading

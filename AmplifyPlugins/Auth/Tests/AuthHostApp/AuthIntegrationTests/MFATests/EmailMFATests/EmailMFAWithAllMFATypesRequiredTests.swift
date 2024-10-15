@@ -112,8 +112,8 @@ class EmailMFAWithAllMFATypesRequiredTests: AWSAuthBaseTest {
                 options: AuthSignInRequest.Options())
 
             // Step 4: Verify that the next step is to confirm the Email MFA code
-            guard case .confirmSignInWithEmailMFACode(let codeDetails) = result.nextStep else {
-                XCTFail("Expected .confirmSignInWithEmailMFACode step, got \(result.nextStep)")
+            guard case .confirmSignInWithOTP(let codeDetails) = result.nextStep else {
+                XCTFail("Expected .confirmSignInWithOTP step, got \(result.nextStep)")
                 return
             }
             if case .email(let destination) = codeDetails.destination {
@@ -193,8 +193,8 @@ class EmailMFAWithAllMFATypesRequiredTests: AWSAuthBaseTest {
                 challengeResponse: username + "@integTest.com")
 
             // Step 8: Verify that the next step is to confirm the Email MFA code
-            guard case .confirmSignInWithEmailMFACode(let deliveryDetails) = confirmSignInResult.nextStep else {
-                XCTFail("Expected .confirmSignInWithEmailMFACode step")
+            guard case .confirmSignInWithOTP(let deliveryDetails) = confirmSignInResult.nextStep else {
+                XCTFail("Expected .confirmSignInWithOTP step")
                 return
             }
             if case .email(let destination) = deliveryDetails.destination {

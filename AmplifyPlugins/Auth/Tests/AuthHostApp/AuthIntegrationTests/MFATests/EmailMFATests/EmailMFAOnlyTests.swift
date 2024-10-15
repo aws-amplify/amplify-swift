@@ -89,8 +89,8 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
                 challengeResponse: username + "@integTest.com")
 
             // Step 6: Ensure that the next step is to confirm the Email MFA code
-            guard case .confirmSignInWithEmailMFACode(let deliveryDetails) = confirmSignInResult.nextStep else {
-                XCTFail("Expected .confirmSignInWithEmailMFACode step, got \(confirmSignInResult.nextStep)")
+            guard case .confirmSignInWithOTP(let deliveryDetails) = confirmSignInResult.nextStep else {
+                XCTFail("Expected .confirmSignInWithOTP step, got \(confirmSignInResult.nextStep)")
                 return
             }
             if case .email(let destination) = deliveryDetails.destination {
@@ -137,7 +137,7 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
     ///         they should successfully complete the MFA process and sign in.
     ///
     /// - MFA Setup Flow:
-    ///     - Step 1: User signs in and receives the `confirmSignInWithEmailMFACode` challenge.
+    ///     - Step 1: User signs in and receives the `confirmSignInWithOTP` challenge.
     ///     - Step 2: User enters an incorrect MFA code and receives a `codeMismatch` error.
     ///     - Step 3: User enters the correct MFA code.
     ///     - Step 4: Sign-in completes, and the email is associated with the user account.
@@ -165,8 +165,8 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
                 options: options)
 
             // Step 6: Ensure that the next step is to confirm the Email MFA code
-            guard case .confirmSignInWithEmailMFACode(let deliveryDetails) = result.nextStep else {
-                XCTFail("Expected .confirmSignInWithEmailMFACode step, got \(result.nextStep)")
+            guard case .confirmSignInWithOTP(let deliveryDetails) = result.nextStep else {
+                XCTFail("Expected .confirmSignInWithOTP step, got \(result.nextStep)")
                 return
             }
             if case .email(let destination) = deliveryDetails.destination {

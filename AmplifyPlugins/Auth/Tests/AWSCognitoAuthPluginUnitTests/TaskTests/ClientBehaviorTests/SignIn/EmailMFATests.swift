@@ -97,14 +97,14 @@ class EmailMFATests: BasePluginTest {
         }
     }
 
-    /// Test a signIn with valid inputs getting confirmSignInWithEmailMFACode challenge
+    /// Test a signIn with valid inputs getting confirmSignInWithOTP challenge
     ///
     /// - Given: Given an auth plugin with mocked service.
     ///
     /// - When:
     ///    - I invoke signIn with valid values
     /// - Then:
-    ///    - I should get a .confirmSignInWithEmailMFACode response
+    ///    - I should get a .confirmSignInWithOTP response
     ///
     func testSuccessfulEmailMFACodeStep() async {
         var signInStepIterator = 0
@@ -134,8 +134,8 @@ class EmailMFATests: BasePluginTest {
                 username: "username",
                 password: "password",
                 options: AuthSignInRequest.Options())
-            guard case .confirmSignInWithEmailMFACode(let codeDetails) = result.nextStep else {
-                XCTFail("Result should be .confirmSignInWithEmailMFACode for next step, instead got: \(result.nextStep)")
+            guard case .confirmSignInWithOTP(let codeDetails) = result.nextStep else {
+                XCTFail("Result should be .confirmSignInWithOTP for next step, instead got: \(result.nextStep)")
                 return
             }
             if case .email(let destination) = codeDetails.destination {
@@ -232,7 +232,7 @@ class EmailMFATests: BasePluginTest {
             signInStepIterator = 1
             confirmSignInResult = try await plugin.confirmSignIn(
                 challengeResponse: "test@test.com")
-            guard case .confirmSignInWithEmailMFACode(let deliveryDetails) = confirmSignInResult.nextStep else {
+            guard case .confirmSignInWithOTP(let deliveryDetails) = confirmSignInResult.nextStep else {
                 XCTFail("Result should be .continueSignInWithEmailMFASetup but got: \(confirmSignInResult.nextStep)")
                 return
             }
