@@ -171,6 +171,16 @@ enum AuthPluginErrorConstants {
     static let userSignedOutError: AuthPluginErrorString = (
     "There is no user signed in to the Auth category",
     "SignIn to Auth category by using one of the sign in methods and then try again")
+
+    static let associateWebAuthnCredentialUserCancelledError: AuthPluginErrorString = (
+        "User cancelled the creation of a new WebAuthn credential",
+        "Invoke the associate WebAuthn credential flow again"
+    )
+
+    static let associateWebAuthnCredentialAlreadyExistError: AuthPluginErrorString = (
+        "The user already has associated a WebAuthn credential with this device",
+        "Remove the old WebAuthn credential and try again"
+    )
 }
 
 // Field validation errors

@@ -89,4 +89,66 @@ protocol CognitoUserPoolBehavior {
     /// Throws SetUserMFAPreferenceOutputError
     func setUserMFAPreference(input: SetUserMFAPreferenceInput) async throws -> SetUserMFAPreferenceOutput
 
+    /// Lists the WebAuthn credentials
+    ///
+    /// - Parameter input: A `ListWebAuthnCredentialsInput` that contains the access token
+    /// - Returns: a `ListWebAuthnCredentialsOutput` that contains the list of WebAuthn credentials
+    /// - Throws: See  __Possible Errors__ bellow.
+    ///
+    /// __Possible Errors:__
+    /// - `ForbiddenException` :  WAF rejected the request based on a web ACL associated with the user pool.
+    /// - `InternalErrorException` : Amazon Cognito encountered an internal error.
+    /// - `InvalidParameterException` : Amazon Cognito encountered an invalid parameter.
+    /// - `NotAuthorizedException` :  The user isn't authorized.
+    func listWebAuthnCredentials(input: ListWebAuthnCredentialsInput) async throws -> ListWebAuthnCredentialsOutput
+
+    /// Deletes a WebAuthn credential.
+    ///
+    /// - Parameter input: A `DeleteWebAuthnCredentialInput` that contains the access token and the ID of the credential to delete
+    /// - Returns: An empty `DeleteWebAuthnCredentialOutput`.
+    /// - Throws: See  __Possible Errors__ bellow.
+    ///
+    /// __Possible Errors:__
+    /// - `WebAuthnCredentialDeletionNotAllowedException` : The credential cannot be deleted.
+    /// - `ForbiddenException` :  WAF rejected the request based on a web ACL associated with the user pool.
+    /// - `InternalErrorException` : Amazon Cognito encountered an internal error.
+    /// - `InvalidParameterException` : Amazon Cognito encountered an invalid parameter.
+    /// - `NotAuthorizedException` :  The user isn't authorized.
+    func deleteWebAuthnCredential(input: DeleteWebAuthnCredentialInput) async throws -> DeleteWebAuthnCredentialOutput
+
+
+    /// Retrieves the available options for creating WebAuthn credentials.
+    ///
+    /// - Parameter input: A `GetWebAuthnRegistrationOptionsInput` that contains the access token
+    /// - Returns: A `GetWebAuthnRegistrationOptionsOutput` that contains the credential creation options
+    /// - Throws: See  __Possible Errors__ bellow.
+    ///
+    /// __Possible Errors:__
+    /// - `ForbiddenException` :  WAF rejected the request based on a web ACL associated with the user pool.
+    /// - `InternalErrorException` : Amazon Cognito encountered an internal error.
+    /// - `InvalidParameterException` : Amazon Cognito encountered an invalid parameter.
+    /// - `InvalidWebAuthnConfigurationException` : [no documentation found]
+    /// - `LimitExceededException` : The user has exceeded the limit for a this resource.
+    /// - `NotAuthorizedException` :  The user isn't authorized.
+    /// - `TooManyRequestsException` : The user has made too many requests for this operation
+    /// - `WebAuthnNotEnabledException` : WebAuthn is not enabled for this user
+    func getWebAuthnRegistrationOptions(input: GetWebAuthnRegistrationOptionsInput) async throws -> GetWebAuthnRegistrationOptionsOutput
+
+    /// Verifies a WebAuthn credential.
+    ///
+    /// - Parameter input: A `VerifyWebAuthnRegistrationResultInput` that contains the access token and the credential to verify
+    /// - Returns: An empty `VerifyWebAuthnRegistrationResultOutput`
+    /// - Throws: See  __Possible Errors__ bellow.
+    ///
+    /// __Possible Errors:__
+    /// - `CredentialAlreadyExistsException` : The credential already exists.
+    /// - `ForbiddenException` :  WAF rejected the request based on a web ACL associated with the user pool.
+    /// - `InternalErrorException` : Amazon Cognito encountered an internal error.
+    /// - `InvalidParameterException` : Amazon Cognito encountered an invalid parameter.
+    /// - `NotAuthorizedException` :  The user isn't authorized.
+    /// - `TooManyRequestsException` : The user has made too many requests for this operation.
+    /// - `WebAuthnAuthenticatorSelectionMismatchException` : The credential's authenticator doesn't match.
+    /// - `WebAuthnChallengeMismatchException` : The credential's challenge doesn't match.
+    /// - `WebAuthnRelyingPartyMismatchException` : The credential's relying party ID doesn't match.
+    func verifyWebAuthnRegistrationResult(input: VerifyWebAuthnRegistrationResultInput) async throws -> VerifyWebAuthnRegistrationResultOutput
 }

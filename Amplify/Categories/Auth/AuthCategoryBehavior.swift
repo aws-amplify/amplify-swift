@@ -12,7 +12,7 @@ public typealias AuthUIPresentationAnchor = ASPresentationAnchor
 #endif
 
 /// Behavior of the Auth category that clients will use
-public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDeviceBehavior {
+public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDeviceBehavior, AuthCategoryWebAuthnBehaviour {
 
     /// SignUp a user with the authentication provider.
     ///
