@@ -93,6 +93,10 @@ runs:
             DEVICE="Apple Vision Pro"
             OS_VERSION="1.1"
             ;;
+          visionOS/*)
+            DEVICE="Apple Vision Pro"
+            OS_VERSION="1.0"
+            ;;
         esac
 
         DESTINATION_MAPPING="{
