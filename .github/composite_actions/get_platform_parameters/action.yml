@@ -41,7 +41,7 @@ runs:
 
     - id: get-xcode-version
       run: |
-        LATEST_XCODE_VERSION=15.4.0
+        LATEST_XCODE_VERSION=16.0.0
         MINIMUM_XCODE_VERSION=15.0.1
 
         INPUT_XCODE_VERSION=${{ inputs.xcode_version }}
@@ -95,7 +95,7 @@ runs:
             ;;
           visionOS/*)
             DEVICE="Apple Vision Pro"
-            OS_VERSION="1.0"
+            OS_VERSION="2.0"
             ;;
         esac
 
