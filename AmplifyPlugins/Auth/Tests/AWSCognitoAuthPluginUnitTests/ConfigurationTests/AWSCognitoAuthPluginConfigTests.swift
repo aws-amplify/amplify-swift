@@ -236,4 +236,45 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
         }
     }
 
+    /// Test that the Auth plugin emits `InternalConfigureAuth` that is used by the Logging Category
+    ///
+    /// - Given: Given a valid config
+    /// - When:
+    ///    - I configure auth with the given configuration
+    /// - Then:
+    ///    - I should receive `InternalConfigureAuth` Hub event
+    ///
+    func testEmittingInternalConfigureAuthHubEvent() throws {
+        let expectation = expectation(description: "conifguration should complete")
+        let subscription = Amplify.Hub.publisher(for: .auth).sink { payload in
+
+            if payload.eventName == "InternalConfigureAuth" {
+                expectation.fulfill()
+            }
+        }
+        let plugin = AWSCognitoAuthPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let categoryConfig = AuthCategoryConfiguration(plugins: [
+            "awsCognitoAuthPlugin": [
+                "CredentialsProvider": [
+                    "CognitoIdentity": [
+                        "Default": [
+                            "PoolId": "cc",
+                             "Region": "us-east-1"
+                        ]
+                    ]
+                ]
+            ]
+        ])
+        let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
+        do {
+            try Amplify.configure(amplifyConfig)
+        } catch {
+            XCTFail("Should not throw error. \(error)")
+        }
+        wait(for: [expectation], timeout: 5.0)
+        subscription.cancel()
+    }
+
 }
