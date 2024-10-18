@@ -34,7 +34,7 @@ runs:
       run: |
         INPUT_PLATFORM=${{ inputs.platform }}
         case $INPUT_PLATFORM in
-          iOS|tvOS|watchOS|macOS) ;;
+          iOS|tvOS|watchOS|macOS|visionOS) ;;
           *) echo "Unsupported platform: $INPUT_PLATFORM"; exit 1 ;;
         esac
       shell: bash
