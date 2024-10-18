@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [iOS, macOS, tvOS, watchOS]
+        platform: [iOS, macOS, tvOS, watchOS, visionOS]
 
     uses: ./.github/workflows/build_scheme.yml
     with:
