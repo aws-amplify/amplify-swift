@@ -6,7 +6,6 @@
 //
 
 #if os(iOS) || os(macOS)
-
 import Foundation
 
 import XCTest
@@ -431,5 +430,4 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         }
     }
 }
-
 #endif

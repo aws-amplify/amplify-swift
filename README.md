@@ -35,9 +35,6 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 | watchOS   | 9+        | GA            |
 | visionOS  | 1+        | Preview*      |
 
-> To use Amplify Swift with visionOS, you'll need to target the `visionos-preview` branch.
-> For more information, see [Platform Support](https://github.com/aws-amplify/amplify-swift/tree/visionos-preview#platform-support) on the `visionos-preview` branch.
-
 ### Swift Version Support
 
 The current minimum supported Swift language version is **Swift 5.9**.

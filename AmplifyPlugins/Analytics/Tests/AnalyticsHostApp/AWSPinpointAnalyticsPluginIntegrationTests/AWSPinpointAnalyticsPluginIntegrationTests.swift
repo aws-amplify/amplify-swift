@@ -82,28 +82,16 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                                                properties: properties)
         Amplify.Analytics.identifyUser(userId: userId, userProfile: userProfile)
 
-        await fulfillment(of: [identifyUserEvent], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(
+             of: [identifyUserEvent],
+             timeout: TestCommonConstants.networkTimeout
+         )
 
         // Remove userId from the current endpoint
         let endpointClient = endpointClient()
         var currentProfile = await endpointClient.currentEndpointProfile()
         currentProfile.addUserId("")
         try await endpointClient.updateEndpointProfile(with: currentProfile)
-    }
-
-    /// Run this test when the number of endpoints for the userId exceeds the limit.
-    /// The profile should have permissions to run the "mobiletargeting:DeleteUserEndpoints" action.
-    func skip_testDeleteEndpointsForUser() async throws {
-        let userId = "userId"
-        let applicationId = await endpointClient().currentEndpointProfile().applicationId
-        let deleteEndpointsRequest = DeleteUserEndpointsInput(applicationId: applicationId,
-                                                              userId: userId)
-        do {
-            let response = try await pinpointClient().deleteUserEndpoints(input: deleteEndpointsRequest)
-            XCTAssertNotNil(response.endpointsResponse)
-        } catch {
-            XCTFail("Unexpected error when attempting to delete endpoints")
-        }
     }
 
     /// Given: Analytics plugin
