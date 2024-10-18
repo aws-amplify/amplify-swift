@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.42.2 (2024-10-18)
+
+### Bug Fixes
+
+- **Logging**: adding internal configure auth hub event listener to fix logging race condition (#3899)
+- **auth**: return configuration error upon invalid redirect URI in hosted ui (#3889)
+
 ## 2.42.1 (2024-09-24)
 
 ### Bug Fixes
