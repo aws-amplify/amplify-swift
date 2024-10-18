@@ -87,9 +87,10 @@ final class AWSCloudWatchLoggingCategoryClient {
         enum CognitoEventName: String {
             case signInAPI = "Auth.signInAPI"
             case signOutAPI = "Auth.signOutAPI"
+            case configured = "InternalConfigureAuth"
         }
         switch payload.eventName {
-        case HubPayload.EventName.Auth.signedIn, CognitoEventName.signInAPI.rawValue:
+        case HubPayload.EventName.Auth.signedIn, CognitoEventName.signInAPI.rawValue, CognitoEventName.configured.rawValue:
             takeUserIdentifierFromCurrentUser()
         case HubPayload.EventName.Auth.signedOut, CognitoEventName.signOutAPI.rawValue:
             self.userIdentifier = nil

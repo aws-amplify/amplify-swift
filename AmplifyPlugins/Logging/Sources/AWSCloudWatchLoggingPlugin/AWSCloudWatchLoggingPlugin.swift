@@ -154,10 +154,6 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
             let localStore: LoggingConstraintsLocalStore = UserDefaults.standard
             localStore.reset()
         }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
-            self.loggingClient.takeUserIdentifierFromCurrentUser()
-        }
     }
 }
 

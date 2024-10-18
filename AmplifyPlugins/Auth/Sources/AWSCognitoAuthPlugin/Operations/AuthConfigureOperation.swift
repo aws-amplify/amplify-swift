@@ -37,6 +37,9 @@ class AuthConfigureOperation: ConfigureOperation {
     override public func main() {
         if isCancelled {
             finish()
+            dispatch(result: .failure(AuthError.configuration(
+                "Configuration operation was cancelled",
+                "", nil)))
             return
         }
 
@@ -51,6 +54,7 @@ class AuthConfigureOperation: ConfigureOperation {
             for await state in stateSequences {
                 if case .configured = state {
                     finish()
+                    dispatch(result: .success(()))
                     break
                 }
             }
