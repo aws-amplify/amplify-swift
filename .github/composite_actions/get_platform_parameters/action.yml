@@ -124,7 +124,7 @@ runs:
           "iOS": "iphonesimulator",
           "tvOS": "appletvsimulator",
           "watchOS": "watchsimulator",
-          "visionOS": "xrosimulator",
+          "visionOS": "xrsimulator",
           "macOS": "macosx"
         }'
         echo "sdk=$(echo $SDK_MAPPING | jq -r .$INPUT_PLATFORM)" >> $GITHUB_OUTPUT
