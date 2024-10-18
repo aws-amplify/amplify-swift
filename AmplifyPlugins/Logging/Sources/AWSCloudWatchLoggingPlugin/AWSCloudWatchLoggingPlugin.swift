@@ -155,9 +155,7 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
             localStore.reset()
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
-            self.loggingClient.takeUserIdentifierFromCurrentUser()
-        }
+        self.loggingClient.takeUserIdentifierFromCurrentUser()
     }
 }
 
