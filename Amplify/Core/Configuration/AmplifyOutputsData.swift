@@ -334,12 +334,9 @@ extension Amplify {
     /// - Tag: Amplify.configure
     @_spi(InternalAmplifyConfiguration)
     public static func configure(_ configuration: AmplifyOutputsData) throws {
-        // Always configure logging first since Auth dependings on logging
-        try configure(CategoryType.logging.category, using: configuration)
-
         // Always configure Hub and Auth next, so they are available to other categories.
         // Auth is a special case for other plugins which depend on using Auth when being configured themselves.
-        let manuallyConfiguredCategories = [CategoryType.hub, .auth]
+        let manuallyConfiguredCategories = [CategoryType.hub, .auth, .logging]
         for categoryType in manuallyConfiguredCategories {
             try configure(categoryType.category, using: configuration)
         }
