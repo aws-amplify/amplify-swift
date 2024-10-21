@@ -27,6 +27,12 @@ on:
         required: true
         default: true
         type: boolean
+      visionos:
+        description: 'ᯅ visionOS'
+        required: true
+        default: true
+        type: boolean 
+                
   push:
     branches-ignore:
       - main
@@ -46,12 +52,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [iOS, macOS, tvOS, watchOS]
+        platform: [iOS, macOS, tvOS, watchOS, visionOS]
         exclude:
           - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
           - platform: ${{ github.event.inputs.macos == 'false' && 'macOS' || 'None' }}
           - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
           - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
+          - platform: ${{ github.event.inputs.visionos == 'false' && 'visionOS' || 'None' }}
     uses: ./.github/workflows/build_scheme.yml
     with:
       scheme: Amplify-Package
