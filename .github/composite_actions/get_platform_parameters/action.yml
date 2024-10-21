@@ -34,14 +34,14 @@ runs:
       run: |
         INPUT_PLATFORM=${{ inputs.platform }}
         case $INPUT_PLATFORM in
-          iOS|tvOS|watchOS|macOS) ;;
+          iOS|tvOS|watchOS|macOS|visionOS) ;;
           *) echo "Unsupported platform: $INPUT_PLATFORM"; exit 1 ;;
         esac
       shell: bash
 
     - id: get-xcode-version
       run: |
-        LATEST_XCODE_VERSION=15.3.0
+        LATEST_XCODE_VERSION=16.0.0
         MINIMUM_XCODE_VERSION=15.0.1
 
         INPUT_XCODE_VERSION=${{ inputs.xcode_version }}
@@ -66,8 +66,8 @@ runs:
 
         case $INPUT_PLATFORM/$INPUT_XCODE_VERSION in
           iOS/latest) 
-            DEVICE="iPhone 15"
-            OS_VERSION="17.4"
+            DEVICE="iPhone 16"
+            OS_VERSION="18.0"
             ;;
           iOS/*)
             DEVICE="iPhone 14"
@@ -75,19 +75,27 @@ runs:
             ;;
           tvOS/latest)
             DEVICE="Apple TV 4K (3rd generation)"
-            OS_VERSION="17.4"
+            OS_VERSION="18.0"
             ;;
           tvOS/*)
             DEVICE="Apple TV 4K (3rd generation)"
             OS_VERSION="17.0"
             ;;
           watchOS/latest)
-            DEVICE="Apple Watch Series 9 (45mm)"
-            OS_VERSION="10.4"
+            DEVICE="Apple Watch Series 10 (46mm)"
+            OS_VERSION="11.0"
             ;;
           watchOS/*)
             DEVICE="Apple Watch Series 8 (45mm)"
             OS_VERSION="10.0"
+            ;;
+          visionOS/latest)
+            DEVICE="Apple Vision Pro"
+            OS_VERSION="2.0"
+            ;;
+          visionOS/*)
+            DEVICE="Apple Vision Pro"
+            OS_VERSION="1.0"
             ;;
         esac
 
@@ -95,6 +103,7 @@ runs:
           \"iOS\": \"platform=iOS Simulator,name=$DEVICE,OS=$OS_VERSION\",
           \"tvOS\": \"platform=tvOS Simulator,name=$DEVICE,OS=$OS_VERSION\",
           \"watchOS\": \"platform=watchOS Simulator,name=$DEVICE,OS=$OS_VERSION\",
+          \"visionOS\": \"platform=visionOS Simulator,name=$DEVICE,OS=$OS_VERSION\",
           \"macOS\": \"platform=macOS,arch=arm64\"
         }"
 
@@ -119,8 +128,8 @@ runs:
           "iOS": "iphonesimulator",
           "tvOS": "appletvsimulator",
           "watchOS": "watchsimulator",
+          "visionOS": "xrsimulator",
           "macOS": "macosx"
         }'
         echo "sdk=$(echo $SDK_MAPPING | jq -r .$INPUT_PLATFORM)" >> $GITHUB_OUTPUT
       shell: bash
-

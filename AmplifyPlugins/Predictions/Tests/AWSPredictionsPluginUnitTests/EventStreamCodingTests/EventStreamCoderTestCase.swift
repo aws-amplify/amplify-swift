@@ -29,7 +29,8 @@ final class EventStreamCoderTestCase: XCTestCase {
             "string_ex": .string("abc")
         ]
 
-        let data = try JSONEncoder().encode(model)
+        let encoder = JSONEncoder()
+        let data = try encoder.encode(model)
         let encoded = EventStream.Encoder().encode(payload: data, headers: headers)
         let encodedBytes = [UInt8](encoded)
 

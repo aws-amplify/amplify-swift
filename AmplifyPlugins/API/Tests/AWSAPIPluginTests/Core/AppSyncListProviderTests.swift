@@ -369,7 +369,7 @@ class AppSyncListProviderTests: XCTestCase {
                 
             }
         }
-        await fulfillment(of: [loadComplete], timeout: 1)
+        await fulfillment(of: [loadComplete], timeout: 2)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
             return
