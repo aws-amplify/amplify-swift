@@ -208,7 +208,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                     let firstEventData = Data(firstEventJSON.utf8)
                                     guard let mutationEventPost = try? JSONDecoder().decode(
                                         Post.self, from: firstEventData
-                                    ) else { return XCTFail() }
+                                    ) else { return XCTFail("expected Post") }
 
                                     XCTAssertEqual(mutationEventPost.id, post.id)
                                     XCTAssertEqual(mutationEventPost.title, post.title)
