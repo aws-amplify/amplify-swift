@@ -27,7 +27,7 @@ on:
         required: true
         default: true
         type: boolean 
-        w
+
 permissions:
     contents: read
 
