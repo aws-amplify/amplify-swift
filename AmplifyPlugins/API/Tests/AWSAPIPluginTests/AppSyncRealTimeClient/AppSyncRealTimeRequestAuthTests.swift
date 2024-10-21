@@ -53,7 +53,10 @@ class AppSyncRealTimeRequestAuthTests: XCTestCase {
             amzDate: date
         )
 
-        XCTAssertEqual(toJson(iamAuth)?.shrink(), """
+        // Convert to JSON and then parse it back into a dictionary for comparison
+        let iamAuthJson = toJson(iamAuth)?.shrink()
+
+        let expectedJsonString = """
         {
             "accept": "application\\/json, text\\/javascript",
             "Authorization": "\(token)",
@@ -63,7 +66,24 @@ class AppSyncRealTimeRequestAuthTests: XCTestCase {
             "x-amz-date": "\(date)",
             "X-Amz-Security-Token": "\(securityToken)"
         }
-        """.shrink())
+        """.shrink()
+
+        // Convert both JSON strings to dictionaries for comparison
+        let iamAuthDict = convertToDictionary(text: iamAuthJson)
+        let expectedDict = convertToDictionary(text: expectedJsonString)
+
+        // Assert that the dictionaries are equal using the custom method
+        XCTAssertTrue(areDictionariesEqual(iamAuthDict, expectedDict))
+    }
+
+    private func convertToDictionary(text: String?) -> [String: Any]? {
+        guard let data = text?.data(using: .utf8) else { return nil }
+        return try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+    }
+
+    private func areDictionariesEqual(_ lhs: [String: Any]?, _ rhs: [String: Any]?) -> Bool {
+        guard let lhs = lhs, let rhs = rhs else { return false }
+        return NSDictionary(dictionary: lhs).isEqual(to: rhs)
     }
 
     func testAppSyncRealTimeRequestAuth_encodeStartRequestWithCognitoAuth() {
@@ -124,8 +144,9 @@ class AppSyncRealTimeRequestAuthTests: XCTestCase {
         let request = AppSyncRealTimeRequest.start(
             .init(id: id, data: data, auth: .iam(iamAuth))
         )
-        let requestJson = toJson(request)
-        XCTAssertEqual(requestJson?.shrink(), """
+        let requestJson = toJson(request)?.shrink()
+
+        let expectedJsonString = """
         {
             "id": "\(id)",
             "payload": {
@@ -144,7 +165,14 @@ class AppSyncRealTimeRequestAuthTests: XCTestCase {
             },
             "type": "start"
         }
-        """.shrink())
+        """.shrink()
+
+        // Convert both JSON strings to dictionaries for comparison
+        let requestDict = convertToDictionary(text: requestJson)
+        let expectedDict = convertToDictionary(text: expectedJsonString)
+
+        // Assert that the dictionaries are equal using the custom method
+        XCTAssertTrue(areDictionariesEqual(requestDict, expectedDict))
     }
 
     private func toJson(_ value: Encodable) -> String? {
