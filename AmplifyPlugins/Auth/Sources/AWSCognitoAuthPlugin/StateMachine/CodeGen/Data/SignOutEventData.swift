@@ -18,6 +18,10 @@ struct SignOutEventData {
         self.globalSignOut = globalSignOut
         self.presentationAnchor = presentationAnchor
     }
+    #else
+    init(globalSignOut: Bool) {
+        self.globalSignOut = globalSignOut
+    }
     #endif
 }
 
