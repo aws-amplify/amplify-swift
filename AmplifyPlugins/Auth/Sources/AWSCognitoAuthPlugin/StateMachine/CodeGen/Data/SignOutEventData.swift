@@ -11,18 +11,12 @@ struct SignOutEventData {
 
     let globalSignOut: Bool
 
-    #if os(iOS) || os(macOS) || os(visionOS)
     let presentationAnchor: AuthUIPresentationAnchor?
 
     init(globalSignOut: Bool, presentationAnchor: AuthUIPresentationAnchor? = nil) {
         self.globalSignOut = globalSignOut
         self.presentationAnchor = presentationAnchor
     }
-    #else
-    init(globalSignOut: Bool) {
-        self.globalSignOut = globalSignOut
-    }
-    #endif
 }
 
 extension SignOutEventData: Equatable { }
@@ -50,9 +44,8 @@ extension SignOutEventData: Codable {
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         globalSignOut = try values.decode(Bool.self, forKey: .globalSignOut)
-        #if os(iOS) || os(macOS) || os(visionOS)
         presentationAnchor = nil
-        #endif
+
     }
 
     func encode(to encoder: Encoder) throws {
