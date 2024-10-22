@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.43.0 (2024-10-22)
+
+### Features
+
+- adding vision os preview  (#3898)
+
 ## 2.42.2 (2024-10-18)
 
 ### Bug Fixes
