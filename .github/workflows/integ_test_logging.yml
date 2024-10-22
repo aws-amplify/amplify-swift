@@ -40,7 +40,5 @@ jobs:
       platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/Logging/Tests/AWSCloudWatchLoggingPluginHostApp
       resource_subfolder: logging
-      xcode_version: ${{ matrix.platform == 'watchOS' && '15.0' || 'latest' }}
-      destination: ${{ matrix.platform == 'watchOS' && 'platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=10.2' || '' }}
       timeout-minutes: 60
     secrets: inherit

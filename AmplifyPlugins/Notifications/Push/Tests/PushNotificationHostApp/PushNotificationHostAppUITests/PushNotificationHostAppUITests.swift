@@ -109,7 +109,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
         }
     }
 
-#if !os(tvOS)
+#if !os(tvOS) && !os(visionOS)
     @MainActor
     func testAppInBackground_withPinpointRemoteNotification_recordNotificationOpened() async throws {
         initAmplify()

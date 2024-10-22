@@ -22,6 +22,11 @@ on:
         required: true
         default: true
         type: boolean
+      visionos:
+        description: 'ᯅ visionOS'
+        required: true
+        default: true
+        type: boolean 
 
 permissions:
     contents: read

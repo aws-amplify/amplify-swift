@@ -45,6 +45,7 @@ extension SignOutEventData: Codable {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         globalSignOut = try values.decode(Bool.self, forKey: .globalSignOut)
         presentationAnchor = nil
+
     }
 
     func encode(to encoder: Encoder) throws {
