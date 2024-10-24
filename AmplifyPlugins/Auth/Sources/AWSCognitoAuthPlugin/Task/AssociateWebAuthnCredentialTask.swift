@@ -171,12 +171,15 @@ extension AssociateWebAuthnCredentialTask: ASAuthorizationControllerDelegate {
     }
 
     private func isMatchedExcludedCredential(_ code: ASAuthorizationError.Code) -> Bool {
-        // ASAuthorizationError.matchedExcludedCredential is only defined in iOS 18/macOS 15
-        if #available(iOS 18.0, macOS 15.0, *) {
-            return code == .matchedExcludedCredential
-        } else {
-            return code.rawValue == 1006
-        }
+        // ASAuthorizationError.matchedExcludedCredential is only defined in iOS 18/macOS 15,
+        // This check doesn't work correctly without these runtimes installed.
+        // Until we require Xcode 16, we'll just use its rawValue
+        // if #available(iOS 18.0, macOS 15.0, *) {
+        //     return code == .matchedExcludedCredential
+        // } else {
+        //     return code.rawValue == 1006
+        // }
+        return code.rawValue == 1006
     }
 }
 
