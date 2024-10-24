@@ -43,7 +43,7 @@ struct UserPoolSignInHelper: DefaultLogger {
         } else if case .resolvingChallenge(let challengeState, _, _) = signInState,
                   case .waitingForAnswer(_, _, let signInStep) = challengeState {
             return .init(nextStep: signInStep)
-            
+
         } else if case .resolvingTOTPSetup(let totpSetupState, _) = signInState,
                   case .error(_, let signInError) = totpSetupState {
             return try validateError(signInError: signInError)
@@ -87,11 +87,11 @@ struct UserPoolSignInHelper: DefaultLogger {
                let idToken = authenticationResult.idToken,
                let accessToken = authenticationResult.accessToken,
                let refreshToken = authenticationResult.refreshToken {
-
-                let userPoolTokens = AWSCognitoUserPoolTokens(idToken: idToken,
-                                                              accessToken: accessToken,
-                                                              refreshToken: refreshToken,
-                                                              expiresIn: authenticationResult.expiresIn)
+                let userPoolTokens = AWSCognitoUserPoolTokens(
+                    idToken: idToken,
+                    accessToken: accessToken,
+                    refreshToken: refreshToken,
+                    expiresIn: authenticationResult.expiresIn)
                 let signedInData = SignedInData(
                     signedInDate: Date(),
                     signInMethod: signInMethod,
@@ -109,15 +109,18 @@ struct UserPoolSignInHelper: DefaultLogger {
                 let parameters = response.challengeParameters
                 let respondToAuthChallenge = RespondToAuthChallenge(
                     challenge: challengeName,
+                    availableChallenges: response.availableChallenges ?? [],
                     username: username,
                     session: response.session,
                     parameters: parameters)
 
                 switch challengeName {
-                case .smsMfa, .customChallenge, .newPasswordRequired, .softwareTokenMfa, .selectMfaType, .emailOtp:
+                case .smsMfa, .customChallenge, .newPasswordRequired, .softwareTokenMfa, .selectMfaType, .smsOtp, .emailOtp, .selectChallenge:
                     return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
                 case .deviceSrpAuth:
                     return SignInEvent(eventType: .initiateDeviceSRP(username, response))
+                case .webAuthn:
+                    return SignInEvent(eventType: .initiateWebAuthnSignIn(username, respondToAuthChallenge))
                 case .mfaSetup:
                     let allowedMFATypesForSetup = respondToAuthChallenge.getAllowedMFATypesForSetup
                     if allowedMFATypesForSetup.contains(.totp) && allowedMFATypesForSetup.contains(.email) {

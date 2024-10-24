@@ -8,6 +8,9 @@
 /// Set of allowed MFA types that would be used for continuing sign in during MFA selection step
 public typealias AllowedMFATypes = Set<MFAType>
 
+/// Set of available factors that would be used for continuing/confirming sign in
+public typealias AvailableAuthFactorTypes = Set<AuthFactorType>
+
 /// Auth SignIn flow steps
 ///
 ///
@@ -25,6 +28,10 @@ public enum AuthSignInStep {
     /// Auth step required the user to give a new password.
     ///
     case confirmSignInWithNewPassword(AdditionalInfo?)
+
+    /// Auth step required the user to give a password.
+    ///
+    case confirmSignInWithPassword
 
     /// Auth step is TOTP multi factor authentication.
     ///
@@ -47,11 +54,14 @@ public enum AuthSignInStep {
     ///
     case continueSignInWithMFASetupSelection(AllowedMFATypes)
 
-
     /// Auth step is for confirming sign in with OTP
     ///
     /// OTP for the factor will be sent to the delivery medium.
     case confirmSignInWithOTP(AuthCodeDeliveryDetails)
+
+    /// Auth step is for continuing sign in by selecting the first factor that would be used for signing in
+    ///
+    case continueSignInWithFirstFactorSelection(AvailableAuthFactorTypes)
 
     /// Auth step required the user to change their password.
     ///

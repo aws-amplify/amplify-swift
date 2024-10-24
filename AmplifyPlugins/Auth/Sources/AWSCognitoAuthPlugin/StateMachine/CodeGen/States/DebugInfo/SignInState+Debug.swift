@@ -50,6 +50,12 @@ extension SignInState: CustomDebugDictionaryConvertible {
                 "SignInEventData": signInEventData.debugDictionary]
         case .error:
             additionalMetadataDictionary = [:]
+        case .signingInWithUserAuth(let signInEventData):
+            additionalMetadataDictionary = ["signingInWithUserAuth": signInEventData.debugDictionary]
+        case .signingInWithWebAuthn(let webAuthnState):
+            additionalMetadataDictionary = [
+                "signingInWithWebAuthn": webAuthnState.debugDictionary
+            ]
         }
         return [type: additionalMetadataDictionary]
     }

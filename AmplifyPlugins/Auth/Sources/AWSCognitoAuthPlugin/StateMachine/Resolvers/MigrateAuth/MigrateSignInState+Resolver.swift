@@ -41,7 +41,7 @@ extension MigrateSignInState {
         private func resolveNotStarted(byApplying signInEvent: SignInEvent)
         -> StateResolution<MigrateSignInState> {
             switch signInEvent.eventType {
-            case .initiateMigrateAuth(let signInEventData, let deviceMetadata):
+            case .initiateMigrateAuth(let signInEventData, let deviceMetadata, let respondToAuthChallenge):
                 guard let username = signInEventData.username, !username.isEmpty else {
                     let error = SignInError.inputValidation(
                         field: AuthPluginErrorConstants.signInUsernameError.field
@@ -59,7 +59,8 @@ extension MigrateSignInState {
                     username: username,
                     password: password,
                     clientMetadata: signInEventData.clientMetadata,
-                    deviceMetadata: deviceMetadata)
+                    deviceMetadata: deviceMetadata,
+                    respondToAuthChallenge: respondToAuthChallenge)
                 return StateResolution(
                     newState: MigrateSignInState.signingIn(signInEventData),
                     actions: [action]

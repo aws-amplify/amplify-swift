@@ -16,15 +16,18 @@ struct InitiateMigrateAuth: Action {
     let password: String
     let clientMetadata: [String: String]
     let deviceMetadata: DeviceMetadata
+    let respondToAuthChallenge: RespondToAuthChallenge?
 
     init(username: String,
          password: String,
          clientMetadata: [String: String],
-         deviceMetadata: DeviceMetadata) {
+         deviceMetadata: DeviceMetadata,
+         respondToAuthChallenge: RespondToAuthChallenge?) {
         self.username = username
         self.password = password
         self.clientMetadata = clientMetadata
         self.deviceMetadata = deviceMetadata
+        self.respondToAuthChallenge = respondToAuthChallenge
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
@@ -36,16 +39,34 @@ struct InitiateMigrateAuth: Action {
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
                 credentialStoreClient: authEnv.credentialsClient)
-            let request = await InitiateAuthInput.migrateAuth(
-                username: username,
-                password: password,
-                clientMetadata: clientMetadata,
-                asfDeviceId: asfDeviceId,
-                deviceMetadata: deviceMetadata,
-                environment: userPoolEnv)
 
-            let responseEvent = try await sendRequest(request: request,
-                                                      environment: userPoolEnv)
+            let responseEvent: StateMachineEvent
+            if let session = respondToAuthChallenge?.session {
+                let request = await RespondToAuthChallengeInput.userPasswordInputForUserAuth(
+                    username: username,
+                    password: password,
+                    session: session,
+                    clientMetadata: clientMetadata,
+                    asfDeviceId: asfDeviceId,
+                    deviceMetadata: deviceMetadata,
+                    environment: userPoolEnv)
+                responseEvent = try await sendRequest(
+                    request: request,
+                    environment: userPoolEnv)
+
+            } else {
+                let request = await InitiateAuthInput.migrateAuth(
+                    username: username,
+                    password: password,
+                    clientMetadata: clientMetadata,
+                    asfDeviceId: asfDeviceId,
+                    deviceMetadata: deviceMetadata,
+                    environment: userPoolEnv)
+                responseEvent = try await sendRequest(
+                    request: request,
+                    environment: userPoolEnv)
+            }
+
             logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
             await dispatcher.send(responseEvent)
 
@@ -64,6 +85,18 @@ struct InitiateMigrateAuth: Action {
 
     }
 
+    private func sendRequest(request: RespondToAuthChallengeInput,
+                             environment: UserPoolEnvironment) async throws -> StateMachineEvent {
+
+        let cognitoClient = try environment.cognitoUserPoolFactory()
+        logVerbose("\(#fileID) Starting execution", environment: environment)
+
+        let response = try await cognitoClient.respondToAuthChallenge(input: request)
+        return UserPoolSignInHelper.parseResponse(response,
+                                                  for: username,
+                                                  signInMethod: .apiBased(.userPassword))
+    }
+
     private func sendRequest(request: InitiateAuthInput,
                              environment: UserPoolEnvironment) async throws -> StateMachineEvent {
 
@@ -71,22 +104,14 @@ struct InitiateMigrateAuth: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         let response = try await cognitoClient.initiateAuth(input: request)
-        return try UserPoolSignInHelper.parseResponse(response,
-                                                      for: username,
-                                                      signInMethod: .apiBased(.userPassword))
+        return UserPoolSignInHelper.parseResponse(response,
+                                                  for: username,
+                                                  signInMethod: .apiBased(.userPassword))
     }
 
 }
 
-extension InitiateMigrateAuth: DefaultLogger {
-    public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
-    }
-
-    public var log: Logger {
-        Self.log
-    }
-}
+extension InitiateMigrateAuth: DefaultLogger { }
 
 extension InitiateMigrateAuth: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

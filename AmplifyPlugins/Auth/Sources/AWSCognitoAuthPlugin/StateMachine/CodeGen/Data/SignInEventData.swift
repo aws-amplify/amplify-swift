@@ -24,6 +24,13 @@ struct SignInEventData {
         self.clientMetadata = clientMetadata
         self.signInMethod = signInMethod
     }
+
+    var authFlowType: AuthFlowType? {
+        if case .apiBased(let authFlowType) = signInMethod {
+            return authFlowType
+        }
+        return nil
+    }
 }
 
 extension SignInEventData: Equatable { }

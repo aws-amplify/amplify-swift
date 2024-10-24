@@ -48,10 +48,10 @@ struct InitializeResolveChallenge: Action {
             return .confirmSignInWithCustomChallenge(challenge.parameters)
         case .newPasswordRequired:
             return .confirmSignInWithNewPassword(challenge.parameters)
+        case .passwordRequired:
+            return .confirmSignInWithPassword
         case .selectMFAType:
             return .continueSignInWithMFASelection(challenge.getAllowedMFATypesForSelection)
-        case .emailMFA:
-            return .confirmSignInWithOTP(challenge.codeDeliveryDetails)
         case .setUpMFA:
             var allowedMFATypesForSetup = challenge.getAllowedMFATypesForSetup
             // remove SMS, as it is not supported and should not be sent back to the customer, since it could be misleading
@@ -65,6 +65,11 @@ struct InitializeResolveChallenge: Action {
             throw SignInError.unknown(message: "Unable to determine next step from challenge:\n\(challenge)")
         case .unknown(let cognitoChallengeType):
             throw SignInError.unknown(message: "Challenge not supported\(cognitoChallengeType)")
+        case .smsOTP, .emailOTP:
+            let delivery = challenge.codeDeliveryDetails
+            return .confirmSignInWithOTP(delivery)
+        case .selectAuthFactor:
+            return .continueSignInWithFirstFactorSelection(challenge.getAllowedAuthFactorsForSelection)
         }
     }
 

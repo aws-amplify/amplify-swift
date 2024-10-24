@@ -49,7 +49,7 @@ extension SRPSignInState {
 
         private func resolveNotStarted(byApplying signInEvent: SignInEvent) -> StateResolution<SRPSignInState> {
             switch signInEvent.eventType {
-            case .initiateSignInWithSRP(let signInEventData, let deviceMetadata):
+            case .initiateSignInWithSRP(let signInEventData, let deviceMetadata, let respondToAuthChallenge):
                 guard let username = signInEventData.username, !username.isEmpty else {
                     let error = SignInError.inputValidation(
                         field: AuthPluginErrorConstants.signInUsernameError.field
@@ -72,7 +72,8 @@ extension SRPSignInState {
                     password: password,
                     authFlowType: authFlowType,
                     deviceMetadata: deviceMetadata,
-                    clientMetadata: signInEventData.clientMetadata)
+                    clientMetadata: signInEventData.clientMetadata,
+                    respondToAuthChallenge: respondToAuthChallenge)
                 return StateResolution(
                     newState: SRPSignInState.initiatingSRPA(signInEventData),
                     actions: [action]

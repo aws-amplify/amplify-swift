@@ -22,10 +22,11 @@ extension SignInState {
 
             switch oldState {
             case .notStarted:
-                if case .initiateSignInWithSRP(let signInEventData, let deviceMetadata) = event.isSignInEvent {
+                if case .initiateSignInWithSRP(let signInEventData, let deviceMetadata, let respondToAuthChallenge) = event.isSignInEvent {
                     let action = StartSRPFlow(
                         signInEventData: signInEventData,
-                        deviceMetadata: deviceMetadata)
+                        deviceMetadata: deviceMetadata,
+                        respondToAuthChallenge: respondToAuthChallenge)
                     return .init(newState: .signingInWithSRP(.notStarted, signInEventData),
                                  actions: [action])
                 }
@@ -40,7 +41,8 @@ extension SignInState {
                 if case .initiateCustomSignInWithSRP(let signInEventData, let deviceMetadata) = event.isSignInEvent {
                     let action = StartSRPFlow(
                         signInEventData: signInEventData,
-                        deviceMetadata: deviceMetadata)
+                        deviceMetadata: deviceMetadata,
+                        respondToAuthChallenge: nil)
                     return .init(newState: .signingInWithSRPCustom(.notStarted, signInEventData),
                                  actions: [action])
                 }
@@ -48,11 +50,19 @@ extension SignInState {
                     let action = InitializeHostedUISignIn(options: options)
                     return .init(newState: .signingInWithHostedUI(.notStarted), actions: [action])
                 }
-                if case .initiateMigrateAuth(let signInEventData, let deviceMetadata) = event.isSignInEvent {
+                if case .initiateMigrateAuth(let signInEventData, let deviceMetadata, let respondToAuthChallenge) = event.isSignInEvent {
                     let action = StartMigrateAuthFlow(
                         signInEventData: signInEventData,
-                        deviceMetadata: deviceMetadata)
+                        deviceMetadata: deviceMetadata,
+                        respondToAuthChallenge: respondToAuthChallenge)
                     return .init(newState: .signingInViaMigrateAuth(.notStarted, signInEventData),
+                                 actions: [action])
+                }
+                if case .initiateUserAuth(let signInEventData, let deviceMetadata) = event.isSignInEvent {
+                    let action = InitiateUserAuth(
+                        signInEventData: signInEventData,
+                        deviceMetadata: deviceMetadata)
+                    return .init(newState: .signingInWithUserAuth(signInEventData),
                                  actions: [action])
                 }
                 return .from(oldState)
@@ -220,7 +230,25 @@ extension SignInState {
                                  actions: [action])
                 }
 
-                // This could when we have nested challenges
+                if case .initiateSignInWithSRP(let signInEventData, let deviceMetadata, let respondToAuthChallenge) = event.isSignInEvent {
+                    let action = StartSRPFlow(
+                        signInEventData: signInEventData,
+                        deviceMetadata: deviceMetadata,
+                        respondToAuthChallenge: respondToAuthChallenge)
+                    return .init(newState: .signingInWithSRP(.notStarted, signInEventData),
+                                 actions: [action])
+                }
+
+                if case .initiateMigrateAuth(let signInEventData, let deviceMetadata, let respondToAuthChallenge) = event.isSignInEvent {
+                    let action = StartMigrateAuthFlow(
+                        signInEventData: signInEventData,
+                        deviceMetadata: deviceMetadata,
+                        respondToAuthChallenge: respondToAuthChallenge)
+                    return .init(newState: .signingInViaMigrateAuth(.notStarted, signInEventData),
+                                 actions: [action])
+                }
+
+                // This could happen when we have nested challenges
                 // Example newPasswordRequired -> sms_mfa
                 if let signInEvent = event as? SignInEvent,
                    case .receivedChallenge(let challenge) = signInEvent.eventType {
@@ -244,6 +272,17 @@ extension SignInState {
                                   password: nil,
                                   signInMethod: signInMethod)),
                         actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateWebAuthnSignIn(let username, let respondToAuthChallenge) = signInEvent.eventType {
+                    let action = InitializeWebAuthn(
+                        username: username,
+                        respondToAuthChallenge: respondToAuthChallenge)
+                    let subState = WebAuthnSignInState.notStarted
+                    return .init(newState: .signingInWithWebAuthn(
+                        subState
+                    ), actions: [action])
                 }
 
                 let resolution = SignInChallengeState.Resolver().resolve(
@@ -382,6 +421,61 @@ extension SignInState {
                 return .from(oldState)
             case .signedIn, .error:
                 return .from(oldState)
+            case .signingInWithUserAuth(let signInEventData):
+                if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
+                    return .init(newState: .signedIn(signedInData),
+                                 actions: [SignInComplete(signedInData: signedInData)])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .receivedChallenge(let challenge) = signInEvent.eventType {
+                    let action = InitializeResolveChallenge(challenge: challenge,
+                                                            signInMethod: signInEventData.signInMethod)
+                    let subState = SignInChallengeState.notStarted
+                    return .init(newState: .resolvingChallenge(
+                        subState,
+                        challenge.challenge.authChallengeType,
+                        signInEventData.signInMethod
+                    ), actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateWebAuthnSignIn(let username, let respondToAuthChallenge) = signInEvent.eventType {
+                    let action = InitializeWebAuthn(
+                        username: username,
+                        respondToAuthChallenge: respondToAuthChallenge)
+                    let subState = WebAuthnSignInState.notStarted
+                    return .init(newState: .signingInWithWebAuthn(
+                        subState
+                    ), actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .throwAuthError(let error) = signInEvent.eventType {
+                    let action = ThrowSignInError(error: error)
+                    return StateResolution(
+                        newState: .error,
+                        actions: [action])
+
+                }
+                return .from(oldState)
+            case .signingInWithWebAuthn(let oldState):
+
+                if let signInEvent = event as? SignInEvent,
+                   case .throwAuthError(let error) = signInEvent.eventType {
+                    let action = ThrowSignInError(error: error)
+                    return StateResolution(
+                        newState: .error,
+                        actions: [action])
+
+                }
+
+                let resolution = WebAuthnSignInState.Resolver().resolve(
+                    oldState: oldState,
+                    byApplying: event)
+
+                let signInState = SignInState.signingInWithWebAuthn(resolution.newState)
+                return .init(newState: signInState, actions: resolution.actions)
             }
         }
 

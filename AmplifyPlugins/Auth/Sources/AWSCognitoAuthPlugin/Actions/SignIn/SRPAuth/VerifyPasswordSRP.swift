@@ -13,11 +13,11 @@ struct VerifyPasswordSRP: Action {
     let identifier = "VerifyPasswordSRP"
 
     let stateData: SRPStateData
-    let authResponse: InitiateAuthOutput
+    let authResponse: SignInResponseBehavior
     let clientMetadata: ClientMetadata
 
     init(stateData: SRPStateData,
-         authResponse: InitiateAuthOutput,
+         authResponse: SignInResponseBehavior,
          clientMetadata: ClientMetadata) {
         self.stateData = stateData
         self.authResponse = authResponse
