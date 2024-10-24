@@ -126,7 +126,10 @@ extension AssociateWebAuthnCredentialTask: ASAuthorizationControllerDelegate {
     ) {
         guard let credential = authorization.credential as? ASAuthorizationPublicKeyCredentialRegistration else {
             log.verbose("Unexpected type of credential: \(type(of: authorization.credential)).")
-            resumeContinuation(throwing: AuthError.unknown("Unable to associate WebAuthm Credential", nil))
+            resumeContinuation(throwing: WebAuthnError.unknown(
+                message: "Unable to associate WebAuthm Credential",
+                error: nil
+            ))
             return
         }
 
@@ -148,33 +151,28 @@ extension AssociateWebAuthnCredentialTask: ASAuthorizationControllerDelegate {
         }
 
         guard let authorizationError = error as? ASAuthorizationError else {
-            resumeContinuation(throwing: AuthError.unknown("Unable to associate WebAuthm Credential", error))
+            resumeContinuation(throwing: WebAuthnError.unknown(
+                message: "Unable to associate WebAuthm Credential",
+                error: error
+            ))
             return
         }
 
-        let authError: AuthError
+        let webAuthnError: WebAuthnError
         if case .canceled = authorizationError.code {
-            authError = .service(
-                AuthPluginErrorConstants.associateWebAuthnCredentialUserCancelledError.errorDescription,
-                AuthPluginErrorConstants.associateWebAuthnCredentialUserCancelledError.recoverySuggestion,
-                AWSCognitoAuthError.userCancelled
-            )
+            webAuthnError = .userCancelled
         } else if isMatchedExcludedCredential(authorizationError.code) {
-            authError = .service(
-                AuthPluginErrorConstants.associateWebAuthnCredentialAlreadyExistError.errorDescription,
-                AuthPluginErrorConstants.associateWebAuthnCredentialAlreadyExistError.recoverySuggestion,
-                authorizationError
-            )
+            webAuthnError = .credentialAlreadyExist
         } else {
-            authError = .unknown("Unable to associate WebAuthm Credential", error)
+            webAuthnError = .unknown(message: "Unable to associate WebAuthm Credential", error: error)
         }
 
-        resumeContinuation(throwing: authError)
+        resumeContinuation(throwing: webAuthnError)
     }
 
     private func isMatchedExcludedCredential(_ code: ASAuthorizationError.Code) -> Bool {
-        // ASAuthorizationError.matchedExcludedCredential is only defined in iOS 18
-        if #available(iOS 18.0, *) {
+        // ASAuthorizationError.matchedExcludedCredential is only defined in iOS 18/macOS 15
+        if #available(iOS 18.0, macOS 15.0, *) {
             return code == .matchedExcludedCredential
         } else {
             return code.rawValue == 1006

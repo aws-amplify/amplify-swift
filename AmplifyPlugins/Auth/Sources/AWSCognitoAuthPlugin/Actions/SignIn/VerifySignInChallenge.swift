@@ -42,8 +42,12 @@ struct VerifySignInChallenge: Action {
                         username: username,
                         authFactorType: authFactorType)
                     return
-                } else if authFactorType == .webAuthn {
-                    let event = SignInEvent(eventType: .initiateWebAuthnSignIn(username, challenge))
+                } else if #available(iOS 17.4, macOS 13.5, *), authFactorType == .webAuthn {
+                    let signInData = WebAuthnSignInData(
+                        username: username,
+                        presentationAnchor: confirmSignEventData.presentationAnchor
+                    )
+                    let event = SignInEvent(eventType: .initiateWebAuthnSignIn(signInData, challenge))
                     logVerbose("\(#fileID) Sending event \(event)", environment: environment)
                     await dispatcher.send(event)
                     return

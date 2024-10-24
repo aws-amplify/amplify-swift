@@ -52,6 +52,9 @@ struct UserPoolSignInHelper: DefaultLogger {
                   case .waitingForAnswer(let totpSetupData) = totpSetupState {
             return .init(nextStep: .continueSignInWithTOTPSetup(
                 .init(sharedSecret: totpSetupData.secretCode, username: totpSetupData.username)))
+        } else if case .signingInWithWebAuthn(let webAuthnState) = signInState,
+                  case .cancelled(let signInError) = webAuthnState {
+            return try validateError(signInError: signInError)
         }
         return nil
     }
@@ -81,7 +84,9 @@ struct UserPoolSignInHelper: DefaultLogger {
     static func parseResponse(
         _ response: SignInResponseBehavior,
         for username: String,
-        signInMethod: SignInMethod) -> StateMachineEvent {
+        signInMethod: SignInMethod,
+        presentationAnchor: AuthUIPresentationAnchor? = nil
+    ) -> StateMachineEvent {
 
             if let authenticationResult = response.authenticationResult,
                let idToken = authenticationResult.idToken,
@@ -120,7 +125,11 @@ struct UserPoolSignInHelper: DefaultLogger {
                 case .deviceSrpAuth:
                     return SignInEvent(eventType: .initiateDeviceSRP(username, response))
                 case .webAuthn:
-                    return SignInEvent(eventType: .initiateWebAuthnSignIn(username, respondToAuthChallenge))
+                    let signInData = WebAuthnSignInData(
+                        username: username,
+                        presentationAnchor: presentationAnchor
+                    )
+                    return SignInEvent(eventType: .initiateWebAuthnSignIn(signInData, respondToAuthChallenge))
                 case .mfaSetup:
                     let allowedMFATypesForSetup = respondToAuthChallenge.getAllowedMFATypesForSetup
                     if allowedMFATypesForSetup.contains(.totp) && allowedMFATypesForSetup.contains(.email) {

@@ -144,7 +144,9 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             answer: self.request.challengeResponse,
             attributes: attributes,
             metadata: pluginOptions?.metadata,
-            friendlyDeviceName: pluginOptions?.friendlyDeviceName)
+            friendlyDeviceName: pluginOptions?.friendlyDeviceName,
+            presentationAnchor: request.options.presentationAnchorForWebAuthn
+        )
     }
 
 }

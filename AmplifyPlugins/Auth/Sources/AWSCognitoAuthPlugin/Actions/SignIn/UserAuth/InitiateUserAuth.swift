@@ -88,7 +88,9 @@ struct InitiateUserAuth: Action {
         return UserPoolSignInHelper.parseResponse(
             response,
             for: username,
-            signInMethod: signInEventData.signInMethod)
+            signInMethod: signInEventData.signInMethod,
+            presentationAnchor: signInEventData.presentationAnchor
+        )
     }
 }
 

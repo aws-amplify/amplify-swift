@@ -11,33 +11,58 @@ import AWSCognitoIdentityProvider
 
 struct FetchCredentialOptions: Action {
     let identifier = "FetchCredentialOptions"
-
-//    let username: String
-//    let respondToAuthChallenge: RespondToAuthChallenge?
-
-//    init(username: String,
-//         respondToAuthChallenge: RespondToAuthChallenge?) {
-//        self.username = username
-//        self.respondToAuthChallenge = respondToAuthChallenge
-//    }
+    let username: String
+    let respondToAuthChallenge: RespondToAuthChallenge
+    let presentationAnchor: AuthUIPresentationAnchor?
 
     func execute(withDispatcher dispatcher: EventDispatcher,
                  environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
-            let userPoolEnv = try environment.userPoolEnvironment()
             let authEnv = try environment.authEnvironment()
-//            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
-//                for: username,
-//                credentialStoreClient: authEnv.credentialsClient)
+            let userPoolEnv = try environment.userPoolEnvironment()
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: username,
+                credentialStoreClient: authEnv.credentialsClient
+            )
+            let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
+                for: username,
+                with: environment
+            )
+            let request = await RespondToAuthChallengeInput.webAuthnInput(
+                username: username,
+                session: respondToAuthChallenge.session,
+                asfDeviceId: asfDeviceId,
+                deviceMetadata: deviceMetadata,
+                environment: userPoolEnv
+            )
 
+            let cognitoClient = try userPoolEnv.cognitoUserPoolFactory()
+            let response = try await cognitoClient.respondToAuthChallenge(input: request)
+            guard let credentialOptions = response.challengeParameters?["CREDENTIAL_REQUEST_OPTIONS"],
+                  let challengeName = response.challengeName else {
+                let message = "Response did not contain SignIn info"
+                let error = SignInError.invalidServiceResponse(message: message)
+                let event = SignInEvent(eventType: .throwAuthError(error))
+                await dispatcher.send(event)
+                return
+            }
 
-            fatalError("Implement me")
-            let webAuthnEvent: WebAuthnEvent = .init(eventType: .assertCredentials)
-            await dispatcher.send(webAuthnEvent)
-        } catch let error as SignInError {
-            logVerbose("\(#fileID) Raised error \(error)", environment: environment)
-            let event = SignInEvent(eventType: .throwAuthError(error))
+            let options = try CredentialAssertionOptions(from: credentialOptions)
+            let newRespondToAuthChallenge = RespondToAuthChallenge(
+                challenge: challengeName,
+                availableChallenges: [],
+                username: username,
+                session: response.session,
+                parameters: response.challengeParameters
+            )
+            let event = WebAuthnEvent(
+                eventType: .assertCredentials(options, .init(
+                    username: username,
+                    challenge: newRespondToAuthChallenge,
+                    presentationAnchor: presentationAnchor
+                ))
+            )
             await dispatcher.send(event)
         } catch {
             logVerbose("\(#fileID) Caught error \(error)", environment: environment)
@@ -47,9 +72,7 @@ struct FetchCredentialOptions: Action {
             )
             await dispatcher.send(event)
         }
-
     }
-
 }
 
 extension FetchCredentialOptions: DefaultLogger { }
@@ -58,7 +81,8 @@ extension FetchCredentialOptions: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
-//            "username": username.masked()
+            "username": username.masked(),
+            "respondToAuthChallenge": respondToAuthChallenge.debugDictionary
         ]
     }
 }

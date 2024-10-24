@@ -11,19 +11,10 @@ import Amplify
 struct WebAuthnEvent: StateMachineEvent {
 
     enum EventType: Equatable {
-
-        case fetchCredentialOptions
-
-        case assertCredentials
-
-        case verifyCredentialsAndSignIn
-
-        case signedIn
-
-        case throwError(SignInError)
-
-        case cancel
-
+        case fetchCredentialOptions(Input)
+        case assertCredentials(CredentialAssertionOptions, Input)
+        case verifyCredentialsAndSignIn(String, Input)
+        case signedIn(SignedInData)
     }
 
     let id: String
@@ -36,8 +27,6 @@ struct WebAuthnEvent: StateMachineEvent {
         case .assertCredentials: return "WebAuthnEvent.assertCredentials"
         case .verifyCredentialsAndSignIn: return "WebAuthnEvent.verifyCredentials"
         case .signedIn: return "WebAuthnEvent.signedIn"
-        case .throwError: return "WebAuthnEvent.throwError"
-        case .cancel: return "WebAuthnEvent.cancel"
         }
     }
 
@@ -47,5 +36,11 @@ struct WebAuthnEvent: StateMachineEvent {
         self.id = id
         self.eventType = eventType
         self.time = time
+    }
+
+    struct Input: Equatable {
+        let username: String
+        let challenge: RespondToAuthChallenge
+        let presentationAnchor: AuthUIPresentationAnchor?
     }
 }

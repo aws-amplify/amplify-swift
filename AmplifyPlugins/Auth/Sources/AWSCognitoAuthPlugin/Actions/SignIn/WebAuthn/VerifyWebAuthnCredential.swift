@@ -6,62 +6,93 @@
 //
 
 import Amplify
+import AWSCognitoIdentityProvider
 import Foundation
 
+@available(iOS 17.4, macOS 13.5, *)
 struct VerifyWebAuthnCredential: Action {
     let identifier = "VerifyWebAuthnCredential"
+    let username: String
+    let credentials: String
+    let respondToAuthChallenge: RespondToAuthChallenge
 
-    //    let username: String
-    //    let respondToAuthChallenge: RespondToAuthChallenge
-    //
-    //    init(username: String, respondToAuthChallenge: RespondToAuthChallenge) {
-    //        self.username = username
-    //        self.respondToAuthChallenge = respondToAuthChallenge
-    //    }
-
-    func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+    func execute(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
-            let userPoolEnv = try environment.userPoolEnvironment()
             let authEnv = try environment.authEnvironment()
-            //            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
-            //                for: username,
-            //                credentialStoreClient: authEnv.credentialsClient)
+            let userPoolEnv = try environment.userPoolEnvironment()
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: username,
+                credentialStoreClient: authEnv.credentialsClient
+            )
+            let request = await RespondToAuthChallengeInput.verifyWebauthCredential(
+                username: username,
+                credential: credentials,
+                session: respondToAuthChallenge.session,
+                asfDeviceId: asfDeviceId,
+                environment: userPoolEnv
+            )
 
-            fatalError("Implement verifying")
-            let webAuthnEvent: WebAuthnEvent = .init(eventType: .signedIn)
-            logVerbose("\(#fileID) Sending event \(webAuthnEvent)", environment: environment)
-            await dispatcher.send(webAuthnEvent)
-        } catch let error as SignInError {
-            logVerbose("\(#fileID) Raised error \(error)", environment: environment)
-            let event = SignInEvent(eventType: .throwAuthError(error))
+            let cognitoClient = try userPoolEnv.cognitoUserPoolFactory()
+            let response = try await cognitoClient.respondToAuthChallenge(input: request)
+
+            guard let authenticationResult = response.authenticationResult,
+                  let idToken = authenticationResult.idToken,
+                  let accessToken = authenticationResult.accessToken,
+                  let refreshToken = authenticationResult.refreshToken else {
+                let message = "Response did not contain SignIn info"
+                let error = SignInError.invalidServiceResponse(message: message)
+                let event = SignInEvent(eventType: .throwAuthError(error))
+                await dispatcher.send(event)
+                return
+            }
+            let userPoolTokens = AWSCognitoUserPoolTokens(
+                idToken: idToken,
+                accessToken: accessToken,
+                refreshToken: refreshToken
+            )
+            let signedInData = SignedInData(
+                signedInDate: Date(),
+                signInMethod: .apiBased(
+                    .userAuth(preferredFirstFactor: .webAuthn)
+                ),
+                deviceMetadata: authenticationResult.deviceMetadata,
+                cognitoUserPoolTokens: userPoolTokens
+            )
+            let event = WebAuthnEvent(
+                eventType: .signedIn(signedInData)
+            )
+            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
             await dispatcher.send(event)
         } catch {
             logVerbose("\(#fileID) Caught error \(error)", environment: environment)
-            let authError = SignInError.service(error: error)
             let event = SignInEvent(
-                eventType: .throwAuthError(authError)
+                eventType: .throwAuthError(.service(error: error))
             )
             await dispatcher.send(event)
         }
-
     }
-
 }
 
+@available(iOS 17.4, macOS 13.5, *)
 extension VerifyWebAuthnCredential: DefaultLogger { }
 
+@available(iOS 17.4, macOS 13.5, *)
 extension VerifyWebAuthnCredential: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
-            //            "respondToAuthChallenge": respondToAuthChallenge.debugDictionary,
-            //            "username": username.masked()
+            "username": username.masked(),
+            "credentials": credentials.masked(),
+            "respondToAuthChallenge": respondToAuthChallenge.debugDictionary
         ]
     }
 }
 
+@available(iOS 17.4, macOS 13.5, *)
 extension VerifyWebAuthnCredential: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription

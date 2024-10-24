@@ -46,6 +46,10 @@ public enum AuthFlowType {
             return "USER_AUTH"
         }
     }
+
+    public static var userAuth: AuthFlowType {
+        return .userAuth(preferredFirstFactor: nil)
+    }
 }
 
 // MARK: - Equatable Conformance

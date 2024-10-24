@@ -133,11 +133,16 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
     }
 
     private func sendSignInEvent(authflowType: AuthFlowType) async {
+        var presentationAnchor: AuthUIPresentationAnchor? = nil
+    #if os(iOS) || os(macOS)
+        presentationAnchor = request.options.presentationAnchorForWebAuthn
+    #endif
         let signInData = SignInEventData(
             username: request.username,
             password: request.password,
             clientMetadata: clientMetadata(),
-            signInMethod: .apiBased(authflowType)
+            signInMethod: .apiBased(authflowType),
+            presentationAnchor: presentationAnchor
         )
         let event = AuthenticationEvent.init(eventType: .signInRequested(signInData))
         await authStateMachine.send(event)

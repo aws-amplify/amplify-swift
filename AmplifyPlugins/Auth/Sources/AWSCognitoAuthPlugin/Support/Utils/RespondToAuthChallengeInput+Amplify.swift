@@ -59,12 +59,11 @@ extension RespondToAuthChallengeInput {
     }
 
     static func webAuthnInput(username: String,
-                              password: String,
-                              session: String,
-                              clientMetadata: [String: String],
+                              session: String?,
                               asfDeviceId: String,
                               deviceMetadata: DeviceMetadata,
-                              environment: UserPoolEnvironment) async -> RespondToAuthChallengeInput {
+                              environment: UserPoolEnvironment
+    ) async -> RespondToAuthChallengeInput {
         let challengeResponses = [
             "USERNAME": username,
             "ANSWER": "WEB_AUTHN"
@@ -75,10 +74,11 @@ extension RespondToAuthChallengeInput {
             challengeType: .selectChallenge,
             challengeResponses: challengeResponses,
             session: session,
-            clientMetadata: clientMetadata,
+            clientMetadata: [:],
             asfDeviceId: asfDeviceId,
             deviceMetadata: deviceMetadata,
-            environment: environment)
+            environment: environment
+        )
     }
 
     // swiftlint:disable:next function_parameter_count
@@ -188,6 +188,30 @@ extension RespondToAuthChallengeInput {
                 deviceMetadata: deviceMetadata,
                 environment: environment)
         }
+
+    static func verifyWebauthCredential(
+        username: String,
+        credential: String,
+        session: String?,
+        asfDeviceId: String,
+        environment: UserPoolEnvironment
+    ) async -> RespondToAuthChallengeInput {
+        let challengeResponses = [
+            "USERNAME": username,
+            "CREDENTIAL": credential
+        ]
+
+        return await buildInput(
+            username: username,
+            challengeType: .webAuthn,
+            challengeResponses: challengeResponses,
+            session: session,
+            clientMetadata: [:],
+            asfDeviceId: asfDeviceId,
+            deviceMetadata: .noData,
+            environment: environment
+        )
+    }
 
     static func buildInput(
         username: String,

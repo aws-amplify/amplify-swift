@@ -15,7 +15,13 @@ extension AuthFactorType: DefaultLogger {
         case "PASSWORD_SRP": self = .passwordSRP
         case "SMS_OTP": self = .smsOTP
         case "EMAIL_OTP": self = .emailOTP
-        case "WEB_AUTHN": self = .webAuthn
+        case "WEB_AUTHN":
+            if #available(iOS 17.4, macOS 13.5, *) {
+                self = .webAuthn
+            } else {
+                Self.log.error("WEB_AUTHN is not supported in this OS version.")
+                return nil
+            }
         default:
             Self.log.error("Tried to initialize an unsupported MFA type with value: \(rawValue)")
             return nil

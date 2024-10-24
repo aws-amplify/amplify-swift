@@ -20,5 +20,6 @@ public enum AuthFactorType: String {
     case emailOTP
 
     /// An auth factor that uses WebAuthn
+    @available(iOS 17.4, macOS 13.5, *)
     case webAuthn
 }

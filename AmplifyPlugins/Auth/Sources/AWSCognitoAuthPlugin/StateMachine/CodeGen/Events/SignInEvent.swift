@@ -7,6 +7,7 @@
 
 import Foundation
 import AWSCognitoIdentityProvider
+import typealias Amplify.AuthUIPresentationAnchor
 
 typealias Username = String
 typealias Password = String
@@ -30,7 +31,7 @@ struct SignInEvent: StateMachineEvent {
 
         case initiateUserAuth(SignInEventData, DeviceMetadata)
 
-        case initiateWebAuthnSignIn(Username, RespondToAuthChallenge)
+        case initiateWebAuthnSignIn(WebAuthnSignInData, RespondToAuthChallenge)
 
         case respondPasswordVerifier(SRPStateData, SignInResponseBehavior, ClientMetadata)
 

@@ -275,10 +275,12 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .initiateWebAuthnSignIn(let username, let respondToAuthChallenge) = signInEvent.eventType {
+                   case .initiateWebAuthnSignIn(let data, let respondToAuthChallenge) = signInEvent.eventType {
                     let action = InitializeWebAuthn(
-                        username: username,
-                        respondToAuthChallenge: respondToAuthChallenge)
+                        username: data.username,
+                        respondToAuthChallenge: respondToAuthChallenge,
+                        presentationAnchor: data.presentationAnchor
+                    )
                     let subState = WebAuthnSignInState.notStarted
                     return .init(newState: .signingInWithWebAuthn(
                         subState
@@ -440,14 +442,17 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .initiateWebAuthnSignIn(let username, let respondToAuthChallenge) = signInEvent.eventType {
+                   case .initiateWebAuthnSignIn(let data, let respondToAuthChallenge) = signInEvent.eventType {
                     let action = InitializeWebAuthn(
-                        username: username,
-                        respondToAuthChallenge: respondToAuthChallenge)
+                        username: data.username,
+                        respondToAuthChallenge: respondToAuthChallenge,
+                        presentationAnchor: data.presentationAnchor
+                    )
                     let subState = WebAuthnSignInState.notStarted
-                    return .init(newState: .signingInWithWebAuthn(
-                        subState
-                    ), actions: [action])
+                    return .init(
+                        newState: .signingInWithWebAuthn(subState),
+                        actions: [action]
+                    )
                 }
 
                 if let signInEvent = event as? SignInEvent,
@@ -460,22 +465,18 @@ extension SignInState {
                 }
                 return .from(oldState)
             case .signingInWithWebAuthn(let oldState):
-
-                if let signInEvent = event as? SignInEvent,
-                   case .throwAuthError(let error) = signInEvent.eventType {
-                    let action = ThrowSignInError(error: error)
-                    return StateResolution(
-                        newState: .error,
-                        actions: [action])
-
+                if #available(iOS 17.4, macOS 13.5, *) {
+                    let resolution = WebAuthnSignInState.Resolver().resolve(
+                        oldState: oldState,
+                        byApplying: event
+                    )
+                    let signInState = SignInState.signingInWithWebAuthn(resolution.newState)
+                    return .init(newState: signInState, actions: resolution.actions)
+                } else {
+                    // "WebAuthn is not supported in this OS version
+                    // It should technically never happen.
+                    return .init(newState: .error)
                 }
-
-                let resolution = WebAuthnSignInState.Resolver().resolve(
-                    oldState: oldState,
-                    byApplying: event)
-
-                let signInState = SignInState.signingInWithWebAuthn(resolution.newState)
-                return .init(newState: signInState, actions: resolution.actions)
             }
         }
 

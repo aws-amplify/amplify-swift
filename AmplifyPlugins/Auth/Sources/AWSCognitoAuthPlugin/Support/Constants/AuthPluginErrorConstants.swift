@@ -181,6 +181,21 @@ enum AuthPluginErrorConstants {
         "The user already has associated a WebAuthn credential with this device",
         "Remove the old WebAuthn credential and try again"
     )
+
+    static let associateWebAuthnCreationFailedError: AuthPluginErrorString = (
+        "User cancelled the creation of a new WebAuthn credential",
+        "Invoke the associate WebAuthn credential flow again"
+    )
+
+    static let signInWithWebAuthnUserCancelledError: AuthPluginErrorString = (
+        "User cancelled the signIn flow and could not be completed",
+        "Invoke the sign in with WebAuthn flow again"
+    )
+
+    static let signInWithWebAuthnAssertionFailedError: AuthPluginErrorString = (
+        "Unable to complete assertion of the given WebAuthn credential",
+        "Invoke the sign in with WebAuthn flow again"
+    )
 }
 
 // Field validation errors

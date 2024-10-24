@@ -55,6 +55,8 @@ extension SignInError: AuthErrorConvertible {
             return .unknown(message, nil)
         case .hostedUI(let error):
             return error.authError
+        case .webAuthn(let error):
+            return error.authError
         }
     }
 }

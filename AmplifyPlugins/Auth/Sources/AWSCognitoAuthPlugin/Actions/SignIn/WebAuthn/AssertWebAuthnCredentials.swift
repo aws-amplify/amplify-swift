@@ -8,60 +8,81 @@
 import Amplify
 import Foundation
 
+@available(iOS 17.4, macOS 13.5, *)
 struct AssertWebAuthnCredentials: Action {
     let identifier = "AssertWebAuthnCredentials"
+    let username: String
+    let options: CredentialAssertionOptions
+    let respondToAuthChallenge: RespondToAuthChallenge
+    let presentationAnchor: AuthUIPresentationAnchor?
 
-//    let username: String
-//    let respondToAuthChallenge: RespondToAuthChallenge
-//
-//    init(username: String, respondToAuthChallenge: RespondToAuthChallenge) {
-//        self.username = username
-//        self.respondToAuthChallenge = respondToAuthChallenge
-//    }
+    private let credentialAsserter: CredentialAsserterProtocol
 
-    func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+    init(
+        username: String,
+        options: CredentialAssertionOptions,
+        respondToAuthChallenge: RespondToAuthChallenge,
+        presentationAnchor: AuthUIPresentationAnchor?,
+        asserterFactory: (AuthUIPresentationAnchor?) -> CredentialAsserterProtocol = { anchor in
+            PlatformCredentialAsserter(presentationAnchor: anchor)
+        }
+    ) {
+        self.username = username
+        self.options = options
+        self.respondToAuthChallenge = respondToAuthChallenge
+        self.presentationAnchor = presentationAnchor
+        self.credentialAsserter = asserterFactory(presentationAnchor)
+    }
+
+    func execute(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
-            let userPoolEnv = try environment.userPoolEnvironment()
-            let authEnv = try environment.authEnvironment()
-//            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
-//                for: username,
-//                credentialStoreClient: authEnv.credentialsClient)
-
-            fatalError("Implement asserting")
-            let webAuthnEvent: WebAuthnEvent = .init(eventType: .verifyCredentialsAndSignIn)
-            logVerbose("\(#fileID) Sending event \(webAuthnEvent)", environment: environment)
-            await dispatcher.send(webAuthnEvent)
-        } catch let error as SignInError {
+            let payload = try await credentialAsserter.assert(with: options)
+            let event = WebAuthnEvent(eventType: .verifyCredentialsAndSignIn(
+                try payload.stringify(),
+                .init(
+                    username: username,
+                    challenge: respondToAuthChallenge,
+                    presentationAnchor: presentationAnchor
+                )
+            ))
+            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
+            await dispatcher.send(event)
+        } catch let error as WebAuthnError {
             logVerbose("\(#fileID) Raised error \(error)", environment: environment)
-            let event = SignInEvent(eventType: .throwAuthError(error))
+            let event = SignInEvent(
+                eventType: .throwAuthError(.webAuthn(error))
+            )
             await dispatcher.send(event)
         } catch {
-            logVerbose("\(#fileID) Caught error \(error)", environment: environment)
-            let authError = SignInError.service(error: error)
+            logVerbose("\(#fileID) Raised error \(error)", environment: environment)
             let event = SignInEvent(
-                eventType: .throwAuthError(authError)
+                eventType: .throwAuthError(.service(error: error))
             )
             await dispatcher.send(event)
         }
-
     }
-
 }
 
+@available(iOS 17.4, macOS 13.5, *)
 extension AssertWebAuthnCredentials: DefaultLogger { }
 
+@available(iOS 17.4, macOS 13.5, *)
 extension AssertWebAuthnCredentials: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
-//            "respondToAuthChallenge": respondToAuthChallenge.debugDictionary,
-//            "username": username.masked()
+            "respondToAuthChallenge": respondToAuthChallenge.debugDictionary,
+            "username": username.masked(),
+            "options": options.debugDictionary
         ]
     }
 }
 
+@available(iOS 17.4, macOS 13.5, *)
 extension AssertWebAuthnCredentials: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription

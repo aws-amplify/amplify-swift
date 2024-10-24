@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import typealias Amplify.AuthUIPresentationAnchor
+
 struct SignInEventData {
 
     let username: String?
@@ -15,14 +17,20 @@ struct SignInEventData {
 
     let signInMethod: SignInMethod
 
-    init(username: String?,
-         password: String?,
-         clientMetadata: [String: String] = [:],
-         signInMethod: SignInMethod) {
+    private(set) var presentationAnchor: AuthUIPresentationAnchor? = nil
+
+    init(
+        username: String?,
+        password: String?,
+        clientMetadata: [String: String] = [:],
+        signInMethod: SignInMethod,
+        presentationAnchor: AuthUIPresentationAnchor? = nil
+    ) {
         self.username = username
         self.password = password
         self.clientMetadata = clientMetadata
         self.signInMethod = signInMethod
+        self.presentationAnchor = presentationAnchor
     }
 
     var authFlowType: AuthFlowType? {
@@ -31,6 +39,7 @@ struct SignInEventData {
         }
         return nil
     }
+
 }
 
 extension SignInEventData: Equatable { }
@@ -51,4 +60,8 @@ extension SignInEventData: CustomDebugStringConvertible {
     }
 }
 
-extension SignInEventData: Codable { }
+extension SignInEventData: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case username, password, clientMetadata, signInMethod
+    }
+}
