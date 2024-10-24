@@ -23,7 +23,7 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
     ///
     func testSuccessfulConfirmUpdateUserAttributes() async throws {
         mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutput: { _ in
-            try await VerifyUserAttributeOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+            VerifyUserAttributeOutput()
         })
         try await plugin.confirm(userAttribute: .email, confirmationCode: "code")
     }
@@ -98,12 +98,7 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
     func testcConfirmUpdateUserAttributesWithInternalErrorException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutput: { _ in
-            throw try await AWSCognitoIdentityProvider.InternalErrorException(
-                httpResponse: .init(body: .empty, statusCode: .accepted),
-                decoder: nil,
-                message: nil,
-                requestID: nil
-            )
+            throw AWSCognitoIdentityProvider.InternalErrorException()
         })
         do {
             try await plugin.confirm(userAttribute: .email, confirmationCode: "code")

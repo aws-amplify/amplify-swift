@@ -3,7 +3,7 @@
 
 AWS Amplify provides a declarative and easy-to-use interface across different categories of cloud operations. Our default implementation works with Amazon Web Services (AWS), but AWS Amplify is designed to be open and pluggable for any custom backend or service.
 
-The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.amazon.com/sdk-for-swift/), which was released as Developer Preview last year. This allows for access to the AWS SDK for Swift for a breadth of service-centric APIs.
+The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.amazon.com/sdk-for-swift/). This allows for access to the AWS SDK for Swift for a breadth of service-centric APIs.
 
 [**API Documentation**](https://aws-amplify.github.io/amplify-swift/docs/)
 
@@ -34,9 +34,6 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 | tvOS      | 13+       | GA            |
 | watchOS   | 9+        | GA            |
 | visionOS  | 1+        | Preview*      |
-
-> To use Amplify Swift with visionOS, you'll need to target the `visionos-preview` branch.
-> For more information, see [Platform Support](https://github.com/aws-amplify/amplify-swift/tree/visionos-preview#platform-support) on the `visionos-preview` branch.
 
 ### Swift Version Support
 
@@ -136,7 +133,7 @@ Amplify requires Xcode 15.0 or later for all the supported platforms.
 
 ## Escape Hatch
 
-All services and features not listed in the [**Features/API sectios**](#featuresapis) are supported via the [Swift SDK](https://github.com/awslabs/aws-sdk-swift) or if supported by a category can be accessed via the Escape Hatch like below:
+All services and features not listed in the [**Features/API sections**](#featuresapis) are supported via the [Swift SDK](https://github.com/awslabs/aws-sdk-swift) or if supported by a category can be accessed via the Escape Hatch like below:
 
 ```swift
 import Amplify

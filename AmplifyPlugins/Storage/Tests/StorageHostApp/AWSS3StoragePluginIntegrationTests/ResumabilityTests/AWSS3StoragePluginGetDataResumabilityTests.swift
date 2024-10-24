@@ -20,8 +20,11 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
     func testDownloadDataAndPause() async throws {
         let key = UUID().uuidString
         let data = AWSS3StoragePluginTestBase.smallDataObject
-        let uploadKey = try await Amplify.Storage.uploadData(key: key, data: data).value
-        XCTAssertEqual(uploadKey, key)
+
+        await wait {
+            let uploadKey = try await Amplify.Storage.uploadData(key: key, data: data).value
+            XCTAssertEqual(uploadKey, key)
+        }
 
         Self.logger.debug("Downloading data")
         let task = Amplify.Storage.downloadData(key: key)
@@ -75,8 +78,11 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
     func testDownloadDataAndPauseThenResume() async throws {
         let key = UUID().uuidString
         let data = AWSS3StoragePluginTestBase.smallDataObject
-        let uploadKey = try await Amplify.Storage.uploadData(key: key, data: data).value
-        XCTAssertEqual(uploadKey, key)
+
+        await wait {
+            let uploadKey = try await Amplify.Storage.uploadData(key: key, data: data).value
+            XCTAssertEqual(uploadKey, key)
+        }
 
         let task = Amplify.Storage.downloadData(key: key)
 
@@ -126,8 +132,11 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
     func testDownloadDataAndCancel() async throws {
         let key = UUID().uuidString
         let data = AWSS3StoragePluginTestBase.smallDataObject
-        let uploadKey = try await Amplify.Storage.uploadData(key: key, data: data).value
-        XCTAssertEqual(uploadKey, key)
+
+        await wait {
+            let uploadKey = try await Amplify.Storage.uploadData(key: key, data: data).value
+            XCTAssertEqual(uploadKey, key)
+        }
 
         Self.logger.debug("Downloading data")
         let task = Amplify.Storage.downloadData(key: key)

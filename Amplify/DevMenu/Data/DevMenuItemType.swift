@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if os(iOS)
+#if os(iOS) || os(visionOS)
 import Foundation
 
 /// Item types for each row in the Developer Menu

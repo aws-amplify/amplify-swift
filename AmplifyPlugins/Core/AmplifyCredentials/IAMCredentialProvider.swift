@@ -5,13 +5,16 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
-import AWSClientRuntime
-import AWSPluginsCore
 import Foundation
+import Amplify
+import AwsCommonRuntimeKit
+import AWSPluginsCore
+import SmithyIdentity
 
 public protocol IAMCredentialsProvider {
     func getCredentialsProvider() -> CredentialsProviding
+    
+    func getCredentialIdentityResolver() -> any AWSCredentialIdentityResolver
 }
 
 public struct BasicIAMCredentialsProvider: IAMCredentialsProvider {
@@ -23,5 +26,9 @@ public struct BasicIAMCredentialsProvider: IAMCredentialsProvider {
 
     public func getCredentialsProvider() -> CredentialsProviding {
         return authService.getCredentialsProvider()
+    }
+
+    public func getCredentialIdentityResolver() -> any AWSCredentialIdentityResolver {
+        authService.getCredentialIdentityResolver()
     }
 }

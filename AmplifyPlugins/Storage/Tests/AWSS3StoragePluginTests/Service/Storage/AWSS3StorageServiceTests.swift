@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSS3
-import ClientRuntime
-import XCTest
 @testable import Amplify
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
+import AWSS3
+import XCTest
+import SmithyHTTPAPI
 
 class AWSS3StorageServiceTests: XCTestCase {
     private var service: AWSS3StorageService!
@@ -18,7 +18,7 @@ class AWSS3StorageServiceTests: XCTestCase {
     private var database: StorageTransferDatabaseMock!
     private var task: StorageTransferTask!
     private var fileSystem: MockFileSystem!
-
+    
     override func setUp() async throws {
         authService = MockAWSAuthService()
         database = StorageTransferDatabaseMock()
@@ -31,19 +31,18 @@ class AWSS3StorageServiceTests: XCTestCase {
         task.uploadId = "uploadId"
         task.sessionTask = MockStorageSessionTask(taskIdentifier: 1)
         database.recoverResult = .success([
-            .init(
-                transferTask: task,
-                multipartUploads: [
+            .init(transferTask: task,
+                  multipartUploads: [
                     .created(
                         uploadId: "uploadId",
-                        uploadFile: UploadFile(
+                        uploadFile:UploadFile(
                             fileURL: FileSystem.default.createTemporaryFileURL(),
                             temporaryFileCreated: true,
                             size: UInt64(Bytes.megabytes(12).bytes)
                         )
                     )
-                ]
-            )
+                  ]
+                 )
         ])
         service = try AWSS3StorageService(
             authService: authService,
@@ -55,7 +54,7 @@ class AWSS3StorageServiceTests: XCTestCase {
             logger: MockLogger()
         )
     }
-
+    
     override func tearDown() {
         authService = nil
         service = nil
@@ -63,7 +62,7 @@ class AWSS3StorageServiceTests: XCTestCase {
         task = nil
         fileSystem = nil
     }
-
+    
     /// Given: An AWSS3StorageService
     /// When: it's deallocated
     /// Then: StorageBackgroundEventsRegistry.identifier should be set to nil
@@ -72,7 +71,7 @@ class AWSS3StorageServiceTests: XCTestCase {
         service = nil
         XCTAssertNil(StorageBackgroundEventsRegistry.identifier)
     }
-
+    
     /// Given: An AWSS3StorageService
     /// When: reset is invoked
     /// Then: Its members should be set to nil
@@ -85,12 +84,12 @@ class AWSS3StorageServiceTests: XCTestCase {
         XCTAssertTrue(service.tasks.isEmpty)
         XCTAssertTrue(service.multipartUploadSessions.isEmpty)
     }
-
+    
     /// Given: An AWSS3StorageService
     /// When: attachEventHandlers is invoked and a .completed event is sent
     /// Then: A .completed event is dispatched to the event handler
     func testAttachEventHandlers() async {
-        let expectation = expectation(description: "Attach Event Handlers")
+        let expectation = self.expectation(description: "Attach Event Handlers")
         service.attachEventHandlers(
             onUpload: { event in
                 guard case .completed(_) = event else {
@@ -104,7 +103,7 @@ class AWSS3StorageServiceTests: XCTestCase {
         database.onUploadHandler?(.completed(()))
         await fulfillment(of: [expectation], timeout: 1)
     }
-
+    
     /// Given: An AWSS3StorageService
     /// When: register is invoked with a task
     /// Then: The task should be added to its map of tasks
@@ -113,7 +112,7 @@ class AWSS3StorageServiceTests: XCTestCase {
         XCTAssertEqual(service.tasks.count, 1)
         XCTAssertNotNil(service.tasks[1])
     }
-
+    
     /// Given: An AWSS3StorageService with a task in its map of tasks
     /// When: unregister is invoked with said task
     /// Then: The task should be removed from the map of tasks
@@ -125,7 +124,7 @@ class AWSS3StorageServiceTests: XCTestCase {
         XCTAssertTrue(service.tasks.isEmpty)
         XCTAssertNil(service.tasks[1])
     }
-
+    
     /// Given: An AWSS3StorageService with some tasks in its map of tasks
     /// When: unregister is invoked with an identifier that is known to be mapped to a task.
     /// Then: The task corresponding to the given identifier should be removed from the map of tasks
@@ -139,7 +138,7 @@ class AWSS3StorageServiceTests: XCTestCase {
         XCTAssertNotNil(service.tasks[2])
         XCTAssertNil(service.tasks[1])
     }
-
+    
     /// Given: An AWSS3StorageService with a task in its map of tasks
     /// When: findTask is invoked with the identifier known to be mapped to a task
     /// Then: The task corresponding to the given identifier is returned
@@ -149,7 +148,7 @@ class AWSS3StorageServiceTests: XCTestCase {
         ]
         XCTAssertNotNil(service.findTask(taskIdentifier: 1))
     }
-
+    
     /// Given: An AWSS3StorageService
     /// When: validateParameters is invoked with an empty bucket parameter
     /// Then: A .validation error is thrown
@@ -167,7 +166,7 @@ class AWSS3StorageServiceTests: XCTestCase {
             XCTAssertEqual(recovery, "Please specify a bucket name or configure the bucket property.")
         }
     }
-
+    
     /// Given: An AWSS3StorageService
     /// When: validateParameters is invoked with an empty key parameter
     /// Then: A .validation error is thrown
@@ -185,7 +184,7 @@ class AWSS3StorageServiceTests: XCTestCase {
             XCTAssertEqual(recovery, "Please specify a key.")
         }
     }
-
+    
     /// Given: An AWSS3StorageService
     /// When: validateParameters is invoked with valid bucket and key parameters
     /// Then: No error is thrown
@@ -196,7 +195,7 @@ class AWSS3StorageServiceTests: XCTestCase {
             XCTFail("Expected success, got \(error)")
         }
     }
-
+    
     /// Given: An AWSS3StorageService
     /// When: createTransferTask is invoked with valid parameters
     /// Then: A task is returned with attributes matching the ones provided
@@ -218,17 +217,17 @@ class AWSS3StorageServiceTests: XCTestCase {
             return
         }
     }
-
+    
     /// Given: An AWSS3StorageService with a non-completed download task
     /// When: completeDownload is invoked for the identifier matching the task
     /// Then: The task is marked as completed and a .completed event is dispatched
     func testCompleteDownload_shouldReturnData() async {
-        let expectation = expectation(description: "Complete Download")
-
+        let expectation = self.expectation(description: "Complete Download")
+       
         let downloadTask = StorageTransferTask(
             transferType: .download(onEvent: { event in
                 guard case .completed(let data) = event,
-                      let data else {
+                      let data = data else {
                     XCTFail("Expected .completed event with data")
                     return
                 }
@@ -250,14 +249,14 @@ class AWSS3StorageServiceTests: XCTestCase {
         XCTAssertEqual(downloadTask.status, .completed)
         await fulfillment(of: [expectation], timeout: 1)
     }
-
+    
     /// Given: An AWSS3StorageService with a non-completed download task that sets a location
     /// When: completeDownload is invoked for the identifier matching the task
     /// Then: The task is marked as completed and the file is moved to the expected location
     func testCompleteDownload_withLocation_shouldMoveFileToLocation() {
         let temporaryDirectory = FileManager.default.temporaryDirectory
         let location = temporaryDirectory.appendingPathComponent("\(UUID().uuidString)-newFile.txt")
-
+       
         let downloadTask = StorageTransferTask(
             transferType: .download(onEvent: { _ in }),
             bucket: "bucket",
@@ -277,14 +276,14 @@ class AWSS3StorageServiceTests: XCTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath: sourceUrl.path))
         XCTAssertEqual(downloadTask.status, .completed)
     }
-
+    
     /// Given: An AWSS3StorageService with a non-completed download task that sets a location
     /// When: completeDownload is invoked for the identifier matching the task, but the file system fails to move the file
     /// Then: The task is marked as error and the file is not moved to the expected location
     func testCompleteDownload_withLocation_andError_shouldFailTask() {
         let temporaryDirectory = FileManager.default.temporaryDirectory
         let location = temporaryDirectory.appendingPathComponent("\(UUID().uuidString)-newFile.txt")
-
+       
         let downloadTask = StorageTransferTask(
             transferType: .download(onEvent: { _ in }),
             bucket: "bucket",
@@ -305,14 +304,14 @@ class AWSS3StorageServiceTests: XCTestCase {
         XCTAssertTrue(FileManager.default.fileExists(atPath: sourceUrl.path))
         XCTAssertEqual(downloadTask.status, .error)
     }
-
+    
     /// Given: An AWSS3StorageService with a non-completed upload task that sets a location
     /// When: completeDownload is invoked for the identifier matching the task
     /// Then: The task status is not updated and an .upload event is not dispatched
     func testCompleteDownload_withNoDownload_shouldDoNothing() async {
-        let expectation = expectation(description: "Complete Download")
+        let expectation = self.expectation(description: "Complete Download")
         expectation.isInverted = true
-
+       
         let uploadTask = StorageTransferTask(
             transferType: .upload(onEvent: { event in
                 XCTFail("Should not report event")
@@ -334,13 +333,18 @@ class AWSS3StorageServiceTests: XCTestCase {
         XCTAssertNotEqual(uploadTask.status, .error)
         await fulfillment(of: [expectation], timeout: 1)
     }
-
+    
     /// Given: An AWSS3StorageService that cannot create a pre signed url
     /// When: upload is invoked
     /// Then: A .failed event is dispatched with an .unknown error
     func testUpload_withoutPreSignedURL_shouldSendFailEvent() async {
         let data = Data("someData".utf8)
-        let expectation = expectation(description: "Upload")
+        let expectation = self.expectation(description: "Upload")
+        let builder = MockAWSS3PreSignedURLBuilder()
+        builder.getPreSignedURLHandler = {_, _, _ in
+            throw StorageError.unknown("Unable to create URL", nil)
+        }
+        service.preSignedURLBuilder = builder
         service.upload(
             serviceKey: "key",
             uploadSource: .data(data),
@@ -357,16 +361,16 @@ class AWSS3StorageServiceTests: XCTestCase {
                 expectation.fulfill()
             }
         )
-
+        
         await fulfillment(of: [expectation], timeout: 1)
     }
-
+    
     /// Given: An AWSS3StorageService that can create a pre signed url
     /// When: upload is invoked
     /// Then: An .initiated event is dispatched
     func testUpload_withPreSignedURL_shouldSendInitiatedEvent() async {
         let data = Data("someData".utf8)
-        let expectation = expectation(description: "Upload")
+        let expectation = self.expectation(description: "Upload")
         service.preSignedURLBuilder = MockAWSS3PreSignedURLBuilder()
         service.upload(
             serviceKey: "key",
@@ -380,7 +384,7 @@ class AWSS3StorageServiceTests: XCTestCase {
                 }
             }
         )
-
+        
         await fulfillment(of: [expectation], timeout: 1)
     }
 }
@@ -389,8 +393,8 @@ private class MockHttpClientEngineProxy: HttpClientEngineProxy {
     var target: HTTPClient? = nil
 
     var executeCount = 0
-    var executeRequest: SdkHttpRequest?
-    func send(request: SdkHttpRequest) async throws -> HttpResponse {
+    var executeRequest: HTTPRequest?
+    func send(request: HTTPRequest) async throws -> HTTPResponse {
         executeCount += 1
         executeRequest = request
         return .init(body: .empty, statusCode: .accepted)
@@ -398,37 +402,35 @@ private class MockHttpClientEngineProxy: HttpClientEngineProxy {
 }
 
 private class StorageTransferDatabaseMock: StorageTransferDatabase {
-
+    
     func prepareForBackground(completion: (() -> Void)?) {
         completion?()
     }
-
+    
     func insertTransferRequest(task: StorageTransferTask) {
-
+        
     }
-
+    
     func updateTransferRequest(task: StorageTransferTask) {
-
+        
     }
-
+    
     func removeTransferRequest(task: StorageTransferTask) {
-
+        
     }
-
+    
     func defaultTransferType(persistableTransferTask: StoragePersistableTransferTask) -> StorageTransferType? {
         return nil
     }
-
+    
     var recoverCount = 0
     var recoverResult: Result<StorageTransferTaskPairs, Error> =  .failure(StorageError.unknown("Result not set", nil))
-    func recover(
-        urlSession: StorageURLSession,
-        completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void
-    ) {
+    func recover(urlSession: StorageURLSession,
+                 completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void) {
         recoverCount += 1
         completionHandler(recoverResult)
     }
-
+    
     var attachEventHandlersCount = 0
     var onUploadHandler: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler? = nil
     var onDownloadHandler: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler? = nil
@@ -448,7 +450,7 @@ private class StorageTransferDatabaseMock: StorageTransferDatabase {
 private class MockFileSystem: FileSystem {
     var moveFileError: Error? = nil
     override func moveFile(from sourceFileURL: URL, to destinationURL: URL) throws {
-        if let moveFileError {
+        if let moveFileError = moveFileError {
             throw moveFileError
         }
         try super.moveFile(from: sourceFileURL, to: destinationURL)

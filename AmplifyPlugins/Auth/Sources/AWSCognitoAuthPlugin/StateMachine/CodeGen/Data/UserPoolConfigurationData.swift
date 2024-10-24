@@ -7,6 +7,7 @@
 
 import ClientRuntime
 @_spi(InternalAmplifyConfiguration) import Amplify
+import SmithyHTTPAPI
 
 struct UserPoolConfigurationData: Equatable {
 

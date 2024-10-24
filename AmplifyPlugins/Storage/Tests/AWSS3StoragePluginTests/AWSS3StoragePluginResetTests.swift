@@ -16,7 +16,7 @@ class AWSS3StoragePluginResetTests: AWSS3StoragePluginTests {
         await resettable.reset()
 
         XCTAssertNil(storagePlugin.authService)
-        XCTAssertNil(storagePlugin.storageService)
+        XCTAssertNil(storagePlugin.defaultStorageService)
         XCTAssertNil(storagePlugin.queue)
     }
 }

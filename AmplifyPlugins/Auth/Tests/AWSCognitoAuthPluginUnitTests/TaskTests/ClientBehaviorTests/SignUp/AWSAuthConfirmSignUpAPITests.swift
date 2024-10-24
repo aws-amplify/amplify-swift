@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSClientRuntime
-import AWSCognitoIdentity
-import AWSCognitoIdentityProvider
-import ClientRuntime
 import XCTest
+import AWSCognitoIdentity
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+import AWSCognitoIdentityProvider
+import ClientRuntime
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
@@ -23,7 +23,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
     func testSuccessfulSignUp() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(
+        self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { request in
                 XCTAssertNil(request.clientMetadata)
                 XCTAssertNil(request.forceAliasCreation)
@@ -31,11 +31,10 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
             }
         )
 
-        let result = try await plugin.confirmSignUp(
+        let result = try await self.plugin.confirmSignUp(
             for: "jeffb",
             confirmationCode: "123456",
-            options: options
-        )
+            options: options)
 
         guard case .done = result.nextStep else {
             XCTFail("Result should be .done for next step")
@@ -46,7 +45,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
     func testSuccessfulSignUpWithOptions() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(
+        self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { request in
                 XCTAssertNotNil(request.clientMetadata)
                 XCTAssertEqual(request.clientMetadata?["key"], "value")
@@ -57,14 +56,12 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
         let pluginOptions = AWSAuthConfirmSignUpOptions(
             metadata: ["key": "value"],
-            forceAliasCreation: true
-        )
+            forceAliasCreation: true)
         let options = AuthConfirmSignUpRequest.Options(pluginOptions: pluginOptions)
-        let result = try await plugin.confirmSignUp(
+        let result = try await self.plugin.confirmSignUp(
             for: "jeffb",
             confirmationCode: "123456",
-            options: options
-        )
+            options: options)
 
         guard case .done = result.nextStep else {
             XCTFail("Result should be .done for next step")
@@ -75,7 +72,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
     func testSignUpWithEmptyUsername() async {
 
-        mockIdentityProvider = MockIdentityProvider(
+        self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
                 XCTFail("Sign up API should not be called")
                 return .init()
@@ -83,11 +80,10 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         )
 
         do {
-            let _ = try await plugin.confirmSignUp(
+            let _ = try await self.plugin.confirmSignUp(
                 for: "",
                 confirmationCode: "123456",
-                options: options
-            )
+                options: options)
 
         } catch {
             guard let authError = error as? AuthError else {
@@ -100,7 +96,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
     func testSignUpWithEmptyConfirmationCode() async {
 
-        mockIdentityProvider = MockIdentityProvider(
+        self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
                 XCTFail("Sign up API should not be called")
                 return .init()
@@ -108,11 +104,10 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         )
 
         do {
-            let _ = try await plugin.confirmSignUp(
+            let _ = try await self.plugin.confirmSignUp(
                 for: "jeffb",
                 confirmationCode: "",
-                options: options
-            )
+                options: options)
 
         } catch {
             guard let authError = error as? AuthError else {
@@ -142,36 +137,32 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         for errorToTest in errorsToTest {
             await validateConfirmSignUpServiceErrors(
                 confirmSignUpOutputError: errorToTest.confirmSignUpOutputError,
-                expectedCognitoError: errorToTest.cognitoError
-            )
+                expectedCognitoError: errorToTest.cognitoError)
         }
     }
 
     func testSignUpWithNotAuthorizedException() async {
 
-        mockIdentityProvider = MockIdentityProvider(
+        self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
                 throw AWSCognitoIdentityProvider.NotAuthorizedException()
             }
         )
 
         do {
-            let _ = try await plugin.confirmSignUp(
+            let _ = try await self.plugin.confirmSignUp(
                 for: "jeffb",
                 confirmationCode: "12345",
-                options: options
-            )
+                options: options)
         } catch {
             guard let authError = error as? AuthError else {
                 XCTFail("Should throw Auth error")
                 return
             }
 
-            guard case .notAuthorized(
-                let errorDescription,
-                let recoverySuggestion,
-                let notAuthorizedError
-            ) = authError else {
+            guard case .notAuthorized(let errorDescription,
+                                      let recoverySuggestion,
+                                      let notAuthorizedError) = authError else {
                 XCTFail("Auth error should be of type notAuthorized")
                 return
             }
@@ -184,20 +175,17 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
     func testSignUpWithInternalErrorException() async {
 
-        mockIdentityProvider = MockIdentityProvider(
+        self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
-                throw try await AWSCognitoIdentityProvider.InternalErrorException(
-                    httpResponse: .init(body: .empty, statusCode: .accepted)
-                )
+                throw AWSCognitoIdentityProvider.InternalErrorException()
             }
         )
 
         do {
-            let _ = try await plugin.confirmSignUp(
+            let _ = try await self.plugin.confirmSignUp(
                 for: "jeffb",
                 confirmationCode: "12345",
-                options: options
-            )
+                options: options)
         } catch {
             guard let authError = error as? AuthError else {
                 XCTFail("Should throw Auth error")
@@ -215,7 +203,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
     func testSignUpWithUnknownErrorException() async {
 
-        mockIdentityProvider = MockIdentityProvider(
+        self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
                 throw AWSClientRuntime.UnknownAWSHTTPServiceError.init(
                     httpResponse: .init(body: .empty, statusCode: .accepted),
@@ -227,11 +215,10 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         )
 
         do {
-            let _ = try await plugin.confirmSignUp(
+            let _ = try await self.plugin.confirmSignUp(
                 for: "jeffb",
                 confirmationCode: "12345",
-                options: options
-            )
+                options: options)
         } catch {
             guard let authError = error as? AuthError else {
                 XCTFail("Should throw Auth error")
@@ -249,31 +236,27 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
     func validateConfirmSignUpServiceErrors(
         confirmSignUpOutputError: Error,
-        expectedCognitoError: AWSCognitoAuthError
-    ) async {
-            mockIdentityProvider = MockIdentityProvider(
+        expectedCognitoError: AWSCognitoAuthError) async {
+            self.mockIdentityProvider = MockIdentityProvider(
                 mockConfirmSignUpResponse: { _ in
                     throw confirmSignUpOutputError
                 }
             )
 
             do {
-                let _ = try await plugin.confirmSignUp(
+                let _ = try await self.plugin.confirmSignUp(
                     for: "jeffb",
                     confirmationCode: "12345",
-                    options: options
-                )
+                    options: options)
             } catch {
                 guard let authError = error as? AuthError else {
                     XCTFail("Should throw Auth error")
                     return
                 }
 
-                guard case .service(
-                    let errorMessage,
-                    let recovery,
-                    let serviceError
-                ) = authError else {
+                guard case .service(let errorMessage,
+                                    let recovery,
+                                    let serviceError) = authError else {
                     XCTFail("Auth error should be of type service error")
                     return
                 }

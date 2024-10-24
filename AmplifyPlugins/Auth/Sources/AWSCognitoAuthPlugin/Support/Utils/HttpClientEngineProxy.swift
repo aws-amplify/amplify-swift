@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import ClientRuntime
-import Foundation
 @_spi(InternalHttpEngineProxy) @_spi(InternalAmplifyPluginExtension) import InternalAmplifyCredentials
+import Foundation
+import SmithyHTTPAPI
 
 protocol HttpClientEngineProxy: HTTPClient {
     var target: HTTPClient? { get set }

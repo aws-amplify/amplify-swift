@@ -177,9 +177,7 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutput: { _ in
-                throw try await AWSCognitoIdentityProvider.InternalErrorException(
-                    httpResponse: .init(body: .empty, statusCode: .accepted)
-                )
+                throw AWSCognitoIdentityProvider.InternalErrorException()
             }
         )
         do {

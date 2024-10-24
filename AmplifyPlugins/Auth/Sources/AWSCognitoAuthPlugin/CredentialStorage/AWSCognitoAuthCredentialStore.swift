@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
 import Foundation
+import Amplify
 @_spi(KeychainStore) import AWSPluginsCore
 
 struct AWSCognitoAuthCredentialStore {
@@ -63,13 +63,14 @@ struct AWSCognitoAuthCredentialStore {
         ///  - Old Identity Pool Config == New Identity Pool Config
         if oldUserPoolConfiguration == nil &&
             newIdentityConfigData != nil &&
-            oldIdentityPoolConfiguration == newIdentityConfigData {
-
+            oldIdentityPoolConfiguration == newIdentityConfigData
+        {
             // retrieve data from the old namespace and save with the new namespace
             if let oldCognitoCredentialsData = try? keychain._getData(oldNameSpace) {
                 try? keychain._set(oldCognitoCredentialsData, key: newNameSpace)
             }
-        } else if oldAuthConfigData != currentAuthConfig {
+        } else if oldAuthConfigData != currentAuthConfig &&
+                    oldNameSpace != newNameSpace {
             // Clear the old credentials
             try? keychain._remove(oldNameSpace)
         }
@@ -97,15 +98,13 @@ struct AWSCognitoAuthCredentialStore {
 
     private func generateDeviceMetadataKey(
         for username: String,
-        with configuration: AuthConfiguration
-    ) -> String {
+        with configuration: AuthConfiguration) -> String {
             return "\(storeKey(for: authConfiguration)).\(username).\(deviceMetadataKey)"
     }
 
     private func generateASFDeviceKey(
         for username: String,
-        with configuration: AuthConfiguration
-    ) -> String {
+        with configuration: AuthConfiguration) -> String {
             return "\(storeKey(for: authConfiguration)).\(username).\(deviceASFKey)"
     }
 
@@ -189,7 +188,7 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
 /// Helpers for encode and decoding
 private extension AWSCognitoAuthCredentialStore {
 
-    func encode(object: some Codable) throws -> Data {
+    func encode<T: Codable>(object: T) throws -> Data {
         do {
             return try JSONEncoder().encode(object)
         } catch {

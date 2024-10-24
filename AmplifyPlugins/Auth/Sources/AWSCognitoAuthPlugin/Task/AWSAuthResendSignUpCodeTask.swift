@@ -27,7 +27,6 @@ class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask, DefaultLogger {
     }
 
     func execute() async throws -> AuthCodeDeliveryDetails {
-        log.verbose("Starting execution")
         if let validationError = request.hasError() {
             throw validationError
         }

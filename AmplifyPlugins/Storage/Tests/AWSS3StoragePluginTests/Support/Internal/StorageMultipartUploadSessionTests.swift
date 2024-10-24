@@ -133,9 +133,10 @@ class StorageMultipartUploadSessionTests: XCTestCase {
                 print("Progress: \(String(format: "%.2f", progress.fractionCompleted))")
             case .failed(let error):
                 print("Error: \(error)")
-                XCTFail("Must not fail")
+                completedExp.fulfill()
             case .completed:
                 print("Completed")
+                XCTFail("Must not complete")
                 completedExp.fulfill()
             }
         }

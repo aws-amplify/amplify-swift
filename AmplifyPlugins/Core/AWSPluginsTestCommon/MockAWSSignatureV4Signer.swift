@@ -5,20 +5,19 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSClientRuntime
 import AWSPluginsCore
-import ClientRuntime
-import Foundation
+import AwsCommonRuntimeKit
 import InternalAmplifyCredentials
+import Foundation
+import SmithyHTTPAPI
+import SmithyIdentity
 
 class MockAWSSignatureV4Signer: AWSSignatureV4Signer {
-    func sigV4SignedRequest(
-        requestBuilder: SdkHttpRequestBuilder,
-        credentialsProvider: CredentialsProviding,
-        signingName: String,
-        signingRegion: String,
-        date: Date
-    ) throws -> SdkHttpRequest? {
+    func sigV4SignedRequest(requestBuilder: SmithyHTTPAPI.HTTPRequestBuilder,
+                            credentialIdentityResolver: some AWSCredentialIdentityResolver,
+                            signingName: String,
+                            signingRegion: String,
+                            date: Date) throws -> SmithyHTTPAPI.HTTPRequest? {
         let originalRequest = requestBuilder.build()
         return originalRequest
     }

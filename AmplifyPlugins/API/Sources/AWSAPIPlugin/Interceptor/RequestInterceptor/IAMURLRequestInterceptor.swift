@@ -7,9 +7,10 @@
 
 import Amplify
 import AWSPluginsCore
-import ClientRuntime
-import Foundation
 import InternalAmplifyCredentials
+import Foundation
+import SmithyHTTPAPI
+import Smithy
 
 typealias AWSRegionType = String
 
@@ -19,11 +20,9 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
     let endpointType: AWSAPICategoryPluginEndpointType
     private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
 
-    init(
-        iamCredentialsProvider: IAMCredentialsProvider,
-        region: AWSRegionType,
-        endpointType: AWSAPICategoryPluginEndpointType
-    ) {
+    init(iamCredentialsProvider: IAMCredentialsProvider,
+         region: AWSRegionType,
+         endpointType: AWSAPICategoryPluginEndpointType) {
         self.iamCredentialsProvider = iamCredentialsProvider
         self.region = region
         self.endpointType = endpointType
@@ -43,12 +42,12 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
         request.setValue(userAgent, forHTTPHeaderField: URLRequestConstants.Header.userAgent)
 
         let httpMethod = (request.httpMethod?.uppercased())
-            .flatMap(HttpMethodType.init(rawValue:)) ?? .get
+            .flatMap(HTTPMethodType.init(rawValue:)) ?? .get
 
         let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?
-            .map { ClientRuntime.SDKURLQueryItem(name: $0.name, value: $0.value)} ?? []
+            .map { URIQueryItem(name: $0.name, value: $0.value)} ?? []
 
-        let requestBuilder = SdkHttpRequestBuilder()
+        let requestBuilder = HTTPRequestBuilder()
             .withHost(host)
             .withPath(url.path)
             .withQueryItems(queryItems)
@@ -58,16 +57,17 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
             .withHeaders(.init(request.allHTTPHeaderFields ?? [:]))
             .withBody(.data(request.httpBody))
 
-        let signingName: String = switch endpointType {
+        let signingName: String
+        switch endpointType {
         case .graphQL:
-            URLRequestConstants.appSyncServiceName
+            signingName = URLRequestConstants.appSyncServiceName
         case .rest:
-            URLRequestConstants.apiGatewayServiceName
+            signingName = URLRequestConstants.apiGatewayServiceName
         }
 
         guard let urlRequest = try await AmplifyAWSSignatureV4Signer().sigV4SignedRequest(
             requestBuilder: requestBuilder,
-            credentialsProvider: iamCredentialsProvider.getCredentialsProvider(),
+            credentialIdentityResolver: iamCredentialsProvider.getCredentialIdentityResolver(),
             signingName: signingName,
             signingRegion: region,
             date: Date()

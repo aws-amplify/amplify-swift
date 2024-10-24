@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if os(iOS) || os(macOS)
-import Amplify
+#if os(iOS) || os(macOS) || os(visionOS)
 import Foundation
+import Amplify
 
 protocol AuthSocialWebUISignInTask: AmplifyAuthTask where Request == AuthWebUISignInRequest, Success == AuthSignInResult, Failure == AuthError { }
 

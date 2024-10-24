@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSClientRuntime
-import ClientRuntime
 import Foundation
+import ClientRuntime
+import SmithyHTTPAPI
 
 @_spi(PluginHTTPClientEngine)
 public func baseClientEngine(
-    for configuration: AWSClientConfiguration<some AWSServiceSpecificConfiguration>
+    for configuration: ClientRuntime.DefaultHttpClientConfiguration
 ) -> HTTPClient {
     return FoundationClientEngine()
 }

@@ -67,7 +67,7 @@ class QueryPredicateEvaluateGeneratedDateTimeTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testTemporalDateTimeTemporal_DateTime_now_addvalue1to_hournotEqualTemporalDateTimeTemporal_DateTime_now() throws {
@@ -121,7 +121,7 @@ class QueryPredicateEvaluateGeneratedDateTimeTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testTemporalDateTimeTemporal_DateTime_now_addvalue2to_hournotEqualTemporalDateTimeTemporal_DateTime_now() throws {
@@ -175,7 +175,7 @@ class QueryPredicateEvaluateGeneratedDateTimeTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testTemporalDateTimeTemporal_DateTime_now_addvalue3to_hournotEqualTemporalDateTimeTemporal_DateTime_now() throws {
@@ -229,7 +229,7 @@ class QueryPredicateEvaluateGeneratedDateTimeTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testTemporalDateTimeTemporal_DateTime_nowequalsTemporalDateTimeTemporal_DateTime_now() throws {

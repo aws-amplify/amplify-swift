@@ -5,18 +5,19 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+@testable import Amplify
 import AWSPinpoint
+@testable import AWSPinpointPushNotificationsPlugin
 import Foundation
 import XCTest
-@testable import Amplify
-@testable import AWSPinpointPushNotificationsPlugin
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class ErrorPushNotificationsTests: XCTestCase {
     /// Given: A NSError error
     /// When: pushNotificationsError is invoked
     /// Then: An .unknown error is returned
     func testPushNotificationsError_withUnknownError_shouldReturnUnknownError() {
-        let error = NSError(domain: "MyError", code: 1_234)
+        let error = NSError(domain: "MyError", code: 1234)
         let pushNotificationsError = error.pushNotificationsError
         switch pushNotificationsError {
         case .unknown(let errorDescription, let underlyingError):
@@ -81,8 +82,7 @@ extension ErrorPushNotificationsTests {
     /// Then: A .unknown error is returned
     func testPushNotificationError_withUnknownAWSHTTPServiceError_shouldReturnUnknownError() {
         let error = UnknownAWSHTTPServiceError(
-            httpResponse: .init(body: .empty, statusCode: .accepted), message: "UnknownAWSHTTPServiceError", requestID: nil, typeName: nil
-        )
+            httpResponse: .init(body: .empty, statusCode: .accepted), message: "UnknownAWSHTTPServiceError", requestID: nil, typeName: nil)
         let pushNotificationsError = error.pushNotificationsError
         switch pushNotificationsError {
         case .unknown(let errorDescription, let underlyingError):
@@ -105,7 +105,7 @@ extension ErrorPushNotificationsTests {
     /// When: pushNotificationsError is invoked
     /// Then: A .unknown error is returned
     func testPushNotificationError_withCommonRunTimeError_shouldReturnUnknownError() {
-        let error = CommonRunTimeError.crtError(.init(code: 12_345))
+        let error = CommonRunTimeError.crtError(.init(code: 12345))
         let pushNotificationsError = error.pushNotificationsError
         switch pushNotificationsError {
         case .unknown(let errorDescription, let underlyingError):

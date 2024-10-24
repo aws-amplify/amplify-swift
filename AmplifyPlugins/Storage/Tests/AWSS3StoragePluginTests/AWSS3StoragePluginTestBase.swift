@@ -5,11 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
 import XCTest
+import Amplify
+@testable import AWSS3StoragePlugin
 @testable import AmplifyTestCommon
 @testable import AWSPluginsTestCommon
-@testable import AWSS3StoragePlugin
+import InternalAmplifyCredentials
 
 class AWSS3StoragePluginTests: XCTestCase {
     var storagePlugin: AWSS3StoragePlugin!
@@ -33,7 +34,25 @@ class AWSS3StoragePluginTests: XCTestCase {
         authService = MockAWSAuthService()
         queue = MockOperationQueue()
 
-        storagePlugin.configure(
+        storagePlugin.configure(defaultBucket: .fromBucketInfo(.init(bucketName: testBucket, region: testRegion)),
+                                storageService: storageService,
+                                authService: authService,
+                                defaultAccessLevel: defaultAccessLevel,
+                                queue: queue)
+    }
+}
+
+
+extension AWSS3StoragePlugin {
+    /// Convenience configuration method for testing purposes, with a default bucket with name "test-bucket" and region "us-east-1"
+    func configure(
+        storageService: AWSS3StorageServiceBehavior,
+        authService: AWSAuthCredentialsProviderBehavior,
+        defaultAccessLevel: StorageAccessLevel,
+        queue: OperationQueue = OperationQueue()
+    ) {
+        configure(
+            defaultBucket: .fromBucketInfo(.init(bucketName: "test-bucket", region: "us-east-1")),
             storageService: storageService,
             authService: authService,
             defaultAccessLevel: defaultAccessLevel,

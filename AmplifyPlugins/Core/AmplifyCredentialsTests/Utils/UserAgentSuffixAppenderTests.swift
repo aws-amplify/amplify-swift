@@ -5,8 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import ClientRuntime
 @_spi(InternalAmplifyPluginExtension) @_spi(InternalHttpEngineProxy) import InternalAmplifyCredentials
+import Smithy
+import SmithyHTTPAPI
 import XCTest
 
 class UserAgentSuffixAppenderTests: XCTestCase {
@@ -73,8 +74,8 @@ class UserAgentSuffixAppenderTests: XCTestCase {
         }
     }
 
-    private func createRequest() -> SdkHttpRequest {
-        return SdkHttpRequest(
+    private func createRequest() -> HTTPRequest {
+        return HTTPRequest(
             method: .get,
             endpoint: .init(host: "customHost")
         )
@@ -83,8 +84,8 @@ class UserAgentSuffixAppenderTests: XCTestCase {
 
 private class MockHttpClientEngine: HTTPClient {
     var executeCount = 0
-    var executeRequest: SdkHttpRequest?
-    func send(request: SdkHttpRequest) async throws -> HttpResponse {
+    var executeRequest: HTTPRequest?
+    func send(request: HTTPRequest) async throws -> HTTPResponse {
         executeCount += 1
         executeRequest = request
         return .init(body: .empty, statusCode: .accepted)

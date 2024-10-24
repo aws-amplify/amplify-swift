@@ -27,11 +27,13 @@ class AWSS3StoragePluginUploadMetadataTestCase: AWSS3StoragePluginTestBase {
         // upload file
         let key = UUID().uuidString
         let fileURL = temporaryFile(named: key, data: data(mb: 1))
-        _ = try await Amplify.Storage.uploadFile(
-            key: key,
-            local: fileURL,
-            options: options
-        ).value
+        await wait {
+            _ = try await Amplify.Storage.uploadFile(
+                key: key,
+                local: fileURL,
+                options: options
+            ).value
+        }
 
         // call `HeadObject` through SDK escape hatch
         let head = try await headObject(key: "public/\(key)")
@@ -65,11 +67,13 @@ class AWSS3StoragePluginUploadMetadataTestCase: AWSS3StoragePluginTestBase {
         // upload file
         let key = UUID().uuidString
         let fileURL = temporaryFile(named: key, data: data(mb: 7))
-        _ = try await Amplify.Storage.uploadFile(
-            key: key,
-            local: fileURL,
-            options: options
-        ).value
+        await wait(timeout: 60) {
+            _ = try await Amplify.Storage.uploadFile(
+                key: key,
+                local: fileURL,
+                options: options
+            ).value
+        }
 
         // call `HeadObject` through SDK escape hatch
         let head = try await headObject(key: "public/\(key)")
@@ -102,11 +106,13 @@ class AWSS3StoragePluginUploadMetadataTestCase: AWSS3StoragePluginTestBase {
 
         // upload file
         let key = UUID().uuidString
-        _ = try await Amplify.Storage.uploadData(
-            key: key,
-            data: data(mb: 1),
-            options: options
-        ).value
+        await wait {
+            _ = try await Amplify.Storage.uploadData(
+                key: key,
+                data: self.data(mb: 1),
+                options: options
+            ).value
+        }
 
         // call `HeadObject` through SDK escape hatch
         let head = try await headObject(key: "public/\(key)")
@@ -139,11 +145,13 @@ class AWSS3StoragePluginUploadMetadataTestCase: AWSS3StoragePluginTestBase {
 
         // upload file
         let key = UUID().uuidString
-        _ = try await Amplify.Storage.uploadData(
-            key: key,
-            data: data(mb: 7),
-            options: options
-        ).value
+        await wait(timeout: 60) {
+            _ = try await Amplify.Storage.uploadData(
+                key: key,
+                data: self.data(mb: 7),
+                options: options
+            ).value
+        }
 
         // call `HeadObject` through SDK escape hatch
         let head = try await headObject(key: "public/\(key)")
@@ -187,11 +195,13 @@ class AWSS3StoragePluginUploadMetadataTestCase: AWSS3StoragePluginTestBase {
 
         // upload file
         let key = UUID().uuidString
-        _ = try await Amplify.Storage.uploadData(
-            key: key,
-            data: data(mb: 1),
-            options: options
-        ).value
+        await wait {
+            _ = try await Amplify.Storage.uploadData(
+                key: key,
+                data: self.data(mb: 1),
+                options: options
+            ).value
+        }
 
         // call `HeadObject` through SDK escape hatch
         let head = try await headObject(key: "public/\(key)")

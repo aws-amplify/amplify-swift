@@ -5,9 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+
+import Foundation
 import Amplify
 import Combine
-import Foundation
 import InternalAmplifyCredentials
 @_spi(WebSocket) import AWSPluginsCore
 
@@ -46,8 +47,8 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
     ) throws -> AppSyncRealTimeClientProtocol {
         let apiName = endpointConfig.name
 
-        let authInterceptor = try getInterceptor(
-            for: getOrCreateAuthConfiguration(from: endpointConfig, authType: authType),
+        let authInterceptor = try self.getInterceptor(
+            for: self.getOrCreateAuthConfiguration(from: endpointConfig, authType: authType),
             authService: authService,
             apiAuthProviderFactory: apiAuthProviderFactory
         )
@@ -81,7 +82,7 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
         authType: AWSAuthorizationType?
     ) throws -> AWSAuthorizationConfiguration {
         // create a configuration if there's an override auth type
-        if let authType {
+        if let authType = authType {
             return try endpointConfig.authorizationConfigurationFor(authType: authType)
         }
 
@@ -100,24 +101,20 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
             let provider = AWSOIDCAuthProvider(authService: authService)
             return AuthTokenInterceptor(getLatestAuthToken: provider.getLatestAuthToken)
         case .awsIAM(let awsIAMConfiguration):
-            return IAMAuthInterceptor(
-                authService.getCredentialsProvider(),
-                region: awsIAMConfiguration.region
-            )
+            return IAMAuthInterceptor(authService.getCredentialIdentityResolver(),
+                                      region: awsIAMConfiguration.region)
         case .openIDConnect:
             guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
                 throw APIError.invalidConfiguration(
                     "Using openIDConnect requires passing in an APIAuthProvider with an OIDC AuthProvider",
-                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil
-                )
+                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil)
             }
             return AuthTokenInterceptor(getLatestAuthToken: oidcAuthProvider.getLatestAuthToken)
         case .function:
             guard let functionAuthProvider = apiAuthProviderFactory.functionAuthProvider() else {
                 throw APIError.invalidConfiguration(
                     "Using function as auth provider requires passing in an APIAuthProvider with a Function AuthProvider",
-                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil
-                )
+                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil)
             }
             return AuthTokenInterceptor(authTokenProvider: functionAuthProvider)
         case .none:
@@ -130,9 +127,9 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
 extension AppSyncRealTimeClientFactory {
 
     /**
-     Converting appsync api url to realtime api url
-     1. api.example.com/graphql -> api.example.com/graphql/realtime
-     2. abc.appsync-api.us-east-1.amazonaws.com/graphql -> abc.appsync-realtime-api.us-east-1.amazonaws.com/graphql
+     Converting appsync api url to realtime api url, realtime endpoint has scheme 'wss'
+     1. api.example.com/graphql -> wss://api.example.com/graphql/realtime
+     2. abc.appsync-api.us-east-1.amazonaws.com/graphql -> wss://abc.appsync-realtime-api.us-east-1.amazonaws.com/graphql
      */
     static func appSyncRealTimeEndpoint(_ url: URL) -> URL {
         guard let host = url.host else {
@@ -148,6 +145,7 @@ extension AppSyncRealTimeClientFactory {
         }
 
         urlComponents.host = host.replacingOccurrences(of: "appsync-api", with: "appsync-realtime-api")
+        urlComponents.scheme = "wss"
         guard let realTimeUrl = urlComponents.url else {
             return url
         }
@@ -156,9 +154,9 @@ extension AppSyncRealTimeClientFactory {
     }
 
     /**
-     Converting appsync realtime api url to api url
+     Converting appsync realtime api url to api url, api endpoint has scheme 'https'
      1. api.example.com/graphql/realtime -> api.example.com/graphql
-     2. abc.appsync-realtime-api.us-east-1.amazonaws.com/graphql -> abc.appsync-api.us-east-1.amazonaws.com/graphql
+     2. abc.appsync-realtime-api.us-east-1.amazonaws.com/graphql -> https://abc.appsync-api.us-east-1.amazonaws.com/graphql
      */
     static func appSyncApiEndpoint(_ url: URL) -> URL {
         guard let host = url.host else {
@@ -177,6 +175,7 @@ extension AppSyncRealTimeClientFactory {
         }
 
         urlComponents.host = host.replacingOccurrences(of: "appsync-realtime-api", with: "appsync-api")
+        urlComponents.scheme = "https"
         guard let apiUrl = urlComponents.url else {
             return url
         }

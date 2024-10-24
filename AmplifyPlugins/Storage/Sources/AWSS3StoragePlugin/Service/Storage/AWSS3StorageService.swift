@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+import AWSS3
 import Amplify
 import AWSPluginsCore
-import AWSS3
 import ClientRuntime
-import Foundation
 @_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 
 /// - Tag: AWSS3StorageService
@@ -33,10 +33,10 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
 
     var userAgent: String {
         get async {
-            await "\(AmplifyAWSServiceConfiguration.userAgentLib) \(AmplifyAWSServiceConfiguration.userAgentOS)"
+            "\(AmplifyAWSServiceConfiguration.userAgentLib) \(await AmplifyAWSServiceConfiguration.userAgentOS)"
         }
     }
-
+    
     let storageConfiguration: StorageConfiguration
     let sessionConfiguration: URLSessionConfiguration
     var delegateQueue: OperationQueue?
@@ -53,26 +53,25 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         storageConfiguration.sessionIdentifier
     }
 
-    convenience init(
-        authService: AWSAuthCredentialsProviderBehavior,
-        region: String,
-        bucket: String,
-        httpClientEngineProxy: HttpClientEngineProxy? = nil,
-        storageConfiguration: StorageConfiguration = .default,
-        storageTransferDatabase: StorageTransferDatabase = .default,
-        fileSystem: FileSystem = .default,
-        sessionConfiguration: URLSessionConfiguration? = nil,
-        delegateQueue: OperationQueue? = nil,
-        logger: Logger = storageLogger
-    ) throws {
-        let credentialsProvider = authService.getCredentialsProvider()
+    convenience init(authService: AWSAuthCredentialsProviderBehavior,
+                     region: String,
+                     bucket: String,
+                     httpClientEngineProxy: HttpClientEngineProxy? = nil,
+                     storageConfiguration: StorageConfiguration? = nil,
+                     storageTransferDatabase: StorageTransferDatabase = .default,
+                     fileSystem: FileSystem = .default,
+                     sessionConfiguration: URLSessionConfiguration? = nil,
+                     delegateQueue: OperationQueue? = nil,
+                     logger: Logger = storageLogger) throws {
+        let credentialsProvider = authService.getCredentialIdentityResolver()
+        let storageConfiguration = storageConfiguration ?? .init(forBucket: bucket)
         let clientConfig = try S3Client.S3ClientConfiguration(
+            awsCredentialIdentityResolver: credentialsProvider,
             region: region,
-            credentialsProvider: credentialsProvider,
             signingRegion: region
         )
 
-        if var httpClientEngineProxy {
+        if var httpClientEngineProxy = httpClientEngineProxy {
             httpClientEngineProxy.target = baseClientEngine(for: clientConfig)
             clientConfig.httpClientEngine = UserAgentSettingClientEngine(
                 target: httpClientEngineProxy
@@ -86,10 +85,10 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         let preSignedURLBuilder = AWSS3PreSignedURLBuilderAdapter(config: clientConfig, bucket: bucket)
 
         var sessionConfig: URLSessionConfiguration
-        if let sessionConfiguration {
+        if let sessionConfiguration = sessionConfiguration {
             sessionConfig = sessionConfiguration
         } else {
-            #if os(macOS)
+            #if os(macOS) || os(visionOS)
             let sessionConfiguration = URLSessionConfiguration.default
             #else
             let sessionConfiguration = URLSessionConfiguration.background(withIdentifier: storageConfiguration.sessionIdentifier)
@@ -102,33 +101,30 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
 
         sessionConfig.sharedContainerIdentifier = storageConfiguration.sharedContainerIdentifier
 
-        self.init(
-            authService: authService,
-            storageConfiguration: storageConfiguration,
-            storageTransferDatabase: storageTransferDatabase,
-            fileSystem: fileSystem,
-            sessionConfiguration: sessionConfig,
-            logger: logger,
-            s3Client: s3Client,
-            preSignedURLBuilder: preSignedURLBuilder,
-            awsS3: awsS3,
-            bucket: bucket
-        )
+        self.init(authService: authService,
+                  storageConfiguration: storageConfiguration,
+                  storageTransferDatabase: storageTransferDatabase,
+                  fileSystem: fileSystem,
+                  sessionConfiguration: sessionConfig,
+                  logger: logger,
+                  s3Client: s3Client,
+                  preSignedURLBuilder: preSignedURLBuilder,
+                  awsS3: awsS3,
+                  bucket: bucket)
     }
 
-    init(
-        authService: AWSAuthCredentialsProviderBehavior,
-        storageConfiguration: StorageConfiguration = .default,
-        storageTransferDatabase: StorageTransferDatabase = .default,
-        fileSystem: FileSystem = .default,
-        sessionConfiguration: URLSessionConfiguration,
-        delegateQueue: OperationQueue? = nil,
-        logger: Logger = storageLogger,
-        s3Client: S3Client,
-        preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior,
-        awsS3: AWSS3Behavior,
-        bucket: String
-    ) {
+    init(authService: AWSAuthCredentialsProviderBehavior,
+         storageConfiguration: StorageConfiguration? = nil,
+         storageTransferDatabase: StorageTransferDatabase = .default,
+         fileSystem: FileSystem = .default,
+         sessionConfiguration: URLSessionConfiguration,
+         delegateQueue: OperationQueue? = nil,
+         logger: Logger = storageLogger,
+         s3Client: S3Client,
+         preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior,
+         awsS3: AWSS3Behavior,
+         bucket: String) {
+        let storageConfiguration = storageConfiguration ?? .init(forBucket: bucket)
         self.storageConfiguration = storageConfiguration
         self.storageTransferDatabase = storageTransferDatabase
         self.fileSystem = fileSystem
@@ -150,11 +146,11 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         delegate.storageService = self
 
         storageTransferDatabase.recover(urlSession: urlSession) { [weak self] result in
-            guard let self else { fatalError() }
+            guard let self = self else { fatalError() }
             switch result {
             case .success(let pairs):
                 logger.info("Recovery completed: [pairs = \(pairs.count)]")
-                processTransferTaskPairs(pairs: pairs)
+                self.processTransferTaskPairs(pairs: pairs)
             case .failure(let error):
                 logger.error(error: error)
             }
@@ -177,14 +173,12 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
 
     func resetURLSession() {
         let delegate = StorageServiceSessionDelegate(identifier: storageConfiguration.sessionIdentifier, logger: logger)
-        urlSession = URLSession(configuration: sessionConfiguration, delegate: delegate, delegateQueue: delegateQueue)
+        self.urlSession = URLSession(configuration: sessionConfiguration, delegate: delegate, delegateQueue: delegateQueue)
     }
 
-    func attachEventHandlers(
-        onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler? = nil,
-        onDownload: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler? = nil,
-        onMultipartUpload: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler? = nil
-    ) {
+    func attachEventHandlers(onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler? = nil,
+                             onDownload: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler? = nil,
+                             onMultipartUpload: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler? = nil) {
         storageTransferDatabase.attachEventHandlers(onUpload: onUpload, onDownload: onDownload, onMultipartUpload: onMultipartUpload)
     }
 
@@ -193,12 +187,10 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
             register(task: pair.transferTask)
             if let multipartUpload = pair.multipartUpload,
                let uploadFile = multipartUpload.uploadFile {
-                let client = DefaultStorageMultipartUploadClient(
-                    serviceProxy: self,
-                    bucket: pair.transferTask.bucket,
-                    key: pair.transferTask.key,
-                    uploadFile: uploadFile
-                )
+                let client = DefaultStorageMultipartUploadClient(serviceProxy: self,
+                                                                 bucket: pair.transferTask.bucket,
+                                                                 key: pair.transferTask.key,
+                                                                 uploadFile: uploadFile)
                 guard let session = StorageMultipartUploadSession(
                     client: client,
                     transferTask: pair.transferTask,
@@ -273,22 +265,18 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         }
     }
 
-    func createTransferTask(
-        transferType: StorageTransferType,
-        bucket: String,
-        key: String,
-        location: URL? = nil,
-        requestHeaders: [String: String]? = nil
-    ) -> StorageTransferTask {
-        let transferTask = StorageTransferTask(
-            transferType: transferType,
-            bucket: bucket,
-            key: key,
-            location: location,
-            requestHeaders: requestHeaders,
-            storageTransferDatabase: storageTransferDatabase,
-            logger: logger
-        )
+    func createTransferTask(transferType: StorageTransferType,
+                            bucket: String,
+                            key: String,
+                            location: URL? = nil,
+                            requestHeaders: [String: String]? = nil) -> StorageTransferTask {
+        let transferTask = StorageTransferTask(transferType: transferType,
+                                               bucket: bucket,
+                                               key: key,
+                                               location: location,
+                                               requestHeaders: requestHeaders,
+                                               storageTransferDatabase: storageTransferDatabase,
+                                               logger: logger)
         return transferTask
     }
 

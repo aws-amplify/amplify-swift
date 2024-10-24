@@ -7,25 +7,25 @@
 
 import Foundation
 
-import AWSClientRuntime
-import AWSCognitoIdentityProvider
-import AwsCommonRuntimeKit
-import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+import AWSCognitoIdentityProvider
+import ClientRuntime
+import AwsCommonRuntimeKit
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class AuthenticationProviderDeleteUserTests: BasePluginTest {
 
     func testDeleteUserSuccess() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                RevokeTokenOutput()
             }, mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                GlobalSignOutOutput()
             },
             mockDeleteUserOutput: { _ in
-                try await DeleteUserOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                DeleteUserOutput()
             }
         )
         do {
@@ -54,7 +54,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 throw AWSCognitoIdentityProvider.InternalErrorException()
             },
             mockDeleteUserOutput: { _ in
-                try await DeleteUserOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                DeleteUserOutput()
             }
         )
         do {
@@ -79,12 +79,12 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     func testOfflineDeleteUser() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                RevokeTokenOutput()
             }, mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                GlobalSignOutOutput()
             },
             mockDeleteUserOutput: { _ in
-                throw CommonRunTimeError.crtError(CRTError(code: 1_059))
+                throw CommonRunTimeError.crtError(CRTError(code: 1059))
             }
         )
         do {
@@ -92,8 +92,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             XCTFail("Should not get success")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .network = (underlyingError as? AWSCognitoAuthError)
-            else {
+                  case .network = (underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce network error instead of \(error)")
                 return
             }
@@ -114,12 +113,12 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     func testOfflineDeleteUserAndRetry() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                RevokeTokenOutput()
             }, mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                GlobalSignOutOutput()
             },
             mockDeleteUserOutput: { _ in
-                throw CommonRunTimeError.crtError(CRTError(code: 1_059))
+                throw CommonRunTimeError.crtError(CRTError(code: 1059))
             }
         )
         do {
@@ -127,8 +126,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             XCTFail("Should not get success")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .network = (underlyingError as? AWSCognitoAuthError)
-            else {
+                  case .network = (underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce network error instead of \(error)")
                 return
             }
@@ -136,12 +134,12 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                RevokeTokenOutput()
             }, mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                GlobalSignOutOutput()
             },
             mockDeleteUserOutput: { _ in
-                try await DeleteUserOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                DeleteUserOutput()
             }
         )
         do {
@@ -167,9 +165,9 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     func testDeleteUserInternalErrorException() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                RevokeTokenOutput()
             }, mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                GlobalSignOutOutput()
             },
             mockDeleteUserOutput: { _ in
                 throw AWSClientRuntime.UnknownAWSHTTPServiceError(
@@ -205,9 +203,9 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     func testDeleteUserWithInvalidParameterException() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                RevokeTokenOutput()
             }, mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                GlobalSignOutOutput()
             },
             mockDeleteUserOutput: { _ in
                 throw AWSCognitoIdentityProvider.InvalidParameterException()
@@ -219,8 +217,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             XCTFail("Should not get success")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .invalidParameter = (underlyingError as? AWSCognitoAuthError)
-            else {
+                  case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce invalidParameter error instead of \(error)")
                 return
             }
@@ -240,9 +237,9 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     func testDeleteUserWithNotAuthorizedException() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                RevokeTokenOutput()
             }, mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                GlobalSignOutOutput()
             },
             mockDeleteUserOutput: { _ in
                 throw AWSCognitoIdentityProvider.NotAuthorizedException()
@@ -273,9 +270,9 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     func testDeleteUserWithPasswordResetRequiredException() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                RevokeTokenOutput()
             }, mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                GlobalSignOutOutput()
             },
             mockDeleteUserOutput: { _ in
                 throw AWSCognitoIdentityProvider.PasswordResetRequiredException()
@@ -287,8 +284,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             XCTFail("Should not get success")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .passwordResetRequired = (underlyingError as? AWSCognitoAuthError)
-            else {
+                  case .passwordResetRequired = (underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce unknown error instead of \(error)")
                 return
             }
@@ -308,9 +304,9 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     func testDeleteUserWithResourceNotFoundException() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                RevokeTokenOutput()
             }, mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                GlobalSignOutOutput()
             },
             mockDeleteUserOutput: { _ in
                 throw AWSCognitoIdentityProvider.ResourceNotFoundException()
@@ -322,8 +318,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             XCTFail("Should not get success")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .resourceNotFound = (underlyingError as? AWSCognitoAuthError)
-            else {
+                  case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce unknown error instead of \(error)")
                 return
             }
@@ -343,9 +338,9 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     func testDeleteUserWithTooManyRequestsException() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                RevokeTokenOutput()
             }, mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                GlobalSignOutOutput()
             },
             mockDeleteUserOutput: { _ in
                 throw AWSCognitoIdentityProvider.TooManyRequestsException()
@@ -357,8 +352,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             XCTFail("Should not get success")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError)
-            else {
+                  case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce unknown error instead of \(error)")
                 return
             }
@@ -378,9 +372,9 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     func testDeleteUserWithUserNotConfirmedException() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                RevokeTokenOutput()
             }, mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                GlobalSignOutOutput()
             },
             mockDeleteUserOutput: { _ in
                 throw AWSCognitoIdentityProvider.UserNotConfirmedException()
@@ -392,8 +386,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             XCTFail("Should not get success")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError)
-            else {
+                  case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce userNotConfirmed error instead of \(error)")
                 return
             }
@@ -414,9 +407,9 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     func testDeleteUserWithUserNotFoundException() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                RevokeTokenOutput()
             }, mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                GlobalSignOutOutput()
             },
             mockDeleteUserOutput: { _ in
                 throw AWSCognitoIdentityProvider.UserNotFoundException()
@@ -428,8 +421,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             XCTFail("Should not get success")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .userNotFound = (underlyingError as? AWSCognitoAuthError)
-            else {
+                  case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce userNotFound error but instead produced \(error)")
                 return
             }

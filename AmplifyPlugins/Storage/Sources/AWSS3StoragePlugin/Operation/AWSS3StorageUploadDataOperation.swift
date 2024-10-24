@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
 import Amplify
 import AWSPluginsCore
-import Foundation
 
 /// Upload Data Operation.
 ///
@@ -22,7 +22,7 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
 >, StorageUploadDataOperation {
 
     let storageConfiguration: AWSS3StoragePluginConfiguration
-    let storageService: AWSS3StorageServiceBehavior
+    let storageServiceProvider: AWSS3StorageServiceProvider
     let authService: AWSAuthServiceBehavior
 
     var storageTaskReference: StorageTaskReference?
@@ -30,25 +30,27 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
     /// Serial queue for synchronizing access to `storageTaskReference`.
     private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
-    init(
-        _ request: StorageUploadDataRequest,
-        storageConfiguration: AWSS3StoragePluginConfiguration,
-        storageService: AWSS3StorageServiceBehavior,
-        authService: AWSAuthServiceBehavior,
-        progressListener: InProcessListener? = nil,
-        resultListener: ResultListener? = nil
-    ) {
+    private var storageService: AWSS3StorageServiceBehavior {
+        get throws {
+            return try storageServiceProvider()
+        }
+    }
+
+    init(_ request: StorageUploadDataRequest,
+         storageConfiguration: AWSS3StoragePluginConfiguration,
+         storageServiceProvider: @escaping AWSS3StorageServiceProvider,
+         authService: AWSAuthServiceBehavior,
+         progressListener: InProcessListener? = nil,
+         resultListener: ResultListener? = nil) {
 
         self.storageConfiguration = storageConfiguration
-        self.storageService = storageService
+        self.storageServiceProvider = storageServiceProvider
         self.authService = authService
-        super.init(
-            categoryType: .storage,
-            eventName: HubPayload.EventName.Storage.uploadData,
-            request: request,
-            inProcessListener: progressListener,
-            resultListener: resultListener
-        )
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.uploadData,
+                   request: request,
+                   inProcessListener: progressListener,
+                   resultListener: resultListener)
     }
 
     /// Pauses operation.
@@ -106,7 +108,7 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
 
                 let accelerate = try AWSS3PluginOptions.accelerateValue(pluginOptions: request.options.pluginOptions)
                 if request.data.count > StorageUploadDataRequest.Options.multiPartUploadSizeThreshold {
-                    storageService.multiPartUpload(
+                    try storageService.multiPartUpload(
                         serviceKey: serviceKey,
                         uploadSource: .data(request.data),
                         contentType: request.options.contentType,
@@ -116,7 +118,7 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
                         self?.onServiceEvent(event: event)
                     }
                 } else {
-                    storageService.upload(
+                    try storageService.upload(
                         serviceKey: serviceKey,
                         uploadSource: .data(request.data),
                         contentType: request.options.contentType,

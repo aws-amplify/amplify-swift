@@ -5,17 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSClientRuntime
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
-import Foundation
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+import Foundation
 
-enum CognitoAPIDecodingHelper {
+struct CognitoAPIDecodingHelper {
 
     static func decode(with specification: FeatureSpecification) async -> [API.APIName: CognitoAPI] {
 
@@ -25,8 +25,7 @@ enum CognitoAPIDecodingHelper {
 
             // Response
             guard mockedResponse["type"] == .string("cognitoIdentityProvider") ||
-                    mockedResponse["type"] == .string("cognitoIdentity")
-            else {
+                    mockedResponse["type"] == .string("cognitoIdentity") else {
                 continue
             }
 
@@ -44,89 +43,108 @@ enum CognitoAPIDecodingHelper {
 
             let requestData = requestData(
                 for: specification,
-                with: apiName
-            )
+                with: apiName)
 
             switch apiName {
             case "forgotPassword":
                 decodedAPIs[.forgotPassword] = await .forgotPassword(
-                    getApiInputAndOutput(
-                        request: requestData,
-                        response: response,
-                        responseType: responseType
-                    )
+                    {
+                        await getApiInputAndOutput(
+                            request: requestData,
+                            response: response,
+                            responseType: responseType
+                        )
+                    }()
                 )
             case "signUp":
                 decodedAPIs[.signUp] = await .signUp(
-                    getApiInputAndOutput(
-                        request: requestData,
-                        response: response,
-                        responseType: responseType
-                    )
+                    {
+                        await getApiInputAndOutput(
+                            request: requestData,
+                            response: response,
+                            responseType: responseType
+                        )
+                    }()
                 )
             case "deleteUser":
                 decodedAPIs[.deleteUser] = await .deleteUser(
-                    getApiInputAndOutput(
-                        request: requestData,
-                        response: response,
-                        responseType: responseType
-                    )
+                    {
+                        await getApiInputAndOutput(
+                            request: requestData,
+                            response: response,
+                            responseType: responseType
+                        )
+                    }()
                 )
             case "respondToAuthChallenge":
                 decodedAPIs[.confirmSignIn] = await .respondToAuthChallenge(
-                    getApiInputAndOutput(
-                        request: requestData,
-                        response: response,
-                        responseType: responseType
-                    )
+                    {
+                        await getApiInputAndOutput(
+                            request: requestData,
+                            response: response,
+                            responseType: responseType
+                        )
+                    }()
                 )
             case "confirmDevice":
                 decodedAPIs[.confirmDevice] = await .confirmDevice(
-                    getApiInputAndOutput(
-                        request: requestData,
-                        response: response,
-                        responseType: responseType
-                    )
+                    {
+                        await getApiInputAndOutput(
+                            request: requestData,
+                            response: response,
+                            responseType: responseType
+                        )
+                    }()
                 )
             case "initiateAuth":
                 decodedAPIs[.initiateAuth] = await .initiateAuth(
-                    getApiInputAndOutput(
-                        request: requestData,
-                        response: response,
-                        responseType: responseType
-                    )
+                    {
+                        await getApiInputAndOutput(
+                            request: requestData,
+                            response: response,
+                            responseType: responseType
+                        )
+                    }()
                 )
             case "revokeToken":
                 decodedAPIs[.revokeToken] = await .revokeToken(
-                    getApiInputAndOutput(
-                        request: requestData,
-                        response: response,
-                        responseType: responseType
-                    )
+                    {
+                        await getApiInputAndOutput(
+                            request: requestData,
+                            response: response,
+                            responseType: responseType
+                        )
+                    }()
                 )
             case "getId":
                 decodedAPIs[.getId] = await .getId(
-                    getApiInputAndOutput(
-                        request: requestData,
-                        response: response,
-                        responseType: responseType
-                    )
+                    {
+                        await getApiInputAndOutput(
+                            request: requestData,
+                            response: response,
+                            responseType: responseType
+                        )
+                    }()
                 )
             case "getCredentialsForIdentity":
                 decodedAPIs[.getCredentialsForIdentity] = await .getCredentialsForIdentity(
-                    getApiInputAndOutput(
-                        request: requestData,
-                        response: response,
-                        responseType: responseType
-                    )
+                    {
+                        await getApiInputAndOutput(
+                            request: requestData,
+                            response: response,
+                            responseType: responseType
+                        )
+                    }()
                 )
             case "globalSignOut":
                 decodedAPIs[.globalSignOut] = await .globalSignOut(
-                    getApiInputAndOutput(
-                        request: requestData,
-                        response: response,
-                        responseType: responseType
-                    )
+                    {
+                        await getApiInputAndOutput(
+                            request: requestData,
+                            response: response,
+                            responseType: responseType
+                        )
+                    }()
                 )
             default:
                 fatalError()
@@ -136,11 +154,9 @@ enum CognitoAPIDecodingHelper {
         return decodedAPIs
     }
 
-    private static func requestData(
-        for specification: FeatureSpecification,
-        with apiName: String
-    ) -> Data? {
-        var requestData: Data?
+    private static func requestData(for specification: FeatureSpecification,
+                                    with apiName: String) -> Data? {
+        var requestData: Data? = nil
         // Request
         if let cognitoResponseValidation = specification.validations.first(where: { validation in
             validation.value(at: "type") == .string("cognitoIdentityProvider") &&
@@ -166,7 +182,7 @@ enum CognitoAPIDecodingHelper {
     ) async -> CognitoAPIData<Input, Output> {
         var input: Input? = nil
 
-        if let request {
+        if let request = request {
             input = try! JSONDecoder().decode(Input.self, from: request)
         }
 
@@ -176,8 +192,7 @@ enum CognitoAPIDecodingHelper {
         switch responseType {
         case "failure":
             guard case .string(let errorType) = response["errorType"],
-                  case .string(let errorMessage) = response["errorType"]
-            else {
+                  case .string(let errorMessage) = response["errorType"] else {
                 fatalError()
             }
 
@@ -186,8 +201,7 @@ enum CognitoAPIDecodingHelper {
         case "success":
             let responseData = try! JSONEncoder().encode(response)
             let output = try! JSONDecoder().decode(
-                Output.self, from: responseData
-            )
+                Output.self, from: responseData)
             result = .success(output)
         default:
             fatalError("invalid response type")

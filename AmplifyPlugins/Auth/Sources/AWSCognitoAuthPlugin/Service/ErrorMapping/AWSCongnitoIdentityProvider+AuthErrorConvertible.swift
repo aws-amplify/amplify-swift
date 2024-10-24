@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
-import AWSClientRuntime
-import AWSCognitoIdentityProvider
 import Foundation
+import Amplify
+import AWSCognitoIdentityProvider
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 extension ForbiddenException: AuthErrorConvertible {
     var fallbackDescription: String { "Access to the requested resource is forbidden" }

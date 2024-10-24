@@ -31,3 +31,5 @@ extension InitiateAuthInput: Decodable {
         )
     }
 }
+
+extension CognitoIdentityProviderClientTypes.AuthFlowType: Decodable { }

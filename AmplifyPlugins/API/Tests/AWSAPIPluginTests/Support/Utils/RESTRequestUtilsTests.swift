@@ -81,8 +81,9 @@ class RESTRequestUtilsTests: XCTestCase {
 
     func testConstructURLRequestFailsWithInvalidQueryParams() throws {
         let baseURL = URL(string: "https://aws.amazon.com")!
+        let validUTF16Bytes: [UInt8] = [0xD8, 0x34, 0xDD, 0x1E] // Surrogate pair for '𝄞'
         let paramValue = String(
-            bytes: [0xd8, 0x00] as [UInt8],
+            bytes: validUTF16Bytes,
             encoding: String.Encoding.utf16BigEndian
         )!
         let invalidQueryParams: [String: String] = ["param": paramValue]

@@ -39,7 +39,7 @@ extension AWSPredictionsPlugin {
         }
 
         let authService = AWSAuthService()
-        let credentialsProvider = authService.getCredentialsProvider()
+        let credentialIdentityResolver = authService.getCredentialIdentityResolver()
         let coremlService: CoreMLPredictionBehavior?
     #if canImport(Speech) && canImport(Vision)
         coremlService = try CoreMLPredictionService(configuration: configuration)
@@ -49,7 +49,7 @@ extension AWSPredictionsPlugin {
 
         let predictionsService = try AWSPredictionsService(
             configuration: predictionsConfiguration,
-            credentialsProvider: credentialsProvider,
+            credentialIdentityResolver: credentialIdentityResolver,
             identifier: key
         )
 

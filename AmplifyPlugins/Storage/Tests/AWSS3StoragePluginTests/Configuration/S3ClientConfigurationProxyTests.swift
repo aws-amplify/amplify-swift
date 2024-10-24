@@ -21,8 +21,8 @@ final class S3ClientConfigurationAccelerateTestCase: XCTestCase {
     func testPropertyOverrides() async throws {
         let baseConfiguration = try await configuration(accelerate: true)
         let sut = try baseConfiguration.withAccelerate(false)
-        XCTAssertEqual(sut.serviceSpecific.accelerate, false)
-        XCTAssertEqual(baseConfiguration.serviceSpecific.accelerate, true)
+        XCTAssertEqual(sut.accelerate, false)
+        XCTAssertEqual(baseConfiguration.accelerate, true)
     }
 
     /// Given: A client configuration.
@@ -61,24 +61,19 @@ final class S3ClientConfigurationAccelerateTestCase: XCTestCase {
 
     // Helper configuration method
     private func configuration(accelerate: Bool) async throws -> S3Client.S3ClientConfiguration {
-        var serviceSpecific = try S3Client.ServiceSpecificConfiguration()
-        serviceSpecific.accelerate = accelerate
-        serviceSpecific.useArnRegion = .random()
-        serviceSpecific.useGlobalEndpoint = .random()
-        serviceSpecific.disableMultiRegionAccessPoints = .random()
-        serviceSpecific.forcePathStyle = .random()
-
         let baseConfiguration = try await S3Client.S3ClientConfiguration(
-            credentialsProvider: nil,
-            endpoint: UUID().uuidString,
-            serviceSpecific: serviceSpecific,
-            region: "us-east-1",
-            regionResolver: nil,
-            signingRegion: UUID().uuidString,
-            useDualStack: .random(),
             useFIPS: .random(),
-            retryMode: .adaptive,
-            appID: UUID().uuidString
+            useDualStack: .random(),
+            appID: UUID().uuidString,
+            awsCredentialIdentityResolver: nil,
+            region: "us-east-1",
+            signingRegion: UUID().uuidString,
+            forcePathStyle: .random(),
+            useArnRegion: .random(),
+            disableMultiRegionAccessPoints: .random(),
+            accelerate: accelerate, 
+            useGlobalEndpoint: .random(),
+            endpoint: UUID().uuidString
         )
 
         return baseConfiguration

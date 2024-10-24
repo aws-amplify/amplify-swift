@@ -11,13 +11,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSClientRuntime
-import AWSCognitoIdentityProvider
-import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
+import ClientRuntime
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
+import AWSCognitoIdentityProvider
 
 class AWSAuthConfirmSignUpTaskTests: XCTestCase {
 
@@ -33,17 +33,15 @@ class AWSAuthConfirmSignUpTaskTests: XCTestCase {
         let functionExpectation = expectation(description: "API call should be invoked")
         let confirmSignUp: MockIdentityProvider.MockConfirmSignUpResponse = { _ in
             functionExpectation.fulfill()
-            return try await .init(httpResponse: MockHttpResponse.ok)
+            return .init()
         }
 
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: {MockIdentityProvider(mockConfirmSignUpResponse: confirmSignUp)})
 
-        let request = AuthConfirmSignUpRequest(
-            username: "jeffb",
-            code: "213",
-            options: AuthConfirmSignUpRequest.Options()
-        )
+        let request = AuthConfirmSignUpRequest(username: "jeffb",
+                                               code: "213",
+                                               options: AuthConfirmSignUpRequest.Options())
         let task = AWSAuthConfirmSignUpTask(request, authEnvironment: authEnvironment)
         let confirmSignUpResult = try await task.value
         print("Confirm Sign Up Result: \(confirmSignUpResult)")
@@ -65,11 +63,9 @@ class AWSAuthConfirmSignUpTaskTests: XCTestCase {
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: {MockIdentityProvider(mockConfirmSignUpResponse: confirmSignUp)})
 
-        let request = AuthConfirmSignUpRequest(
-            username: "jeffb",
-            code: "213",
-            options: AuthConfirmSignUpRequest.Options()
-        )
+        let request = AuthConfirmSignUpRequest(username: "jeffb",
+                                               code: "213",
+                                               options: AuthConfirmSignUpRequest.Options())
 
         do {
             let task = AWSAuthConfirmSignUpTask(request, authEnvironment: authEnvironment)

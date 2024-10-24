@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AuthenticationServices
 import Foundation
+import AuthenticationServices
 
 /// Request for sign out user
 public struct AuthSignOutRequest: AmplifyOperationRequest {
@@ -32,16 +32,14 @@ public extension AuthSignOutRequest {
         /// SignOut the user from all devices. Check the plugin specific definition on what global signOut means.
         public let globalSignOut: Bool
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
         /// Provide a presentation anchor if you have signedIn using `signInWithWebUI`. The signOut webUI will be presented
         /// in the presentation anchor provided.
         public let presentationAnchorForWebUI: AuthUIPresentationAnchor?
 
-        public init(
-            globalSignOut: Bool = false,
-            presentationAnchor: AuthUIPresentationAnchor? = nil,
-            pluginOptions: Any? = nil
-        ) {
+        public init(globalSignOut: Bool = false,
+                    presentationAnchor: AuthUIPresentationAnchor? = nil,
+                    pluginOptions: Any? = nil) {
             self.globalSignOut = globalSignOut
             self.pluginOptions = pluginOptions
             self.presentationAnchorForWebUI = presentationAnchor
@@ -56,9 +54,9 @@ public extension AuthSignOutRequest {
 
 }
 
-#if os(iOS) || os(macOS)
-public extension AuthSignOutRequest.Options {
-    static func presentationAnchor(_ anchor: AuthUIPresentationAnchor) -> AuthSignOutRequest.Options {
+#if os(iOS) || os(macOS) || os(visionOS)
+extension AuthSignOutRequest.Options {
+    public static func presentationAnchor(_ anchor: AuthUIPresentationAnchor) -> AuthSignOutRequest.Options {
         return AuthSignOutRequest.Options(presentationAnchor: anchor)
     }
 }

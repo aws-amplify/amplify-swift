@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 import Amplify
 import AuthenticationServices
 import XCTest
@@ -211,7 +211,7 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase {
             )
         } catch let error as HostedUIError {
             if case .serviceMessage(let message) = error {
-                XCTAssertEqual(message, "HostedUI is only available in iOS and macOS")
+                XCTAssertEqual(message, "HostedUI is only available in iOS, macOS and visionOS")
             } else {
                 XCTFail("Expected HostedUIError.serviceMessage, got \(error)")
             }

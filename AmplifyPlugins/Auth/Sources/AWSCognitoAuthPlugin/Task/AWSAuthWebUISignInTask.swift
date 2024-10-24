@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
+import Foundation
 import Amplify
 import AWSPluginsCore
-import Foundation
 
 class AWSAuthWebUISignInTask: AuthWebUISignInTask, DefaultLogger {
 
@@ -18,25 +18,21 @@ class AWSAuthWebUISignInTask: AuthWebUISignInTask, DefaultLogger {
     private let taskHelper: AWSAuthTaskHelper
     let eventName: HubPayloadEventName
 
-    init(
-        _ request: AuthWebUISignInRequest,
-        authConfiguration: AuthConfiguration,
-        authStateMachine: AuthStateMachine,
-        eventName: String
+    init(_ request: AuthWebUISignInRequest,
+         authConfiguration: AuthConfiguration,
+         authStateMachine: AuthStateMachine,
+         eventName: String
     ) {
         self.request = request
         self.authStateMachine = authStateMachine
-        self.helper = HostedUISignInHelper(
-            request: request,
-            authstateMachine: authStateMachine,
-            configuration: authConfiguration
-        )
+        self.helper = HostedUISignInHelper(request: request,
+                                           authstateMachine: authStateMachine,
+                                           configuration: authConfiguration)
         self.eventName = eventName
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
     }
 
     func execute() async throws -> AuthSignInResult {
-        log.verbose("Starting execution")
         do {
             await taskHelper.didStateMachineConfigured()
             let result = try await helper.initiateSignIn()

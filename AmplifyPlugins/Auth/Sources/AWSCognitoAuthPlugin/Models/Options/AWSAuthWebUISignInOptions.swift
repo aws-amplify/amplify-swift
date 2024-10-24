@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if os(iOS) || os(macOS)
-import Amplify
+#if os(iOS) || os(macOS) || os(visionOS)
 import Foundation
+import Amplify
 
 public struct AWSAuthWebUISignInOptions {
 
@@ -27,18 +27,16 @@ public struct AWSAuthWebUISignInOptions {
     /// Safari always honors the request.
     public let preferPrivateSession: Bool
 
-    public init(
-        idpIdentifier: String? = nil,
-        preferPrivateSession: Bool = false
-    ) {
+    public init(idpIdentifier: String? = nil,
+                preferPrivateSession: Bool = false) {
         self.idpIdentifier = idpIdentifier
         self.preferPrivateSession = preferPrivateSession
     }
 }
 
-public extension AuthWebUISignInRequest.Options {
+extension AuthWebUISignInRequest.Options {
 
-    static func preferPrivateSession() -> AuthWebUISignInRequest.Options {
+    public static func preferPrivateSession() -> AuthWebUISignInRequest.Options {
         let pluginOptions = AWSAuthWebUISignInOptions(preferPrivateSession: true)
         let options = AuthWebUISignInRequest.Options(pluginOptions: pluginOptions)
         return options

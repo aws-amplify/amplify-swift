@@ -367,12 +367,12 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         let mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                RevokeTokenOutput()
             }, mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                GlobalSignOutOutput()
             },
             mockDeleteUserOutput: { _ in
-                try await DeleteUserOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                DeleteUserOutput()
             }
         )
 
@@ -392,10 +392,10 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         let mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                RevokeTokenOutput()
             },
             mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                GlobalSignOutOutput()
             }
         )
 
@@ -433,9 +433,7 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         let mockIdentityProvider = MockIdentityProvider(
             mockInitiateAuthResponse: { _ in
-                throw try await AWSCognitoIdentityProvider.NotAuthorizedException(
-                    httpResponse: .init(body: .empty, statusCode: .ok)
-                )
+                throw AWSCognitoIdentityProvider.NotAuthorizedException()
             })
 
         configurePlugin(initialState: initialState, userPoolFactory: mockIdentityProvider)

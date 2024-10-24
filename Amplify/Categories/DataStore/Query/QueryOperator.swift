@@ -18,8 +18,9 @@ public enum QueryOperator: Encodable {
     case notContains(_ value: String)
     case between(start: Persistable, end: Persistable)
     case beginsWith(_ value: String)
+    case attributeExists(_ value: Bool)
 
-    public func evaluate(target: Any) -> Bool {
+    public func evaluate(target: Any?) -> Bool {
         switch self {
         case .notEqual(let predicateValue):
             return !PersistableHelper.isEqual(target, predicateValue)
@@ -34,19 +35,25 @@ public enum QueryOperator: Encodable {
         case .greaterThan(let predicateValue):
             return PersistableHelper.isGreaterThan(target, predicateValue)
         case .contains(let predicateString):
-            if let targetString = target as? String {
+            if let targetString = target.flatMap({ $0 as? String }) {
                 return targetString.contains(predicateString)
             }
             return false
         case .notContains(let predicateString):
-            if let targetString = target as? String {
+            if let targetString = target.flatMap({ $0 as? String }) {
                 return !targetString.contains(predicateString)
             }
         case .between(let start, let end):
             return PersistableHelper.isBetween(start, end, target)
         case .beginsWith(let predicateValue):
-            if let targetString = target as? String {
+            if let targetString = target.flatMap({ $0 as? String }) {
                 return targetString.starts(with: predicateValue)
+            }
+        case .attributeExists(let predicateValue):
+            if case .some = target {
+                return predicateValue == true
+            } else {
+                return predicateValue == false
             }
         }
         return false
@@ -104,6 +111,10 @@ public enum QueryOperator: Encodable {
 
         case .beginsWith(let value):
             try container.encode("beginsWith", forKey: .type)
+            try container.encode(value, forKey: .value)
+
+        case .attributeExists(let value):
+            try container.encode("attributeExists", forKey: .type)
             try container.encode(value, forKey: .value)
         }
     }

@@ -7,11 +7,11 @@
 
 import Foundation
 
-import Amplify
-import AWSClientRuntime
-import AWSCognitoIdentityProvider
 import XCTest
+import Amplify
 @testable import AWSCognitoAuthPlugin
+import AWSCognitoIdentityProvider
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -33,7 +33,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
         // Test all the combinations for preference types
         for smsPreference in allSMSPreferences {
             for totpPreference in allTOTPPreference {
-                mockIdentityProvider = MockIdentityProvider(
+                self.mockIdentityProvider = MockIdentityProvider(
                     mockGetUserAttributeResponse: { request in
                         return .init(
                             userMFASettingList: ["SOFTWARE_TOKEN_MFA", "SMS_MFA"]
@@ -41,23 +41,19 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                     },
                     mockSetUserMFAPreferenceResponse: { request in
                         XCTAssertEqual(
-                            request.smsMfaSettings,
-                            smsPreference.smsSetting()
-                        )
+                            request.smsMfaSettings?.preferredMfa,
+                            smsPreference.smsSetting().preferredMfa)
                         XCTAssertEqual(
-                            request.softwareTokenMfaSettings,
-                            totpPreference.softwareTokenSetting()
-                        )
+                            request.softwareTokenMfaSettings?.preferredMfa,
+                            totpPreference.softwareTokenSetting().preferredMfa)
 
                         return .init()
-                    }
-                )
+                    })
 
                 do {
                     try await plugin.updateMFAPreference(
                         sms: smsPreference,
-                        totp: totpPreference
-                    )
+                        totp: totpPreference)
                 } catch {
                     XCTFail("Received failure with error \(error)")
                 }

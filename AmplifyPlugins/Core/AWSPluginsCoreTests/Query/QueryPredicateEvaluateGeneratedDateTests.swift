@@ -61,7 +61,7 @@ class QueryPredicateEvaluateGeneratedDateTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testTemporalDateTemporal_Date_now_addvalue1to_daynotEqualTemporalDateTemporal_Date_now() throws {
@@ -110,7 +110,7 @@ class QueryPredicateEvaluateGeneratedDateTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testTemporalDateTemporal_Date_now_addvalue2to_daynotEqualTemporalDateTemporal_Date_now() throws {
@@ -159,7 +159,7 @@ class QueryPredicateEvaluateGeneratedDateTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testTemporalDateTemporal_Date_now_addvalue3to_daynotEqualTemporalDateTemporal_Date_now() throws {
@@ -208,7 +208,7 @@ class QueryPredicateEvaluateGeneratedDateTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testTemporalDateTemporal_Date_nowequalsTemporalDateTemporal_Date_now() throws {

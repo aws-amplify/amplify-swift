@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if os(iOS)
+#if os(iOS) || os(visionOS)
 import Foundation
 
 /// Implement this protocol to display information for each row in Device / Environment Information screen

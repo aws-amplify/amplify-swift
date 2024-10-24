@@ -20,7 +20,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                try await ForgetDeviceOutput(httpResponse: MockHttpResponse.ok)
+                ForgetDeviceOutput()
             }
         )
     }
@@ -143,12 +143,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw try await AWSCognitoIdentityProvider.InvalidParameterException(
-                    httpResponse: .init(body: .empty, statusCode: .accepted),
-                    decoder: nil,
-                    message: nil,
-                    requestID: nil
-                )
+                throw AWSCognitoIdentityProvider.InvalidParameterException()
             }
         )
         do {

@@ -6,9 +6,10 @@
 //
 
 import AWSPinpoint
-import ClientRuntime
-import XCTest
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
+import XCTest
+import SmithyHTTPAPI
+import Smithy
 
 class PinpointRequestsRegistryTests: XCTestCase {
     private var mockedHttpSdkClient: MockHttpClientEngine!
@@ -24,10 +25,8 @@ class PinpointRequestsRegistryTests: XCTestCase {
         let oldHttpClientEngine = pinpointConfiguration.httpClientEngine
         PinpointRequestsRegistry.shared.setCustomHttpEngine(on: pinpointConfiguration)
 
-        XCTAssertNotEqual(
-            oldHttpClientEngine.typeString,
-            pinpointConfiguration.httpClientEngine.typeString
-        )
+        XCTAssertNotEqual(oldHttpClientEngine.typeString,
+                          pinpointConfiguration.httpClientEngine.typeString)
     }
 
     func testExecute_withSourcesRegistered_shouldAppendSuffixToUserAgent() async throws {
@@ -72,13 +71,13 @@ class PinpointRequestsRegistryTests: XCTestCase {
         pinpointConfiguration.httpClientEngine
     }
 
-    private func createSdkRequest(for api: PinpointRequestsRegistry.API?) throws -> SdkHttpRequest {
+    private func createSdkRequest(for api: PinpointRequestsRegistry.API?) throws -> HTTPRequest {
         let apiPath = api?.rawValue ?? "otherApi"
         let endpoint = try Endpoint(
             urlString: "https://host:42/path/\(apiPath)/suffix",
             headers: .init(["User-Agent": "mocked_user_agent"])
         )
-        return SdkHttpRequest(
+        return HTTPRequest(
             method: .put,
             endpoint: endpoint
         )
@@ -93,9 +92,9 @@ private extension HTTPClient {
 
 private class MockHttpClientEngine: HTTPClient {
     var executeCount = 0
-    var request: SdkHttpRequest?
+    var request: HTTPRequest?
 
-    func send(request: SdkHttpRequest) async throws -> HttpResponse {
+    func send(request: HTTPRequest) async throws -> HTTPResponse {
         executeCount += 1
         self.request = request
         return .init(body: .empty, statusCode: .accepted)
@@ -108,6 +107,6 @@ private class MockLogAgent: LogAgent {
     let name = "MockLogAgent"
     var level: LogAgentLevel = .info
 
-    func log(level: ClientRuntime.LogAgentLevel, message: String, metadata: [String: String]?, source: String, file: String, function: String, line: UInt) {
+    func log(level: LogAgentLevel, message: String, metadata: [String : String]?, source: String, file: String, function: String, line: UInt) {
     }
 }

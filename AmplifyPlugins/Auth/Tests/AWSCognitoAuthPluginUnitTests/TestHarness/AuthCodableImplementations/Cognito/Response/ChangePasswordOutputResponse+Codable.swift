@@ -6,7 +6,7 @@
 //
 
 import AWSCognitoIdentityProvider
-import ClientRuntime
+import SmithyHTTPAPI
 
 extension ChangePasswordOutput: Codable {
 
@@ -16,7 +16,7 @@ extension ChangePasswordOutput: Codable {
 
     public init(from decoder: Decoder) throws {
         let containerValues = try decoder.container(keyedBy: CodingKeys.self)
-        guard let httpResponse = try containerValues.decodeIfPresent(HttpResponse.self, forKey: .httpResponse) else {
+        guard let httpResponse = try containerValues.decodeIfPresent(HTTPResponse.self, forKey: .httpResponse) else {
             fatalError("Unable to decode http response")
         }
         self.init()

@@ -180,6 +180,25 @@ public struct AmplifyOutputsData: Codable {
     public struct Storage: Codable {
         public let awsRegion: AWSRegion
         public let bucketName: String
+        public let buckets: [Bucket]?
+
+        @_spi(InternalAmplifyConfiguration)
+        public struct Bucket: Codable {
+            public let name: String
+            public let bucketName: String
+            public let awsRegion: AWSRegion
+        }
+
+        // Internal init used for testing
+        init(
+            awsRegion: AWSRegion,
+            bucketName: String,
+            buckets: [Bucket]? = nil
+        ) {
+            self.awsRegion = awsRegion
+            self.bucketName = bucketName
+            self.buckets = buckets
+        }
     }
 
     @_spi(InternalAmplifyConfiguration)
@@ -257,7 +276,8 @@ public struct AmplifyOutputsData: Codable {
 public struct AmplifyOutputs {
 
     /// A closure that resolves the `AmplifyOutputsData` configuration
-    let resolveConfiguration: () throws -> AmplifyOutputsData
+    @_spi(InternalAmplifyConfiguration)
+    public let resolveConfiguration: () throws -> AmplifyOutputsData
 
     /// Resolves configuration with `amplify_outputs.json` in the main bundle.
     public static let amplifyOutputs: AmplifyOutputs = .init {

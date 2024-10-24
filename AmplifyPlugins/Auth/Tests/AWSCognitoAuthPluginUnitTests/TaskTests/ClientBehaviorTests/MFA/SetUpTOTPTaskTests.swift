@@ -7,11 +7,11 @@
 
 import Foundation
 
-import Amplify
-import AWSClientRuntime
-import AWSCognitoIdentityProvider
 import XCTest
+import Amplify
 @testable import AWSCognitoAuthPlugin
+import AWSCognitoIdentityProvider
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -27,7 +27,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///
     func testSuccessfulSetUpTOTPRequest() async {
 
-        mockIdentityProvider = MockIdentityProvider(
+        self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 return .init(secretCode: "sharedSecret")
             })
@@ -53,7 +53,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///
     func testSetUpTOTPWithConcurrentModificationException() async {
 
-        mockIdentityProvider = MockIdentityProvider(
+        self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.ConcurrentModificationException(
                     message: "Exception"
@@ -85,7 +85,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///
     func testSetUpTOTPWithForbiddenException() async {
 
-        mockIdentityProvider = MockIdentityProvider(
+        self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.ForbiddenException(
                     message: "Exception"
@@ -117,7 +117,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///
     func testSetUpTOTPWithInternalErrorException() async {
 
-        mockIdentityProvider = MockIdentityProvider(
+        self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.InternalErrorException(
                     message: "Exception"
@@ -149,7 +149,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///
     func testSetUpTOTPWithInvalidParameterException() async {
 
-        mockIdentityProvider = MockIdentityProvider(
+        self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.InvalidParameterException(
                     message: "Exception"
@@ -183,7 +183,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///
     func testSetUpTOTPWithNotAuthorizedException() async {
 
-        mockIdentityProvider = MockIdentityProvider(
+        self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.NotAuthorizedException(
                     message: "Exception"
@@ -213,7 +213,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///
     func testSetUpWithSoftwareTokenMFANotFoundException() async {
 
-        mockIdentityProvider = MockIdentityProvider(
+        self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException(
                     message: "Exception"
@@ -245,7 +245,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///    - I should get a .service error with .resourceNotFound as underlyingError
     ///
     func testSetUpTOTPInWithResourceNotFoundException() async {
-        mockIdentityProvider = MockIdentityProvider(
+        self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.ResourceNotFoundException(
                     message: "Exception"
@@ -278,7 +278,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
     ///
     func testSetUpWithUnknownException() async {
 
-        mockIdentityProvider = MockIdentityProvider(
+        self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
                 throw AWSClientRuntime.UnknownAWSHTTPServiceError(
                     httpResponse: .init(body: .empty, statusCode: .ok),

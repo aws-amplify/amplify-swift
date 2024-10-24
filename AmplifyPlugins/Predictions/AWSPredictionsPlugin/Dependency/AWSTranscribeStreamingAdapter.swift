@@ -5,11 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
 import Amplify
-import AWSClientRuntime
 import AWSPluginsCore
 import AWSTranscribeStreaming
-import Foundation
+import AwsCommonRuntimeKit
+import SmithyIdentity
 
 class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
 
@@ -22,11 +23,11 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
         let mediaSampleRateHertz: Int
     }
 
-    let credentialsProvider: CredentialsProviding
+    let credentialIdentityResolver: any AWSCredentialIdentityResolver
     let region: String
 
-    init(credentialsProvider: CredentialsProviding, region: String) {
-        self.credentialsProvider = credentialsProvider
+    init(credentialIdentityResolver: any AWSCredentialIdentityResolver, region: String) {
+        self.credentialIdentityResolver = credentialIdentityResolver
         self.region = region
     }
 
@@ -62,7 +63,7 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
         var components = URLComponents()
         components.scheme = "wss"
         components.host = "transcribestreaming.\(region).amazonaws.com"
-        components.port = 8_443
+        components.port = 8443
         components.path = "/stream-transcription-websocket"
 
         components.queryItems = [
@@ -95,7 +96,7 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
             var currentEnd = min(chunkSize, audioDataSize - currentStart)
 
             while currentStart < audioDataSize {
-                let dataChunk = input.audioStream[currentStart ..< currentEnd]
+                let dataChunk = input.audioStream[currentStart..<currentEnd]
                 let encodedChunk = EventStream.Encoder().encode(payload: dataChunk, headers: headers)
 
                 webSocket.send(message: .data(encodedChunk), onError: { _ in })
@@ -131,17 +132,17 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
                             continuation.yield(transcribedPayload)
                             let isPartial = transcribedPayload.transcript?.results?.map(\.isPartial) ?? []
                             let shouldContinue = isPartial.allSatisfy { $0 }
-                            return shouldContinue
+                            return shouldContinue ? .continueToReceive : .stopAndInvalidateSession
                         } catch {
-                            return true
+                            return .continueToReceive
                         }
                     case .success(.string):
-                        return true
+                        return .continueToReceive
                     case .failure(let error):
                         continuation.finish(throwing: error)
-                        return false
+                        return .stopAndInvalidateSession
                     @unknown default:
-                        return true
+                        return .continueToReceive
                     }
                 }
             }

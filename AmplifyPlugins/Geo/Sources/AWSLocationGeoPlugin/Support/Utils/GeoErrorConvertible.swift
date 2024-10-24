@@ -6,9 +6,9 @@
 //
 
 import Amplify
-import AWSClientRuntime
-import AWSLocation
 import Foundation
+import AWSLocation
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 protocol GeoErrorConvertible {
     var geoError: Geo.Error { get }

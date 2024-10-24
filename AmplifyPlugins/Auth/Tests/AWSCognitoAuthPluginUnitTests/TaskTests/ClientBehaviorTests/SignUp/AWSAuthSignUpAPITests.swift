@@ -258,9 +258,7 @@ class AWSAuthSignUpAPITests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
-                throw try await AWSCognitoIdentityProvider.InternalErrorException(
-                    httpResponse: .init(body: .empty, statusCode: .accepted)
-                )
+                throw AWSCognitoIdentityProvider.InternalErrorException()
             }
         )
 

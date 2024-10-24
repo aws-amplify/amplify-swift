@@ -19,7 +19,7 @@ final class AWSPinpointFactoryTests: XCTestCase {
     override func setUp() {
         mockedProfileReader = MockProvisioningProfileReader()
         AWSPinpointFactory.provisioningProfileReader = mockedProfileReader
-        AWSPinpointFactory.credentialsProvider = MockCredentialsProvider()
+        AWSPinpointFactory.credentialIdentityResolver = MockCredentialsProvider()
     }
 
     /// - Given: There is a provisioning profile that set the APS entitlement to production

@@ -44,3 +44,44 @@ extension InitiateAuthOutput: Codable {
     }
 
 }
+
+extension CognitoIdentityProviderClientTypes.AuthenticationResultType: Decodable {
+    private enum CodingKeys: String, CodingKey {
+        case accessToken = "AccessToken"
+        case expiresIn = "ExpiresIn"
+        case idToken = "IdToken"
+        case newDeviceMetadata = "NewDeviceMetadata"
+        case refreshToken = "RefreshToken"
+        case tokenType = "TokenType"
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        try self.init(
+            accessToken: container.decodeIfPresent(String.self, forKey: .accessToken),
+            expiresIn: container.decode(Int.self, forKey: .expiresIn),
+            idToken: container.decodeIfPresent(String.self, forKey: .idToken),
+            newDeviceMetadata: container.decodeIfPresent(
+                CognitoIdentityProviderClientTypes.NewDeviceMetadataType.self,
+                forKey: .newDeviceMetadata
+            ),
+            refreshToken: container.decodeIfPresent(String.self, forKey: .refreshToken),
+            tokenType: container.decodeIfPresent(String.self, forKey: .tokenType)
+        )
+    }
+}
+
+extension CognitoIdentityProviderClientTypes.NewDeviceMetadataType: Decodable {
+    private enum CodingKeys: String, CodingKey {
+        case deviceGroupKey = "DeviceGroupKey"
+        case deviceKey = "DeviceKey"
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        try self.init(
+            deviceGroupKey: container.decodeIfPresent(String.self, forKey: .deviceGroupKey),
+            deviceKey: container.decodeIfPresent(String.self, forKey: .deviceKey)
+        )
+    }
+}

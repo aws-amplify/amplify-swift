@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSClientRuntime
-import AWSCognitoIdentityProvider
-import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+import AWSCognitoIdentityProvider
+import ClientRuntime
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class UserBehaviorFetchAttributesTests: BasePluginTest {
 
@@ -136,12 +136,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithNotAuthorizedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw try await AWSCognitoIdentityProvider.NotAuthorizedException(
-                httpResponse: .init(body: .empty, statusCode: .accepted),
-                decoder: nil,
-                message: nil,
-                requestID: nil
-            )
+            throw AWSCognitoIdentityProvider.NotAuthorizedException()
         })
 
         do {

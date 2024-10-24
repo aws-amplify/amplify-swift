@@ -27,10 +27,10 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
                 UpdateUserAttributesOutput()
             },
             mockConfirmUserAttributeOutput: { _ in
-                try await VerifyUserAttributeOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                VerifyUserAttributeOutput()
             },
             mockChangePasswordOutput: { _ in
-                try await ChangePasswordOutput(httpResponse: .init(body: .empty, statusCode: .ok))
+                ChangePasswordOutput()
             }
         )
     }

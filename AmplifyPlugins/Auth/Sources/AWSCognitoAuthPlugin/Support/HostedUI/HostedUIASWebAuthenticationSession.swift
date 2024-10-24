@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
 import Foundation
-#if os(iOS) || os(macOS)
+import Amplify
+#if os(iOS) || os(macOS) || os(visionOS)
 import AuthenticationServices
 #endif
 
@@ -19,11 +19,10 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
         url: URL,
         callbackScheme: String,
         inPrivate: Bool,
-        presentationAnchor: AuthUIPresentationAnchor?
-    ) async throws -> [URLQueryItem] {
+        presentationAnchor: AuthUIPresentationAnchor?) async throws -> [URLQueryItem] {
 
-    #if os(iOS) || os(macOS)
-        webPresentation = presentationAnchor
+    #if os(iOS) || os(macOS) || os(visionOS)
+        self.webPresentation = presentationAnchor
 
         return try await withCheckedThrowingContinuation { [weak self]
             (continuation: CheckedContinuation<[URLQueryItem], Error>) in
@@ -34,7 +33,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                 callbackURLScheme: callbackScheme,
                 completionHandler: { [weak self] url, error in
                     guard let self else { return }
-                    if let url {
+                    if let url = url {
                         let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
                         let queryItems = urlComponents?.queryItems ?? []
 
@@ -50,15 +49,14 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                             return continuation.resume(
                                 returning: queryItems)
                         }
-                    } else if let error {
+                    } else if let error = error {
                         return continuation.resume(
-                            throwing: convertHostedUIError(error))
+                            throwing: self.convertHostedUIError(error))
                     } else {
                         return continuation.resume(
                             throwing: HostedUIError.unknown)
                     }
-                }
-            )
+                })
             aswebAuthenticationSession.presentationContextProvider = self
             aswebAuthenticationSession.prefersEphemeralWebBrowserSession = inPrivate
 
@@ -76,11 +74,11 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
         }
 
     #else
-        throw HostedUIError.serviceMessage("HostedUI is only available in iOS and macOS")
+        throw HostedUIError.serviceMessage("HostedUI is only available in iOS, macOS and visionOS")
     #endif
     }
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
     var authenticationSessionFactory = ASWebAuthenticationSession.init(url:callbackURLScheme:completionHandler:)
 
     private func createAuthenticationSession(
@@ -109,7 +107,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
 #endif
 }
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 extension HostedUIASWebAuthenticationSession: ASWebAuthenticationPresentationContextProviding {
 
     @MainActor

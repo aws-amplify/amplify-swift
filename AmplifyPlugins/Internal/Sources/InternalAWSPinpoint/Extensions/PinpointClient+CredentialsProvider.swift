@@ -9,13 +9,15 @@ import AWSClientRuntime
 import AWSPinpoint
 import AWSPluginsCore
 @_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
+import SmithyIdentity
 
 extension PinpointClient {
-    convenience init(region: String, credentialsProvider: CredentialsProviding) throws {
+    convenience init(region: String, credentialIdentityResolver: some AWSCredentialIdentityResolver) throws {
         // TODO: FrameworkMetadata Replacement
         let configuration = try PinpointClientConfiguration(
+            awsCredentialIdentityResolver: credentialIdentityResolver,
             region: region,
-            credentialsProvider: credentialsProvider
+            signingRegion: region
         )
 
         configuration.httpClientEngine = .userAgentEngine(for: configuration)

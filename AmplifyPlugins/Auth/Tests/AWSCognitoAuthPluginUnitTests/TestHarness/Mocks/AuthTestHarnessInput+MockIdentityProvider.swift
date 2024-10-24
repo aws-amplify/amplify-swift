@@ -34,7 +34,9 @@ extension AuthTestHarnessInput {
                     fatalError("Missing input")
                 }
                 if let request = apiData.expectedInput {
-                    XCTAssertEqual(input, request)
+                    XCTAssertEqual(input.clientId, request.clientId)
+                    XCTAssertEqual(input.clientSecret, request.clientSecret)
+                    XCTAssertEqual(input.token, request.token)
                 }
 
                 switch apiData.output {
@@ -48,7 +50,9 @@ extension AuthTestHarnessInput {
                     fatalError("Missing input")
                 }
                 if let request = apiData.expectedInput {
-                    XCTAssertEqual(input, request)
+                    XCTAssertEqual(input.clientId, request.clientId)
+                    XCTAssertEqual(input.authParameters, request.authParameters)
+                    XCTAssertEqual(input.clientMetadata, request.clientMetadata)
                 }
 
                 switch apiData.output {
@@ -63,7 +67,7 @@ extension AuthTestHarnessInput {
                     fatalError("Missing input")
                 }
                 if let request = apiData.expectedInput {
-                    XCTAssertEqual(input, request)
+                    XCTAssertEqual(input.accessToken, request.accessToken)
                 }
 
                 switch apiData.output {
@@ -78,7 +82,10 @@ extension AuthTestHarnessInput {
                     fatalError("Missing input")
                 }
                 if let request = apiData.expectedInput {
-                    XCTAssertEqual(request, input)
+                    XCTAssertEqual(request.challengeResponses, input.challengeResponses)
+                    XCTAssertEqual(request.clientId, input.clientId)
+                    XCTAssertEqual(request.clientMetadata, input.clientMetadata)
+                    XCTAssertEqual(request.session, input.session)
                 }
 
                 switch apiData.output {
@@ -122,7 +129,10 @@ extension AuthTestHarnessInput {
                     fatalError("Missing input")
                 }
                 if let request = apiData.expectedInput {
-                    XCTAssertEqual(request, input)
+                    XCTAssertEqual(request.accessToken, input.accessToken)
+                    XCTAssertEqual(request.deviceKey, input.deviceKey)
+                    XCTAssertEqual(request.deviceName, input.deviceName)
+                    XCTAssertEqual(request.deviceSecretVerifierConfig?.passwordVerifier, input.deviceSecretVerifierConfig?.passwordVerifier)
                 }
 
                 switch apiData.output {

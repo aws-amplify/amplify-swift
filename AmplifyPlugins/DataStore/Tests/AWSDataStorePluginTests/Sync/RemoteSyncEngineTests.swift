@@ -142,7 +142,7 @@ class RemoteSyncEngineTests: XCTestCase {
                 failureOnInitialSync,
                 retryAdviceReceivedNetworkError
             ],
-            timeout: defaultAsyncWaitTimeout
+            timeout: 5
         )
         remoteSyncEngineSink.cancel()
         Amplify.Hub.removeListener(hubListener)

@@ -15,10 +15,13 @@ extension ForgotPasswordOutput: Codable {
     }
 
     public init(from decoder: Swift.Decoder) throws {
-        self.init()
-        let containerValues = try decoder.container(keyedBy: CodingKeys.self)
-        let codeDeliveryDetailsDecoded = try containerValues.decodeIfPresent(CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType.self, forKey: .codeDeliveryDetails)
-        codeDeliveryDetails = codeDeliveryDetailsDecoded
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        try self.init(
+            codeDeliveryDetails: container.decodeIfPresent(
+                CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType.self,
+                forKey: .codeDeliveryDetails
+            )
+        )
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -26,3 +29,25 @@ extension ForgotPasswordOutput: Codable {
     }
 
 }
+
+extension CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType: Decodable {
+    private enum CodingKeys: String, CodingKey {
+        case attributeName = "AttributeName"
+        case deliveryMedium = "DeliveryMedium"
+        case destination = "Destination"
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        try self.init(
+            attributeName: container.decodeIfPresent(String.self, forKey: .attributeName),
+            deliveryMedium: container.decodeIfPresent(
+                CognitoIdentityProviderClientTypes.DeliveryMediumType.self,
+                forKey: .deliveryMedium
+            ),
+            destination: container.decodeIfPresent(String.self, forKey: .destination)
+        )
+    }
+}
+
+extension CognitoIdentityProviderClientTypes.DeliveryMediumType: Decodable {}

@@ -5,17 +5,18 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
-import AWSClientRuntime
-import AWSPluginsCore
-import ClientRuntime
 import Foundation
+import Amplify
+import AWSPluginsCore
 import InternalAmplifyCredentials
+import Smithy
+import SmithyIdentity
+import SmithyHTTPAPI
 
 public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsProvider {
     public let refreshIntervalInSeconds: Int
     private let endpoint: URL
-    private let credentialProvider: CredentialsProviding?
+    private let credentialProvider: (any AWSCredentialIdentityResolver)?
     private let region: String
     private let loggingConstraintsLocalStore: LoggingConstraintsLocalStore = UserDefaults.standard
 
@@ -30,20 +31,20 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
     }
 
     public init(
-        endpoint: URL,
-        region: String,
-        credentialProvider: CredentialsProviding? = nil,
-        refreshIntervalInSeconds: Int = 1_200
+         endpoint: URL,
+         region: String,
+         credentialProvider: (any AWSCredentialIdentityResolver)? = nil,
+         refreshIntervalInSeconds: Int = 1200
     ) {
         self.endpoint = endpoint
         if credentialProvider == nil {
-            self.credentialProvider = AWSAuthService().getCredentialsProvider()
+            self.credentialProvider = AWSAuthService().getCredentialIdentityResolver()
         } else {
             self.credentialProvider = credentialProvider
         }
         self.region = region
         self.refreshIntervalInSeconds = refreshIntervalInSeconds
-        setupAutomaticRefreshInterval()
+        self.setupAutomaticRefreshInterval()
     }
 
     public func fetchLoggingConstraints() async throws -> LoggingConstraints {
@@ -85,13 +86,13 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
         request.setValue(host, forHTTPHeaderField: "host")
 
         let httpMethod = (request.httpMethod?.uppercased())
-            .flatMap(HttpMethodType.init(rawValue:)) ?? .get
+            .flatMap(HTTPMethodType.init(rawValue:)) ?? .get
 
         let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?
             .queryItems?
-            .map { ClientRuntime.SDKURLQueryItem(name: $0.name, value: $0.value) } ?? []
+            .map { URIQueryItem(name: $0.name, value: $0.value) } ?? []
 
-        let requestBuilder = SdkHttpRequestBuilder()
+        let requestBuilder = HTTPRequestBuilder()
             .withHost(host)
             .withPath(url.path)
             .withQueryItems(queryItems)
@@ -101,13 +102,13 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
             .withHeaders(.init(request.allHTTPHeaderFields ?? [:]))
             .withBody(.data(request.httpBody))
 
-        guard let credentialProvider else {
+        guard let credentialProvider = self.credentialProvider else {
             return request
         }
 
         guard let urlRequest = try await AmplifyAWSSignatureV4Signer().sigV4SignedRequest(
             requestBuilder: requestBuilder,
-            credentialsProvider: credentialProvider,
+            credentialIdentityResolver: credentialProvider,
             signingName: "execute-api",
             signingRegion: region,
             date: Date()
@@ -139,19 +140,16 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
         }
 
         refreshTimer = Self.createRepeatingTimer(
-            timeInterval: TimeInterval(refreshIntervalInSeconds),
+            timeInterval: TimeInterval(self.refreshIntervalInSeconds),
             eventHandler: { [weak self] in
-                guard let self else { return }
-                refresh()
-        }
-        )
+                guard let self = self else { return }
+                self.refresh()
+        })
         refreshTimer?.resume()
     }
 
-    static func createRepeatingTimer(
-        timeInterval: TimeInterval,
-        eventHandler: @escaping () -> Void
-    ) -> DispatchSourceTimer {
+    static func createRepeatingTimer(timeInterval: TimeInterval,
+                                     eventHandler: @escaping () -> Void) -> DispatchSourceTimer {
         let timer = DispatchSource.makeTimerSource(queue: DispatchQueue.global(qos: .background))
         timer.schedule(deadline: .now() + timeInterval, repeating: timeInterval)
         timer.setEventHandler(handler: eventHandler)

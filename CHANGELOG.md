@@ -1,5 +1,77 @@
 # Changelog
 
+## 2.43.0 (2024-10-22)
+
+### Features
+
+- adding vision os preview  (#3898)
+
+## 2.42.2 (2024-10-18)
+
+### Bug Fixes
+
+- **Logging**: adding internal configure auth hub event listener to fix logging race condition (#3899)
+- **auth**: return configuration error upon invalid redirect URI in hosted ui (#3889)
+
+## 2.42.1 (2024-09-24)
+
+### Bug Fixes
+
+- **predictions**: region handling for creating correct streaming endpoint from region (#3880)
+
+## 2.42.0 (2024-09-23)
+
+### Features
+
+- **api**: add support for GraphQL filter attributeExists  (#3838)
+
+## 2.41.2 (2024-09-20)
+
+### Bug Fixes
+
+- **api**: append auth info as head fields for appSync realtime handshake request
+
+## 2.41.1 (2024-09-19)
+
+### Bug Fixes
+
+- **Storage**: Removing testable import on UploadPartInput extension (#3878)
+
+## 2.41.0 (2024-09-18)
+
+### Features
+
+- **Core**: Updating to AWS SDK for Swift 1.0.0 (#3858)
+
+## 2.40.0 (2024-09-17)
+
+### Features
+
+- **Storage**: Implementing support for multiple buckets (#3839)
+
+## 2.39.1 (2024-09-16)
+
+### Bug Fixes
+
+- **analytics**: iterate sqlite rows with failableNext (#3857)
+
+## 2.39.0 (2024-08-28)
+
+### Features
+
+- Add AppSync components  (#3825)
+
+### Bug Fixes
+
+- **auth**: clear credentials values only if namespacing has changed (#3827)
+- **api**: storing cancelablles with actor methods in AppSyncRTC (#3824)
+
+## 2.38.0 (2024-08-19)
+
+### Features
+
+- **predictions**: add web socket retry for clock skew (#3816)
+
 ## 2.37.0 (2024-08-12)
 
 ### Features

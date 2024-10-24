@@ -7,20 +7,21 @@
 
 @testable import AWSS3StoragePlugin
 
-import ClientRuntime
 import Foundation
+import Smithy
+import SmithyHTTPAPI
 
 class AWSS3StoragePluginRequestRecorder {
-    var target: HTTPClient?
-    var sdkRequests: [SdkHttpRequest] = []
+    var target: HTTPClient? = nil
+    var sdkRequests: [HTTPRequest] = []
     var urlRequests: [URLRequest] = []
     init() {
     }
 }
 
 extension AWSS3StoragePluginRequestRecorder: HttpClientEngineProxy {
-    func send(request: SdkHttpRequest) async throws -> HttpResponse {
-        guard let target  else {
+    func send(request: HTTPRequest) async throws -> HTTPResponse {
+        guard let target = target  else {
             throw ClientError.unknownError("HttpClientEngine is not set")
         }
         sdkRequests.append(request)
