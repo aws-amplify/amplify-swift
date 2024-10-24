@@ -215,7 +215,7 @@ private extension String {
     var hexaData: Data {
         .init(hexa)
     }
-    
+
     private var hexa: UnfoldSequence<UInt8, Index> {
         sequence(state: startIndex) { startIndex in
             // bail if we've reached the end of the string
@@ -226,7 +226,7 @@ private extension String {
             defer { startIndex = endIndex }
 
             // convert the characters to a UInt8
-            return UInt8(self[startIndex..<endIndex], radix: 16)
+            return UInt8(self[startIndex ..< endIndex], radix: 16)
         }
     }
 }

@@ -5,15 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 class FetchAuthSessionOperationHelper {
 
     typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> Void
 
-    func fetch(_ authStateMachine: AuthStateMachine,
-               forceRefresh: Bool = false) async throws -> AuthSession {
+    func fetch(
+        _ authStateMachine: AuthStateMachine,
+        forceRefresh: Bool = false
+    ) async throws -> AuthSession {
         let state = await authStateMachine.currentState
         guard case .configured(_, let authorizationState) = state  else {
             let message = "Auth state machine not in configured state: \(state)"
@@ -36,7 +38,8 @@ class FetchAuthSessionOperationHelper {
             return try await refreshIfRequired(
                 existingCredentials: credentials,
                 authStateMachine: authStateMachine,
-                forceRefresh: forceRefresh)
+                forceRefresh: forceRefresh
+            )
 
         case .error(let error):
             if case .sessionExpired(let error) = error {
@@ -48,7 +51,8 @@ class FetchAuthSessionOperationHelper {
                 return try await refreshIfRequired(
                     existingCredentials: credentials,
                     authStateMachine: authStateMachine,
-                    forceRefresh: forceRefresh)
+                    forceRefresh: forceRefresh
+                )
             } else {
                 log.verbose("Session is in error state \(error)")
                 let event = AuthorizationEvent(eventType: .fetchUnAuthSession)
@@ -64,7 +68,8 @@ class FetchAuthSessionOperationHelper {
     func refreshIfRequired(
         existingCredentials credentials: AmplifyCredentials,
         authStateMachine: AuthStateMachine,
-        forceRefresh: Bool) async throws -> AuthSession {
+        forceRefresh: Bool
+    ) async throws -> AuthSession {
 
             if forceRefresh || !credentials.areValid() {
                 var event: AuthorizationEvent
@@ -100,12 +105,15 @@ class FetchAuthSessionOperationHelper {
             case .error(let authorizationError):
                 return try sessionResultWithError(
                     authorizationError,
-                    authenticationState: authenticationState)
+                    authenticationState: authenticationState
+                )
             default: continue
             }
         }
-        throw AuthError.invalidState("Could not fetch session due to internal error",
-                                     "Auth plugin is in an invalid state")
+        throw AuthError.invalidState(
+            "Could not fetch session due to internal error",
+            "Auth plugin is in an invalid state"
+        )
     }
 
     func sessionResultWithError(
@@ -140,7 +148,8 @@ class FetchAuthSessionOperationHelper {
             isSignedIn: isSignedIn,
             identityIdResult: .failure(authError),
             awsCredentialsResult: .failure(authError),
-            cognitoTokensResult: .failure(authError))
+            cognitoTokensResult: .failure(authError)
+        )
         return session
     }
 }

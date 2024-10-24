@@ -5,18 +5,18 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import protocol Amplify.Logger
 import Amplify
-import AWSRekognition
-import AWSTranslate
-import AWSTextract
-import AWSComprehend
-import AWSPolly
-import AWSPluginsCore
-@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
-import Foundation
+import protocol Amplify.Logger
 import AwsCommonRuntimeKit
+import AWSComprehend
+import AWSPluginsCore
+import AWSPolly
+import AWSRekognition
+import AWSTextract
 import AWSTranscribeStreaming
+import AWSTranslate
+import Foundation
+@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 import SmithyIdentity
 
 class AWSPredictionsService {

@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 import InternalAmplifyCredentials
 import Smithy
-import SmithyIdentity
 import SmithyHTTPAPI
+import SmithyIdentity
 
 public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsProvider {
     public let refreshIntervalInSeconds: Int
@@ -31,10 +31,10 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
     }
 
     public init(
-         endpoint: URL,
-         region: String,
-         credentialProvider: (any AWSCredentialIdentityResolver)? = nil,
-         refreshIntervalInSeconds: Int = 1200
+        endpoint: URL,
+        region: String,
+        credentialProvider: (any AWSCredentialIdentityResolver)? = nil,
+        refreshIntervalInSeconds: Int = 1_200
     ) {
         self.endpoint = endpoint
         if credentialProvider == nil {
@@ -44,7 +44,7 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
         }
         self.region = region
         self.refreshIntervalInSeconds = refreshIntervalInSeconds
-        self.setupAutomaticRefreshInterval()
+        setupAutomaticRefreshInterval()
     }
 
     public func fetchLoggingConstraints() async throws -> LoggingConstraints {
@@ -102,7 +102,7 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
             .withHeaders(.init(request.allHTTPHeaderFields ?? [:]))
             .withBody(.data(request.httpBody))
 
-        guard let credentialProvider = self.credentialProvider else {
+        guard let credentialProvider = credentialProvider else {
             return request
         }
 
@@ -140,16 +140,19 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
         }
 
         refreshTimer = Self.createRepeatingTimer(
-            timeInterval: TimeInterval(self.refreshIntervalInSeconds),
+            timeInterval: TimeInterval(refreshIntervalInSeconds),
             eventHandler: { [weak self] in
                 guard let self = self else { return }
                 self.refresh()
-        })
+        }
+        )
         refreshTimer?.resume()
     }
 
-    static func createRepeatingTimer(timeInterval: TimeInterval,
-                                     eventHandler: @escaping () -> Void) -> DispatchSourceTimer {
+    static func createRepeatingTimer(
+        timeInterval: TimeInterval,
+        eventHandler: @escaping () -> Void
+    ) -> DispatchSourceTimer {
         let timer = DispatchSource.makeTimerSource(queue: DispatchQueue.global(qos: .background))
         timer.schedule(deadline: .now() + timeInterval, repeating: timeInterval)
         timer.setEventHandler(handler: eventHandler)

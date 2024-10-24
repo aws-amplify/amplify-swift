@@ -21,7 +21,7 @@ extension AmplifyStringConvertible {
     ) -> String {
         return prettyDescription(for: object, level: level) { result, indentation in
             switch object {
-            case let dictionary as Dictionary<AnyHashable, Any>:
+            case let dictionary as [AnyHashable: Any]:
                 // Dictionaries follow the format: "<key>": <value>
                 for (key, value) in dictionary {
                     result.append(
@@ -106,7 +106,7 @@ extension AmplifyStringConvertible {
 
     private func emptyDescription(for object: Any) -> String {
         switch object {
-        case is Dictionary<AnyHashable, Any>:
+        case is [AnyHashable: Any]:
             return "[:]"
         case is any Collection:
             return "[]"

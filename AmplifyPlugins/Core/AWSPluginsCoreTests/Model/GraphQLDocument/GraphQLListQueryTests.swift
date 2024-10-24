@@ -226,7 +226,7 @@ class GraphQLListQueryTests: XCTestCase {
     }
 
     /**
-     - Given: 
+     - Given:
         - A Post schema with optional field 'draft'
      - When:
         - Using list query to filter records that either don't have 'draft' field or have 'null' value
@@ -277,8 +277,10 @@ class GraphQLListQueryTests: XCTestCase {
         }
 
         // Test filter for a valid JSON format
-        let filterJSON = try? JSONSerialization.data(withJSONObject: filter,
-                                                     options: .prettyPrinted)
+        let filterJSON = try? JSONSerialization.data(
+            withJSONObject: filter,
+            options: .prettyPrinted
+        )
         XCTAssertNotNil(filterJSON)
 
         let expectedFilterJSON = """

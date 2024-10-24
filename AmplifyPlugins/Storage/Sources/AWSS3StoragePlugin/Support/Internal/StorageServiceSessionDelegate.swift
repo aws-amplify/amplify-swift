@@ -123,7 +123,7 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
 
             // For multipart uploads, we need to handle the upload part failure when the session is not aborted
             if case .multiPartUploadPart(let uploadId, let partNumber) = transferTask.transferType,
-               let multipartUploadSession = storageService.findMultipartUploadSession(uploadId: uploadId), 
+               let multipartUploadSession = storageService.findMultipartUploadSession(uploadId: uploadId),
                !multipartUploadSession.isAborted {
                 multipartUploadSession.handle(
                     uploadPartEvent: .failed(

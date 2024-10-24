@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSPluginsCore
+import XCTest
 @_spi(InternalAmplifyConfiguration) @testable import Amplify
 
 final class AWSAppSyncConfigurationTests: XCTestCase {
@@ -18,7 +18,8 @@ final class AWSAppSyncConfigurationTests: XCTestCase {
             modelIntrospection: nil,
             apiKey: "apiKey123",
             defaultAuthorizationType: .amazonCognitoUserPools,
-            authorizationTypes: [.apiKey, .awsIAM]))
+            authorizationTypes: [.apiKey, .awsIAM]
+        ))
         let encoder = JSONEncoder()
         let data = try! encoder.encode(config)
 

@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 import XCTest
 @testable import AWSAPIPlugin
 
@@ -180,9 +179,9 @@ class AppSyncRealTimeRequestAuthTests: XCTestCase {
     }
 }
 
-fileprivate extension String {
+private extension String {
     func shrink() -> String {
-        return self.replacingOccurrences(of: "\n", with: "")
+        return replacingOccurrences(of: "\n", with: "")
             .replacingOccurrences(of: " ", with: "")
     }
 }

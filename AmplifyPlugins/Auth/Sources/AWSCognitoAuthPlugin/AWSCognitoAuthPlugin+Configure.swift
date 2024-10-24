@@ -14,8 +14,8 @@ import AWSPluginsCore
 import ClientRuntime
 @_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 @_spi(InternalHttpEngineProxy) import AWSPluginsCore
-import SmithyRetriesAPI
 import SmithyRetries
+import SmithyRetriesAPI
 
 extension AWSCognitoAuthPlugin {
 
