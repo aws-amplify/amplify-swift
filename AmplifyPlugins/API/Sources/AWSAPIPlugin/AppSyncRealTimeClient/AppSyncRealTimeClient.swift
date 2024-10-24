@@ -169,7 +169,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
                     try await connect()
                     try await waitForState(.connected)
                 }
-                await self.storeInConnectionCancellables(try await self.startSubscription(id))
+                try await self.storeInConnectionCancellables(await self.startSubscription(id))
             }
             self.storeInConnectionCancellables(task.toAnyCancellable)
         }
@@ -235,7 +235,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     }
 
     private func subscribeToWebSocketEvent() async {
-        let cancellable = await self.webSocketClient.publisher.sink { [weak self] _ in
+        let cancellable = await webSocketClient.publisher.sink { [weak self] _ in
             self?.log.debug("[AppSyncRealTimeClient] WebSocketClient terminated")
         } receiveValue: { webSocketEvent in
             Task { [weak self] in
@@ -245,12 +245,12 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
                 await self?.storeInCancellables(task.toAnyCancellable)
             }
         }
-        self.storeInCancellables(cancellable)
+        storeInCancellables(cancellable)
     }
 
     private func resumeExistingSubscriptions() {
         log.debug("[AppSyncRealTimeClient] Resuming existing subscriptions")
-        for (id, _) in self.subscriptions {
+        for (id, _) in subscriptions {
             Task { [weak self] in
                 do {
                     if let cancellable = try await self?.startSubscription(id) {
@@ -443,7 +443,7 @@ extension AppSyncRealTimeClient {
                     await self?.storeInCancellables(task.toAnyCancellable)
                 }
             })
-        self.storeInConnectionCancellables(cancellable)
+        storeInConnectionCancellables(cancellable)
         // start counting down
         heartBeats.send(())
     }
@@ -451,11 +451,11 @@ extension AppSyncRealTimeClient {
 
 extension AppSyncRealTimeClient {
     private func storeInCancellables(_ cancellable: AnyCancellable) {
-        self.cancellables.insert(cancellable)
+        cancellables.insert(cancellable)
     }
 
     private func storeInConnectionCancellables(_ cancellable: AnyCancellable) {
-        self.cancellablesBindToConnection.insert(cancellable)
+        cancellablesBindToConnection.insert(cancellable)
     }
 }
 

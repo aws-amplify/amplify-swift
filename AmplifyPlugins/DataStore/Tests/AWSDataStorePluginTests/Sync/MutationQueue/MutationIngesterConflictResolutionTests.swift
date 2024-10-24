@@ -30,10 +30,12 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     ///    - I receive an error
     ///    - The mutation queue retains the original event
     func test_create_create() async throws {
-        let post = Post(id: "post-1",
-                        title: "title",
-                        content: "content",
-                        createdAt: .now())
+        let post = Post(
+            id: "post-1",
+            title: "title",
+            content: "content",
+            createdAt: .now()
+        )
 
         await tryOrFail {
             try setUpStorageAdapter(preCreating: [Post.self, Comment.self])
@@ -215,8 +217,10 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                     XCTAssertNil(dataStoreError)
                                 case .success(let mutationEvents):
                                     XCTAssertEqual(mutationEvents.count, 1)
-                                    XCTAssertEqual(mutationEvents.first?.mutationType,
-                                                   GraphQLMutationType.update.rawValue)
+                                    XCTAssertEqual(
+                                        mutationEvents.first?.mutationType,
+                                        GraphQLMutationType.update.rawValue
+                                    )
 
                                     let firstEventJSON = mutationEvents[0].json
                                     let firstEventData = Data(firstEventJSON.utf8)

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import ClientRuntime
+import Foundation
 import SmithyHTTPAPI
 
 @_spi(PluginHTTPClientEngine)
@@ -38,8 +38,8 @@ extension UserAgentSettingClientEngine: HTTPClient {
 }
 
 @_spi(PluginHTTPClientEngine)
-extension HTTPClient where Self == UserAgentSettingClientEngine {
-    public static func userAgentEngine(
+public extension HTTPClient where Self == UserAgentSettingClientEngine {
+    static func userAgentEngine(
         for configuration: ClientRuntime.DefaultHttpClientConfiguration
     ) -> Self {
         let baseClientEngine = baseClientEngine(for: configuration)

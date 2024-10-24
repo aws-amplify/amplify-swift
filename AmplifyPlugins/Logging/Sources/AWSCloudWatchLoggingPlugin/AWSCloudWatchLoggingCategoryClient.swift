@@ -11,7 +11,6 @@ import AWSCloudWatchLogs
 import AWSPluginsCore
 import Combine
 import Foundation
-import AWSCloudWatchLogs
 import Network
 import SmithyIdentity
 
@@ -148,17 +147,19 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
                 return existing
             }
 
-            let controller = AWSCloudWatchLoggingSessionController(credentialIdentityResolver: credentialIdentityResolver,
-                                                                   authentication: authentication,
-                                                                   logFilter: self.logFilter,
-                                                                   category: category,
-                                                                   namespace: namespace,
-                                                                   logLevel: logLevel,
-                                                                   logGroupName: self.logGroupName,
-                                                                   region: self.region,
-                                                                   localStoreMaxSizeInMB: self.localStoreMaxSizeInMB,
-                                                                   userIdentifier: self.userIdentifier,
-                                                                   networkMonitor: self.networkMonitor)
+            let controller = AWSCloudWatchLoggingSessionController(
+                credentialIdentityResolver: credentialIdentityResolver,
+                authentication: authentication,
+                logFilter: self.logFilter,
+                category: category,
+                namespace: namespace,
+                logLevel: logLevel,
+                logGroupName: self.logGroupName,
+                region: self.region,
+                localStoreMaxSizeInMB: self.localStoreMaxSizeInMB,
+                userIdentifier: self.userIdentifier,
+                networkMonitor: self.networkMonitor
+            )
             if enabled {
                 controller.enable()
             }

@@ -84,10 +84,12 @@ struct PinpointContextConfiguration {
     /// Setting this flag to true will set the Endpoint Profile to have a channel type of "APNS_SANDBOX".
     let isDebug: Bool
 
-    init(appId: String,
-         region: String,
-         credentialIdentityResolver: some AWSCredentialIdentityResolver,
-         isDebug: Bool = false) {
+    init(
+        appId: String,
+        region: String,
+        credentialIdentityResolver: some AWSCredentialIdentityResolver,
+        isDebug: Bool = false
+    ) {
         self.appId = appId
         self.region = region
         self.credentialIdentityResolver = credentialIdentityResolver
@@ -130,8 +132,10 @@ class PinpointContext {
         )
         self.uniqueId = Self.retrieveUniqueId(applicationId: configuration.appId, storage: storage)
 
-        let pinpointClient = try PinpointClient(region: configuration.region,
-                                                credentialIdentityResolver: configuration.credentialIdentityResolver)
+        let pinpointClient = try PinpointClient(
+            region: configuration.region,
+            credentialIdentityResolver: configuration.credentialIdentityResolver
+        )
 
         self.endpointClient = EndpointClient(
             configuration: .init(

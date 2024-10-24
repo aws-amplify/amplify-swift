@@ -15,7 +15,7 @@ class APIKeyAuthInterceptorTests: XCTestCase {
         let apiKey = UUID().uuidString
         let interceptor = APIKeyAuthInterceptor(apiKey: apiKey)
         let resultUrlRequest = await interceptor.interceptConnection(request: URLRequest(url: URL(string: "https://example.com")!))
-        
+
         let header = resultUrlRequest.value(forHTTPHeaderField: "x-api-key")
         XCTAssertEqual(header, apiKey)
     }

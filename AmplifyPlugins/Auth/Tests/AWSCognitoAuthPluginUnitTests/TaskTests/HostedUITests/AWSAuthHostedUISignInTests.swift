@@ -58,13 +58,16 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             return MockRandomStringGenerator(mockString: mockState, mockUUID: mockState)
         }
 
-        let environment = BasicHostedUIEnvironment(configuration: cusotmConfiguration ?? configuration,
-                                                   hostedUISessionFactory: sessionFactory,
-                                                   urlSessionFactory: urlSessionMock,
-                                                   randomStringFactory: mockRandomString)
+        let environment = BasicHostedUIEnvironment(
+            configuration: cusotmConfiguration ?? configuration,
+            hostedUISessionFactory: sessionFactory,
+            urlSessionFactory: urlSessionMock,
+            randomStringFactory: mockRandomString
+        )
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: { self.mockIdentityProvider },
-            hostedUIEnvironment: environment)
+            hostedUIEnvironment: environment
+        )
         let stateMachine = Defaults.authStateMachineWith(
             environment: authEnvironment,
             initialState: initialState
@@ -76,7 +79,8 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             authStateMachine: stateMachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior(),
-            analyticsHandler: MockAnalyticsHandler())
+            analyticsHandler: MockAnalyticsHandler()
+        )
         return plugin
     }
 
@@ -376,7 +380,8 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         ])
         mockTokenResult = [
             "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken,
-            "expires_in": 10] as [String: Any]
+            "expires_in": 10
+        ] as [String: Any]
         mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
         MockURLProtocol.requestHandler = { _ in
             return (HTTPURLResponse(), self.mockJson)

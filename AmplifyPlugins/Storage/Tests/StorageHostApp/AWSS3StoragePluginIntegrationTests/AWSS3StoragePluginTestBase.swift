@@ -224,7 +224,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         }
     }
 
-    func wait(timeout: TimeInterval = 10, closure: @escaping () async throws -> ()) async {
+    func wait(timeout: TimeInterval = 10, closure: @escaping () async throws -> Void) async {
         let expectation = expectation(description: "Tasks completed")
         Task {
             defer { expectation.fulfill() }

@@ -8,11 +8,12 @@
 import Amplify
 import AwsCommonRuntimeKit
 import AWSPluginsCore
+import Foundation
 import SmithyIdentity
 
 public protocol IAMCredentialsProvider {
     func getCredentialsProvider() -> CredentialsProviding
-    
+
     func getCredentialIdentityResolver() -> any AWSCredentialIdentityResolver
 }
 

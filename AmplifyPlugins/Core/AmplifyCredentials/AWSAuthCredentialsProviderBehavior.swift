@@ -8,6 +8,7 @@
 import Amplify
 import AwsCommonRuntimeKit
 import AWSPluginsCore
+import Foundation
 import SmithyIdentity
 
 public protocol AWSAuthCredentialsProviderBehavior: AWSAuthServiceBehavior {

@@ -8,6 +8,7 @@
 import Amplify
 import AWSClientRuntime
 import AWSCognitoIdentityProvider
+import Foundation
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 extension ForbiddenException: AuthErrorConvertible {

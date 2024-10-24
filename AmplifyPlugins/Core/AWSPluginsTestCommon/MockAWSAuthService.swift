@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import ClientRuntime
-import AwsCommonRuntimeKit
 import Amplify
+import AwsCommonRuntimeKit
+import ClientRuntime
 import InternalAmplifyCredentials
 import SmithyIdentity
 import Foundation

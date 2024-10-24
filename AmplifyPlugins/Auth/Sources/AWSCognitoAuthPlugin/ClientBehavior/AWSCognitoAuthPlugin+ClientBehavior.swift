@@ -51,8 +51,10 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     }
 
 #if os(iOS) || os(macOS) || os(visionOS)
-    public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
-                                options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
+    public func signInWithWebUI(
+        presentationAnchor: AuthUIPresentationAnchor? = nil,
+        options: AuthWebUISignInRequest.Options?
+    ) async throws -> AuthSignInResult {
         let options = options ?? AuthWebUISignInRequest.Options()
         let request = AuthWebUISignInRequest(
             presentationAnchor: presentationAnchor,

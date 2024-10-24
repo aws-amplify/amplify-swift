@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSS3
+import Foundation
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 extension AWSS3.NoSuchBucket: StorageErrorConvertible {

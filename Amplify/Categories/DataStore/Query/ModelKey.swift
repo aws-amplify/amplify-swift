@@ -37,7 +37,7 @@ public protocol ModelKey: CodingKey, CaseIterable, QueryFieldOperation {}
 public extension CodingKey where Self: ModelKey {
 
     // MARK: - attributeExists
-    public func attributeExists(_ value: Bool) -> QueryPredicateOperation {
+    func attributeExists(_ value: Bool) -> QueryPredicateOperation {
         return field(stringValue).attributeExists(value)
     }
 

@@ -7,7 +7,6 @@
 
 import Amplify
 import Foundation
-import Amplify
 #if os(iOS) || os(macOS) || os(visionOS)
 @preconcurrency import AuthenticationServices
 #endif
@@ -24,7 +23,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
     ) async throws -> [URLQueryItem] {
 
     #if os(iOS) || os(macOS) || os(visionOS)
-        self.webPresentation = presentationAnchor
+        webPresentation = presentationAnchor
 
         return try await withCheckedThrowingContinuation { [weak self]
             (continuation: CheckedContinuation<[URLQueryItem], Error>) in

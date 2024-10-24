@@ -47,8 +47,10 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
     }
 
 #if os(iOS) || os(macOS) || os(visionOS)
-    public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
-                                options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
+    public func signInWithWebUI(
+        presentationAnchor: AuthUIPresentationAnchor? = nil,
+        options: AuthWebUISignInRequest.Options? = nil
+    ) async throws -> AuthSignInResult {
         fatalError()
     }
 

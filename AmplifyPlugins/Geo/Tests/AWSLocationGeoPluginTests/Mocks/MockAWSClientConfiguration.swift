@@ -9,9 +9,9 @@ import AWSClientRuntime
 import AWSLocation
 import ClientRuntime
 import Foundation
-import XCTest
-import SmithyHTTPAPI
 import Smithy
+import SmithyHTTPAPI
+import XCTest
 
 @testable import AWSLocationGeoPlugin
 @testable import AWSPluginsTestCommon
@@ -20,9 +20,9 @@ extension LocationClient.LocationClientConfiguration {
     static func mock(region: String) throws -> LocationClient.LocationClientConfiguration {
         try .init(
             awsCredentialIdentityResolver: MockAWSAuthService().getCredentialIdentityResolver(),
-            awsRetryMode: .standard, 
+            awsRetryMode: .standard,
             region: region,
-            signingRegion: "", 
+            signingRegion: "",
             endpointResolver: MockEndPointResolver()
         )
     }

@@ -23,7 +23,7 @@ extension APIKeyAuthInterceptor: WebSocketInterceptor {
 
     func interceptConnection(request: URLRequest) async -> URLRequest {
         guard let url = request.url else { return request }
-        
+
         let authHeader = getAuthHeader(apiKey, AppSyncRealTimeClientFactory.appSyncApiEndpoint(url).host!)
         return request.injectAppSyncAuthToRequestHeader(auth: .apiKey(authHeader))
     }

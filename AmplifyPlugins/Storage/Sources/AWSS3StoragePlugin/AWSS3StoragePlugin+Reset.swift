@@ -17,7 +17,7 @@ public extension AWSS3StoragePlugin {
     /// storage service, authentication service, and queue to nil to allow deallocation.
     ///
     /// - Tag: AWSS3StoragePlugin.reset
-    public func reset() async {
+    func reset() async {
         if defaultBucket != nil {
             defaultBucket = nil
         }

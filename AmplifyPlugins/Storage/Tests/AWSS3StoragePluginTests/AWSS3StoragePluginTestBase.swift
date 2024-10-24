@@ -9,7 +9,7 @@ import Amplify
 import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSPluginsTestCommon
-import InternalAmplifyCredentials
+@testable import AWSS3StoragePlugin
 
 class AWSS3StoragePluginTests: XCTestCase {
     var storagePlugin: AWSS3StoragePlugin!
@@ -33,11 +33,13 @@ class AWSS3StoragePluginTests: XCTestCase {
         authService = MockAWSAuthService()
         queue = MockOperationQueue()
 
-        storagePlugin.configure(defaultBucket: .fromBucketInfo(.init(bucketName: testBucket, region: testRegion)),
-                                storageService: storageService,
-                                authService: authService,
-                                defaultAccessLevel: defaultAccessLevel,
-                                queue: queue)
+        storagePlugin.configure(
+            defaultBucket: .fromBucketInfo(.init(bucketName: testBucket, region: testRegion)),
+            storageService: storageService,
+            authService: authService,
+            defaultAccessLevel: defaultAccessLevel,
+            queue: queue
+        )
     }
 }
 

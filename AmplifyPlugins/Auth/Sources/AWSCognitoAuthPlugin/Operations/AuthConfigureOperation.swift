@@ -44,7 +44,8 @@ class AuthConfigureOperation: ConfigureOperation, @unchecked Sendable {
             finish()
             dispatch(result: .failure(AuthError.configuration(
                 "Configuration operation was cancelled",
-                "", nil)))
+                "", nil
+            )))
             return
         }
 

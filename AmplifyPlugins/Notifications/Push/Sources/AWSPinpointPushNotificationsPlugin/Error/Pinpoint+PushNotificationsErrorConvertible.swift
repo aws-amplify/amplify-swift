@@ -9,6 +9,7 @@ import Amplify
 import AWSClientRuntime
 import AWSPinpoint
 import ClientRuntime
+import Foundation
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 private func recoverySuggestion(for error: ClientRuntime.ModeledError) -> String {

@@ -996,7 +996,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSignInWithPasswordResetRequiredException2() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw AWSCognitoIdentityProvider.PasswordResetRequiredException()
         })
 
@@ -1173,7 +1173,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSignInWithUserNotConfirmedException2() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw AWSCognitoIdentityProvider.UserNotConfirmedException()
         })
 

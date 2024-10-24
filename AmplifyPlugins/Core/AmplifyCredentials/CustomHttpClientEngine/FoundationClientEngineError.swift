@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Foundation
 import SmithyHTTPAPI
 
 struct FoundationClientEngineError: AmplifyError {

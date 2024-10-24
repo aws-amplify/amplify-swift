@@ -10,9 +10,8 @@ import AWSPluginsCore
 import ClientRuntime
 import Foundation
 import InternalAmplifyCredentials
-import Foundation
-import SmithyHTTPAPI
 import Smithy
+import SmithyHTTPAPI
 
 typealias AWSRegionType = String
 

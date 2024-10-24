@@ -53,16 +53,18 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         storageConfiguration.sessionIdentifier
     }
 
-    convenience init(authService: AWSAuthCredentialsProviderBehavior,
-                     region: String,
-                     bucket: String,
-                     httpClientEngineProxy: HttpClientEngineProxy? = nil,
-                     storageConfiguration: StorageConfiguration? = nil,
-                     storageTransferDatabase: StorageTransferDatabase = .default,
-                     fileSystem: FileSystem = .default,
-                     sessionConfiguration: URLSessionConfiguration? = nil,
-                     delegateQueue: OperationQueue? = nil,
-                     logger: Logger = storageLogger) throws {
+    convenience init(
+        authService: AWSAuthCredentialsProviderBehavior,
+        region: String,
+        bucket: String,
+        httpClientEngineProxy: HttpClientEngineProxy? = nil,
+        storageConfiguration: StorageConfiguration? = nil,
+        storageTransferDatabase: StorageTransferDatabase = .default,
+        fileSystem: FileSystem = .default,
+        sessionConfiguration: URLSessionConfiguration? = nil,
+        delegateQueue: OperationQueue? = nil,
+        logger: Logger = storageLogger
+    ) throws {
         let credentialsProvider = authService.getCredentialIdentityResolver()
         let storageConfiguration = storageConfiguration ?? .init(forBucket: bucket)
         let clientConfig = try S3Client.S3ClientConfiguration(
@@ -115,17 +117,19 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         )
     }
 
-    init(authService: AWSAuthCredentialsProviderBehavior,
-         storageConfiguration: StorageConfiguration? = nil,
-         storageTransferDatabase: StorageTransferDatabase = .default,
-         fileSystem: FileSystem = .default,
-         sessionConfiguration: URLSessionConfiguration,
-         delegateQueue: OperationQueue? = nil,
-         logger: Logger = storageLogger,
-         s3Client: S3Client,
-         preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior,
-         awsS3: AWSS3Behavior,
-         bucket: String) {
+    init(
+        authService: AWSAuthCredentialsProviderBehavior,
+        storageConfiguration: StorageConfiguration? = nil,
+        storageTransferDatabase: StorageTransferDatabase = .default,
+        fileSystem: FileSystem = .default,
+        sessionConfiguration: URLSessionConfiguration,
+        delegateQueue: OperationQueue? = nil,
+        logger: Logger = storageLogger,
+        s3Client: S3Client,
+        preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior,
+        awsS3: AWSS3Behavior,
+        bucket: String
+    ) {
         let storageConfiguration = storageConfiguration ?? .init(forBucket: bucket)
         self.storageConfiguration = storageConfiguration
         self.storageTransferDatabase = storageTransferDatabase

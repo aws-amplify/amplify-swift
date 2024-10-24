@@ -6,10 +6,10 @@
 //
 
 import AWSPinpoint
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
-import XCTest
-import SmithyHTTPAPI
 import Smithy
+import SmithyHTTPAPI
+import XCTest
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class PinpointRequestsRegistryTests: XCTestCase {
     private var mockedHttpSdkClient: MockHttpClientEngine!

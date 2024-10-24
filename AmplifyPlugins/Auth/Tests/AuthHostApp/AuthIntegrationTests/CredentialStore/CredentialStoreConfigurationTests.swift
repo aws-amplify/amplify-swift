@@ -96,12 +96,15 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
 
         // When configuration changed
         let updatedConfig = AuthConfiguration.userPoolsAndIdentityPools(
-            UserPoolConfigurationData(poolId: Defaults.userPoolId,
-                                      clientId: Defaults.appClientId,
-                                      region: Defaults.regionString,
-                                      clientSecret: Defaults.appClientSecret,
-                                      pinpointAppId: "somethingNew"),
-            Defaults.makeIdentityConfigData())
+            UserPoolConfigurationData(
+                poolId: Defaults.userPoolId,
+                clientId: Defaults.appClientId,
+                region: Defaults.regionString,
+                clientSecret: Defaults.appClientSecret,
+                pinpointAppId: "somethingNew"
+            ),
+            Defaults.makeIdentityConfigData()
+        )
         // When configuration don't change changed
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: updatedConfig)
 

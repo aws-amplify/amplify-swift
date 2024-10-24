@@ -12,6 +12,7 @@ import AWSS3
 import AWSS3StoragePlugin
 import ClientRuntime
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
+import AWSS3
 import CryptoKit
 import XCTest
 
@@ -57,12 +58,13 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
 
         await wait {
             _ = try await Amplify.Storage.uploadData(
-                path: .fromIdentityID({ identityId in
+                path: .fromIdentityID { identityId in
                     uniqueStringPath = "protected/\(identityId)/\(key)"
                     return uniqueStringPath
-                }),
+                },
                 data: data,
-                options: nil).value
+                options: nil
+            ).value
         }
 
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
@@ -93,12 +95,13 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase {
 
         await wait {
             _ = try await Amplify.Storage.uploadData(
-                path: .fromIdentityID({ identityId in
+                path: .fromIdentityID { identityId in
                     uniqueStringPath = "private/\(identityId)/\(key)"
                     return uniqueStringPath
-                }),
+                },
                 data: data,
-                options: nil).value
+                options: nil
+            ).value
         }
 
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))

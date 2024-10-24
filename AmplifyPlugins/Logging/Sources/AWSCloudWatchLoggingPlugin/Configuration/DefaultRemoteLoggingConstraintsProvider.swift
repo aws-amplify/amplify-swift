@@ -12,8 +12,8 @@ import ClientRuntime
 import Foundation
 import InternalAmplifyCredentials
 import Smithy
-import SmithyIdentity
 import SmithyHTTPAPI
+import SmithyIdentity
 
 public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsProvider {
     public let refreshIntervalInSeconds: Int
@@ -33,10 +33,10 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
     }
 
     public init(
-         endpoint: URL,
-         region: String,
-         credentialProvider: (any AWSCredentialIdentityResolver)? = nil,
-         refreshIntervalInSeconds: Int = 1200
+        endpoint: URL,
+        region: String,
+        credentialProvider: (any AWSCredentialIdentityResolver)? = nil,
+        refreshIntervalInSeconds: Int = 1_200
     ) {
         self.endpoint = endpoint
         if credentialProvider == nil {

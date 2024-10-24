@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import SmithyHTTPAPI
 import Smithy
+import SmithyHTTPAPI
 
 @_spi(InternalAmplifyPluginExtension)
 public class UserAgentSuffixAppender: AWSPluginExtension {

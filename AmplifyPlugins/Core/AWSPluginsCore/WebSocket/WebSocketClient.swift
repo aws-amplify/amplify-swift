@@ -159,7 +159,7 @@ public final actor WebSocketClient: NSObject {
         var urlRequest = URLRequest(url: decoratedURL)
         self.handshakeHttpHeaders.forEach { urlRequest.setValue($0.value, forHTTPHeaderField: $0.key) }
 
-        urlRequest = await self.interceptor?.interceptConnection(request: urlRequest) ?? urlRequest
+        urlRequest = await interceptor?.interceptConnection(request: urlRequest) ?? urlRequest
 
         let urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
         return urlSession.webSocketTask(with: urlRequest)

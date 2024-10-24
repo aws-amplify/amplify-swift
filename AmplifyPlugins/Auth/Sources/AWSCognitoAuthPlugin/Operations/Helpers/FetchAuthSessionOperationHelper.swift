@@ -152,7 +152,8 @@ class FetchAuthSessionOperationHelper {
             isSignedIn: isSignedIn,
             identityIdResult: .failure(authError),
             awsCredentialsResult: .failure(authError),
-            cognitoTokensResult: .failure(authError))
+            cognitoTokensResult: .failure(authError)
+        )
         return session
     }
 

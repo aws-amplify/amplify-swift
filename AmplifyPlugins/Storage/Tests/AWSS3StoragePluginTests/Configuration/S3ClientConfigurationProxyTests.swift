@@ -71,7 +71,7 @@ final class S3ClientConfigurationAccelerateTestCase: XCTestCase {
             forcePathStyle: .random(),
             useArnRegion: .random(),
             disableMultiRegionAccessPoints: .random(),
-            accelerate: accelerate, 
+            accelerate: accelerate,
             useGlobalEndpoint: .random(),
             endpoint: UUID().uuidString
         )

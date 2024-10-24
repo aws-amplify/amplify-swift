@@ -12,8 +12,6 @@ import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
-import ClientRuntime
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class AWSAuthConfirmSignUpAPITests: BasePluginTest {
@@ -29,7 +27,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
     func testSuccessfulSignUp() async throws {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { request in
                 XCTAssertNil(request.clientMetadata)
                 XCTAssertNil(request.forceAliasCreation)
@@ -242,6 +240,165 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
             for: "jeffb",
             confirmationCode: "123456",
             options: options)
+
+        guard case .done = result.nextStep else {
+            XCTFail("Result should be .done for next step")
+            return
+        }
+        XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
+    }
+    
+    /// Given: Configured auth machine in `.awaitingUserConfirmation` sign up state and a mocked success response
+    /// with a `session` string
+    /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked
+    /// Then: Confirm Sign up is complete with `.completeAutoSignIn` as the next step
+    func testSuccessfulPasswordlessConfirmSignUp() async throws {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockConfirmSignUpResponse: { request in
+                XCTAssertNil(request.clientMetadata)
+                XCTAssertNil(request.forceAliasCreation)
+                return .init(session: "session")
+            }
+        )
+
+        let result = try await self.plugin.confirmSignUp(
+            for: "jeffb",
+            confirmationCode: "123456",
+            options: options)
+
+        guard case .completeAutoSignIn(let session) = result.nextStep else {
+            XCTFail("Result should be .done for next step")
+            return
+        }
+        XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
+        XCTAssertEqual(session, "session")
+    }
+    
+    /// Given: Configured auth machine in `.notStarted` and a mocked success response
+    /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked
+    /// Then: Confirm Sign up is complete with `.completeAutoSignIn` as the next step
+    func testSuccessfulPasswordlessConfirmSignUpFromNotStartedState() async throws {
+        let mockIdentityProvider = MockIdentityProvider(
+            mockConfirmSignUpResponse: { request in
+                XCTAssertNil(request.clientMetadata)
+                XCTAssertNil(request.forceAliasCreation)
+                return .init(session: "session")
+            }
+        )
+
+        let initialStateAwaitingNotStarted = AuthState.configured(
+            .signedOut(.init(lastKnownUserName: nil)),
+            .configured,
+            .notStarted)
+        
+        
+        let authPluginNotStarted = configureCustomPluginWith(
+            userPool: { mockIdentityProvider },
+            initialState: initialStateAwaitingNotStarted
+        )
+
+        let result = try await authPluginNotStarted.confirmSignUp(
+            for: "jeffb",
+            confirmationCode: "123456",
+            options: options)
+
+        guard case .completeAutoSignIn(let session) = result.nextStep else {
+            XCTFail("Result should be .done for next step")
+            return
+        }
+        XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
+        XCTAssertEqual(session, "session")
+    }
+    
+    /// Given: Configured auth machine in `.notStarted` and a mocked success response
+    /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked
+    /// Then: Confirm Sign up is complete with `.completeAutoSignIn` as the next step
+    func testSuccessfulPasswordlessConfirmSignUpFromSignedUpState() async throws {
+        let mockIdentityProvider = MockIdentityProvider(
+            mockConfirmSignUpResponse: { request in
+                XCTAssertNil(request.clientMetadata)
+                XCTAssertNil(request.forceAliasCreation)
+                return .init(session: "session")
+            }
+        )
+        
+        let initialStateSignedUp = AuthState.configured(
+            .signedOut(.init(lastKnownUserName: nil)),
+            .configured,
+            .signedUp(.init(username: "user1"), .init(.done)))
+        
+        
+        let authPluginSignedUp = configureCustomPluginWith(
+            userPool: { mockIdentityProvider },
+            initialState: initialStateSignedUp
+        )
+        
+        let result = try await authPluginSignedUp.confirmSignUp(
+            for: "jeffb",
+            confirmationCode: "123456",
+            options: options)
+
+        guard case .completeAutoSignIn(let session) = result.nextStep else {
+            XCTFail("Result should be .done for next step")
+            return
+        }
+        XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
+        XCTAssertEqual(session, "session")
+    }
+    
+    /// Given: Configured auth machine in `.notStarted` and a mocked success response
+    /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked
+    /// Then: Confirm Sign up is complete with `.completeAutoSignIn` as the next step
+    func testSuccessfulPasswordlessConfirmSignUpFromErrorState() async throws {
+        let mockIdentityProvider = MockIdentityProvider(
+            mockConfirmSignUpResponse: { request in
+                XCTAssertNil(request.clientMetadata)
+                XCTAssertNil(request.forceAliasCreation)
+                return .init(session: "session")
+            }
+        )
+        
+        let initialStateError = AuthState.configured(
+            .signedOut(.init(lastKnownUserName: nil)),
+            .configured,
+            .error(.service(error: AuthError.service("Unknown error", "Unknown error"))))
+        
+        let authPluginError = configureCustomPluginWith(userPool: { mockIdentityProvider },
+                                                        initialState: initialStateError)
+
+        let result = try await authPluginError.confirmSignUp(
+            for: "jeffb",
+            confirmationCode: "123456",
+            options: options)
+
+        guard case .completeAutoSignIn(let session) = result.nextStep else {
+            XCTFail("Result should be .done for next step")
+            return
+        }
+        XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
+        XCTAssertEqual(session, "session")
+    }
+    
+    /// Given: Configured auth machine in `.awaitingUserConfirmation` sign up state and a mocked success response
+    /// with a `nil` session string
+    /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked
+    /// Then: Confirm Sign up is complete with `.done` as the next step
+    func testSuccessfulPasswordlessConfirmSignUpWithNilSession() async throws {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockConfirmSignUpResponse: { request in
+                XCTAssertNil(request.clientMetadata)
+                XCTAssertNil(request.forceAliasCreation)
+                return .init(session: nil)
+            }
+        )
+
+        let result = try await plugin.confirmSignUp(
+            for: "jeffb",
+            confirmationCode: "123456",
+            options: options
+        )
 
         guard case .done = result.nextStep else {
             XCTFail("Result should be .done for next step")

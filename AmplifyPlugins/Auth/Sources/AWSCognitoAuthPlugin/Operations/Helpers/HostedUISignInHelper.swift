@@ -6,6 +6,7 @@
 //
 
 #if os(iOS) || os(macOS) || os(visionOS)
+import Amplify
 import Foundation
 
 struct HostedUISignInHelper: DefaultLogger {

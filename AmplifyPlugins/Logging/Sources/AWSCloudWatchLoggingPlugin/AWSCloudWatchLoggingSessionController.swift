@@ -11,7 +11,7 @@ import AWSCloudWatchLogs
 import AWSPluginsCore
 import Combine
 import Foundation
-import AWSCloudWatchLogs
+@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 import Network
 import SmithyIdentity
 
@@ -60,17 +60,18 @@ final class AWSCloudWatchLoggingSessionController {
     }
 
     /// - Tag: CloudWatchLogSessionController.init
-    init(credentialIdentityResolver: some AWSCredentialIdentityResolver,
-         authentication: AuthCategoryUserBehavior,
-         logFilter: AWSCloudWatchLoggingFilterBehavior,
-         category: String,
-         namespace: String?,
-         logLevel: LogLevel,
-         logGroupName: String,
-         region: String,
-         localStoreMaxSizeInMB: Int,
-         userIdentifier: String?,
-         networkMonitor: LoggingNetworkMonitor
+    init(
+        credentialIdentityResolver: some AWSCredentialIdentityResolver,
+        authentication: AuthCategoryUserBehavior,
+        logFilter: AWSCloudWatchLoggingFilterBehavior,
+        category: String,
+        namespace: String?,
+        logLevel: LogLevel,
+        logGroupName: String,
+        region: String,
+        localStoreMaxSizeInMB: Int,
+        userIdentifier: String?,
+        networkMonitor: LoggingNetworkMonitor
     ) {
         self.credentialIdentityResolver = credentialIdentityResolver
         self.authentication = authentication

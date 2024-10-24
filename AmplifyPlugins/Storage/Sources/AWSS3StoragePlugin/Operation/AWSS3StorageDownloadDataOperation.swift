@@ -36,12 +36,14 @@ class AWSS3StorageDownloadDataOperation: AmplifyInProcessReportingOperation<
         }
     }
 
-    init(_ request: StorageDownloadDataRequest,
-         storageConfiguration: AWSS3StoragePluginConfiguration,
-         storageServiceProvider: @escaping AWSS3StorageServiceProvider,
-         authService: AWSAuthServiceBehavior,
-         progressListener: InProcessListener? = nil,
-         resultListener: ResultListener? = nil) {
+    init(
+        _ request: StorageDownloadDataRequest,
+        storageConfiguration: AWSS3StoragePluginConfiguration,
+        storageServiceProvider: @escaping AWSS3StorageServiceProvider,
+        authService: AWSAuthServiceBehavior,
+        progressListener: InProcessListener? = nil,
+        resultListener: ResultListener? = nil
+    ) {
 
         self.storageConfiguration = storageConfiguration
         self.storageServiceProvider = storageServiceProvider

@@ -9,12 +9,11 @@ import Amplify
 import AWSClientRuntime
 import AWSClientRuntime
 import AWSS3
-import Amplify
 import XCTest
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
+import SmithyHTTPAPI
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
-import SmithyHTTPAPI
 
 final class AWSS3StorageServiceListTests: XCTestCase {
 

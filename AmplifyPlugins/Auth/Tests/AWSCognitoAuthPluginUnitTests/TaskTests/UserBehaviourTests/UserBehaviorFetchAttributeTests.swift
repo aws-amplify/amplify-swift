@@ -11,8 +11,6 @@ import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
-import ClientRuntime
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class UserBehaviorFetchAttributesTests: BasePluginTest {

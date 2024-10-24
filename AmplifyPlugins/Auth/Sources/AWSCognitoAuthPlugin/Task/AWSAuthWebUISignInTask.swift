@@ -6,7 +6,6 @@
 //
 
 #if os(iOS) || os(macOS) || os(visionOS)
-import Foundation
 import Amplify
 import AWSPluginsCore
 import Foundation

@@ -8,8 +8,8 @@
 @testable import Amplify
 
 import AWSS3StoragePlugin
-import SmithyHTTPAPI
 import CryptoKit
+import SmithyHTTPAPI
 import XCTest
 
 class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
@@ -139,9 +139,11 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
         let key = "public/" + UUID().uuidString
 
         await wait(timeout: 60) {
-            let uploadKey = try await Amplify.Storage.uploadData(path: .fromString(key),
-                                                                 data: AWSS3StoragePluginTestBase.largeDataObject,
-                                                                 options: nil).value
+            let uploadKey = try await Amplify.Storage.uploadData(
+                path: .fromString(key),
+                data: AWSS3StoragePluginTestBase.largeDataObject,
+                options: nil
+            ).value
             XCTAssertEqual(uploadKey, key)
         }
 

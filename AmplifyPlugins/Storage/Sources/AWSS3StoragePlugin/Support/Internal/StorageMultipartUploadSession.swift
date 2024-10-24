@@ -44,7 +44,7 @@ class StorageMultipartUploadSession {
     private let onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler
 
     private let transferTask: StorageTransferTask
-    private var cancelationError: (any Error)? = nil
+    private var cancelationError: (any Error)?
 
     init(
         client: StorageMultipartUploadClient,
@@ -341,7 +341,7 @@ class StorageMultipartUploadSession {
                     let index = partNumber - 1
                     parts[index] = .pending(bytes: part.bytes)
                     multipartUpload = .parts(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
-                    let remainingParts = parts.filter({ $0.inProgress })
+                    let remainingParts = parts.filter { $0.inProgress }
                     if remainingParts.isEmpty {
                         // If there are no remaining parts in progress, manually trigger the reupload
                         try client.uploadPart(partNumber: partNumber, multipartUpload: multipartUpload, subTask: createSubTask(partNumber: partNumber))

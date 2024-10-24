@@ -6,8 +6,8 @@
 //
 
 @_spi(InternalAmplifyConfiguration) import Amplify
-import Foundation
 import AWSPluginsCore
+import Foundation
 import InternalAmplifyCredentials
 
 /// The AWSS3StoragePlugin which conforms to the Amplify plugin protocols and implements the Storage

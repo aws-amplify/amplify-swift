@@ -8,6 +8,8 @@
 import AWSPinpoint
 import Foundation
 import XCTest
+@testable import Amplify
+@testable import AWSPinpointPushNotificationsPlugin
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class ErrorPushNotificationsTests: XCTestCase {

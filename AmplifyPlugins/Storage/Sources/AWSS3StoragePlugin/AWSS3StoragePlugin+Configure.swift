@@ -96,7 +96,7 @@ extension AWSS3StoragePlugin {
         self.authService = authService
         self.queue = queue
         self.defaultAccessLevel = defaultAccessLevel
-        self.storageServicesByBucket[defaultBucket.bucketInfo.bucketName] = storageService
+        storageServicesByBucket[defaultBucket.bucketInfo.bucketName] = storageService
     }
 
     /// Creates a new AWSS3StorageServiceBehavior for the given BucketInfo
@@ -159,9 +159,11 @@ extension AWSS3StoragePlugin {
         let bucketClosure = { try AWSS3StoragePlugin.getBucket(configObject) }
         let defaultAccessLevelClosure = { try AWSS3StoragePlugin.getDefaultAccessLevel(configObject) }
 
-        return ConfigurationClosures(retrieveRegion: regionClosure,
-                                     retrieveBucket: bucketClosure,
-                                     retrieveDefaultAccessLevel: defaultAccessLevelClosure)
+        return ConfigurationClosures(
+            retrieveRegion: regionClosure,
+            retrieveBucket: bucketClosure,
+            retrieveDefaultAccessLevel: defaultAccessLevelClosure
+        )
     }
 
     /// Retrieves the configured buckets from the configuration grouped by their names.

@@ -16,7 +16,7 @@ class CognitoAuthInterceptorTests: XCTestCase {
         let authTokenProvider = MockAuthTokenProvider()
         let interceptor = AuthTokenInterceptor(authTokenProvider: authTokenProvider)
 
-        let decoratedURLRequest = await interceptor.interceptConnection(request: URLRequest(url:URL(string: "https://example.com")!))
+        let decoratedURLRequest = await interceptor.interceptConnection(request: URLRequest(url: URL(string: "https://example.com")!))
 
         XCTAssertEqual(authTokenProvider.authToken, decoratedURLRequest.value(forHTTPHeaderField: "Authorization"))
         XCTAssertEqual("example.com", decoratedURLRequest.value(forHTTPHeaderField: "host"))
@@ -26,7 +26,7 @@ class CognitoAuthInterceptorTests: XCTestCase {
         let authTokenProvider = MockAuthTokenProviderFailed()
         let interceptor = AuthTokenInterceptor(authTokenProvider: authTokenProvider)
 
-        let decoratedURLRequest = await interceptor.interceptConnection(request: URLRequest(url:URL(string: "https://example.com")!))
+        let decoratedURLRequest = await interceptor.interceptConnection(request: URLRequest(url: URL(string: "https://example.com")!))
 
         XCTAssertEqual("", decoratedURLRequest.value(forHTTPHeaderField: "Authorization"))
         XCTAssertEqual("example.com", decoratedURLRequest.value(forHTTPHeaderField: "host"))

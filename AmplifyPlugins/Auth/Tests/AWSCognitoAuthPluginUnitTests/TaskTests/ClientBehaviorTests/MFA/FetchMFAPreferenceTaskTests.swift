@@ -12,7 +12,6 @@ import AWSClientRuntime
 import AWSCognitoIdentityProvider
 import XCTest
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 // swiftlint:disable type_body_length

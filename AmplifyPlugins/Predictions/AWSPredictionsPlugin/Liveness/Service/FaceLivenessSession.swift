@@ -21,12 +21,12 @@ public final class FaceLivenessSession: LivenessService {
     var serverDate: Date?
     var savedURLForReconnect: URL?
     var connectingState: ConnectingState = .normal
-    
+
     enum ConnectingState {
         case normal
         case reconnect
     }
-    
+
     private let livenessServiceDispatchQueue = DispatchQueue(
         label: "com.amazon.aws.amplify.liveness.service",
         qos: .userInteractive
@@ -51,7 +51,7 @@ public final class FaceLivenessSession: LivenessService {
         websocket.onSocketClosed { [weak self] closeCode in
             self?.onComplete(.unexpectedClosure(closeCode))
         }
-        
+
         websocket.onServerDateReceived { [weak self] serverDate in
             self?.serverDate = serverDate
         }
@@ -208,7 +208,7 @@ public final class FaceLivenessSession: LivenessService {
                         onServiceException(.init(event: exceptionEvent))
                         return .stopAndInvalidateSession
                     }
-                    
+
                     connectingState = .reconnect
                     let signedConnectionURL = signer.sign(
                         url: savedURLForReconnect,

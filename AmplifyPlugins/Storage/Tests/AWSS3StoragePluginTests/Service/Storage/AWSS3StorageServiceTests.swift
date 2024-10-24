@@ -11,9 +11,6 @@ import XCTest
 @testable import Amplify
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
-import AWSS3
-import XCTest
-import SmithyHTTPAPI
 
 class AWSS3StorageServiceTests: XCTestCase {
     private var service: AWSS3StorageService!

@@ -6,6 +6,7 @@
 //
 
 import AWSPinpoint
+import Foundation
 @_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 import SmithyHTTPAPI
 

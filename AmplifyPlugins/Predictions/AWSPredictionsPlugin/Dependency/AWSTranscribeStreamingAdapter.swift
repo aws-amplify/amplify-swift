@@ -9,7 +9,7 @@ import Amplify
 import AWSClientRuntime
 import AWSPluginsCore
 import AWSTranscribeStreaming
-import AwsCommonRuntimeKit
+import Foundation
 import SmithyIdentity
 
 class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
