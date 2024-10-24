@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 /// Plugin specific options type
 ///
@@ -20,8 +20,10 @@ public struct AWSAPIPluginDataStoreOptions {
     /// name of the model
     public let modelName: String
 
-    public init(authType: AWSAuthorizationType?,
-                modelName: String) {
+    public init(
+        authType: AWSAuthorizationType?,
+        modelName: String
+    ) {
         self.authType = authType
         self.modelName = modelName
     }

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 
 /// Test the public AmplifyConfiguration initializer. Note that this means we must not import
 /// Amplify as `@testable`. That means we cannot `await Amplify.reset()`, which means we can only have

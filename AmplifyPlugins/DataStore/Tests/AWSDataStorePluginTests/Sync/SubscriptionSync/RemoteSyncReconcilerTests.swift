@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -26,8 +26,10 @@ class RemoteSyncReconcilerTests: XCTestCase {
     func testReconcileLocalMetadata_nilLocalMetadata() {
         let remoteModel = makeRemoteModel(deleted: false, version: 1)
 
-        let disposition = RemoteSyncReconciler.getDisposition(remoteModel,
-                                                              localMetadata: nil)
+        let disposition = RemoteSyncReconciler.getDisposition(
+            remoteModel,
+            localMetadata: nil
+        )
 
         XCTAssertEqual(disposition, .create(remoteModel))
     }
@@ -35,60 +37,78 @@ class RemoteSyncReconcilerTests: XCTestCase {
     func testReconcileLocalMetadata_nilLocalMetadata_deletedModel() {
         let remoteModel = makeRemoteModel(deleted: true, version: 2)
 
-        let disposition = RemoteSyncReconciler.getDisposition(remoteModel,
-                                                              localMetadata: nil)
+        let disposition = RemoteSyncReconciler.getDisposition(
+            remoteModel,
+            localMetadata: nil
+        )
 
         XCTAssertNil(disposition)
     }
 
     func testReconcileLocalMetadata_withLocalEqualVersion() {
         let remoteModel = makeRemoteModel(deleted: false, version: 1)
-        let localSyncMetadata = makeMutationSyncMetadata(modelId: remoteModel.model.id,
-                                                         modelName: remoteModel.model.modelName,
-                                                         deleted: false,
-                                                         version: 1)
+        let localSyncMetadata = makeMutationSyncMetadata(
+            modelId: remoteModel.model.id,
+            modelName: remoteModel.model.modelName,
+            deleted: false,
+            version: 1
+        )
 
-        let disposition = RemoteSyncReconciler.getDisposition(remoteModel,
-                                                              localMetadata: localSyncMetadata)
+        let disposition = RemoteSyncReconciler.getDisposition(
+            remoteModel,
+            localMetadata: localSyncMetadata
+        )
 
         XCTAssertEqual(disposition, nil)
     }
 
     func testReconcileLocalMetadata_withLocalLowerVersion() {
         let remoteModel = makeRemoteModel(deleted: false, version: 2)
-        let localSyncMetadata = makeMutationSyncMetadata(modelId: remoteModel.model.id,
-                                                         modelName: remoteModel.model.modelName,
-                                                         deleted: false,
-                                                         version: 1)
+        let localSyncMetadata = makeMutationSyncMetadata(
+            modelId: remoteModel.model.id,
+            modelName: remoteModel.model.modelName,
+            deleted: false,
+            version: 1
+        )
 
-        let disposition = RemoteSyncReconciler.getDisposition(remoteModel,
-                                                              localMetadata: localSyncMetadata)
+        let disposition = RemoteSyncReconciler.getDisposition(
+            remoteModel,
+            localMetadata: localSyncMetadata
+        )
 
         XCTAssertEqual(disposition, .update(remoteModel))
     }
 
     func testReconcileLocalMetadata_withLocalLowerVersion_deletedModel() {
         let remoteModel = makeRemoteModel(deleted: true, version: 2)
-        let localSyncMetadata = makeMutationSyncMetadata(modelId: remoteModel.model.id,
-                                                         modelName: remoteModel.model.modelName,
-                                                         deleted: false,
-                                                         version: 1)
+        let localSyncMetadata = makeMutationSyncMetadata(
+            modelId: remoteModel.model.id,
+            modelName: remoteModel.model.modelName,
+            deleted: false,
+            version: 1
+        )
 
-        let disposition = RemoteSyncReconciler.getDisposition(remoteModel,
-                                                         localMetadata: localSyncMetadata)
+        let disposition = RemoteSyncReconciler.getDisposition(
+            remoteModel,
+            localMetadata: localSyncMetadata
+        )
 
         XCTAssertEqual(disposition, .delete(remoteModel))
     }
 
     func testReconcileLocalMetadata_withLocalHigherVersion() {
         let remoteModel = makeRemoteModel(deleted: false, version: 1)
-        let localSyncMetadata = makeMutationSyncMetadata(modelId: remoteModel.model.id,
-                                                         modelName: remoteModel.model.modelName,
-                                                         deleted: false,
-                                                         version: 2)
+        let localSyncMetadata = makeMutationSyncMetadata(
+            modelId: remoteModel.model.id,
+            modelName: remoteModel.model.modelName,
+            deleted: false,
+            version: 2
+        )
 
-        let disposition = RemoteSyncReconciler.getDisposition(remoteModel,
-                                                         localMetadata: localSyncMetadata)
+        let disposition = RemoteSyncReconciler.getDisposition(
+            remoteModel,
+            localMetadata: localSyncMetadata
+        )
 
         XCTAssertNil(disposition)
     }
@@ -97,13 +117,17 @@ class RemoteSyncReconcilerTests: XCTestCase {
     // conflict updating a deleted record, or the client is incorrectly manipulating the version
     func testReconcileLocalMetadata_withLocalHigherVersion_deletedModel() {
         let remoteModel = makeRemoteModel(deleted: true, version: 1)
-        let localSyncMetadata = makeMutationSyncMetadata(modelId: remoteModel.model.id,
-                                                         modelName: remoteModel.model.modelName,
-                                                         deleted: false,
-                                                         version: 2)
+        let localSyncMetadata = makeMutationSyncMetadata(
+            modelId: remoteModel.model.id,
+            modelName: remoteModel.model.modelName,
+            deleted: false,
+            version: 2
+        )
 
-        let disposition = RemoteSyncReconciler.getDisposition(remoteModel,
-                                                         localMetadata: localSyncMetadata)
+        let disposition = RemoteSyncReconciler.getDisposition(
+            remoteModel,
+            localMetadata: localSyncMetadata
+        )
 
         XCTAssertNil(disposition)
     }
@@ -143,22 +167,28 @@ class RemoteSyncReconcilerTests: XCTestCase {
 
         // with local metadata, not deleted remote, should be update
         let updateModel = makeRemoteModel(deleted: false, version: 2)
-        let localUpdateMetadata = makeMutationSyncMetadata(modelId: updateModel.model.id,
-                                                           modelName: updateModel.model.modelName,
-                                                           deleted: false,
-                                                           version: 1)
+        let localUpdateMetadata = makeMutationSyncMetadata(
+            modelId: updateModel.model.id,
+            modelName: updateModel.model.modelName,
+            deleted: false,
+            version: 1
+        )
 
         // with local metadata, deleted remote, should be delete
         let deleteModel = makeRemoteModel(deleted: true, version: 2)
-        let localDeleteMetadata = makeMutationSyncMetadata(modelId: deleteModel.model.id,
-                                                           modelName: deleteModel.model.modelName,
-                                                           deleted: false,
-                                                           version: 1)
+        let localDeleteMetadata = makeMutationSyncMetadata(
+            modelId: deleteModel.model.id,
+            modelName: deleteModel.model.modelName,
+            deleted: false,
+            version: 1
+        )
 
         let remoteModels = [createModel, droppedModel, updateModel, deleteModel]
         let localMetadatas = [localUpdateMetadata, localDeleteMetadata]
-        let dispositions = RemoteSyncReconciler.getDispositions(remoteModels,
-                                                                localMetadatas: localMetadatas)
+        let dispositions = RemoteSyncReconciler.getDispositions(
+            remoteModels,
+            localMetadatas: localMetadatas
+        )
 
         XCTAssertEqual(dispositions.count, 3)
         let create = expectation(description: "exactly one create")
@@ -179,10 +209,10 @@ class RemoteSyncReconcilerTests: XCTestCase {
         }
         await fulfillment(of: [create, update, delete], timeout: 1)
     }
-    
+
     func testGetDispositions_emptyLocal_singleModelAddedAndDeleted() {
         let sameId = UUID().uuidString
-        
+
         let remoteModels = [
             makeRemoteModel(modelId: sameId, deleted: false, version: 1),
             makeRemoteModel(modelId: sameId, deleted: true, version: 2)
@@ -192,10 +222,10 @@ class RemoteSyncReconcilerTests: XCTestCase {
 
         XCTAssertTrue(dispositions.isEmpty)
     }
-    
+
     func testGetDispositions_emptyLocal_oneModelAdded_SecondModelAddedAndDeleted() {
         let sameId = UUID().uuidString
-        
+
         let remoteModels = [
             makeRemoteModel(deleted: false, version: 1),
             makeRemoteModel(modelId: sameId, deleted: false, version: 1),
@@ -209,44 +239,56 @@ class RemoteSyncReconcilerTests: XCTestCase {
 
     // MARK: - Utilities
 
-    private func makeMutationSyncMetadata(modelId: String,
-                                          modelName: String,
-                                          deleted: Bool = false,
-                                          version: Int = 1) -> MutationSyncMetadata {
+    private func makeMutationSyncMetadata(
+        modelId: String,
+        modelName: String,
+        deleted: Bool = false,
+        version: Int = 1
+    ) -> MutationSyncMetadata {
 
-        let remoteSyncMetadata = MutationSyncMetadata(modelId: modelId,
-                                                      modelName: modelName,
-                                                      deleted: deleted,
-                                                      lastChangedAt: Date().unixSeconds,
-                                                      version: version)
+        let remoteSyncMetadata = MutationSyncMetadata(
+            modelId: modelId,
+            modelName: modelName,
+            deleted: deleted,
+            lastChangedAt: Date().unixSeconds,
+            version: version
+        )
         return remoteSyncMetadata
     }
 
-    private func makeRemoteModel(modelId: String = UUID().uuidString,
-                                 deleted: Bool = false,
-                                 version: Int = 1) -> ReconcileAndLocalSaveOperation.RemoteModel {
+    private func makeRemoteModel(
+        modelId: String = UUID().uuidString,
+        deleted: Bool = false,
+        version: Int = 1
+    ) -> ReconcileAndLocalSaveOperation.RemoteModel {
         do {
             let remoteMockSynced = try MockSynced(id: modelId).eraseToAnyModel()
-            let remoteSyncMetadata = makeMutationSyncMetadata(modelId: remoteMockSynced.id,
-                                                              modelName: remoteMockSynced.modelName,
-                                                              deleted: deleted,
-                                                              version: version)
-            return ReconcileAndLocalSaveOperation.RemoteModel(model: remoteMockSynced,
-                                                              syncMetadata: remoteSyncMetadata)
+            let remoteSyncMetadata = makeMutationSyncMetadata(
+                modelId: remoteMockSynced.id,
+                modelName: remoteMockSynced.modelName,
+                deleted: deleted,
+                version: version
+            )
+            return ReconcileAndLocalSaveOperation.RemoteModel(
+                model: remoteMockSynced,
+                syncMetadata: remoteSyncMetadata
+            )
         } catch {
             fatalError("Failed to create remote model")
         }
     }
 
     private func makeMutationEvent(modelId: String = UUID().uuidString) -> MutationEvent {
-        return MutationEvent(id: "mutation-1",
-                             modelId: modelId,
-                             modelName: MockSynced.modelName,
-                             json: "{}",
-                             mutationType: .create,
-                             createdAt: .now(),
-                             version: 1,
-                             inProcess: false)
+        return MutationEvent(
+            id: "mutation-1",
+            modelId: modelId,
+            modelName: MockSynced.modelName,
+            json: "{}",
+            mutationType: .create,
+            createdAt: .now(),
+            version: 1,
+            inProcess: false
+        )
     }
 
 }

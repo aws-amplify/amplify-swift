@@ -7,14 +7,14 @@
 
 import Foundation
 
-extension Temporal {
+public extension Temporal {
     /// `Temporal.Time` represents a `Time` with specific allowable formats.
     ///
     ///  * `.short` => `HH:mm`
     ///  * `.medium` => `HH:mm:ss`
     ///  * `.long` => `HH:mm:ss.SSS`
     ///  * `.full` => `HH:mm:ss.SSSZZZZZ`
-    public struct Time: TemporalSpec {
+    struct Time: TemporalSpec {
         // Inherits documentation from `TemporalSpec`
         public let foundationDate: Foundation.Date
 

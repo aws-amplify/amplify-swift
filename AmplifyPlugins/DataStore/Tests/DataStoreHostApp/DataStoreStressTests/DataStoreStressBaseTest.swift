@@ -7,25 +7,25 @@
 
 import XCTest
 
+import AWSAPIPlugin
 import AWSPluginsCore
 import Combine
-import AWSAPIPlugin
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
 @testable import DataStoreHostApp
 
 class DataStoreStressBaseTest: XCTestCase {
- 
+
     static let amplifyConfigurationFile = "testconfiguration/AWSAmplifyStressTests-amplifyconfiguration"
     let concurrencyLimit = 50
     let networkTimeout = TimeInterval(180)
-    
+
     func setUp(withModels models: AmplifyModelRegistration, logLevel: LogLevel = .error) async {
-        
+
         continueAfterFailure = false
         Amplify.Logging.logLevel = logLevel
-        
+
         do {
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models, configuration: .custom(syncMaxRecords: 100)))
@@ -36,15 +36,15 @@ class DataStoreStressBaseTest: XCTestCase {
             return
         }
     }
-    
+
     override func tearDown() async throws {
         await Amplify.reset()
     }
-    
+
     func stopDataStore() async throws {
         try await Amplify.DataStore.stop()
     }
-    
+
     func clearDataStore() async throws {
         try await Amplify.DataStore.clear()
     }
@@ -61,8 +61,10 @@ class DataStoreStressBaseTest: XCTestCase {
         let eventReceived = expectation(description: "DataStore \(eventName) event")
 
         var token: UnsubscribeToken!
-        token = Amplify.Hub.listen(to: .dataStore,
-                                   eventName: eventName) { _ in
+        token = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: eventName
+        ) { _ in
             eventReceived.fulfill()
             Amplify.Hub.removeListener(token)
         }

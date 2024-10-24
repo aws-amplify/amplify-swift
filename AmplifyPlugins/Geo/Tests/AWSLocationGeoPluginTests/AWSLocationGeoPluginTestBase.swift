@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSLocationGeoPlugin
 @testable import AWSPluginsTestCommon
-import XCTest
 
 class AWSLocationGeoPluginTestBase: XCTestCase {
     var geoPlugin: AWSLocationGeoPlugin!
@@ -18,17 +18,21 @@ class AWSLocationGeoPluginTestBase: XCTestCase {
     var emptyPluginConfig: AWSLocationGeoPluginConfiguration!
 
     override func setUp() async throws {
-        pluginConfig = AWSLocationGeoPluginConfiguration(regionName: GeoPluginTestConfig.regionName,
-                                                         defaultMap: GeoPluginTestConfig.map,
-                                                         maps: GeoPluginTestConfig.maps,
-                                                         defaultSearchIndex: GeoPluginTestConfig.searchIndex,
-                                                         searchIndices: GeoPluginTestConfig.searchIndices)
+        pluginConfig = AWSLocationGeoPluginConfiguration(
+            regionName: GeoPluginTestConfig.regionName,
+            defaultMap: GeoPluginTestConfig.map,
+            maps: GeoPluginTestConfig.maps,
+            defaultSearchIndex: GeoPluginTestConfig.searchIndex,
+            searchIndices: GeoPluginTestConfig.searchIndices
+        )
 
-        emptyPluginConfig = AWSLocationGeoPluginConfiguration(regionName: GeoPluginTestConfig.regionName,
-                                                              defaultMap: nil,
-                                                              maps: [:],
-                                                              defaultSearchIndex: nil,
-                                                              searchIndices: [])
+        emptyPluginConfig = AWSLocationGeoPluginConfiguration(
+            regionName: GeoPluginTestConfig.regionName,
+            defaultMap: nil,
+            maps: [:],
+            defaultSearchIndex: nil,
+            searchIndices: []
+        )
 
         do {
             mockLocation = try MockAWSLocation(pluginConfig: pluginConfig)

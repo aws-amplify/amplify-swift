@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 import SQLite
 
-internal extension Bool {
+extension Bool {
 
     var intValue: Int {
         return self ? Int(1) : Int(0)

@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension Predictions.Convert.TranslateText {
-    public struct Request {
+public extension Predictions.Convert.TranslateText {
+    struct Request {
         /// The text to translate.
         public let textToTranslate: String
 

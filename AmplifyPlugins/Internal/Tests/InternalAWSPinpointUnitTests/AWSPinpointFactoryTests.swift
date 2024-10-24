@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import XCTest
 @testable import AmplifyTestCommon
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
-import XCTest
 
 final class AWSPinpointFactoryTests: XCTestCase {
     private var appId: String {

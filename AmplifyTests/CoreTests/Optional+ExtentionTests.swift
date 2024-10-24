@@ -4,7 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-		
+
 @_spi(OptionalExtension) import Amplify
 import XCTest
 
@@ -57,6 +57,6 @@ class OptionalExtensionTests: XCTestCase {
 
 }
 
-fileprivate struct TestRuntimeError: Error, Equatable {
+private struct TestRuntimeError: Error, Equatable {
     let id = UUID()
 }

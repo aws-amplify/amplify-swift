@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import AWSPinpoint
 import AwsCommonRuntimeKit
-@testable import Amplify
+import AWSPinpoint
 import ClientRuntime
+import XCTest
+@testable import Amplify
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class EventRecorderTests: XCTestCase {
@@ -28,7 +28,7 @@ class EventRecorderTests: XCTestCase {
             XCTFail("Failed to setup EventRecorderTests")
         }
     }
-    
+
     override func tearDown() {
         pinpointClient = nil
         endpointClient = nil
@@ -65,7 +65,7 @@ class EventRecorderTests: XCTestCase {
         XCTAssertEqual(event, storage.events[0])
         XCTAssertEqual(storage.checkDiskSizeCallCount, 2)
     }
-    
+
     /// - Given: a event recorder with events saved in the local storage
     /// - When: submitAllEvents is invoked and successful
     /// - Then: the events are removed from the local storage
@@ -87,13 +87,13 @@ class EventRecorderTests: XCTestCase {
             )
         ])))
         let events = try await recorder.submitAllEvents()
-        
+
         XCTAssertEqual(events.count, 2)
         XCTAssertEqual(pinpointClient.putEventsCount, 1)
         XCTAssertTrue(storage.events.isEmpty)
         XCTAssertEqual(storage.deleteEventCallCount, 2)
     }
-    
+
     /// - Given: a event recorder with events saved in the local storage with active and stopped sessions
     /// - When: submitAllEvents is invoked
     /// - Then: the input is generated accordingly by including duration only for the stopped session
@@ -133,7 +133,7 @@ class EventRecorderTests: XCTestCase {
         let session = PinpointSession(sessionId: "1", startTime: Date(), stopTime: nil)
         let event1 = PinpointEvent(id: "1", eventType: "eventType1", eventDate: Date(), session: session)
         let event2 = PinpointEvent(id: "2", eventType: "eventType2", eventDate: Date(), session: session)
-        storage.events = [ event1, event2 ]
+        storage.events = [event1, event2]
         pinpointClient.putEventsResult = .failure(NonRetryableError())
         do {
             let events = try await recorder.submitAllEvents()
@@ -157,7 +157,7 @@ class EventRecorderTests: XCTestCase {
         let session = PinpointSession(sessionId: "1", startTime: Date(), stopTime: nil)
         let event1 = PinpointEvent(id: "1", eventType: "eventType1", eventDate: Date(), session: session)
         let event2 = PinpointEvent(id: "2", eventType: "eventType2", eventDate: Date(), session: session)
-        storage.events = [ event1, event2 ]
+        storage.events = [event1, event2]
         pinpointClient.putEventsResult = .failure(RetryableError())
         do {
             let events = try await recorder.submitAllEvents()
@@ -181,7 +181,7 @@ class EventRecorderTests: XCTestCase {
         let session = PinpointSession(sessionId: "1", startTime: Date(), stopTime: nil)
         let event1 = PinpointEvent(id: "1", eventType: "eventType1", eventDate: Date(), session: session)
         let event2 = PinpointEvent(id: "2", eventType: "eventType2", eventDate: Date(), session: session)
-        storage.events = [ event1, event2 ]
+        storage.events = [event1, event2]
         pinpointClient.putEventsResult = .failure(ConnectivityError())
         do {
             let events = try await recorder.submitAllEvents()

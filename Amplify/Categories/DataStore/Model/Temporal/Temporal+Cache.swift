@@ -19,7 +19,7 @@ extension Temporal {
     ///
     /// `identifier` is `.iso8601`
     /// `timeZome` is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
-    internal static let iso8601Calendar: Calendar = {
+    static let iso8601Calendar: Calendar = {
         var calendar = Calendar(identifier: .iso8601)
         calendar.timeZone = .utc
         return calendar
@@ -37,7 +37,7 @@ extension Temporal {
     ///   - format: The `DateFormatter().dateFormat`
     ///   - timeZone: The `DateFormatter().timeZone`
     /// - Returns: A `DateFormatter`
-    internal static func formatter(
+    static func formatter(
         for format: String,
         in timeZone: TimeZone
     ) -> DateFormatter {
@@ -111,7 +111,7 @@ extension Temporal {
     ///               Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
     /// - Returns: A `Foundation.Date` if conversion was successful.
     /// - Throws: `DataStoreError.invalidDateFormat(_:)` if conversion was unsuccessful.
-    internal static func date(
+    static func date(
         from string: String,
         with formats: [String],
         in timeZone: TimeZone = .utc
@@ -134,7 +134,7 @@ extension Temporal {
     ///   - timeZone: The `TimeZone` used by the `DateFormatter` when converted.
     ///               Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
     /// - Returns: The `String` representation of the `date` formatted according to the `format` argument..
-    internal static func string(
+    static func string(
         from date: Foundation.Date,
         with format: String,
         in timeZone: TimeZone = .utc

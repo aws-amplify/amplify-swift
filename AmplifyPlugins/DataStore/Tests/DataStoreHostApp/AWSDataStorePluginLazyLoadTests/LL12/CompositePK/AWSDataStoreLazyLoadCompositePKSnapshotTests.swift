@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 extension AWSDataStoreLazyLoadCompositePKTests {
 
@@ -28,7 +28,7 @@ extension AWSDataStoreLazyLoadCompositePKTests {
         - All subscription GraphQL requests on `CompositePKParent` model have correct selection set
      */
     func testCompositePKParent_withGraphQLOperations_generateCorrectSelectionSets() {
-        Operation.allOperations(on: CompositePKParent.schema, model: CompositePKParent.self).forEach { operation in
+        for operation in Operation.allOperations(on: CompositePKParent.schema, model: CompositePKParent.self) {
             let expectedDocument = operation.expectedDocument
             XCTAssertNotNil(expectedDocument)
             XCTAssertEqual(operation.graphQLRequest?.document, expectedDocument)
@@ -44,7 +44,7 @@ extension AWSDataStoreLazyLoadCompositePKTests {
         - All subscription GraphQL requests on `CompositePKChild` model have correct selection set
      */
     func testCompositePKChild_withGraphQLOperations_generateCorrectSelectionSets() {
-        Operation.allOperations(on: CompositePKChild.schema, model: CompositePKChild.self).forEach { operation in
+        for operation in Operation.allOperations(on: CompositePKChild.schema, model: CompositePKChild.self) {
             let expectedDocument = operation.expectedDocument
             XCTAssertNotNil(expectedDocument)
             XCTAssertEqual(operation.graphQLRequest?.document, expectedDocument)
@@ -60,7 +60,7 @@ extension AWSDataStoreLazyLoadCompositePKTests {
         - All subscription GraphQL requests on `ChildSansBelongsTo` model have correct selection set
      */
     func testChildSansBelongsTo_withGraphQLOperations_generateCorrectSelectionSets() {
-        Operation.allOperations(on: ChildSansBelongsTo.schema, model: ChildSansBelongsTo.self).forEach { operation in
+        for operation in Operation.allOperations(on: ChildSansBelongsTo.schema, model: ChildSansBelongsTo.self) {
             let expectedDocument = operation.expectedDocument
             XCTAssertNotNil(expectedDocument)
             XCTAssertEqual(operation.graphQLRequest?.document, expectedDocument)
@@ -76,7 +76,7 @@ extension AWSDataStoreLazyLoadCompositePKTests {
         - All subscription GraphQL requests on `ImplicitChild` model have correct selection set
      */
     func testImplicitChild_withGraphQLOperations_generateCorrectSelectionSets() {
-        Operation.allOperations(on: ImplicitChild.schema, model: ImplicitChild.self).forEach { operation in
+        for operation in Operation.allOperations(on: ImplicitChild.schema, model: ImplicitChild.self) {
             let expectedDocument = operation.expectedDocument
             XCTAssertNotNil(expectedDocument)
             XCTAssertEqual(operation.graphQLRequest?.document, expectedDocument)
@@ -92,7 +92,7 @@ extension AWSDataStoreLazyLoadCompositePKTests {
         - All subscription GraphQL requests on `StrangeExplicitChild` model have correct selection set
      */
     func testStrangeExplicitChild_withGraphQLOperations_generateCorrectSelectionSets() {
-        Operation.allOperations(on: StrangeExplicitChild.schema, model: StrangeExplicitChild.self).forEach { operation in
+        for operation in Operation.allOperations(on: StrangeExplicitChild.schema, model: StrangeExplicitChild.self) {
             let expectedDocument = operation.expectedDocument
             XCTAssertNotNil(expectedDocument)
             XCTAssertEqual(operation.graphQLRequest?.document, expectedDocument)
@@ -101,7 +101,7 @@ extension AWSDataStoreLazyLoadCompositePKTests {
 }
 
 
-fileprivate enum Operation {
+private enum Operation {
     case mutation(String, ModelSchema, Model.Type)
     case subscription(GraphQLSubscriptionType, ModelSchema, Model.Type)
 
@@ -171,7 +171,7 @@ fileprivate enum Operation {
     }
 }
 
-fileprivate protocol RandomTestSampleInstance {
+private protocol RandomTestSampleInstance {
     static func randomInstance() -> Model
     static func mutationDocument(operation: String) -> String
     static func subscriptionDocument(operation: GraphQLSubscriptionType) -> String

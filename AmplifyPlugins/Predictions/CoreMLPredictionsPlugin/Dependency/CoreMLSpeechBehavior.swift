@@ -6,8 +6,8 @@
 //
 
 #if canImport(Speech)
-import Foundation
 import Amplify
+import Foundation
 import Speech
 
 protocol CoreMLSpeechBehavior: AnyObject {

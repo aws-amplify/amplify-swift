@@ -7,8 +7,8 @@
 
 import XCTest
 @_spi(InternalAmplifyConfiguration) @testable import Amplify
-@testable import AWSS3StoragePlugin
 @testable import AWSPluginsTestCommon
+@testable import AWSS3StoragePlugin
 
 class AWSS3StoragePluginStorageBucketTests: XCTestCase {
     private var storagePlugin: AWSS3StoragePlugin!

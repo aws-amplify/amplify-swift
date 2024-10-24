@@ -1,10 +1,17 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension ScalarContainer {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension ScalarContainer {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case id
     case myString
     case myInt
@@ -22,19 +29,19 @@ extension ScalarContainer {
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let scalarContainer = ScalarContainer.keys
-    
+
     model.pluralName = "ScalarContainers"
-    
+
     model.attributes(
       .primaryKey(fields: [scalarContainer.id])
     )
-    
+
     model.fields(
       .field(scalarContainer.id, is: .required, ofType: .string),
       .field(scalarContainer.myString, is: .optional, ofType: .string),
@@ -54,62 +61,62 @@ extension ScalarContainer {
       .field(scalarContainer.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
-    public class Path: ModelPath<ScalarContainer> { }
-    
-    public static var rootPath: PropertyContainerPath? { Path() }
+    class Path: ModelPath<ScalarContainer> { }
+
+    static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension ScalarContainer: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
 }
-extension ModelPath where ModelType == ScalarContainer {
-  public var id: FieldPath<String>   {
-      string("id") 
+public extension ModelPath where ModelType == ScalarContainer {
+  var id: FieldPath<String>   {
+      string("id")
     }
-  public var myString: FieldPath<String>   {
-      string("myString") 
+  var myString: FieldPath<String>   {
+      string("myString")
     }
-  public var myInt: FieldPath<Int>   {
-      int("myInt") 
+  var myInt: FieldPath<Int>   {
+      int("myInt")
     }
-  public var myDouble: FieldPath<Double>   {
-      double("myDouble") 
+  var myDouble: FieldPath<Double>   {
+      double("myDouble")
     }
-  public var myBool: FieldPath<Bool>   {
-      bool("myBool") 
+  var myBool: FieldPath<Bool>   {
+      bool("myBool")
     }
-  public var myDate: FieldPath<Temporal.Date>   {
-      date("myDate") 
+  var myDate: FieldPath<Temporal.Date>   {
+      date("myDate")
     }
-  public var myTime: FieldPath<Temporal.Time>   {
-      time("myTime") 
+  var myTime: FieldPath<Temporal.Time>   {
+      time("myTime")
     }
-  public var myDateTime: FieldPath<Temporal.DateTime>   {
-      datetime("myDateTime") 
+  var myDateTime: FieldPath<Temporal.DateTime>   {
+      datetime("myDateTime")
     }
-  public var myTimeStamp: FieldPath<Int>   {
-      int("myTimeStamp") 
+  var myTimeStamp: FieldPath<Int>   {
+      int("myTimeStamp")
     }
-  public var myEmail: FieldPath<String>   {
-      string("myEmail") 
+  var myEmail: FieldPath<String>   {
+      string("myEmail")
     }
-  public var myJSON: FieldPath<String>   {
-      string("myJSON") 
+  var myJSON: FieldPath<String>   {
+      string("myJSON")
     }
-  public var myPhone: FieldPath<String>   {
-      string("myPhone") 
+  var myPhone: FieldPath<String>   {
+      string("myPhone")
     }
-  public var myURL: FieldPath<String>   {
-      string("myURL") 
+  var myURL: FieldPath<String>   {
+      string("myURL")
     }
-  public var myIPAddress: FieldPath<String>   {
-      string("myIPAddress") 
+  var myIPAddress: FieldPath<String>   {
+      string("myIPAddress")
     }
-  public var createdAt: FieldPath<Temporal.DateTime>   {
-      datetime("createdAt") 
+  var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt")
     }
-  public var updatedAt: FieldPath<Temporal.DateTime>   {
-      datetime("updatedAt") 
+  var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt")
     }
 }

@@ -12,6 +12,7 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
+
 class StorageEnginePublisherTests: StorageEngineTestsBase {
 
     override func setUp() {
@@ -23,11 +24,13 @@ class StorageEnginePublisherTests: StorageEngineTestsBase {
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
             syncEngine = MockRemoteSyncEngine()
-            storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .testDefault(),
-                                          syncEngine: syncEngine,
-                                          validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+            storageEngine = StorageEngine(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .testDefault(),
+                syncEngine: syncEngine,
+                validAPIPluginKey: validAPIPluginKey,
+                validAuthPluginKey: validAuthPluginKey
+            )
         } catch {
             XCTFail(String(describing: error))
             return
@@ -35,18 +38,22 @@ class StorageEnginePublisherTests: StorageEngineTestsBase {
     }
 
     func testStorageEnginePublisherEvents() {
-        let modelSyncedEvent = ModelSyncedEvent(modelName: "",
-                                                isFullSync: true,
-                                                isDeltaSync: false,
-                                                added: 1,
-                                                updated: 1,
-                                                deleted: 1)
-        let mutationEvent = MutationEvent(id: "",
-                                          modelId: "",
-                                          modelName: "",
-                                          json: "",
-                                          mutationType: .create,
-                                          createdAt: .now())
+        let modelSyncedEvent = ModelSyncedEvent(
+            modelName: "",
+            isFullSync: true,
+            isDeltaSync: false,
+            added: 1,
+            updated: 1,
+            deleted: 1
+        )
+        let mutationEvent = MutationEvent(
+            id: "",
+            modelId: "",
+            modelName: "",
+            json: "",
+            mutationType: .create,
+            createdAt: .now()
+        )
         let receivedMutationEvent = expectation(description: "Received mutationEvent event")
         let receivedModelSyncedEvent = expectation(description: "Received ModelSynced event")
         let receivedSyncQueriesReadyEvent = expectation(description: "Received syncQueries event")

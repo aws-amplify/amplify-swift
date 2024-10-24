@@ -18,13 +18,15 @@ public struct EnumTestModel: Model {
   public var nullableEnumList: [TestEnum?]
   public var nullableEnumNullableList: [TestEnum?]?
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       enumVal: TestEnum,
       nullableEnumVal: TestEnum? = nil,
       enumList: [TestEnum] = [],
       enumNullableList: [TestEnum]? = nil,
       nullableEnumList: [TestEnum?] = [],
-      nullableEnumNullableList: [TestEnum?]? = nil) {
+      nullableEnumNullableList: [TestEnum?]? = nil
+  ) {
       self.id = id
       self.enumVal = enumVal
       self.nullableEnumVal = nullableEnumVal

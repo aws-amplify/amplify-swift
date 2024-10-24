@@ -6,9 +6,9 @@
 //
 
 import Amplify
-import Foundation
-import AWSCognitoIdentityProvider
 import AWSCognitoIdentity
+import AWSCognitoIdentityProvider
+import Foundation
 
 struct InformSessionError: Action {
 
@@ -19,17 +19,16 @@ struct InformSessionError: Action {
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        var event: AuthorizationEvent
-        switch error {
+        var event: AuthorizationEvent = switch error {
         case .service(let serviceError):
             if isNotAuthorizedError(serviceError) {
-                event = .init(eventType: .throwError(
+                .init(eventType: .throwError(
                     .sessionExpired(error: serviceError)))
             } else {
-                event = .init(eventType: .receivedSessionError(error))
+                .init(eventType: .receivedSessionError(error))
             }
         default:
-            event = .init(eventType: .receivedSessionError(error))
+            .init(eventType: .receivedSessionError(error))
 
         }
 

@@ -4,14 +4,15 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import Amplify
 import AmplifyTestCommon
 
 struct TestFlutterModelRegistration: AmplifyModelRegistration {
     var version: String = "1"
-    private let decoder: (String, JSONDecoder?) throws -> Model = { (jsonString, decoder) -> Model in
+    private let decoder: (String, JSONDecoder?) throws -> Model = { jsonString, decoder -> Model in
         let resolvedDecoder: JSONDecoder
-        if let decoder = decoder {
+        if let decoder {
             resolvedDecoder = decoder
         } else {
             resolvedDecoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
@@ -26,7 +27,8 @@ struct TestFlutterModelRegistration: AmplifyModelRegistration {
             return model
         }
         throw DataStoreError.decodingError(
-            "Error in decoding \(jsonString)", "Please create an issue to amplify-flutter repo.")
+            "Error in decoding \(jsonString)", "Please create an issue to amplify-flutter repo."
+        )
     }
     func registerModels(registry: ModelRegistry.Type) {
         registry.register(modelType: Post.self, modelSchema: Post.schema, jsonDecoder: decoder)

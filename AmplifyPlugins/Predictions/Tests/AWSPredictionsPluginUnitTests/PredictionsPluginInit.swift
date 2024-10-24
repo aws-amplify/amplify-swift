@@ -6,6 +6,7 @@
 //
 
 import XCTest
+
 // This import statement needs to stay as it is.
 // Do not add @testable
 import AWSPredictionsPlugin

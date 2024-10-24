@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct VerifyTOTPSetup: Action {
 
@@ -25,7 +25,8 @@ struct VerifyTOTPSetup: Action {
             let input = VerifySoftwareTokenInput(
                 friendlyDeviceName: friendlyDeviceName,
                 session: session,
-                userCode: totpCode)
+                userCode: totpCode
+            )
 
             // Initiate TOTP verification
             let result = try await client.verifySoftwareToken(input: input)
@@ -36,21 +37,27 @@ struct VerifyTOTPSetup: Action {
 
             let responseEvent = SetUpTOTPEvent(eventType:
                     .respondToAuthChallenge(session))
-            logVerbose("\(#fileID) Sending event \(responseEvent)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(responseEvent)",
+                environment: environment
+            )
             await dispatcher.send(responseEvent)
         } catch let error as SignInError {
             logError(error.authError.errorDescription, environment: environment)
             let errorEvent = SetUpTOTPEvent(eventType: .throwError(error))
-            logVerbose("\(#fileID) Sending event \(errorEvent)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(errorEvent)",
+                environment: environment
+            )
             await dispatcher.send(errorEvent)
         } catch {
             let error = SignInError.service(error: error)
             logError(error.authError.errorDescription, environment: environment)
             let errorEvent = SetUpTOTPEvent(eventType: .throwError(error))
-            logVerbose("\(#fileID) Sending event \(errorEvent)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(errorEvent)",
+                environment: environment
+            )
             await dispatcher.send(errorEvent)
         }
     }

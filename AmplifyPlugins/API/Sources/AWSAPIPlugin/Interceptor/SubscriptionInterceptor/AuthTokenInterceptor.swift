@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 @_spi(WebSocket) import AWSPluginsCore
 
 /// General purpose authenticatication subscriptions interceptor for providers whose only
@@ -33,7 +33,7 @@ class AuthTokenInterceptor {
         // the authorization check, which ends up being propagated back to the caller
         // as a "bad request". Example of bad requests are when the header and payload
         // query strings are missing or when the data is not base64 encoded.
-        (try? await getLatestAuthToken()) ?? ""
+        await (try? getLatestAuthToken()) ?? ""
     }
 }
 

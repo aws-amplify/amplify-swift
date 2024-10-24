@@ -49,7 +49,8 @@ extension MigrateSignInState {
                     return errorStateWithCancelSignIn(error)
                 }
                 guard let password = signInEventData.password,
-                        !password.isEmpty else {
+                        !password.isEmpty
+                else {
                     let error = SignInError.inputValidation(
                         field: AuthPluginErrorConstants.signInPasswordError.field
                     )
@@ -59,7 +60,8 @@ extension MigrateSignInState {
                     username: username,
                     password: password,
                     clientMetadata: signInEventData.clientMetadata,
-                    deviceMetadata: deviceMetadata)
+                    deviceMetadata: deviceMetadata
+                )
                 return StateResolution(
                     newState: MigrateSignInState.signingIn(signInEventData),
                     actions: [action]
@@ -71,11 +73,14 @@ extension MigrateSignInState {
 
         private func resolveInitiating(
             from oldState: MigrateSignInState,
-            byApplying signInEvent: SignInEvent) -> StateResolution<MigrateSignInState> {
+            byApplying signInEvent: SignInEvent
+        ) -> StateResolution<MigrateSignInState> {
                 switch signInEvent.eventType {
                 case .finalizeSignIn(let signedInData):
-                    return .init(newState: .signedIn(signedInData),
-                                 actions: [SignInComplete(signedInData: signedInData)])
+                    return .init(
+                        newState: .signedIn(signedInData),
+                        actions: [SignInComplete(signedInData: signedInData)]
+                    )
                 default:
                     return .from(oldState)
                 }

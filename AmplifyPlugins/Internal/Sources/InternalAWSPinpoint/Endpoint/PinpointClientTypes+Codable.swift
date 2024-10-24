@@ -113,7 +113,7 @@ extension PinpointClientTypes.EndpointUser: Codable, Equatable {
     }
 
     public static func == (
-        lhs: PinpointClientTypes.EndpointUser, 
+        lhs: PinpointClientTypes.EndpointUser,
         rhs: PinpointClientTypes.EndpointUser
     ) -> Bool {
         return lhs.userAttributes == rhs.userAttributes

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 /// TODO: Replace with AmplifyTestCommon's DataStore's geneated model
 /// This model corresponds to the resources created for the Todo graphQL endpoint. As a developer, this is
@@ -51,13 +51,13 @@ class CreateTodoMutation {
     static func variables(id: String? = nil, name: String, description: String? = nil) -> [String: Any] {
         var input: [String: Any] = [:]
 
-        if let id = id {
+        if let id {
             input.updateValue(id, forKey: "id")
         }
 
         input.updateValue(name, forKey: "name")
 
-        if let description = description {
+        if let description {
             input.updateValue(description, forKey: "description")
         }
 
@@ -93,10 +93,10 @@ class UpdateTodoMutation {
     static func variables(id: String, name: String? = nil, description: String? = nil) -> [String: Any] {
         var input: [String: Any] = [:]
         input.updateValue(id, forKey: "id")
-        if let name = name {
+        if let name {
             input.updateValue(name, forKey: "name")
         }
-        if let description = description {
+        if let description {
             input.updateValue(description, forKey: "description")
         }
         return ["input": input]
@@ -120,7 +120,7 @@ class DeleteTodoMutation {
 
     static func variables(id: String?) -> [String: Any] {
         var input: [String: Any] = [:]
-        if let id = id {
+        if let id {
             input.updateValue(id, forKey: "id")
         }
 
@@ -167,20 +167,22 @@ class ListTodosQuery {
             }\n}
         """
 
-    static func variables(filter: [String: Any]? = nil,
-                          limit: Int? = nil,
-                          nextToken: String? = nil) -> [String: Any] {
+    static func variables(
+        filter: [String: Any]? = nil,
+        limit: Int? = nil,
+        nextToken: String? = nil
+    ) -> [String: Any] {
         var input: [String: Any] = [:]
 
-        if let filter = filter {
+        if let filter {
             input.updateValue(filter, forKey: "filter")
         }
 
-        if let limit = limit {
+        if let limit {
             input.updateValue(limit, forKey: "limit")
         }
 
-        if let nextToken = nextToken {
+        if let nextToken {
             input.updateValue(nextToken, forKey: "nextToken")
         }
 

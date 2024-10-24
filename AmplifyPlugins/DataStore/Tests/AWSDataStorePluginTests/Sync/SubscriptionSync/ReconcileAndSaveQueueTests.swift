@@ -8,8 +8,8 @@
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 class ReconcileAndSaveQueueTests: XCTestCase {
     var storageAdapter: MockSQLiteStorageEngineAdapter!
@@ -20,18 +20,22 @@ class ReconcileAndSaveQueueTests: XCTestCase {
         ModelRegistry.register(modelType: Post.self)
         let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
         let anyPost = AnyModel(testPost)
-        anyPostMetadata = MutationSyncMetadata(modelId: "1",
-                                               modelName: testPost.modelName,
-                                               deleted: false,
-                                               lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                               version: 1)
+        anyPostMetadata = MutationSyncMetadata(
+            modelId: "1",
+            modelName: testPost.modelName,
+            deleted: false,
+            lastChangedAt: Int64(Date().timeIntervalSince1970),
+            version: 1
+        )
         anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
         anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
         storageAdapter = MockSQLiteStorageEngineAdapter()
         storageAdapter.returnOnQuery(dataStoreResult: .none)
         storageAdapter.returnOnSave(dataStoreResult: .none)
-        stateMachine = MockStateMachine(initialState: .waiting,
-                                        resolver: ReconcileAndLocalSaveOperation.Resolver.resolve(currentState:action:))
+        stateMachine = MockStateMachine(
+            initialState: .waiting,
+            resolver: ReconcileAndLocalSaveOperation.Resolver.resolve(currentState:action:)
+        )
     }
 
     func testAddOperation() throws {
@@ -50,10 +54,12 @@ class ReconcileAndSaveQueueTests: XCTestCase {
                 return
             }
         }
-        let operation = ReconcileAndLocalSaveOperation(modelSchema: anyPostMutationSync.model.schema,
-                                                       remoteModels: [anyPostMutationSync],
-                                                       storageAdapter: storageAdapter,
-                                                       stateMachine: stateMachine)
+        let operation = ReconcileAndLocalSaveOperation(
+            modelSchema: anyPostMutationSync.model.schema,
+            remoteModels: [anyPostMutationSync],
+            storageAdapter: storageAdapter,
+            stateMachine: stateMachine
+        )
         queue.addOperation(operation, modelName: Post.modelName)
         XCTAssertEqual(stateMachine.state, ReconcileAndLocalSaveOperation.State.waiting)
         wait(for: [operationAdded], timeout: 1)
@@ -79,10 +85,12 @@ class ReconcileAndSaveQueueTests: XCTestCase {
                 return
             }
         }
-        let operation = ReconcileAndLocalSaveOperation(modelSchema: anyPostMutationSync.model.schema,
-                                                       remoteModels: [anyPostMutationSync],
-                                                       storageAdapter: storageAdapter,
-                                                       stateMachine: stateMachine)
+        let operation = ReconcileAndLocalSaveOperation(
+            modelSchema: anyPostMutationSync.model.schema,
+            remoteModels: [anyPostMutationSync],
+            storageAdapter: storageAdapter,
+            stateMachine: stateMachine
+        )
         queue.addOperation(operation, modelName: Post.modelName)
         XCTAssertEqual(stateMachine.state, ReconcileAndLocalSaveOperation.State.waiting)
         wait(for: [operationAdded], timeout: 1)
@@ -109,10 +117,12 @@ class ReconcileAndSaveQueueTests: XCTestCase {
                 return
             }
         }
-        let operation = ReconcileAndLocalSaveOperation(modelSchema: anyPostMutationSync.model.schema,
-                                                       remoteModels: [anyPostMutationSync],
-                                                       storageAdapter: storageAdapter,
-                                                       stateMachine: stateMachine)
+        let operation = ReconcileAndLocalSaveOperation(
+            modelSchema: anyPostMutationSync.model.schema,
+            remoteModels: [anyPostMutationSync],
+            storageAdapter: storageAdapter,
+            stateMachine: stateMachine
+        )
         queue.addOperation(operation, modelName: Post.modelName)
         XCTAssertEqual(stateMachine.state, ReconcileAndLocalSaveOperation.State.waiting)
         wait(for: [operationAdded], timeout: 1)

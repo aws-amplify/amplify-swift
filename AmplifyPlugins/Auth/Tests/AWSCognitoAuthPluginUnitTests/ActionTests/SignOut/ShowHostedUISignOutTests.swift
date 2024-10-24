@@ -5,20 +5,20 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import XCTest
+@testable import AWSCognitoAuthPlugin
 
 class ShowHostedUISignOutTests: XCTestCase {
     private var mockHostedUIResult: Result<[URLQueryItem], HostedUIError>!
     private var signOutRedirectURI: String!
-    
+
     override func setUp() {
         signOutRedirectURI = "myapp://"
         mockHostedUIResult = .success([.init(name: "key", value: "value")])
     }
-    
+
     override func tearDown() {
         signOutRedirectURI = nil
         mockHostedUIResult = nil
@@ -38,7 +38,8 @@ class ShowHostedUISignOutTests: XCTestCase {
         await action.execute(
             withDispatcher: MockDispatcher { event in
                 guard let event = event as? SignOutEvent,
-                      case .signOutGlobally(let data, let error) = event.eventType else {
+                      case .signOutGlobally(let data, let error) = event.eventType
+                else {
                     XCTFail("Expected SignOutEvent.signOutGlobally, got \(event)")
                     expectation.fulfill()
                     return
@@ -47,7 +48,7 @@ class ShowHostedUISignOutTests: XCTestCase {
                 XCTAssertNil(error)
                 XCTAssertEqual(data, signInData)
                 self.validateDebugInformation(signInData: signInData, action: action)
-                
+
                 expectation.fulfill()
             },
             environment: Defaults.makeDefaultAuthEnvironment(
@@ -58,7 +59,7 @@ class ShowHostedUISignOutTests: XCTestCase {
 
         await fulfillment(of: [expectation], timeout: 1)
     }
-    
+
     /// Given: A ShowHostedUISignOut action with global sign out set to false
     /// When: execute is invoked with a success result
     /// Then: A .revokeToken event is dispatched
@@ -73,7 +74,8 @@ class ShowHostedUISignOutTests: XCTestCase {
         await action.execute(
             withDispatcher: MockDispatcher { event in
                 guard let event = event as? SignOutEvent,
-                      case .revokeToken(let data, let error, let globalSignOutError) = event.eventType else {
+                      case .revokeToken(let data, let error, let globalSignOutError) = event.eventType
+                else {
                     XCTFail("Expected SignOutEvent.revokeToken, got \(event)")
                     expectation.fulfill()
                     return
@@ -92,14 +94,14 @@ class ShowHostedUISignOutTests: XCTestCase {
 
         await fulfillment(of: [expectation], timeout: 1)
     }
-    
+
     /// Given: A ShowHostedUISignOut action
     /// When: execute is invoked but fails to create a HostedUI session
     /// Then: A .userCancelled event is dispatched
     func testExecute_withInvalidResult_shouldDispatchUserCancelledEvent() async {
         mockHostedUIResult = .failure(.cancelled)
         let signInData = SignedInData.testData
-        
+
         let action = ShowHostedUISignOut(
             signOutEvent: .testData,
             signInData: signInData
@@ -132,7 +134,7 @@ class ShowHostedUISignOutTests: XCTestCase {
     func testExecute_withSignOutURIError_shouldThrowConfigurationError() async {
         mockHostedUIResult = .failure(HostedUIError.signOutURI)
         let signInData = SignedInData.testData
-        
+
         let action = ShowHostedUISignOut(
             signOutEvent: .testData,
             signInData: signInData
@@ -142,7 +144,8 @@ class ShowHostedUISignOutTests: XCTestCase {
         await action.execute(
             withDispatcher: MockDispatcher { event in
                 guard let event = event as? SignOutEvent,
-                      case .hostedUISignOutError(let hostedUIError) = event.eventType else {
+                      case .hostedUISignOutError(let hostedUIError) = event.eventType
+                else {
                     XCTFail("Expected SignOutEvent.signOutGlobally, got \(event)")
                     expectation.fulfill()
                     return
@@ -166,14 +169,14 @@ class ShowHostedUISignOutTests: XCTestCase {
 
         await fulfillment(of: [expectation], timeout: 1)
     }
-    
+
     /// Given: A ShowHostedUISignOut action
     /// When: execute is invoked but fails to create a HostedUI session with a HostedUIError.invalidContext
     /// Then: A .signOutGlobally event is dispatched with a HosterUIError.invalidState error
     func testExecute_withInvalidContext_shouldThrowInvalidStateError() async {
         mockHostedUIResult = .failure(HostedUIError.invalidContext)
         let signInData = SignedInData.testData
-        
+
         let action = ShowHostedUISignOut(
             signOutEvent: .testData,
             signInData: signInData
@@ -183,7 +186,8 @@ class ShowHostedUISignOutTests: XCTestCase {
         await action.execute(
             withDispatcher: MockDispatcher { event in
                 guard let event = event as? SignOutEvent,
-                      case .hostedUISignOutError(let hostedUIError) = event.eventType else {
+                      case .hostedUISignOutError(let hostedUIError) = event.eventType
+                else {
                     XCTFail("Expected SignOutEvent.hostedUISignOutError, got \(event)")
                     expectation.fulfill()
                     return
@@ -208,14 +212,14 @@ class ShowHostedUISignOutTests: XCTestCase {
 
         await fulfillment(of: [expectation], timeout: 1)
     }
-    
+
     /// Given: A ShowHostedUISignOut action with an invalid SignOutRedirectURI
     /// When: execute is invoked
     /// Then: A .signOutGlobally event is dispatched with a HosterUIError.configuration error
     func testExecute_withInvalidSignOutURI_shouldThrowConfigurationError() async {
         signOutRedirectURI = "invalidURI"
         let signInData = SignedInData.testData
-        
+
         let action = ShowHostedUISignOut(
             signOutEvent: .testData,
             signInData: signInData
@@ -225,7 +229,8 @@ class ShowHostedUISignOutTests: XCTestCase {
         await action.execute(
             withDispatcher: MockDispatcher { event in
                 guard let event = event as? SignOutEvent,
-                      case .hostedUISignOutError(let hostedUIError) = event.eventType else {
+                      case .hostedUISignOutError(let hostedUIError) = event.eventType
+                else {
                     XCTFail("Expected SignOutEvent.signOutGlobally, got \(event)")
                     expectation.fulfill()
                     return
@@ -263,12 +268,13 @@ class ShowHostedUISignOutTests: XCTestCase {
         await action.execute(
             withDispatcher: MockDispatcher { event in
                 guard let event = event as? SignOutEvent,
-                      case .hostedUISignOutError(let hostedUIError) = event.eventType else {
+                      case .hostedUISignOutError(let hostedUIError) = event.eventType
+                else {
                     XCTFail("Expected SignOutEvent.signOutGlobally, got \(event)")
                     expectation.fulfill()
                     return
                 }
-                
+
                 guard case .configuration(let errorDescription, _, let serviceError) = hostedUIError.authError else {
                     XCTFail("Expected AuthError.configuration")
                     expectation.fulfill()
@@ -287,7 +293,7 @@ class ShowHostedUISignOutTests: XCTestCase {
 
         await fulfillment(of: [expectation], timeout: 1)
     }
-    
+
     /// Given: A ShowHostedUISignOut action
     /// When: execute is invoked with an invalid environment
     /// Then: A .signOutGlobally event is dispatched with a HosterUIError.configuration error
@@ -301,12 +307,13 @@ class ShowHostedUISignOutTests: XCTestCase {
         await action.execute(
             withDispatcher: MockDispatcher { event in
                 guard let event = event as? SignOutEvent,
-                      case .hostedUISignOutError(let hostedUIError) = event.eventType else {
+                      case .hostedUISignOutError(let hostedUIError) = event.eventType
+                else {
                     XCTFail("Expected SignOutEvent.signOutGlobally, got \(event)")
                     expectation.fulfill()
                     return
                 }
-                
+
                 guard case .configuration(let errorDescription, _, let serviceError) = hostedUIError.authError else {
                     XCTFail("Expected AuthError.configuration")
                     expectation.fulfill()
@@ -322,7 +329,7 @@ class ShowHostedUISignOutTests: XCTestCase {
 
         await fulfillment(of: [expectation], timeout: 1)
     }
-    
+
     private func validateDebugInformation(signInData: SignedInData, action: ShowHostedUISignOut) {
         XCTAssertFalse(action.debugDescription.isEmpty)
         guard let signInDataDictionary = action.debugDictionary["signInData"] as? [String: Any] else {
@@ -333,13 +340,14 @@ class ShowHostedUISignOutTests: XCTestCase {
 
         for key in signInDataDictionary.keys {
             guard let left = signInDataDictionary[key] as? any Equatable,
-                  let right = signInData.debugDictionary[key] as? any Equatable else {
+                  let right = signInData.debugDictionary[key] as? any Equatable
+            else {
                 continue
             }
             XCTAssertTrue(left.isEqual(to: right))
         }
     }
-    
+
     private var hostedUIEnvironment: HostedUIEnvironment {
         BasicHostedUIEnvironment(
             configuration: .init(
@@ -365,7 +373,7 @@ class ShowHostedUISignOutTests: XCTestCase {
             }
         )
     }
-    
+
     private func identityProviderFactory() throws -> CognitoUserPoolBehavior {
         return MockIdentityProvider(
             mockInitiateAuthResponse: { _ in
@@ -374,7 +382,8 @@ class ShowHostedUISignOutTests: XCTestCase {
                         accessToken: "accessTokenNew",
                         expiresIn: 100,
                         idToken: "idTokenNew",
-                        refreshToken: "refreshTokenNew")
+                        refreshToken: "refreshTokenNew"
+                    )
                 )
             }
         )

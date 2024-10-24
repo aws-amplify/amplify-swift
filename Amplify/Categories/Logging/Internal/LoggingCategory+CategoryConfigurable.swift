@@ -26,9 +26,9 @@ extension LoggingCategory: CategoryConfigurable {
         }
 
         try plugin.configure(using: configuration?.plugins[plugin.key])
-        self.plugins[plugin.key] = plugin
+        plugins[plugin.key] = plugin
 
-        if plugin.key != AWSUnifiedLoggingPlugin.key, let consolePlugin = try? self.getPlugin(for: AWSUnifiedLoggingPlugin.key) {
+        if plugin.key != AWSUnifiedLoggingPlugin.key, let consolePlugin = try? getPlugin(for: AWSUnifiedLoggingPlugin.key) {
             try consolePlugin.configure(using: configuration?.plugins[consolePlugin.key])
         }
 
@@ -57,9 +57,9 @@ extension LoggingCategory: CategoryConfigurable {
         }
 
         try plugin.configure(using: amplifyOutputs)
-        self.plugins[plugin.key] = plugin
+        plugins[plugin.key] = plugin
 
-        if plugin.key != AWSUnifiedLoggingPlugin.key, let consolePlugin = try? self.getPlugin(for: AWSUnifiedLoggingPlugin.key) {
+        if plugin.key != AWSUnifiedLoggingPlugin.key, let consolePlugin = try? getPlugin(for: AWSUnifiedLoggingPlugin.key) {
             try consolePlugin.configure(using: amplifyOutputs)
         }
 

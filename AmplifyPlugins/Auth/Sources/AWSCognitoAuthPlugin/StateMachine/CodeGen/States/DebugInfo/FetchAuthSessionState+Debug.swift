@@ -10,18 +10,17 @@ import Foundation
 extension FetchAuthSessionState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
-        let additionalMetadataDictionary: [String: Any]
-        switch self {
+        let additionalMetadataDictionary: [String: Any] = switch self {
         case .notStarted:
-            additionalMetadataDictionary = [:]
+            [:]
         case .fetchingIdentityID:
-            additionalMetadataDictionary = [:]
+            [:]
         case .fetchingAWSCredentials:
-            additionalMetadataDictionary = [:]
+            [:]
         case .fetched:
-            additionalMetadataDictionary = [:]
+            [:]
         case .error(let error):
-            additionalMetadataDictionary = ["error": error]
+            ["error": error]
         }
         return [type: additionalMetadataDictionary]
     }

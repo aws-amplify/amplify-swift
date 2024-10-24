@@ -45,13 +45,14 @@ final class GraphQLCustomer9Tests: AWSAPIPluginGen2GraphQLBaseTest {
         var request = GraphQLRequest<PaginatedList<Customer>>(
             document: document,
             responseType: PaginatedList<Customer>.self,
-            decodePath: operationName)
+            decodePath: operationName
+        )
 
         let queriedCustomers = try await Amplify.API.query(
             request: request).get()
 
         // Code Snippet Ends
-        XCTAssertTrue(queriedCustomers.items.count != 0 || queriedCustomers.nextToken != nil)
+        XCTAssertTrue(!queriedCustomers.items.isEmpty || queriedCustomers.nextToken != nil)
     }
 }
 

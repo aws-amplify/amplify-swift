@@ -7,10 +7,10 @@
 
 import Amplify
 import AWSPluginsCore
-import InternalAmplifyCredentials
 import Foundation
-import SmithyHTTPAPI
+import InternalAmplifyCredentials
 import Smithy
+import SmithyHTTPAPI
 
 typealias AWSRegionType = String
 
@@ -20,9 +20,11 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
     let endpointType: AWSAPICategoryPluginEndpointType
     private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
 
-    init(iamCredentialsProvider: IAMCredentialsProvider,
-         region: AWSRegionType,
-         endpointType: AWSAPICategoryPluginEndpointType) {
+    init(
+        iamCredentialsProvider: IAMCredentialsProvider,
+        region: AWSRegionType,
+        endpointType: AWSAPICategoryPluginEndpointType
+    ) {
         self.iamCredentialsProvider = iamCredentialsProvider
         self.region = region
         self.endpointType = endpointType

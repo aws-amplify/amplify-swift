@@ -24,9 +24,9 @@ public struct InitialClientEvent {
     let videoStartTimestamp: UInt64
 }
 
-extension LivenessEvent where T == InitialClientEvent {
+public extension LivenessEvent where T == InitialClientEvent {
     @_spi(PredictionsFaceLiveness)
-    public static func initialFaceDetected(event: InitialClientEvent) throws -> Self {
+    static func initialFaceDetected(event: InitialClientEvent) throws -> Self {
         let initialFace = InitialFace(
             boundingBox: .init(boundingBox: event.initialFaceLocation.boundingBox),
             initialFaceDetectedTimeStamp: event.initialFaceLocation.startTimestamp

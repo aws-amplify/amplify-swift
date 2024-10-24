@@ -41,14 +41,14 @@ struct BasicAuthorizationEnvironment: AuthorizationEnvironment {
 
 extension AuthEnvironment: AuthorizationEnvironment {
     var identityPoolConfiguration: IdentityPoolConfigurationData {
-        guard let authorizationEnvironment = authorizationEnvironment else {
+        guard let authorizationEnvironment else {
             fatalError("Could not find authorization environment")
         }
         return authorizationEnvironment.identityPoolConfiguration
     }
 
     var cognitoIdentityFactory: CognitoIdentityFactory {
-        guard let authorizationEnvironment = authorizationEnvironment else {
+        guard let authorizationEnvironment else {
             fatalError("Could not find authorization environment")
         }
         return authorizationEnvironment.cognitoIdentityFactory

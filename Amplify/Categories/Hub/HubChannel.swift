@@ -75,8 +75,8 @@ extension HubChannel: Equatable {
     }
 }
 
-extension HubChannel {
-    public init(from categoryType: CategoryType) {
+public extension HubChannel {
+    init(from categoryType: CategoryType) {
         switch categoryType {
         case .analytics:
             self = .analytics

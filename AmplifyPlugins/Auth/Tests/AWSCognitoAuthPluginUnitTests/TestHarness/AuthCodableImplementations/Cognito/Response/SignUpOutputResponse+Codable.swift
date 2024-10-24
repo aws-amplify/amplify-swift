@@ -15,7 +15,7 @@ extension SignUpOutput: Codable {
         case userSub = "UserSub"
     }
 
-    public init (from decoder: Swift.Decoder) throws {
+    public init(from decoder: Swift.Decoder) throws {
         self.init()
         let containerValues = try decoder.container(keyedBy: CodingKeys.self)
         let userConfirmedDecoded = try containerValues.decode(Swift.Bool.self, forKey: .userConfirmed)

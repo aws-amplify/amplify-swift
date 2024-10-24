@@ -5,19 +5,19 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import XCTest
 @testable @_spi(InternalAmplifyConfiguration) import Amplify
 @testable import AmplifyTestCommon
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
-import XCTest
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBase {
-    
+
     override func setUp() async throws {
         AWSPinpointFactory.credentialIdentityResolver = MockCredentialsProvider()
         try await super.setUp()
     }
-    
+
     // MARK: Plugin Key test
 
     func testPluginKey() {
@@ -95,7 +95,8 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
             let analyticsPlugin = AWSPinpointAnalyticsPlugin(
                 options: .init(
                     autoFlushEventsInterval: 50,
-                    trackAppSessions: true))
+                    trackAppSessions: true
+                ))
             try analyticsPlugin.configure(using: analyticsPluginConfig)
 
             XCTAssertNotNil(analyticsPlugin.pinpoint)
@@ -115,7 +116,8 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
             XCTFail("Analytics configuration should not succeed")
         } catch {
             guard let pluginError = error as? PluginError,
-                case .pluginConfigurationError = pluginError else {
+                case .pluginConfigurationError = pluginError
+            else {
                     XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
                     return
             }
@@ -126,8 +128,10 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
 
     func testConfigure_WithAmplifyOutputs() {
         let config = AmplifyOutputsData.init(analytics: .init(
-            amazonPinpoint: .init(awsRegion: testRegion,
-                                  appId: testAppId)))
+            amazonPinpoint: .init(
+                awsRegion: testRegion,
+                appId: testAppId
+            )))
 
         do {
             let analyticsPlugin = AWSPinpointAnalyticsPlugin()
@@ -148,13 +152,16 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
 
     func testConfigure_WithAmplifyOutputsAndOptions() {
         let config = AmplifyOutputsData.init(analytics: .init(
-            amazonPinpoint: .init(awsRegion: testRegion,
-                                  appId: testAppId)))
+            amazonPinpoint: .init(
+                awsRegion: testRegion,
+                appId: testAppId
+            )))
 
         do {
             let analyticsPlugin = AWSPinpointAnalyticsPlugin(options: .init(
                 autoFlushEventsInterval: 100,
-                trackAppSessions: false))
+                trackAppSessions: false
+            ))
             try analyticsPlugin.configure(using: config)
 
             XCTAssertNotNil(analyticsPlugin.pinpoint)

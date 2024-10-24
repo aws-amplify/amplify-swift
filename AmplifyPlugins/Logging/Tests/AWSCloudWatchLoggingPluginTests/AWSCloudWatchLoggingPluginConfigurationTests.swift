@@ -5,33 +5,33 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCloudWatchLoggingPlugin
 import Amplify
 import XCTest
+@testable import AWSCloudWatchLoggingPlugin
 
 final class AWSCloudWatchLoggingPluginConfigurationTests: XCTestCase {
-    
+
     /// Given: a json file with the plugin configuration
     /// When: it is read from the bundle and decoded
     /// Then: AWSCloudWatchLoggingPluginConfiguration is created
     func testDecodeConfigurationFromJson() {
         let url = Bundle.module.url(forResource: "amplifyconfiguration_logging", withExtension: "json", subdirectory: "TestResources")
 
-        
+
         guard let configUrl = url, let data = try? Data(contentsOf: configUrl) else {
             XCTFail("Unable to load test file")
             return
         }
-        
+
         let jsonDecoder = JSONDecoder()
         guard let config = try? jsonDecoder.decode(AmplifyConfigurationLogging.self, from: data) else {
             XCTFail("Unable to deserialize object from json data")
             return
         }
-        
+
         XCTAssertTrue(config.awsCloudWatchLoggingPlugin.enable)
         XCTAssertEqual(config.awsCloudWatchLoggingPlugin.defaultRemoteConfiguration?.endpoint.absoluteString, "http://www.amazon.com")
-        XCTAssertEqual(config.awsCloudWatchLoggingPlugin.defaultRemoteConfiguration?.refreshIntervalInSeconds, 1200)
+        XCTAssertEqual(config.awsCloudWatchLoggingPlugin.defaultRemoteConfiguration?.refreshIntervalInSeconds, 1_200)
         XCTAssertEqual(config.awsCloudWatchLoggingPlugin.flushIntervalInSeconds, 60)
         XCTAssertEqual(config.awsCloudWatchLoggingPlugin.localStoreMaxSizeInMB, 5)
         XCTAssertEqual(config.awsCloudWatchLoggingPlugin.logGroupName, "testLogGroup")
@@ -47,7 +47,7 @@ final class AWSCloudWatchLoggingPluginConfigurationTests: XCTestCase {
     func testRemoteLoggingConstraintsDeserialization() {
         let url = Bundle.module.url(forResource: "remoteloggingconstraints", withExtension: "json", subdirectory: "TestResources")
 
-        
+
         guard let configUrl = url, let data = try? Data(contentsOf: configUrl) else {
             XCTFail("Unable to load test file")
             return

@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import SQLite
 import AWSPluginsCore
+import Foundation
+import SQLite
 
 public struct DataStoreModelDecoder: ModelProviderDecoder {
 
@@ -17,8 +17,10 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
         let identifiers: [LazyReferenceIdentifier]
         let source: String
 
-        init(identifiers: [LazyReferenceIdentifier],
-             source: String = ModelProviderRegistry.DecoderSource.dataStore) {
+        init(
+            identifiers: [LazyReferenceIdentifier],
+            source: String = ModelProviderRegistry.DecoderSource.dataStore
+        ) {
             self.identifiers = identifiers
             self.source = source
         }

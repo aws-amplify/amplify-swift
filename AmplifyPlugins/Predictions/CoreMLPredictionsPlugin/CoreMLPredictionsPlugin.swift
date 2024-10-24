@@ -6,11 +6,11 @@
 //
 
 #if canImport(Speech) && canImport(Vision)
-import Foundation
 import Amplify
+import Foundation
 
 /// Predictions plugin that uses CoreML service to get results.
-final public class CoreMLPredictionsPlugin: PredictionsCategoryPlugin {
+public final class CoreMLPredictionsPlugin: PredictionsCategoryPlugin {
 
     let coreMLPredictionsPluginKey = "CoreMLPredictionsPlugin"
 

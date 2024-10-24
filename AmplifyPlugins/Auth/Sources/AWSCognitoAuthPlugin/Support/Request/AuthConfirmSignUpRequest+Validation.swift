@@ -15,15 +15,17 @@ extension AuthConfirmSignUpRequest {
             let error = AuthError.validation(
                 AuthPluginErrorConstants.signUpUsernameError.field,
                 AuthPluginErrorConstants.signUpUsernameError.errorDescription,
-                AuthPluginErrorConstants.signUpUsernameError.recoverySuggestion, nil)
+                AuthPluginErrorConstants.signUpUsernameError.recoverySuggestion, nil
+            )
             throw error
         }
 
         guard !code.isEmpty else {
                let error = AuthError.validation(
-                AuthPluginErrorConstants.confirmSignUpCodeError.field,
-                AuthPluginErrorConstants.confirmSignUpCodeError.errorDescription,
-                AuthPluginErrorConstants.confirmSignUpCodeError.recoverySuggestion, nil)
+                   AuthPluginErrorConstants.confirmSignUpCodeError.field,
+                   AuthPluginErrorConstants.confirmSignUpCodeError.errorDescription,
+                   AuthPluginErrorConstants.confirmSignUpCodeError.recoverySuggestion, nil
+               )
            throw error
         }
     }

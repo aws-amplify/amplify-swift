@@ -5,16 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import XCTest
 @_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AmplifyTestCommon
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointPushNotificationsPlugin
-import XCTest
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificationsPluginTestBase {
     private var hubPlugin: HubCategoryPlugin {
         guard let plugin = try? Amplify.Hub.getPlugin(for: "awsHubPlugin"),
-            plugin.key == "awsHubPlugin" else {
+            plugin.key == "awsHubPlugin"
+        else {
             fatalError("Could not access awsHubPlugin")
         }
         return plugin
@@ -141,7 +142,8 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
             if payload.eventName == HubPayload.EventName.Notifications.Push.requestNotificationsPermissions {
                 eventWasReported.fulfill()
                 guard let error = payload.data as? PushNotificationsError,
-                      case .service(let errorDescription, let recoverySuggestion, _) = error else {
+                      case .service(let errorDescription, let recoverySuggestion, _) = error
+                else {
                     XCTFail("Expected Push Notification error")
                     return
                 }
@@ -161,7 +163,8 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
             XCTFail("Push Notifications configuration should not succeed")
         } catch {
             guard let pluginError = error as? PluginError,
-                case .pluginConfigurationError = pluginError else {
+                case .pluginConfigurationError = pluginError
+            else {
                     XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
                     return
             }
@@ -175,7 +178,7 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
         let pinpointConfiguration = JSONValue(
             dictionaryLiteral:
                 (AWSPinpointPluginConfiguration.appIdConfigKey, appId),
-                (AWSPinpointPluginConfiguration.regionConfigKey, region)
+            (AWSPinpointPluginConfiguration.regionConfigKey, region)
         )
 
         return pinpointConfiguration
@@ -185,6 +188,7 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
         .init(notifications: .init(
             awsRegion: testRegion,
             amazonPinpointAppId: testAppId,
-            channels: [.apns]))
+            channels: [.apns]
+        ))
     }
 }

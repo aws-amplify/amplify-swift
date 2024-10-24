@@ -9,18 +9,18 @@
 import Amplify
 import Foundation
 
-extension CustomerOrder {
+public extension CustomerOrder {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case orderId
     case email
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let customerOrder = CustomerOrder.keys
 
     model.listPluralName = "CustomerOrders"

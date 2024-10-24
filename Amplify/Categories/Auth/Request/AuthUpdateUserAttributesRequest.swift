@@ -16,8 +16,10 @@ public struct AuthUpdateUserAttributesRequest: AmplifyOperationRequest {
     /// Extra request options defined in `AuthUpdateUserAttributesRequest.Options`
     public var options: Options
 
-    public init(userAttributes: [AuthUserAttribute],
-                options: Options) {
+    public init(
+        userAttributes: [AuthUserAttribute],
+        options: Options
+    ) {
         self.userAttributes = userAttributes
         self.options = options
     }

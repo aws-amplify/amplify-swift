@@ -21,7 +21,8 @@ final class GraphQLTodo17Tests: AWSAPIPluginGen2GraphQLBaseTest {
             _ = try await AuthSignInHelper.registerAndSignInUser(
                 username: username,
                 password: password,
-                email: defaultTestEmail)
+                email: defaultTestEmail
+            )
         } catch {
             XCTFail("Could not sign up and sign in user \(error)")
         }
@@ -31,7 +32,8 @@ final class GraphQLTodo17Tests: AWSAPIPluginGen2GraphQLBaseTest {
             let todo = Todo(content: "My new todo")
             let createdTodo = try await Amplify.API.mutate(request: .create(
                 todo,
-                authMode: .awsIAM)).get()
+                authMode: .awsIAM
+            )).get()
             // Code Snippet Ends
             XCTAssertEqual(createdTodo.id, todo.id)
             // Code Snippet Begins

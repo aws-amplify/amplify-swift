@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSPluginsCore
 import AwsCommonRuntimeKit
+import AWSPluginsCore
 import Foundation
 import SmithyIdentity
 
@@ -15,7 +15,7 @@ class MockCredentialsProvider: AwsCommonRuntimeKit.CredentialsProviding, AWSCred
         return try Credentials(
             accessKey: "accessKey",
             secret: "secret",
-            expiration: Date().addingTimeInterval(1000)
+            expiration: Date().addingTimeInterval(1_000)
         )
     }
 }

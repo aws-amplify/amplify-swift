@@ -54,11 +54,15 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
                 sessionFactory: AmplifyURLSessionFactory()
             ))
             #if os(watchOS)
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models,
-                                                       configuration: .custom(syncMaxRecords: 100, disableSubscriptions: { false })))
+            try Amplify.add(plugin: AWSDataStorePlugin(
+                modelRegistration: models,
+                configuration: .custom(syncMaxRecords: 100, disableSubscriptions: { false })
+            ))
             #else
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models,
-                                                       configuration: .custom(syncMaxRecords: 100)))
+            try Amplify.add(plugin: AWSDataStorePlugin(
+                modelRegistration: models,
+                configuration: .custom(syncMaxRecords: 100)
+            ))
             #endif
         } catch {
             XCTFail(String(describing: error))
@@ -99,8 +103,10 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
         let eventReceived = expectation(description: "DataStore \(eventName) event")
 
         var token: UnsubscribeToken!
-        token = Amplify.Hub.listen(to: .dataStore,
-                                   eventName: eventName) { _ in
+        token = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: eventName
+        ) { _ in
             eventReceived.fulfill()
             Amplify.Hub.removeListener(token)
         }

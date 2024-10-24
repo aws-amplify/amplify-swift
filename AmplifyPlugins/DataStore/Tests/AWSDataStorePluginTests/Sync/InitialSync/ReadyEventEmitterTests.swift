@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import XCTest
-import SQLite
 import Combine
+import Foundation
+import SQLite
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 class ReadyEventEmitterTests: XCTestCase {
     var stateMachine: MockStateMachine<RemoteSyncEngine.State, RemoteSyncEngine.Action>!

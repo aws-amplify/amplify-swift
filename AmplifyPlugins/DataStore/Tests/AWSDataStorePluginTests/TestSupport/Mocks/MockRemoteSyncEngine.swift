@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSPluginsCore
 import Combine
+import Foundation
 
 @testable import Amplify
 @testable import AmplifyTestCommon

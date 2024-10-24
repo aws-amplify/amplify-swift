@@ -33,37 +33,37 @@ public class Amplify {
     // ease of testing.
 
     /// - Tag: Amplify.Analytics
-    public static internal(set) var Analytics = AnalyticsCategory()
+    public internal(set) static var Analytics = AnalyticsCategory()
 
     /// - Tag: Amplify.API
-    public static internal(set) var API: APICategory = APICategory()
+    public internal(set) static var API = APICategory()
 
     /// - Tag: Amplify.Auth
-    public static internal(set) var Auth = AuthCategory()
+    public internal(set) static var Auth = AuthCategory()
 
     /// - Tag: Amplify.DataStore
-    public static internal(set) var DataStore = DataStoreCategory()
+    public internal(set) static var DataStore = DataStoreCategory()
 
     /// - Tag: Amplify.Geo
-    public static internal(set) var Geo = GeoCategory()
+    public internal(set) static var Geo = GeoCategory()
 
     /// - Tag: Amplify.Hub
-    public static internal(set) var Hub = HubCategory()
+    public internal(set) static var Hub = HubCategory()
 
     /// - Tag: Amplify.Notifications
-    public static internal(set) var Notifications = NotificationsCategory()
+    public internal(set) static var Notifications = NotificationsCategory()
 
     /// - Tag: Amplify.Predictions
-    public static internal(set) var Predictions = PredictionsCategory()
+    public internal(set) static var Predictions = PredictionsCategory()
 
     /// - Tag: Amplify.Storage
-    public static internal(set) var Storage = StorageCategory()
+    public internal(set) static var Storage = StorageCategory()
 
     /// Special case category. We protect this with an AtomicValue because it is used by reset()
     /// methods during setup & teardown of tests
     ///
     /// - Tag: Amplify.Logging
-    public static internal(set) var Logging: LoggingCategory {
+    public internal(set) static var Logging: LoggingCategory {
         get {
             loggingAtomic.get()
         }
@@ -73,13 +73,15 @@ public class Amplify {
     }
     private static let loggingAtomic = AtomicValue<LoggingCategory>(initialValue: LoggingCategory())
 
+    // swiftlint:disable cyclomatic_complexity
+
     /// Adds `plugin` to the category
     ///
     /// See: [Category.removePlugin(for:)](x-source-tag://Category.removePlugin)
     ///
     /// - Parameter plugin: The plugin to add
     /// - Tag: Amplify.add_plugin
-    public static func add<P: Plugin>(plugin: P) throws {
+    public static func add(plugin: some Plugin) throws {
         log.debug("Adding plugin: \(plugin))")
         switch plugin {
         case let plugin as AnalyticsCategoryPlugin:
@@ -105,8 +107,11 @@ public class Amplify {
         default:
             throw PluginError.pluginConfigurationError(
                 "Plugin category does not exist.",
-                "Verify that the library version is correct and supports the plugin's category.")
+                "Verify that the library version is correct and supports the plugin's category."
+            )
         }
+
+        // swiftlint:enable cyclomatic_complexity
     }
 }
 

@@ -33,7 +33,7 @@ public struct StorageListResult {
     public var items: [Item]
 
 
-    /// Array of excluded subpaths in the Result. 
+    /// Array of excluded subpaths in the Result.
     /// This field is only populated when [`StorageListRequest.Options.subpathStrategy`](x-source-tag://StorageListRequestOptions.subpathStragegy) is set to [`.exclude()`](x-source-tag://SubpathStrategy.exclude).
     ///
     /// - Tag: StorageListResult.excludedSubpaths
@@ -49,10 +49,10 @@ public struct StorageListResult {
     public let nextToken: String?
 }
 
-extension StorageListResult {
+public extension StorageListResult {
 
     /// - Tag: StorageListResultItem
-    public struct Item {
+    struct Item {
 
         /// The path of the object in storage.
         ///

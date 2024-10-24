@@ -22,7 +22,7 @@ public class AmplifyReachability {
     public var allowsCellularConnection: Bool
 
     // The notification center on which "reachability changed" events are being posted
-    public var notificationCenter: NotificationCenter = NotificationCenter.default
+    public var notificationCenter: NotificationCenter = .default
 
     public var connection: AmplifyReachability.Connection {
         guard networkReachability.currentPath.status != .unsatisfied else {
@@ -82,8 +82,8 @@ public class AmplifyReachability {
     public func startNotifier() throws {
         guard networkReachability.pathUpdateHandler == nil else { return }
         networkReachability.pathUpdateHandler = { [weak self] _ in
-            guard let self = self else { return }
-            self.notificationQueue.async {
+            guard let self else { return }
+            notificationQueue.async {
                 self.notificationCenter.post(name: .reachabilityChanged, object: self)
             }
         }
@@ -94,8 +94,8 @@ public class AmplifyReachability {
     }
 }
 
-extension AmplifyReachability {
-    public enum Connection: CustomStringConvertible {
+public extension AmplifyReachability {
+    enum Connection: CustomStringConvertible {
         @available(*, deprecated, renamed: "unavailable")
         case none
         case unavailable, wifi, cellular

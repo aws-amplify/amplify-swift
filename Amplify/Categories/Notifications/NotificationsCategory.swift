@@ -19,6 +19,6 @@ public final class NotificationsCategory {
             Push
         ]
 
-        return allSubcategories.filter { $0.isConfigured }
+        return allSubcategories.filter(\.isConfigured)
     }
 }

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 import Combine
+
 /**
  A non-deterministic operation offers multiple paths to accomplish its task.
  It attempts the next path if all preceding paths have failed with an error that allows for continuation.
@@ -62,7 +62,7 @@ final class NondeterminsticOperation<T> {
             self?.task = Task { [weak self] in
                 do {
                     if let self {
-                        promise(.success(try await self.run()))
+                        try await promise(.success(run()))
                     } else {
                         promise(.failure(NondeterminsticOperationError.cancelled))
                     }

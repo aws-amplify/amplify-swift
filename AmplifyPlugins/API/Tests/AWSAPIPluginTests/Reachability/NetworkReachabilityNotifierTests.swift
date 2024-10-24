@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
 import Foundation
 import XCTest
-import Combine
 @testable import Amplify
 @testable import AWSAPIPlugin
 
@@ -34,7 +34,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         var values = [Bool]()
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             XCTFail("Not expecting any error")
-        }, receiveValue: { (value: ReachabilityUpdate) -> Void in
+        }, receiveValue: { (value: ReachabilityUpdate) in
             values.append(value.isOnline)
             if values.count == 2 {
                 XCTAssertFalse(values[0])
@@ -55,7 +55,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         var values = [Bool]()
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             XCTFail("Not expecting any error")
-        }, receiveValue: { (value: ReachabilityUpdate) -> Void in
+        }, receiveValue: { (value: ReachabilityUpdate) in
             values.append(value.isOnline)
             if values.count == 2 {
                 XCTAssertFalse(values[0])
@@ -77,7 +77,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         var values = [Bool]()
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             XCTFail("Not expecting any error")
-        }, receiveValue: { (value: ReachabilityUpdate) -> Void in
+        }, receiveValue: { (value: ReachabilityUpdate) in
             values.append(value.isOnline)
             if values.count == 2 {
                 XCTAssertFalse(values[0])
@@ -99,7 +99,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         let completeExpect = expectation(description: ".sink receives completion")
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             completeExpect.fulfill()
-        }, receiveValue: { (value: ReachabilityUpdate) -> Void in
+        }, receiveValue: { (value: ReachabilityUpdate) in
             XCTAssertFalse(value.isOnline)
             defaultValueExpect.fulfill()
         })

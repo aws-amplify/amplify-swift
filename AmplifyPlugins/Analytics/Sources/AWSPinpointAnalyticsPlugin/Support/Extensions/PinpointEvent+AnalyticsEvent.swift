@@ -9,8 +9,8 @@ import Amplify
 import Foundation
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 
-extension PinpointEvent {
-    public func asAnalyticsEvent() -> AnalyticsEvent {
+public extension PinpointEvent {
+    func asAnalyticsEvent() -> AnalyticsEvent {
         var properties: AnalyticsProperties = [:]
 
         for attribute in attributes {
@@ -21,12 +21,14 @@ extension PinpointEvent {
             properties[metric.key] = metric.value
         }
 
-        return BasicAnalyticsEvent(name: eventType,
-                                   properties: properties)
+        return BasicAnalyticsEvent(
+            name: eventType,
+            properties: properties
+        )
     }
 }
 
-extension Array where Element == PinpointEvent {
+extension [PinpointEvent] {
     func asAnalyticsEventArray() -> [AnalyticsEvent] {
         map { $0.asAnalyticsEvent() }
     }

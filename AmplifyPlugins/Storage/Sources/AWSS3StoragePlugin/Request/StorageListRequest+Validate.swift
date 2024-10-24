@@ -5,14 +5,16 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension StorageListRequest {
     /// Performs client side validation and returns a `StorageError` for any validation failures.
     func validate() -> StorageError? {
-        if let error = StorageRequestUtils.validateTargetIdentityId(options.targetIdentityId,
-                                                                    accessLevel: options.accessLevel) {
+        if let error = StorageRequestUtils.validateTargetIdentityId(
+            options.targetIdentityId,
+            accessLevel: options.accessLevel
+        ) {
             return error
         }
 

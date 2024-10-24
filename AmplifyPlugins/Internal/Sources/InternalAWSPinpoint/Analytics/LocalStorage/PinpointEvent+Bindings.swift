@@ -55,7 +55,8 @@ extension PinpointEvent {
         let dateFormatter = DateFormatter.iso8601Formatter
         guard let sessionId = element[EventPropertyIndex.sessionId] as? String,
               let startTimeString = element[EventPropertyIndex.sessionStartTime] as? String,
-              let startTime = dateFormatter.date(from: startTimeString) else {
+              let startTime = dateFormatter.date(from: startTimeString)
+        else {
             return nil
         }
 
@@ -68,7 +69,8 @@ extension PinpointEvent {
 
         guard let eventType = element[EventPropertyIndex.eventType] as? String,
               let eventTimestampValue = element[EventPropertyIndex.eventTimestamp] as? String,
-              let timestamp = dateFormatter.date(from: eventTimestampValue) else {
+              let timestamp = dateFormatter.date(from: eventTimestampValue)
+        else {
             return nil
         }
 
@@ -100,7 +102,7 @@ extension PinpointEvent {
         return pinpointEvent
     }
 
-    struct EventPropertyIndex {
+    enum EventPropertyIndex {
         static let id = 0
         static let attributes = 1
         static let eventType = 2

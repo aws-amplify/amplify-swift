@@ -8,7 +8,7 @@
 import Amplify
 
 extension ReconcileAndLocalSaveOperation {
-    struct Resolver {
+    enum Resolver {
 
         /// It's not absolutely required to make `resolve` a static, but it helps in two ways:
         /// 1. It makes it easier to avoid retain cycles, since the reducer can't close over the state machine's owning

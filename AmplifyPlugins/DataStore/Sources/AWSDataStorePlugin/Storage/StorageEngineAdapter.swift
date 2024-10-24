@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSPluginsCore
+import Foundation
 
 protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErrorBehavior, StorageEngineMigrationAdapter {
 
@@ -16,32 +16,42 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErro
     // MARK: - Async APIs
     func save(untypedModel: Model, eagerLoad: Bool, completion: @escaping DataStoreCallback<Model>)
 
-    func delete(untypedModelType modelType: Model.Type,
-                modelSchema: ModelSchema,
-                withIdentifier identifier: ModelIdentifierProtocol,
-                condition: QueryPredicate?,
-                completion: DataStoreCallback<Void>)
+    func delete(
+        untypedModelType modelType: Model.Type,
+        modelSchema: ModelSchema,
+        withIdentifier identifier: ModelIdentifierProtocol,
+        condition: QueryPredicate?,
+        completion: DataStoreCallback<Void>
+    )
 
-    func delete<M: Model>(_ modelType: M.Type,
-                          modelSchema: ModelSchema,
-                          filter: QueryPredicate,
-                          completion: @escaping DataStoreCallback<[M]>)
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        filter: QueryPredicate,
+        completion: @escaping DataStoreCallback<[M]>
+    )
 
-    func query(modelSchema: ModelSchema,
-               predicate: QueryPredicate?,
-               eagerLoad: Bool,
-               completion: DataStoreCallback<[Model]>)
+    func query(
+        modelSchema: ModelSchema,
+        predicate: QueryPredicate?,
+        eagerLoad: Bool,
+        completion: DataStoreCallback<[Model]>
+    )
 
     // MARK: - Synchronous APIs
 
-    func save<M: Model>(_ model: M,
-                        modelSchema: ModelSchema,
-                        condition: QueryPredicate?,
-                        eagerLoad: Bool) -> DataStoreResult<M>
+    func save<M: Model>(
+        _ model: M,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate?,
+        eagerLoad: Bool
+    ) -> DataStoreResult<M>
 
-    func exists(_ modelSchema: ModelSchema,
-                withIdentifier id: ModelIdentifierProtocol,
-                predicate: QueryPredicate?) throws -> Bool
+    func exists(
+        _ modelSchema: ModelSchema,
+        withIdentifier id: ModelIdentifierProtocol,
+        predicate: QueryPredicate?
+    ) throws -> Bool
 
     func queryMutationSync(for models: [Model], modelName: String) throws -> [MutationSync<AnyModel>]
 
@@ -71,20 +81,26 @@ protocol StorageEngineMigrationAdapter {
 
 extension StorageEngineAdapter {
 
-    func delete<M: Model>(_ modelType: M.Type,
-                          filter predicate: QueryPredicate,
-                          completion: @escaping DataStoreCallback<[M]>) {
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        filter predicate: QueryPredicate,
+        completion: @escaping DataStoreCallback<[M]>
+    ) {
         delete(modelType, modelSchema: modelType.schema, filter: predicate, completion: completion)
     }
 
-    func delete(untypedModelType modelType: Model.Type,
-                withIdentifier identifier: ModelIdentifierProtocol,
-                condition: QueryPredicate? = nil,
-                completion: DataStoreCallback<Void>) {
-        delete(untypedModelType: modelType,
-               modelSchema: modelType.schema,
-               withIdentifier: identifier,
-               condition: condition,
-               completion: completion)
+    func delete(
+        untypedModelType modelType: Model.Type,
+        withIdentifier identifier: ModelIdentifierProtocol,
+        condition: QueryPredicate? = nil,
+        completion: DataStoreCallback<Void>
+    ) {
+        delete(
+            untypedModelType: modelType,
+            modelSchema: modelType.schema,
+            withIdentifier: identifier,
+            condition: condition,
+            completion: completion
+        )
     }
 }

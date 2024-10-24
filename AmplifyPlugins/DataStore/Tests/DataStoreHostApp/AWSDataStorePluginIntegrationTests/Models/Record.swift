@@ -5,9 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
+
 // swiftlint:disable all
 import Foundation
-import Amplify
 
 public struct Record: Model {
     public let id: String
@@ -18,23 +19,29 @@ public struct Record: Model {
     public let createdAt: Temporal.DateTime?
     public let updatedAt: Temporal.DateTime?
 
-    public init(name: String,
-                description: String? = nil) {
-    self.init(name: name,
-              description: description,
-              coverId: nil,
-              cover: nil,
-              createdAt: nil,
-              updatedAt: nil)
+    public init(
+        name: String,
+        description: String? = nil
+    ) {
+    self.init(
+        name: name,
+        description: description,
+        coverId: nil,
+        cover: nil,
+        createdAt: nil,
+        updatedAt: nil
+    )
     }
 
-    internal init(id: String = UUID().uuidString,
-                  name: String,
-                  description: String? = nil,
-                  coverId: String? = nil,
-                  cover: RecordCover? = nil,
-                  createdAt: Temporal.DateTime? = nil,
-                  updatedAt: Temporal.DateTime? = nil) {
+    init(
+        id: String = UUID().uuidString,
+        name: String,
+        description: String? = nil,
+        coverId: String? = nil,
+        cover: RecordCover? = nil,
+        createdAt: Temporal.DateTime? = nil,
+        updatedAt: Temporal.DateTime? = nil
+    ) {
         self.id = id
         self.name = name
         self.description = description

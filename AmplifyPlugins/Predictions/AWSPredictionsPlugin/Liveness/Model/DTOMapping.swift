@@ -40,7 +40,7 @@ func ovalChallenge(from event: ServerSessionInformationEvent) -> FaceLivenessSes
 func colorChallenge(from event: ServerSessionInformationEvent) -> FaceLivenessSession.ColorChallenge {
     let displayColors = event.sessionInformation.challenge
         .faceMovementAndLightChallenge.colorSequences
-        .map({ color -> FaceLivenessSession.DisplayColor in
+        .map { color -> FaceLivenessSession.DisplayColor in
 
             let duration: Double
             let shouldScroll: Bool
@@ -71,7 +71,7 @@ func colorChallenge(from event: ServerSessionInformationEvent) -> FaceLivenessSe
                 duration: duration,
                 shouldScroll: shouldScroll
             )
-        })
+        }
     return .init(
         colors: displayColors
     )

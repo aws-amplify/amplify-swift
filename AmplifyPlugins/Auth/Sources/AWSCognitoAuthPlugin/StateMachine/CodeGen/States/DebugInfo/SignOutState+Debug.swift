@@ -11,13 +11,11 @@ extension SignOutState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
 
-        let additionalMetadataDictionary: [String: Any]
-
-        switch self {
+        let additionalMetadataDictionary: [String: Any] = switch self {
         case .error(let error):
-            additionalMetadataDictionary = ["Error": error]
+            ["Error": error]
         default:
-            additionalMetadataDictionary = [:]
+            [:]
         }
         return [type: additionalMetadataDictionary]
     }

@@ -39,13 +39,15 @@ class ModelGraphQLTests: XCTestCase {
     func testPostModelToGraphQLInputSuccess() throws {
         let date: Temporal.DateTime = .now()
         let status = PostStatus.published
-        let post = Post(id: "id",
-                        title: "title",
-                        content: "content",
-                        createdAt: date,
-                        draft: true,
-                        rating: 5.0,
-                        status: status)
+        let post = Post(
+            id: "id",
+            title: "title",
+            content: "content",
+            createdAt: date,
+            draft: true,
+            rating: 5.0,
+            status: status
+        )
 
         let graphQLInput = post.graphQLInputForMutation(Post.schema, mutationType: .update)
 
@@ -63,10 +65,12 @@ class ModelGraphQLTests: XCTestCase {
     func testTodoModelToGraphQLInputSuccess() {
         let color = Color(name: "red", red: 255, green: 0, blue: 0)
         let category = Category(name: "green", color: color)
-        let todo = Todo(name: "name",
-                        description: "description",
-                        categories: [category],
-                        stickies: ["stickie1"])
+        let todo = Todo(
+            name: "name",
+            description: "description",
+            categories: [category],
+            stickies: ["stickie1"]
+        )
 
         let graphQLInput = todo.graphQLInputForMutation(Todo.schema, mutationType: .create)
 
@@ -175,22 +179,30 @@ class ModelGraphQLTests: XCTestCase {
     }
 
     func testModelWithAssociationAndCompositePrimaryKey() {
-        let owner = ModelCompositePkWithAssociation(id: "id2",
-                                                     dob: Temporal.DateTime.now(),
-                                                     name: "name")
-        let childModel = ModelCompositePkBelongsTo(id: "id1",
-                                               dob: Temporal.DateTime.now(),
-                                               name: "name",
-                                               owner: owner)
+        let owner = ModelCompositePkWithAssociation(
+            id: "id2",
+            dob: Temporal.DateTime.now(),
+            name: "name"
+        )
+        let childModel = ModelCompositePkBelongsTo(
+            id: "id1",
+            dob: Temporal.DateTime.now(),
+            name: "name",
+            owner: owner
+        )
 
         let graphQLInput = childModel.graphQLInputForMutation(childModel.schema, mutationType: .create)
         XCTAssertEqual(graphQLInput["id"] as? String, childModel.id)
         XCTAssertEqual(graphQLInput["dob"] as? String, childModel.dob.iso8601String)
         XCTAssertEqual(graphQLInput["name"] as? String, childModel.name)
-        XCTAssertEqual(graphQLInput["modelCompositePkWithAssociationOtherModelsId"] as? String,
-                       owner.id)
-        XCTAssertEqual(graphQLInput["modelCompositePkWithAssociationOtherModelsDob"] as? Temporal.DateTime,
-                       owner.dob)
+        XCTAssertEqual(
+            graphQLInput["modelCompositePkWithAssociationOtherModelsId"] as? String,
+            owner.id
+        )
+        XCTAssertEqual(
+            graphQLInput["modelCompositePkWithAssociationOtherModelsDob"] as? Temporal.DateTime,
+            owner.dob
+        )
     }
 
     func testModelWithHasManyAssociationAndCompositePrimaryKey() {
@@ -206,9 +218,11 @@ class ModelGraphQLTests: XCTestCase {
 
     func testModelWithHasManyUnidirectionalAssociationAndCompositePrimaryKey() {
         let parent = PostWithCompositeKeyUnidirectional(title: "title")
-        let childModel = CommentWithCompositeKeyUnidirectional(content: "comment",
-                                                               postWithCompositeKeyUnidirectionalCommentsId: parent.id,
-                                                               postWithCompositeKeyUnidirectionalCommentsTitle: parent.title)
+        let childModel = CommentWithCompositeKeyUnidirectional(
+            content: "comment",
+            postWithCompositeKeyUnidirectionalCommentsId: parent.id,
+            postWithCompositeKeyUnidirectionalCommentsTitle: parent.title
+        )
 
         let graphQLInput = childModel.graphQLInputForMutation(childModel.schema, mutationType: .create)
         XCTAssertEqual(graphQLInput["id"] as? String, childModel.id)

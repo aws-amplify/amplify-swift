@@ -1,10 +1,17 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension Comment14 {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension Comment14 {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case id
     case content
     case post
@@ -12,23 +19,23 @@ extension Comment14 {
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let comment14 = Comment14.keys
-    
+
     model.authRules = [
       rule(allow: .public, operations: [.create, .update, .delete, .read])
     ]
-    
+
     model.pluralName = "Comment14s"
-    
+
     model.attributes(
       .primaryKey(fields: [comment14.id])
     )
-    
+
     model.fields(
       .field(comment14.id, is: .required, ofType: .string),
       .field(comment14.content, is: .optional, ofType: .string),
@@ -38,32 +45,32 @@ extension Comment14 {
       .field(comment14.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
-    public class Path: ModelPath<Comment14> { }
-    
-    public static var rootPath: PropertyContainerPath? { Path() }
+    class Path: ModelPath<Comment14> { }
+
+    static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension Comment14: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
 }
-extension ModelPath where ModelType == Comment14 {
-  public var id: FieldPath<String>   {
-      string("id") 
+public extension ModelPath where ModelType == Comment14 {
+  var id: FieldPath<String>   {
+      string("id")
     }
-  public var content: FieldPath<String>   {
-      string("content") 
+  var content: FieldPath<String>   {
+      string("content")
     }
-  public var post: ModelPath<Post14>   {
-      Post14.Path(name: "post", parent: self) 
+  var post: ModelPath<Post14>   {
+      Post14.Path(name: "post", parent: self)
     }
-  public var author: ModelPath<User14>   {
-      User14.Path(name: "author", parent: self) 
+  var author: ModelPath<User14>   {
+      User14.Path(name: "author", parent: self)
     }
-  public var createdAt: FieldPath<Temporal.DateTime>   {
-      datetime("createdAt") 
+  var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt")
     }
-  public var updatedAt: FieldPath<Temporal.DateTime>   {
-      datetime("updatedAt") 
+  var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt")
     }
 }

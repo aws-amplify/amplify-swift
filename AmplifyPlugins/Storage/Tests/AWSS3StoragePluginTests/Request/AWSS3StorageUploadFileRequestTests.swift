@@ -22,10 +22,12 @@ class AWSS3StorageUploadFileRequestTests: XCTestCase {
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
-        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
-                                                       metadata: testMetadata,
-                                                       contentType: testContentType,
-                                                       pluginOptions: testPluginOptions)
+        let options = StorageUploadFileRequest.Options(
+            accessLevel: .protected,
+            metadata: testMetadata,
+            contentType: testContentType,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageUploadFileRequest(key: testKey, local: fileURL, options: options)
 
         let storageErrorOptional = request.validate()
@@ -37,10 +39,12 @@ class AWSS3StorageUploadFileRequestTests: XCTestCase {
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
-        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
-                                                       metadata: testMetadata,
-                                                       contentType: testContentType,
-                                                       pluginOptions: testPluginOptions)
+        let options = StorageUploadFileRequest.Options(
+            accessLevel: .protected,
+            metadata: testMetadata,
+            contentType: testContentType,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageUploadFileRequest(key: "", local: fileURL, options: options)
 
         let storageErrorOptional = request.validate()
@@ -64,10 +68,12 @@ class AWSS3StorageUploadFileRequestTests: XCTestCase {
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
-        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
-                                                       metadata: testMetadata,
-                                                       contentType: "",
-                                                       pluginOptions: testPluginOptions)
+        let options = StorageUploadFileRequest.Options(
+            accessLevel: .protected,
+            metadata: testMetadata,
+            contentType: "",
+            pluginOptions: testPluginOptions
+        )
         let request = StorageUploadFileRequest(key: testKey, local: fileURL, options: options)
 
         let storageErrorOptional = request.validate()
@@ -92,10 +98,12 @@ class AWSS3StorageUploadFileRequestTests: XCTestCase {
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
         let metadata = ["InvalidKeyNotLowerCase": "someValue"]
-        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
-                                                       metadata: metadata,
-                                                       contentType: testContentType,
-                                                       pluginOptions: testPluginOptions)
+        let options = StorageUploadFileRequest.Options(
+            accessLevel: .protected,
+            metadata: metadata,
+            contentType: testContentType,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageUploadFileRequest(key: testKey, local: fileURL, options: options)
 
         let storageErrorOptional = request.validate()
@@ -124,10 +132,12 @@ class AWSS3StorageUploadFileRequestTests: XCTestCase {
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
-        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
-                                                       metadata: testMetadata,
-                                                       contentType: testContentType,
-                                                       pluginOptions: testPluginOptions)
+        let options = StorageUploadFileRequest.Options(
+            accessLevel: .protected,
+            metadata: testMetadata,
+            contentType: testContentType,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageUploadFileRequest(path: path, local: fileURL, options: options)
 
         let storageErrorOptional = request.validate()

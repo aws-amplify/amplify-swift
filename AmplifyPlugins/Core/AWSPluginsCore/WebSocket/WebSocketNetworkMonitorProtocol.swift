@@ -5,9 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import Foundation
 import Combine
+import Foundation
 
 @_spi(WebSocket)
 public protocol WebSocketNetworkMonitorProtocol {

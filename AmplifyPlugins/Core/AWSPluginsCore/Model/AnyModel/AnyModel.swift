@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 public struct AnyModel: Model {
     public let id: String
@@ -33,24 +33,26 @@ public struct AnyModel: Model {
     }
 }
 
-extension AnyModel {
+public extension AnyModel {
     // MARK: - CodingKeys
 
-    public enum CodingKeys: String, ModelKey {
+    enum CodingKeys: String, ModelKey {
         case id
         case instance
         case modelName
     }
 
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
 
     // MARK: - ModelSchema
 
-    public static let schema = defineSchema { definition in
+    static let schema = defineSchema { definition in
         let anyModel = AnyModel.keys
 
-        definition.attributes(.isSystem,
-                              .primaryKey(fields: [anyModel.id]))
+        definition.attributes(
+            .isSystem,
+            .primaryKey(fields: [anyModel.id])
+        )
 
         definition.fields(
             .field(anyModel.id, is: .required, ofType: .string),

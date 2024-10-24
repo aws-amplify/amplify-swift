@@ -31,7 +31,8 @@ extension AWSPinpointPushNotificationsPlugin {
 
             pluginConfiguration = AWSPinpointPluginConfiguration(
                 appId: notifications.amazonPinpointAppId,
-                region: notifications.awsRegion)
+                region: notifications.awsRegion
+            )
         } else if let config = configuration as? JSONValue {
             pluginConfiguration = try AWSPinpointPluginConfiguration(config)
         } else {
@@ -51,8 +52,10 @@ extension AWSPinpointPushNotificationsPlugin {
             region: configuration.region
         )
 
-        configure(pinpoint: pinpoint,
-                  remoteNotificationsHelper: .default)
+        configure(
+            pinpoint: pinpoint,
+            remoteNotificationsHelper: .default
+        )
     }
 
     private func requestNotificationsPermissions(using helper: RemoteNotificationsBehaviour) async {
@@ -70,8 +73,10 @@ extension AWSPinpointPushNotificationsPlugin {
 
     // MARK: Internal
     /// Internal configure method to set the properties of the plugin
-    func configure(pinpoint: AWSPinpointBehavior,
-                   remoteNotificationsHelper: RemoteNotificationsBehaviour) {
+    func configure(
+        pinpoint: AWSPinpointBehavior,
+        remoteNotificationsHelper: RemoteNotificationsBehaviour
+    ) {
         self.pinpoint = pinpoint
         Task {
             await remoteNotificationsHelper.registerForRemoteNotifications()

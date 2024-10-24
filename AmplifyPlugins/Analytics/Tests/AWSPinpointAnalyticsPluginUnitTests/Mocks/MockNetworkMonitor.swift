@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSPinpointAnalyticsPlugin
 import Foundation
+@testable import AWSPinpointAnalyticsPlugin
 
 class MockNetworkMonitor: NetworkMonitor {
     var isOnline = true

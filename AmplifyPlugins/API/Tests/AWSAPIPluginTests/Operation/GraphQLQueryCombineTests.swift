@@ -8,8 +8,8 @@
 import XCTest
 
 @testable import Amplify
-@testable import AWSAPIPlugin
 @testable import AmplifyTestCommon
+@testable import AWSAPIPlugin
 
 class GraphQLQueryCombineTests: OperationTestBase {
     let testDocument = "query { getTodo { id name description }}"
@@ -46,13 +46,16 @@ class GraphQLQueryCombineTests: OperationTestBase {
                 receivedResponseError.fulfill()
             }
         })
-        
-        await fulfillment(of: [receivedValue,
-                               receivedFinish,
-                               receivedFailure,
-                               receivedResponseError
-                              ],
-                          timeout: 0.05)
+
+        await fulfillment(
+            of: [
+                receivedValue,
+                receivedFinish,
+                receivedFailure,
+                receivedResponseError
+            ],
+            timeout: 0.05
+        )
         sink.cancel()
     }
 
@@ -86,13 +89,16 @@ class GraphQLQueryCombineTests: OperationTestBase {
                 receivedResponseError.fulfill()
             }
         })
-        
-        await fulfillment(of: [receivedValue,
-                               receivedFinish,
-                               receivedFailure,
-                               receivedResponseError
-                              ],
-                          timeout: 0.05)
+
+        await fulfillment(
+            of: [
+                receivedValue,
+                receivedFinish,
+                receivedFailure,
+                receivedResponseError
+            ],
+            timeout: 0.05
+        )
         sink.cancel()
 
     }
@@ -109,7 +115,7 @@ class GraphQLQueryCombineTests: OperationTestBase {
         let receivedFinish = expectation(description: "Received finished")
         receivedFinish.isInverted = true
         let receivedFailure = expectation(description: "Received failed")
-        
+
         let sink = Amplify.Publisher.create {
             try await self.apiPlugin.query(request: request)
         }.sink(receiveCompletion: { completion in
@@ -128,12 +134,15 @@ class GraphQLQueryCombineTests: OperationTestBase {
             }
         })
 
-        await fulfillment(of: [receivedValue,
-                               receivedFinish,
-                               receivedFailure,
-                               receivedResponseError
-                              ],
-                          timeout: 0.05)
+        await fulfillment(
+            of: [
+                receivedValue,
+                receivedFinish,
+                receivedFailure,
+                receivedResponseError
+            ],
+            timeout: 0.05
+        )
         sink.cancel()
     }
 }

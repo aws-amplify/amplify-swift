@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 @testable import AWSS3StoragePlugin
 
 class StorageGetURLRequestTests: XCTestCase {
@@ -17,10 +17,12 @@ class StorageGetURLRequestTests: XCTestCase {
     let testExpires = 10
 
     func testValidateSuccess() {
-        let options = StorageGetURLRequest.Options(accessLevel: .protected,
-                                                   targetIdentityId: testTargetIdentityId,
-                                                   expires: testExpires,
-                                                   pluginOptions: testPluginOptions)
+        let options = StorageGetURLRequest.Options(
+            accessLevel: .protected,
+            targetIdentityId: testTargetIdentityId,
+            expires: testExpires,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageGetURLRequest(key: testKey, options: options)
 
         let storageErrorOptional = request.validate()
@@ -29,10 +31,12 @@ class StorageGetURLRequestTests: XCTestCase {
     }
 
     func testValidateEmptyTargetIdentityIdError() {
-        let options = StorageGetURLRequest.Options(accessLevel: .protected,
-                                                   targetIdentityId: "",
-                                                   expires: testExpires,
-                                                   pluginOptions: testPluginOptions)
+        let options = StorageGetURLRequest.Options(
+            accessLevel: .protected,
+            targetIdentityId: "",
+            expires: testExpires,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageGetURLRequest(key: testKey, options: options)
 
         let storageErrorOptional = request.validate()
@@ -53,10 +57,12 @@ class StorageGetURLRequestTests: XCTestCase {
     }
 
     func testValidateTargetIdentityIdWithPrivateAccessLevelError() {
-        let options = StorageGetURLRequest.Options(accessLevel: .private,
-                                                   targetIdentityId: testTargetIdentityId,
-                                                   expires: testExpires,
-                                                   pluginOptions: testPluginOptions)
+        let options = StorageGetURLRequest.Options(
+            accessLevel: .private,
+            targetIdentityId: testTargetIdentityId,
+            expires: testExpires,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageGetURLRequest(key: testKey, options: options)
 
         let storageErrorOptional = request.validate()
@@ -77,10 +83,12 @@ class StorageGetURLRequestTests: XCTestCase {
     }
 
     func testValidateKeyIsEmptyError() {
-        let options = StorageGetURLRequest.Options(accessLevel: .protected,
-                                                   targetIdentityId: testTargetIdentityId,
-                                                   expires: testExpires,
-                                                   pluginOptions: testPluginOptions)
+        let options = StorageGetURLRequest.Options(
+            accessLevel: .protected,
+            targetIdentityId: testTargetIdentityId,
+            expires: testExpires,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageGetURLRequest(key: "", options: options)
 
         let storageErrorOptional = request.validate()
@@ -101,10 +109,12 @@ class StorageGetURLRequestTests: XCTestCase {
     }
 
     func testValidateURLNonPositiveExpiresError() {
-        let options = StorageGetURLRequest.Options(accessLevel: .protected,
-                                                   targetIdentityId: testTargetIdentityId,
-                                                   expires: -1,
-                                                   pluginOptions: testPluginOptions)
+        let options = StorageGetURLRequest.Options(
+            accessLevel: .protected,
+            targetIdentityId: testTargetIdentityId,
+            expires: -1,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageGetURLRequest(key: testKey, options: options)
 
         let storageErrorOptional = request.validate()

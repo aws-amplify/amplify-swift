@@ -4,9 +4,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-import Foundation
+
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
 
@@ -19,9 +20,11 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         HubPayload.EventName.Auth.confirmSignInAPI
     }
 
-    init(_ request: AuthConfirmSignInRequest,
-         stateMachine: AuthStateMachine,
-         configuration: AuthConfiguration) {
+    init(
+        _ request: AuthConfirmSignInRequest,
+        stateMachine: AuthStateMachine,
+        configuration: AuthConfiguration
+    ) {
         self.request = request
         self.authStateMachine = stateMachine
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
@@ -36,7 +39,8 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             let message = AuthPluginErrorConstants.configurationError
             let authError = AuthError.configuration(
                 "Could not find user pool configuration",
-                message)
+                message
+            )
             throw authError
         }
 
@@ -45,10 +49,12 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         }
         let invalidStateError = AuthError.invalidState(
             "User is not attempting signIn operation",
-            AuthPluginErrorConstants.invalidStateError, nil)
+            AuthPluginErrorConstants.invalidStateError, nil
+        )
 
         guard case .configured(let authNState, _) = await authStateMachine.currentState,
-              case .signingIn(let signInState) = authNState else {
+              case .signingIn(let signInState) = authNState
+        else {
             throw invalidStateError
         }
 
@@ -99,8 +105,9 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
                    return result
                case .notConfigured:
                    throw AuthError.configuration(
-                    "UserPool configuration is missing",
-                    AuthPluginErrorConstants.configurationError)
+                       "UserPool configuration is missing",
+                       AuthPluginErrorConstants.configurationError
+                   )
                default:
                    throw invalidStateError
                }
@@ -115,7 +122,8 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             throw AuthError.validation(
                 AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.field,
                 AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.errorDescription,
-                AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.recoverySuggestion)
+                AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.recoverySuggestion
+            )
         }
     }
 
@@ -141,10 +149,11 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
                 $0[attributePrefix + $1.key.rawValue] = $1.value
             } ?? [:]
         return ConfirmSignInEventData(
-            answer: self.request.challengeResponse,
+            answer: request.challengeResponse,
             attributes: attributes,
             metadata: pluginOptions?.metadata,
-            friendlyDeviceName: pluginOptions?.friendlyDeviceName)
+            friendlyDeviceName: pluginOptions?.friendlyDeviceName
+        )
     }
 
 }

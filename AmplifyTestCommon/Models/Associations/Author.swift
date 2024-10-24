@@ -16,9 +16,11 @@ public struct Author: Model {
     // hasMany(associatedWith: "author")
     public var books: List<BookAuthor>
 
-    public init(id: String = UUID().uuidString,
-                name: String,
-                books: List<BookAuthor> = []) {
+    public init(
+        id: String = UUID().uuidString,
+        name: String,
+        books: List<BookAuthor> = []
+    ) {
         self.id = id
         self.name = name
         self.books = books

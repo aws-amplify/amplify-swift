@@ -5,19 +5,19 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSS3
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSS3StoragePlugin
 @testable import AWSPluginsTestCommon
-import AWSS3
+@testable import AWSS3StoragePlugin
 
 class AWSS3StorageOperationTestBase: XCTestCase {
-    
+
     var hubPlugin: MockHubCategoryPlugin!
     var mockStorageService: MockAWSS3StorageService!
     var mockAuthService: MockAWSAuthService!
-    
+
     let testKey = "TestKey"
     let testTargetIdentityId = "TestTargetIdentityId"
     let testIdentityId = "TestIdentityId"
@@ -27,10 +27,10 @@ class AWSS3StorageOperationTestBase: XCTestCase {
     let testExpires = 10
     let testURL = URL(fileURLWithPath: "path")
     let testStorageConfiguration = AWSS3StoragePluginConfiguration()
-    
+
     override func setUp() {
         let mockAmplifyConfig = AmplifyConfiguration()
-        
+
         do {
             try Amplify.configure(mockAmplifyConfig)
         } catch let error as AmplifyError {
@@ -38,11 +38,11 @@ class AWSS3StorageOperationTestBase: XCTestCase {
         } catch {
             XCTFail("setup failed with unknown error")
         }
-        
+
         mockStorageService = MockAWSS3StorageService()
         mockAuthService = MockAWSAuthService()
     }
-    
+
     override func tearDown() async throws {
         await Amplify.reset()
     }

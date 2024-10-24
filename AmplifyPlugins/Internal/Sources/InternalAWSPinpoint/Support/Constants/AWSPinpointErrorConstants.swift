@@ -10,7 +10,7 @@ import Foundation
 
 public typealias AWSPinpointErrorString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
 
-public struct AWSPinpointErrorConstants {
+public enum AWSPinpointErrorConstants {
     static let pinpointConfigurationExpected: AWSPinpointErrorString = (
         "Configuration for Pinpoint is not a dictionary literal",
         "Make sure the value for Pinpoint is a dictionary literal with `AppId` and `Region`"

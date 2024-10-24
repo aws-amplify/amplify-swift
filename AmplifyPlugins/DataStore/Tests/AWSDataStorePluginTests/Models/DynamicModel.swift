@@ -13,8 +13,10 @@ struct DynamicModel: Model, JSONValueHolder {
     public let id: String
     public var values: [String: JSONValue]
 
-    public init(id: String = UUID().uuidString,
-                values: [String: JSONValue]) {
+    public init(
+        id: String = UUID().uuidString,
+        values: [String: JSONValue]
+    ) {
         self.id = id
         var valueWIthId = values
         valueWIthId["id"] = .string(id)
@@ -23,8 +25,8 @@ struct DynamicModel: Model, JSONValueHolder {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(String.self, forKey: .id)
-        values = try decoder.singleValueContainer().decode([String: JSONValue].self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.values = try decoder.singleValueContainer().decode([String: JSONValue].self)
     }
 
     public func encode(to encoder: Encoder) throws {

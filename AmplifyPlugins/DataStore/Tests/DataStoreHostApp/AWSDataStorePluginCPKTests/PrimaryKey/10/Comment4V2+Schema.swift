@@ -1,34 +1,41 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension Comment4V2 {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension Comment4V2 {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case id
     case content
     case post
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let comment4V2 = Comment4V2.keys
-    
+
     model.authRules = [
       rule(allow: .public, operations: [.create, .update, .delete, .read])
     ]
-    
+
     model.pluralName = "Comment4V2s"
-    
+
     model.attributes(
       .index(fields: ["postID", "content"], name: "byPost4"),
       .primaryKey(fields: [comment4V2.id])
     )
-    
+
     model.fields(
       .field(comment4V2.id, is: .required, ofType: .string),
       .field(comment4V2.content, is: .required, ofType: .string),

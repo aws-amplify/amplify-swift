@@ -25,8 +25,10 @@ public protocol GeoCategoryBehavior {
     ///     `Geo.Error.networkError` if request failed or network unavailable
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
-    func search(for text: String,
-                options: Geo.SearchForTextOptions?) async throws -> [Geo.Place]
+    func search(
+        for text: String,
+        options: Geo.SearchForTextOptions?
+    ) async throws -> [Geo.Place]
 
     /// Reverse geocodes a given pair of coordinates and returns a list of Places
     /// closest to the specified position.
@@ -42,8 +44,10 @@ public protocol GeoCategoryBehavior {
     ///     `Geo.Error.networkError` if request failed or network unavailable
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
-    func search(for coordinates: Geo.Coordinates,
-                options: Geo.SearchForCoordinatesOptions?) async throws -> [Geo.Place]
+    func search(
+        for coordinates: Geo.Coordinates,
+        options: Geo.SearchForCoordinatesOptions?
+    ) async throws -> [Geo.Place]
 
     // MARK: - Maps
 

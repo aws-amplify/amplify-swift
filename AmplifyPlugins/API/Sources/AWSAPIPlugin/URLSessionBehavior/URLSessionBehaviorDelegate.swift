@@ -9,13 +9,17 @@ import Foundation
 
 /// Defines URLSession behaviors used during fulfillment of API tasks
 public protocol URLSessionBehaviorDelegate: AnyObject {
-    func urlSessionBehavior(_ session: URLSessionBehavior,
-                            dataTaskBehavior: URLSessionDataTaskBehavior,
-                            didCompleteWithError error: Error?)
+    func urlSessionBehavior(
+        _ session: URLSessionBehavior,
+        dataTaskBehavior: URLSessionDataTaskBehavior,
+        didCompleteWithError error: Error?
+    )
 
-    func urlSessionBehavior(_ session: URLSessionBehavior,
-                            dataTaskBehavior: URLSessionDataTaskBehavior,
-                            didReceive data: Data)
+    func urlSessionBehavior(
+        _ session: URLSessionBehavior,
+        dataTaskBehavior: URLSessionDataTaskBehavior,
+        didReceive data: Data
+    )
 
 }
 

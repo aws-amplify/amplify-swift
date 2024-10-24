@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AmplifyTestCommon
 import AWSPluginsCore
+import XCTest
 @testable import Amplify
 @testable import AWSAPIPlugin
 
@@ -24,12 +24,14 @@ class GraphQLRequestToListQueryTests: XCTestCase {
 
     func testFirstPageRequestRequest() {
         let predicate = Comment4.keys.post == "postId123"
-        let request = GraphQLRequest<JSONValue>.listQuery(responseType: JSONValue.self,
-                                                          modelSchema: Comment4.schema,
-                                                          filter: predicate.graphQLFilter(for: Comment4.schema),
-                                                          limit: 1_000,
-                                                          apiName: "apiName",
-                                                          authMode: .awsIAM)
+        let request = GraphQLRequest<JSONValue>.listQuery(
+            responseType: JSONValue.self,
+            modelSchema: Comment4.schema,
+            filter: predicate.graphQLFilter(for: Comment4.schema),
+            limit: 1_000,
+            apiName: "apiName",
+            authMode: .awsIAM
+        )
         XCTAssertNotNil(request)
         let expectedDocument = """
         query ListComment4s($filter: ModelComment4FilterInput, $limit: Int) {
@@ -59,8 +61,10 @@ class GraphQLRequestToListQueryTests: XCTestCase {
         XCTAssertNotNil(variables["limit"])
         XCTAssertEqual(variables["limit"] as? Int, 1_000)
         guard let filter = variables["filter"] as? GraphQLFilter,
-              let filterJSON = try? JSONSerialization.data(withJSONObject: filter,
-                                                           options: .prettyPrinted) else {
+              let filterJSON = try? JSONSerialization.data(
+                  withJSONObject: filter,
+                  options: .prettyPrinted
+              ) else {
             XCTFail("variables should contain a valid filter JSON")
             return
         }
@@ -75,11 +79,13 @@ class GraphQLRequestToListQueryTests: XCTestCase {
     }
 
     func testMextPageRequest() {
-        let request = GraphQLRequest<JSONValue>.listQuery(responseType: List<Comment4>.self,
-                                                          modelSchema: Comment4.schema,
-                                                          nextToken: "nextToken",
-                                                          apiName: "apiName",
-                                                          authMode: .amazonCognitoUserPools)
+        let request = GraphQLRequest<JSONValue>.listQuery(
+            responseType: List<Comment4>.self,
+            modelSchema: Comment4.schema,
+            nextToken: "nextToken",
+            apiName: "apiName",
+            authMode: .amazonCognitoUserPools
+        )
         XCTAssertNotNil(request)
         let expectedDocument = """
         query ListComment4s($limit: Int, $nextToken: String) {
@@ -118,13 +124,15 @@ class GraphQLRequestToListQueryTests: XCTestCase {
                 "eq": "postId123"
             ]
         ]
-        let request = GraphQLRequest<JSONValue>.listQuery(responseType: List<Comment4>.self,
-                                                          modelSchema: Comment4.schema,
-                                                          filter: previousFilter,
-                                                          limit: 1_000,
-                                                          nextToken: "nextToken",
-                                                          apiName: "apiName",
-                                                          authMode: .function)
+        let request = GraphQLRequest<JSONValue>.listQuery(
+            responseType: List<Comment4>.self,
+            modelSchema: Comment4.schema,
+            filter: previousFilter,
+            limit: 1_000,
+            nextToken: "nextToken",
+            apiName: "apiName",
+            authMode: .function
+        )
         XCTAssertNotNil(request)
         let expectedDocument = """
         query ListComment4s($filter: ModelComment4FilterInput, $limit: Int, $nextToken: String) {
@@ -157,8 +165,10 @@ class GraphQLRequestToListQueryTests: XCTestCase {
         XCTAssertEqual(variables["nextToken"] as? String, "nextToken")
         guard let filter = variables["filter"] as? GraphQLFilter,
               JSONSerialization.isValidJSONObject(filter),
-              let filterJSON = try? JSONSerialization.data(withJSONObject: filter,
-                                                           options: .prettyPrinted) else {
+              let filterJSON = try? JSONSerialization.data(
+                  withJSONObject: filter,
+                  options: .prettyPrinted
+              ) else {
             XCTFail("variables should contain a valid filter JSON")
             return
         }

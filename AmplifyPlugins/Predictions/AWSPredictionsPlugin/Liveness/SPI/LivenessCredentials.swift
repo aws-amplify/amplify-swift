@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 func credential(from credentialsProvider: AWSCredentialsProvider?) async throws -> SigV4Signer.Credential {
     let credentials: AWSCredentials
 
-    if let credentialsProvider = credentialsProvider {
+    if let credentialsProvider {
         let providedCredentials = try await credentialsProvider.fetchAWSCredentials()
         credentials = providedCredentials
     } else {

@@ -8,14 +8,13 @@
 extension HostedUISignInState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
-        let additionalMetadataDictionary: [String: Any]
-        switch self {
+        let additionalMetadataDictionary: [String: Any] = switch self {
         case .notStarted:
-            additionalMetadataDictionary = [:]
+            [:]
         case .error(let error):
-            additionalMetadataDictionary = ["error": error]
+            ["error": error]
         default:
-            additionalMetadataDictionary = [:]
+            [:]
         }
         return [type: additionalMetadataDictionary]
     }

@@ -9,9 +9,9 @@
 import Amplify
 import Foundation
 
-extension Project1V2 {
+public extension Project1V2 {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case name
     case team
@@ -20,10 +20,10 @@ extension Project1V2 {
     case project1V2TeamId
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let project1V2 = Project1V2.keys
 
     model.authRules = [

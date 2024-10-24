@@ -19,7 +19,8 @@ final class GraphQLPostVideoPrivacySettings2Tests: AWSAPIPluginGen2GraphQLBaseTe
         // Code Snippet Begins
         let post = Post(
             content: "hello",
-            privacySetting: .private)
+            privacySetting: .private
+        )
         let createdPost = try await Amplify.API.mutate(request: .create(post)).get()
 
         // Code Snippet Ends

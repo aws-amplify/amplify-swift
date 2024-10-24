@@ -18,6 +18,6 @@ extension FileManager: AmplifyFileManager {
     }
 
     public func glob(pattern: String) -> [String] {
-        Path.glob(pattern).map { $0.string }
+        Path.glob(pattern).map(\.string)
     }
 }

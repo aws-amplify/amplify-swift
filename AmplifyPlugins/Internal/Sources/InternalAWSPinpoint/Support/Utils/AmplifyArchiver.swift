@@ -13,7 +13,7 @@ protocol AmplifyArchiverBehaviour {
 }
 
 struct AmplifyArchiver: AmplifyArchiverBehaviour {
-    func encode<T>(_ encodable: T) throws -> Data where T: Encodable {
+    func encode(_ encodable: some Encodable) throws -> Data {
         let archiver = NSKeyedArchiver(requiringSecureCoding: false)
         try archiver.encodeEncodable(encodable, forKey: NSKeyedArchiveRootObjectKey)
         archiver.finishEncoding()

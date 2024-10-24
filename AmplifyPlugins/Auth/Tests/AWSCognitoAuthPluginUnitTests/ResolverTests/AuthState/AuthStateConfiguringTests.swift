@@ -19,7 +19,8 @@ class AuthStateConfiguringTests: XCTestCase {
         let expected = AuthState.validatingCredentialsAndConfiguration
         let resolution = resolver.resolve(
             oldState: oldState,
-            byApplying: AuthEvent.validateCredentialAndConfiguration)
+            byApplying: AuthEvent.validateCredentialAndConfiguration
+        )
         XCTAssertEqual(resolution.newState, expected)
     }
 

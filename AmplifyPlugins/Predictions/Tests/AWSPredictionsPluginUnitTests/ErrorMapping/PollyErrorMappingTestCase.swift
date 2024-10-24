@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import AWSPolly
 import Amplify
+import AWSPolly
+import XCTest
 @testable import AWSPredictionsPlugin
 
 final class PollyErrorMappingTestCase: XCTestCase {
@@ -27,8 +27,7 @@ final class PollyErrorMappingTestCase: XCTestCase {
             guard case .service(expectedServiceError) = error.predictionsError else {
                 return XCTFail(unexpected(error.predictionsError))
             }
-        }
-        catch {
+        } catch {
             XCTFail(unexpected(error))
         }
 

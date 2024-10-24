@@ -12,8 +12,10 @@ import Foundation
 class StateMachine<State, Action> {
     typealias Reducer = (State, Action) -> State
 
-    private let queue = DispatchQueue(label: "com.amazonaws.Amplify.StateMachine<\(State.self), \(Action.self)>",
-                                      target: DispatchQueue.global())
+    private let queue = DispatchQueue(
+        label: "com.amazonaws.Amplify.StateMachine<\(State.self), \(Action.self)>",
+        target: DispatchQueue.global()
+    )
 
     private var reducer: Reducer
     @Published var state: State

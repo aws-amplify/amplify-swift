@@ -19,7 +19,8 @@ final class GraphQLLocationPostUser1Tests: AWSAPIPluginGen2GraphQLBaseTest {
         let post = Post(
             location: .init(
                 lat: 48.837006,
-                long: 8.28245))
+                long: 8.28245
+            ))
         let createdPost = try await Amplify.API.mutate(request: .create(post)).get()
         print("\(createdPost)")
 

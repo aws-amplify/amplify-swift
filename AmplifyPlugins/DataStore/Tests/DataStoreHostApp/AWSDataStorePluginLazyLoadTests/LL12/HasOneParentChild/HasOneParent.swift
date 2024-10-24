@@ -1,10 +1,17 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
 public struct HasOneParent: Model {
   public let id: String
-  internal var _child: LazyReference<HasOneChild>
+  var _child: LazyReference<HasOneChild>
   public var child: HasOneChild?   {
       get async throws {
         try await _child.get()
@@ -13,21 +20,27 @@ public struct HasOneParent: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   public var hasOneParentChildId: String?
-  
-  public init(id: String = UUID().uuidString,
-      child: HasOneChild? = nil,
-      hasOneParentChildId: String? = nil) {
-    self.init(id: id,
+
+  public init(
+    id: String = UUID().uuidString,
+    child: HasOneChild? = nil,
+    hasOneParentChildId: String? = nil
+  ) {
+    self.init(
+      id: id,
       child: child,
       createdAt: nil,
       updatedAt: nil,
-      hasOneParentChildId: hasOneParentChildId)
+      hasOneParentChildId: hasOneParentChildId
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      child: HasOneChild? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil,
-      hasOneParentChildId: String? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    child: HasOneChild? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil,
+    hasOneParentChildId: String? = nil
+  ) {
       self.id = id
       self._child = LazyReference(child)
       self.createdAt = createdAt
@@ -35,15 +48,15 @@ public struct HasOneParent: Model {
       self.hasOneParentChildId = hasOneParentChildId
   }
   public mutating func setChild(_ child: HasOneChild? = nil) {
-    self._child = LazyReference(child)
+    _child = LazyReference(child)
   }
   public init(from decoder: Decoder) throws {
       let values = try decoder.container(keyedBy: CodingKeys.self)
-      id = try values.decode(String.self, forKey: .id)
-      _child = try values.decodeIfPresent(LazyReference<HasOneChild>.self, forKey: .child) ?? LazyReference(identifiers: nil)
-      createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-      updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
-      hasOneParentChildId = try? values.decode(String?.self, forKey: .hasOneParentChildId)
+      self.id = try values.decode(String.self, forKey: .id)
+      self._child = try values.decodeIfPresent(LazyReference<HasOneChild>.self, forKey: .child) ?? LazyReference(identifiers: nil)
+      self.createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+      self.updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+      self.hasOneParentChildId = try? values.decode(String?.self, forKey: .hasOneParentChildId)
   }
   public func encode(to encoder: Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)

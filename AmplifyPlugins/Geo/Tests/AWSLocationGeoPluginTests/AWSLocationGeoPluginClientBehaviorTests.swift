@@ -7,8 +7,8 @@
 
 import Amplify
 import AWSLocation
-@testable import AWSLocationGeoPlugin
 import XCTest
+@testable import AWSLocationGeoPlugin
 
 class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
     let searchText = "coffee shop"
@@ -28,8 +28,8 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         do {
             _ = try await geoPlugin.search(for: searchText, options: nil)
             var request = SearchPlaceIndexForTextInput()
-            request.text = self.searchText
-            self.mockLocation.verifySearchPlaceIndexForText(request)
+            request.text = searchText
+            mockLocation.verifySearchPlaceIndexForText(request)
         } catch {
             XCTFail("Failed with error: \(error)")
         }
@@ -53,13 +53,15 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         do {
             _ = try await geoPlugin.search(for: searchText, options: options)
             var request = SearchPlaceIndexForTextInput()
-            request.text = self.searchText
-            request.biasPosition = [(self.coordinates.longitude),
-                                    (self.coordinates.latitude)]
+            request.text = searchText
+            request.biasPosition = [
+                coordinates.longitude,
+                coordinates.latitude
+            ]
             request.filterCountries = options.countries?.map { $0.code }
             request.maxResults = options.maxResults ?? 0
             request.indexName = (options.pluginOptions as? AWSLocationGeoPluginSearchOptions)?.searchIndex
-            self.mockLocation.verifySearchPlaceIndexForText(request)
+            mockLocation.verifySearchPlaceIndexForText(request)
         } catch {
             XCTFail("Failed with error: \(error)")
         }
@@ -100,9 +102,11 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         do {
             _ = try await geoPlugin.search(for: coordinates, options: nil)
             var request = SearchPlaceIndexForPositionInput()
-            request.position = [(self.coordinates.longitude),
-                                (self.coordinates.latitude)]
-            self.mockLocation.verifySearchPlaceIndexForPosition(request)
+            request.position = [
+                coordinates.longitude,
+                coordinates.latitude
+            ]
+            mockLocation.verifySearchPlaceIndexForPosition(request)
         } catch {
             XCTFail("Failed with error: \(error)")
         }
@@ -124,11 +128,13 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         do {
             _ = try await geoPlugin.search(for: coordinates, options: options)
             var request = SearchPlaceIndexForPositionInput()
-            request.position = [(self.coordinates.longitude),
-                                (self.coordinates.latitude) ]
+            request.position = [
+                coordinates.longitude,
+                coordinates.latitude
+            ]
             request.maxResults = options.maxResults ?? 0
             request.indexName = (options.pluginOptions as? AWSLocationGeoPluginSearchOptions)?.searchIndex
-            self.mockLocation.verifySearchPlaceIndexForPosition(request)
+            mockLocation.verifySearchPlaceIndexForPosition(request)
         } catch {
             XCTFail("Failed with error: \(error)")
         }

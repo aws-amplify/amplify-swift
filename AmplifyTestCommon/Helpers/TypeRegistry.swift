@@ -29,7 +29,7 @@ class TypeRegistry {
             hasher.combine(ObjectIdentifier(type))
         }
 
-        static func ==(lhs: TypeRegistry.Key, rhs: TypeRegistry.Key) -> Bool {
+        static func == (lhs: TypeRegistry.Key, rhs: TypeRegistry.Key) -> Bool {
             lhs.type == rhs.type
         }
     }

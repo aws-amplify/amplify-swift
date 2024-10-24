@@ -7,9 +7,9 @@
 
 import Foundation
 
-extension Predictions.PartOfSpeech {
+public extension Predictions.PartOfSpeech {
     /// Part of speech identified in a text from interpret() API
-    public struct DetectionResult {
+    struct DetectionResult {
         public let partOfSpeech: Predictions.PartOfSpeech
         public let score: Float?
 

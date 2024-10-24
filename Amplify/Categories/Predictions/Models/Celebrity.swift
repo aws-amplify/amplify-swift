@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import CoreGraphics
+import Foundation
 
-extension Predictions {
+public extension Predictions {
     /// Describes a celebrity identified in an image
     /// with information about its location(bounding box) and
     /// facial features(landmarks)
-    public struct Celebrity {
+    struct Celebrity {
         public let metadata: Metadata
         public let boundingBox: CGRect
         public let landmarks: [Landmark]

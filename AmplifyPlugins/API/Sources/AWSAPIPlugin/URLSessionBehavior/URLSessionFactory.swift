@@ -13,9 +13,11 @@ struct URLSessionFactory: URLSessionBehaviorFactory {
 
     func makeSession(withDelegate delegate: URLSessionBehaviorDelegate?) -> URLSessionBehavior {
         let urlSessionDelegate = delegate?.asURLSessionDelegate
-        let session = URLSession(configuration: configuration,
-                                 delegate: urlSessionDelegate,
-                                 delegateQueue: delegateQueue)
+        let session = URLSession(
+            configuration: configuration,
+            delegate: urlSessionDelegate,
+            delegateQueue: delegateQueue
+        )
         return session
     }
 

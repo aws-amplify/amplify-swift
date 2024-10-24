@@ -16,20 +16,26 @@ public struct PostWithCompositeKey: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      title: String,
-      comments: List<CommentWithCompositeKey>? = []) {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    title: String,
+    comments: List<CommentWithCompositeKey>? = []
+  ) {
+    self.init(
+      id: id,
       title: title,
       comments: comments,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      title: String,
-      comments: List<CommentWithCompositeKey>? = [],
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    title: String,
+    comments: List<CommentWithCompositeKey>? = [],
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.title = title
       self.comments = comments

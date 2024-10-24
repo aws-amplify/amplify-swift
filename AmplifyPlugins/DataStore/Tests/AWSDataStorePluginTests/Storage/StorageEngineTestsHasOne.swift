@@ -27,11 +27,13 @@ class StorageEngineTestsHasOne: StorageEngineTestsBase {
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
             syncEngine = MockRemoteSyncEngine()
-            storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .testDefault(),
-                                          syncEngine: syncEngine,
-                                          validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+            storageEngine = StorageEngine(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .testDefault(),
+                syncEngine: syncEngine,
+                validAPIPluginKey: validAPIPluginKey,
+                validAuthPluginKey: validAuthPluginKey
+            )
             ModelRegistry.register(modelType: Team.self)
             ModelRegistry.register(modelType: Project.self)
 
@@ -81,7 +83,7 @@ class StorageEngineTestsHasOne: StorageEngineTestsBase {
                 saveFinished.fulfill()
             }
             guard case .failure(let error) = result,
-                  case . invalidCondition(let errorDescription, let recoverySuggestion, _) = error else {
+                  case .invalidCondition(let errorDescription, let recoverySuggestion, _) = error else {
                 XCTFail("Expected failure with .invalidCondition, got \(result)")
                 return
             }
@@ -127,8 +129,10 @@ class StorageEngineTestsHasOne: StorageEngineTestsBase {
             mutationEventOnProject.fulfill()
             completion(.success(submittedMutationEvent))
         }
-        guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: Project.self,
-                                                                    withId: projectA.id) else {
+        guard case .success = deleteModelSynchronousOrFailOtherwise(
+            modelType: Project.self,
+            withId: projectA.id
+        ) else {
             XCTFail("Failed to delete projectA")
             return
         }

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 #if os(iOS) || os(macOS) || os(visionOS)
 import AuthenticationServices
 #endif
@@ -19,10 +19,11 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
         url: URL,
         callbackScheme: String,
         inPrivate: Bool,
-        presentationAnchor: AuthUIPresentationAnchor?) async throws -> [URLQueryItem] {
+        presentationAnchor: AuthUIPresentationAnchor?
+    ) async throws -> [URLQueryItem] {
 
     #if os(iOS) || os(macOS) || os(visionOS)
-        self.webPresentation = presentationAnchor
+        webPresentation = presentationAnchor
 
         return try await withCheckedThrowingContinuation { [weak self]
             (continuation: CheckedContinuation<[URLQueryItem], Error>) in
@@ -56,7 +57,8 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                         return continuation.resume(
                             throwing: HostedUIError.unknown)
                     }
-                })
+                }
+            )
             aswebAuthenticationSession.presentationContextProvider = self
             aswebAuthenticationSession.prefersEphemeralWebBrowserSession = inPrivate
 

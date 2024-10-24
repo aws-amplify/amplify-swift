@@ -8,7 +8,7 @@
 /// Errors associated with configuring and inspecting Amplify Categories
 ///
 /// See: [Amplify.configure](x-source-tag://Amplify.configure)
-/// 
+///
 /// - Tag: ConfigurationError
 public enum ConfigurationError {
     /// The client issued a subsequent call to `Amplify.configure` after the first had already succeeded

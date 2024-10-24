@@ -25,15 +25,17 @@ public struct PinpointEndpointProfile: Codable, Equatable {
     private(set) var attributes: [String: [String]] = [:]
     private(set) var metrics: [String: Double] = [:]
 
-    init(applicationId: String,
-         endpointId: String,
-         deviceToken: DeviceToken? = nil,
-         effectiveDate: Date = Date(),
-         isDebug: Bool = false,
-         isOptOut: Bool = false,
-         location: PinpointClientTypes.EndpointLocation = .init(),
-         demographic: PinpointClientTypes.EndpointDemographic = .init(),
-         user: PinpointClientTypes.EndpointUser = .init()) {
+    init(
+        applicationId: String,
+        endpointId: String,
+        deviceToken: DeviceToken? = nil,
+        effectiveDate: Date = Date(),
+        isDebug: Bool = false,
+        isOptOut: Bool = false,
+        location: PinpointClientTypes.EndpointLocation = .init(),
+        demographic: PinpointClientTypes.EndpointDemographic = .init(),
+        user: PinpointClientTypes.EndpointUser = .init()
+    ) {
         self.applicationId = applicationId
         self.endpointId = endpointId
         self.deviceToken = deviceToken
@@ -80,14 +82,14 @@ public struct PinpointEndpointProfile: Codable, Equatable {
     }
 
     private mutating func addCustomProperties(_ properties: [String: UserProfilePropertyValue]?) {
-        guard let properties = properties else { return }
+        guard let properties else { return }
         for (key, value) in properties {
             setCustomProperty(value, forKey: key)
         }
     }
 
     private mutating func addUserAttributes(_ attributes: [String: [String]]?) {
-        guard let attributes = attributes else { return }
+        guard let attributes else { return }
         let userAttributes = user.userAttributes ?? [:]
         user.userAttributes = userAttributes.merging(
             attributes,
@@ -95,8 +97,10 @@ public struct PinpointEndpointProfile: Codable, Equatable {
         )
     }
 
-    private mutating func setCustomProperty(_ value: UserProfilePropertyValue,
-                                   forKey key: String) {
+    private mutating func setCustomProperty(
+        _ value: UserProfilePropertyValue,
+        forKey key: String
+    ) {
         if let value = value as? String {
             attributes[key] = [value]
         } else if let values = value as? [String] {
@@ -111,16 +115,16 @@ public struct PinpointEndpointProfile: Codable, Equatable {
     }
 }
 
-extension Optional where Wrapped == PinpointEndpointProfile.DeviceToken {
+extension PinpointEndpointProfile.DeviceToken? {
     var isNotEmpty: Bool {
-        guard let self = self else { return false }
+        guard let self else { return false }
         return !self.isEmpty
     }
 }
 
 extension PinpointEndpointProfile {
-    struct Constants {
-        struct AttributeKeys {
+    enum Constants {
+        enum AttributeKeys {
             static let email = "email"
             static let name = "name"
             static let plan = "plan"

@@ -22,16 +22,20 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
     }
 
     func testDeleteMutationGraphQLRequestWithDateInPK() throws {
-        let customer = CustomerWithMultipleFieldsinPK(dob: Temporal.DateTime.now(),
-                                                      date: Temporal.Date.now(),
-                                                      time: Temporal.Time.now(),
-                                                      phoneNumber: 1_234_567,
-                                                      priority: Priority.high,
-                                                      height: 6.1,
-                                                      firstName: "John",
-                                                      lastName: "Doe")
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: customer.modelName,
-                                                               operationType: .mutation)
+        let customer = CustomerWithMultipleFieldsinPK(
+            dob: Temporal.DateTime.now(),
+            date: Temporal.Date.now(),
+            time: Temporal.Time.now(),
+            phoneNumber: 1_234_567,
+            priority: Priority.high,
+            height: 6.1,
+            firstName: "John",
+            lastName: "Doe"
+        )
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelName: customer.modelName,
+            operationType: .mutation
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(model: customer))
         documentBuilder.add(decorator: ConflictResolutionDecorator(version: 1, lastSync: nil, graphQLType: .mutation))
@@ -64,9 +68,11 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
             return
         }
 
-        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: customer,
-                                                                        modelSchema: customer.schema,
-                                                                        version: 1)
+        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(
+            of: customer,
+            modelSchema: customer.schema,
+            version: 1
+        )
 
         XCTAssertEqual(request.document, document.stringValue)
         XCTAssert(request.responseType == MutationSyncResult.self)
@@ -100,8 +106,10 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
     }
 
     func testOnCreateSubscriptionGraphQLRequestWithDateInPK() throws {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: CustomerWithMultipleFieldsinPK.modelName,
-                                                               operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelName: CustomerWithMultipleFieldsinPK.modelName,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         let document = documentBuilder.build()
@@ -128,8 +136,10 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
                 """
         XCTAssertEqual(document.stringValue, documentStringValue)
 
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: CustomerWithMultipleFieldsinPK.self,
-                                                                      subscriptionType: .onCreate)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: CustomerWithMultipleFieldsinPK.self,
+            subscriptionType: .onCreate
+        )
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
     }
@@ -138,8 +148,10 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
         let nextToken = "nextToken"
         let limit = 100
         let lastSync: Int64 = 123
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: CustomerWithMultipleFieldsinPK.modelName,
-                                                               operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelName: CustomerWithMultipleFieldsinPK.modelName,
+            operationType: .query
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
         documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync, graphQLType: .query))
@@ -171,10 +183,12 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
         """
         XCTAssertEqual(document.stringValue, documentStringValue)
 
-        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: CustomerWithMultipleFieldsinPK.schema,
-                                                                limit: limit,
-                                                                nextToken: nextToken,
-                                                                lastSync: lastSync)
+        let request = GraphQLRequest<SyncQueryResult>.syncQuery(
+            modelSchema: CustomerWithMultipleFieldsinPK.schema,
+            limit: limit,
+            nextToken: nextToken,
+            lastSync: lastSync
+        )
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)

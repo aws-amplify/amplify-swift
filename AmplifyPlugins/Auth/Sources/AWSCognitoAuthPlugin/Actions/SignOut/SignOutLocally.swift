@@ -25,7 +25,8 @@ struct SignOutLocally: Action {
             event = SignOutEvent(eventType: .signedOutSuccess(
                 hostedUIError: hostedUIError,
                 globalSignOutError: globalSignOutError,
-                revokeTokenError: revokeTokenError))
+                revokeTokenError: revokeTokenError
+            ))
 
         } catch {
             let signOutError = AuthenticationError.unknown(

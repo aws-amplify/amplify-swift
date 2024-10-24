@@ -6,8 +6,8 @@
 //
 
 import XCTest
-@testable import AWSAPIPlugin
 @testable import Amplify
+@testable import AWSAPIPlugin
 #if os(watchOS)
 @testable import APIWatchApp
 #else
@@ -116,7 +116,7 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
             try await comments.fetch()
             results = comments
             fetchCommentsCompleted.fulfill()
-            
+
         case .failure(let response):
             XCTFail("Failed with: \(response)")
         }
@@ -211,13 +211,14 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
         let commentContent = "content".withUUID
         guard let post = try await createPost(title: "title".withUUID),
               try await createComment(content: commentContent, post: post) != nil,
-              try await createComment(content: commentContent, post: post) != nil else {
+              try await createComment(content: commentContent, post: post) != nil
+        else {
             XCTFail("Could not create post and two comments")
             return
         }
         let predicate = field("postID").eq(post.id)
         var results: List<Comment4>?
-        let result = try await Amplify.API.query(request: .list(Comment4.self, where: predicate, limit: 3000))
+        let result = try await Amplify.API.query(request: .list(Comment4.self, where: predicate, limit: 3_000))
         switch result {
         case .success(let comments):
             results = comments
@@ -248,7 +249,7 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
             throw error
         }
     }
-    
+
     func createComment(id: String = UUID().uuidString, content: String, post: Post4) async throws -> Comment4? {
         let comment = Comment4(id: id, content: content, post: post)
         let data = try await Amplify.API.mutate(request: .create(comment))
@@ -262,8 +263,10 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
 }
 
 extension Post4: Equatable {
-    public static func == (lhs: Post4,
-                           rhs: Post4) -> Bool {
+    public static func == (
+        lhs: Post4,
+        rhs: Post4
+    ) -> Bool {
         return lhs.id == rhs.id
             && lhs.title == rhs.title
     }

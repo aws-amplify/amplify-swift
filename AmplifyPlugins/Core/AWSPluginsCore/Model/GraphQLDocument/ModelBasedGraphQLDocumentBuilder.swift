@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 /// Helps construct a `SingleDirectiveGraphQLDocument`. Collects instances of the decorators and applies the changes
 /// on the document.
@@ -54,7 +54,7 @@ public struct ModelBasedGraphQLDocumentBuilder {
     public mutating func build() -> SingleDirectiveGraphQLDocument {
 
         let decoratedDocument = decorators.reduce(document) { doc, decorator in
-            decorator.decorate(doc, modelSchema: self.modelSchema)
+            decorator.decorate(doc, modelSchema: modelSchema)
         }
 
         return decoratedDocument

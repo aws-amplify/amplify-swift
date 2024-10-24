@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AwsCommonRuntimeKit
+import Foundation
 
 enum AnalyticsErrorHelper {
     static func getDefaultError(_ error: Error) -> AnalyticsError {

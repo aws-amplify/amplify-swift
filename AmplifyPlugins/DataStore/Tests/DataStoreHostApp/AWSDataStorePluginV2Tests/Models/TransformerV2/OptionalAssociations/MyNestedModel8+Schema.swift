@@ -9,18 +9,18 @@
 import Amplify
 import Foundation
 
-extension MyNestedModel8 {
+public extension MyNestedModel8 {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case nestedName
     case notes
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let myNestedModel8 = MyNestedModel8.keys
 
     model.pluralName = "MyNestedModel8s"

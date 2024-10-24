@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import ArgumentParser
 import AmplifyXcodeCore
+import ArgumentParser
+import Foundation
 
 /// This module defines a CLI (Command Line Interface) to commands defined in `Core/Commands`.
 /// Each "CLI command"  is the actual executor of an `AmplifyCommand`, thus it's responsible
@@ -22,5 +22,6 @@ struct AmplifyXcode: ParsableCommand {
             CLICommandImportConfig.self,
             CLICommandImportModels.self,
             CLICommandGenerateJSONSchema.self
-        ])
+        ]
+    )
 }

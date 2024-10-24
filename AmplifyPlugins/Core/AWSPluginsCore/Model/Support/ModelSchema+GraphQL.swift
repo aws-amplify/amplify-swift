@@ -16,17 +16,17 @@ extension ModelSchema {
         let graphQLName: String
         switch queryType {
         case .list:
-            if let listPluralName = listPluralName {
+            if let listPluralName {
                 graphQLName = queryType.rawValue + listPluralName
-            } else if let pluralName = pluralName {
+            } else if let pluralName {
                 graphQLName = queryType.rawValue + pluralName
             } else {
                 graphQLName = (queryType.rawValue + name).pluralize()
             }
         case .sync:
-            if let syncPluralName = syncPluralName {
+            if let syncPluralName {
                 graphQLName = queryType.rawValue + syncPluralName
-            } else if let pluralName = pluralName {
+            } else if let pluralName {
                 graphQLName = queryType.rawValue + pluralName
             } else {
                 graphQLName = (queryType.rawValue + name).pluralize()

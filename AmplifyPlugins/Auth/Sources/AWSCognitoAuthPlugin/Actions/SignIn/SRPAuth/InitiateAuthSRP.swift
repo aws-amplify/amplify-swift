@@ -6,9 +6,9 @@
 //
 
 import Amplify
-import Foundation
-import CryptoKit
 import AWSCognitoIdentityProvider
+import CryptoKit
+import Foundation
 
 struct InitiateAuthSRP: Action {
     let identifier = "InitiateAuthSRP"
@@ -19,11 +19,13 @@ struct InitiateAuthSRP: Action {
     let deviceMetadata: DeviceMetadata
     let clientMetadata: [String: String]
 
-    init(username: String,
-         password: String,
-         authFlowType: AuthFlowType = .userSRP,
-         deviceMetadata: DeviceMetadata = .noData,
-         clientMetadata: [String: String] = [:]) {
+    init(
+        username: String,
+        password: String,
+        authFlowType: AuthFlowType = .userSRP,
+        deviceMetadata: DeviceMetadata = .noData,
+        clientMetadata: [String: String] = [:]
+    ) {
         self.username = username
         self.password = password
         self.authFlowType = authFlowType
@@ -31,8 +33,10 @@ struct InitiateAuthSRP: Action {
         self.clientMetadata = clientMetadata
     }
 
-    func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+    func execute(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
             let authEnv = try environment.authEnvironment()
@@ -50,11 +54,13 @@ struct InitiateAuthSRP: Action {
                 NHexValue: nHexValue,
                 gHexValue: gHexValue,
                 srpKeyPair: srpKeyPair,
-                clientTimestamp: Date())
+                clientTimestamp: Date()
+            )
 
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
-                credentialStoreClient: authEnv.credentialsClient)
+                credentialStoreClient: authEnv.credentialsClient
+            )
 
             let request = await InitiateAuthInput.srpInput(
                 username: username,
@@ -63,11 +69,14 @@ struct InitiateAuthSRP: Action {
                 clientMetadata: clientMetadata,
                 asfDeviceId: asfDeviceId,
                 deviceMetadata: deviceMetadata,
-                environment: userPoolEnv)
+                environment: userPoolEnv
+            )
 
-            let responseEvent = try await sendRequest(request: request,
-                                                      environment: userPoolEnv,
-                                                      srpStateData: srpStateData)
+            let responseEvent = try await sendRequest(
+                request: request,
+                environment: userPoolEnv,
+                srpStateData: srpStateData
+            )
             logVerbose("\(#fileID) Sending event \(responseEvent)", environment: srpEnv)
             await dispatcher.send(responseEvent)
 
@@ -86,9 +95,11 @@ struct InitiateAuthSRP: Action {
 
     }
 
-    private func sendRequest(request: InitiateAuthInput,
-                             environment: UserPoolEnvironment,
-                             srpStateData: SRPStateData) async throws -> SignInEvent {
+    private func sendRequest(
+        request: InitiateAuthInput,
+        environment: UserPoolEnvironment,
+        srpStateData: SRPStateData
+    ) async throws -> SignInEvent {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
         logVerbose("\(#fileID) Starting execution", environment: environment)
@@ -101,7 +112,8 @@ struct InitiateAuthSRP: Action {
                 challenge: .customChallenge,
                 username: username,
                 session: response.session,
-                parameters: parameters)
+                parameters: parameters
+            )
             return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
         }
         return SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response, clientMetadata))

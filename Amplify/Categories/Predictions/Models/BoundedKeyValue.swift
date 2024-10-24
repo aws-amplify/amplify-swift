@@ -7,11 +7,11 @@
 
 import CoreGraphics
 
-extension Predictions {
+public extension Predictions {
     /// Describes the data extracted as key-value pair in
     /// an image/document resulting from identify() API
     /// e.g The text "Name: John Doe" present in an image/document
-    public struct BoundedKeyValue {
+    struct BoundedKeyValue {
         public let key: String
         public let value: String
         public let isSelected: Bool

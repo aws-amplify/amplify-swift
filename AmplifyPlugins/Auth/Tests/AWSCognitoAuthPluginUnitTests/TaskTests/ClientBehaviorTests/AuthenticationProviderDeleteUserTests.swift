@@ -7,12 +7,12 @@
 
 import Foundation
 
+import AWSCognitoIdentityProvider
+import AwsCommonRuntimeKit
+import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
-import ClientRuntime
-import AwsCommonRuntimeKit
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class AuthenticationProviderDeleteUserTests: BasePluginTest {
@@ -84,7 +84,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 GlobalSignOutOutput()
             },
             mockDeleteUserOutput: { _ in
-                throw CommonRunTimeError.crtError(CRTError(code: 1059))
+                throw CommonRunTimeError.crtError(CRTError(code: 1_059))
             }
         )
         do {
@@ -118,7 +118,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 GlobalSignOutOutput()
             },
             mockDeleteUserOutput: { _ in
-                throw CommonRunTimeError.crtError(CRTError(code: 1059))
+                throw CommonRunTimeError.crtError(CRTError(code: 1_059))
             }
         )
         do {

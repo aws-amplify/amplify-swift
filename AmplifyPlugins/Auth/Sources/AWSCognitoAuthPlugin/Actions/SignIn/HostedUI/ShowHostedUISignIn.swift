@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AuthenticationServices
+import Foundation
 
 class ShowHostedUISignIn: NSObject, Action {
 
@@ -43,7 +43,7 @@ class ShowHostedUISignIn: NSObject, Action {
         }
 
         let url = signingInData.signInURL
-        self.logVerbose("\(#fileID) Showing url \(url.absoluteString)", environment: environment)
+        logVerbose("\(#fileID) Showing url \(url.absoluteString)", environment: environment)
 
         do {
             let sessionAdapter = hostedUIEnvironment.hostedUISessionFactory()
@@ -51,24 +51,27 @@ class ShowHostedUISignIn: NSObject, Action {
                 url: url,
                 callbackScheme: callbackURLScheme,
                 inPrivate: signingInData.options.preferPrivateSession,
-                presentationAnchor: signingInData.presentationAnchor)
+                presentationAnchor: signingInData.presentationAnchor
+            )
 
             guard let code = queryItems.first(where: { $0.name == "code" })?.value,
                   let state = queryItems.first(where: { $0.name == "state" })?.value,
-                  self.signingInData.state == state else {
+                  signingInData.state == state else {
 
                 let event = HostedUIEvent(eventType: .throwError(.hostedUI(.codeValidation)))
-                self.logVerbose("\(#fileID) Sending event \(event)", environment: environment)
+                logVerbose("\(#fileID) Sending event \(event)", environment: environment)
                 await dispatcher.send(event)
                 return
             }
 
-            let result = HostedUIResult(code: code,
-                                        state: state,
-                                        codeVerifier: self.signingInData.codeChallenge,
-                                        options: self.signingInData.options)
+            let result = HostedUIResult(
+                code: code,
+                state: state,
+                codeVerifier: signingInData.codeChallenge,
+                options: signingInData.options
+            )
             let event = HostedUIEvent(eventType: .fetchToken(result))
-            self.logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             await dispatcher.send(event)
         } catch let error as HostedUIError {
             self.logVerbose("\(#fileID) Received error \(error)", environment: environment)
@@ -76,9 +79,9 @@ class ShowHostedUISignIn: NSObject, Action {
             self.logVerbose("\(#fileID) Sending event \(event)", environment: environment)
             await dispatcher.send(event)
         } catch {
-            self.logVerbose("\(#fileID) Received error \(error)", environment: environment)
+            logVerbose("\(#fileID) Received error \(error)", environment: environment)
             let event = HostedUIEvent(eventType: .throwError(.service(error: error)))
-            self.logVerbose("\(#fileID) Sending event \(event)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
             await dispatcher.send(event)
         }
     }

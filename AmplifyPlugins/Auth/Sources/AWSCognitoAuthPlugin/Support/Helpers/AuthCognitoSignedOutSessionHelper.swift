@@ -8,20 +8,24 @@
 import Amplify
 import AWSPluginsCore
 
-struct AuthCognitoSignedOutSessionHelper {
+enum AuthCognitoSignedOutSessionHelper {
 
     /// Creates a signedOut session information with valid identityId and aws credentials.
     /// - Parameters:
     ///   - identityId: Valid identity id for the current signedOut session
     ///   - awsCredentials: Valid AWS Credentials for the current signedOut session
     /// - Returns: Returns a valid signedOut session
-    static func makeSignedOutSession(identityId: String,
-                                     awsCredentials: AWSCredentials) -> AWSAuthCognitoSession {
+    static func makeSignedOutSession(
+        identityId: String,
+        awsCredentials: AWSCredentials
+    ) -> AWSAuthCognitoSession {
         let tokensError = makeCognitoTokensSignedOutError()
-        let authSession = AWSAuthCognitoSession(isSignedIn: false,
-                                                identityIdResult: .success(identityId),
-                                                awsCredentialsResult: .success(awsCredentials),
-                                                cognitoTokensResult: .failure(tokensError))
+        let authSession = AWSAuthCognitoSession(
+            isSignedIn: false,
+            identityIdResult: .success(identityId),
+            awsCredentialsResult: .success(awsCredentials),
+            cognitoTokensResult: .failure(tokensError)
+        )
         return authSession
     }
 
@@ -31,19 +35,23 @@ struct AuthCognitoSignedOutSessionHelper {
         let identityIdError = AuthError.service(
             AuthPluginErrorConstants.identityIdSignOutError.errorDescription,
             AuthPluginErrorConstants.identityIdSignOutError.recoverySuggestion,
-            AWSCognitoAuthError.invalidAccountTypeException)
+            AWSCognitoAuthError.invalidAccountTypeException
+        )
 
         let awsCredentialsError = AuthError.service(
             AuthPluginErrorConstants.awsCredentialsSignOutError.errorDescription,
             AuthPluginErrorConstants.awsCredentialsSignOutError.recoverySuggestion,
-            AWSCognitoAuthError.invalidAccountTypeException)
+            AWSCognitoAuthError.invalidAccountTypeException
+        )
 
         let tokensError = makeCognitoTokensSignedOutError()
 
-        let authSession = AWSAuthCognitoSession(isSignedIn: false,
-                                                identityIdResult: .failure(identityIdError),
-                                                awsCredentialsResult: .failure(awsCredentialsError),
-                                                cognitoTokensResult: .failure(tokensError))
+        let authSession = AWSAuthCognitoSession(
+            isSignedIn: false,
+            identityIdResult: .failure(identityIdError),
+            awsCredentialsResult: .failure(awsCredentialsError),
+            cognitoTokensResult: .failure(tokensError)
+        )
         return authSession
     }
 
@@ -53,25 +61,30 @@ struct AuthCognitoSignedOutSessionHelper {
 
         let identityIdError = AuthError.service(
             AuthPluginErrorConstants.identityIdServiceError.errorDescription,
-            AuthPluginErrorConstants.identityIdServiceError.recoverySuggestion)
+            AuthPluginErrorConstants.identityIdServiceError.recoverySuggestion
+        )
 
         let awsCredentialsError = AuthError.service(
             AuthPluginErrorConstants.awsCredentialsServiceError.errorDescription,
-            AuthPluginErrorConstants.awsCredentialsServiceError.recoverySuggestion)
+            AuthPluginErrorConstants.awsCredentialsServiceError.recoverySuggestion
+        )
 
         let tokensError = makeCognitoTokensSignedOutError()
 
-        let authSession = AWSAuthCognitoSession(isSignedIn: false,
-                                                identityIdResult: .failure(identityIdError),
-                                                awsCredentialsResult: .failure(awsCredentialsError),
-                                                cognitoTokensResult: .failure(tokensError))
+        let authSession = AWSAuthCognitoSession(
+            isSignedIn: false,
+            identityIdResult: .failure(identityIdError),
+            awsCredentialsResult: .failure(awsCredentialsError),
+            cognitoTokensResult: .failure(tokensError)
+        )
         return authSession
     }
 
     private static func makeCognitoTokensSignedOutError() -> AuthError {
         let tokensError = AuthError.signedOut(
             AuthPluginErrorConstants.cognitoTokensSignOutError.errorDescription,
-            AuthPluginErrorConstants.cognitoTokensSignOutError.recoverySuggestion)
+            AuthPluginErrorConstants.cognitoTokensSignOutError.recoverySuggestion
+        )
         return tokensError
     }
 }

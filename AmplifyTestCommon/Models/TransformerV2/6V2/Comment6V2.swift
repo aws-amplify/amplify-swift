@@ -16,20 +16,26 @@ public struct Comment6V2: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      post: Post6V2? = nil,
-      content: String) {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    post: Post6V2? = nil,
+    content: String
+  ) {
+    self.init(
+      id: id,
       post: post,
       content: content,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      post: Post6V2? = nil,
-      content: String,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    post: Post6V2? = nil,
+    content: String,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.post = post
       self.content = content

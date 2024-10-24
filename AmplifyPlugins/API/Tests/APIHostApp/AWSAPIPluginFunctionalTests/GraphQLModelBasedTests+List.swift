@@ -6,8 +6,8 @@
 //
 
 import XCTest
-@testable import AWSAPIPlugin
 @testable import Amplify
+@testable import AWSAPIPlugin
 #if os(watchOS)
 @testable import APIWatchApp
 #else
@@ -39,8 +39,8 @@ extension GraphQLModelBasedTests {
         let post = Post.keys
         let predicate = post.id == uuid1 || post.id == uuid2
         var results: List<Post>?
-        let response = try await Amplify.API.query(request: .list(Post.self, where: predicate, limit: 3000))
-        
+        let response = try await Amplify.API.query(request: .list(Post.self, where: predicate, limit: 3_000))
+
         guard case .success(let graphQLresponse) = response else {
             XCTFail("Missing successful response")
             return
@@ -96,7 +96,7 @@ extension GraphQLModelBasedTests {
             subsequentResults = listResult
         }
         XCTAssertFalse(subsequentResults.hasNextPage())
-        
+
         do {
             let listResult = try await subsequentResults.getNextPage()
             XCTFail("Unexpected \(listResult)")
@@ -126,7 +126,7 @@ extension GraphQLModelBasedTests {
         _ = try await Amplify.API.mutate(request: .create(comment))
         var results: Post?
         let response = try await Amplify.API.query(request: .get(Post.self, byId: post.id))
-        
+
         guard case .success(let graphQLResponse) = response else {
             XCTFail("Missing successful response")
             return
@@ -137,7 +137,7 @@ extension GraphQLModelBasedTests {
             XCTFail("Could not get post")
             return
         }
-        
+
         do {
             try await retrievedPost.comments?.fetch()
             XCTFail("Should have failed to fetch")
@@ -177,7 +177,7 @@ extension GraphQLModelBasedTests {
         let listPosts = try await list(
             .list(
                 Post.self,
-                where: Post.keys.draft.attributeExists(false) 
+                where: Post.keys.draft.attributeExists(false)
                     && Post.keys.createdAt >= post.createdAt
             )
         )
@@ -188,13 +188,13 @@ extension GraphQLModelBasedTests {
     func list<M: Model>(_ request: GraphQLRequest<List<M>>) async throws -> [M] {
         func getAllPages(_ list: List<M>) async throws -> [M] {
             if list.hasNextPage() {
-                return list.elements + (try await getAllPages(list.getNextPage()))
+                return try list.elements + (await getAllPages(list.getNextPage()))
             } else {
                 return list.elements
             }
         }
 
-        return try await getAllPages(try await Amplify.API.query(request: request).get())
+        return try await getAllPages(await Amplify.API.query(request: request).get())
     }
 
 }

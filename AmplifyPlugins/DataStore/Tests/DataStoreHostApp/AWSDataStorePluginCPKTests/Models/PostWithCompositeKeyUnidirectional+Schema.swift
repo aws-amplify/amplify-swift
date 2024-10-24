@@ -9,9 +9,9 @@
 import Amplify
 import Foundation
 
-extension PostWithCompositeKeyUnidirectional {
+public extension PostWithCompositeKeyUnidirectional {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case title
     case comments
@@ -19,10 +19,10 @@ extension PostWithCompositeKeyUnidirectional {
     case updatedAt
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let postWithCompositeKeyUnidirectional = PostWithCompositeKeyUnidirectional.keys
 
     model.pluralName = "PostWithCompositeKeyUnidirectionals"
@@ -35,10 +35,12 @@ extension PostWithCompositeKeyUnidirectional {
     model.fields(
       .field(postWithCompositeKeyUnidirectional.id, is: .required, ofType: .string),
       .field(postWithCompositeKeyUnidirectional.title, is: .required, ofType: .string),
-      .hasMany(postWithCompositeKeyUnidirectional.comments,
-               is: .optional,
-               ofType: CommentWithCompositeKeyUnidirectional.self,
-               associatedWith: CommentWithCompositeKeyUnidirectional.keys.postWithCompositeKeyUnidirectionalCommentsId),
+      .hasMany(
+        postWithCompositeKeyUnidirectional.comments,
+        is: .optional,
+        ofType: CommentWithCompositeKeyUnidirectional.self,
+        associatedWith: CommentWithCompositeKeyUnidirectional.keys.postWithCompositeKeyUnidirectionalCommentsId
+      ),
       .field(postWithCompositeKeyUnidirectional.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(postWithCompositeKeyUnidirectional.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
@@ -50,9 +52,11 @@ extension PostWithCompositeKeyUnidirectional: ModelIdentifiable {
   public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension PostWithCompositeKeyUnidirectional.IdentifierProtocol {
-  public static func identifier(id: String,
-      title: String) -> Self {
+public extension PostWithCompositeKeyUnidirectional.IdentifierProtocol {
+  static func identifier(
+    id: String,
+    title: String
+  ) -> Self {
     .make(fields: [(name: "id", value: id), (name: "title", value: title)])
   }
 }

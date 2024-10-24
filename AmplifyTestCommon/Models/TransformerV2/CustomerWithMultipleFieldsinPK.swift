@@ -22,16 +22,19 @@ public struct CustomerWithMultipleFieldsinPK: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      dob: Temporal.DateTime,
-      date: Temporal.Date,
-      time: Temporal.Time,
-      phoneNumber: Int,
-      priority: Priority,
-      height: Double,
-      firstName: String? = nil,
-      lastName: String? = nil) {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    dob: Temporal.DateTime,
+    date: Temporal.Date,
+    time: Temporal.Time,
+    phoneNumber: Int,
+    priority: Priority,
+    height: Double,
+    firstName: String? = nil,
+    lastName: String? = nil
+  ) {
+    self.init(
+      id: id,
       dob: dob,
       date: date,
       time: time,
@@ -41,19 +44,22 @@ public struct CustomerWithMultipleFieldsinPK: Model {
       firstName: firstName,
       lastName: lastName,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      dob: Temporal.DateTime,
-      date: Temporal.Date,
-      time: Temporal.Time,
-      phoneNumber: Int,
-      priority: Priority,
-      height: Double,
-      firstName: String? = nil,
-      lastName: String? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    dob: Temporal.DateTime,
+    date: Temporal.Date,
+    time: Temporal.Time,
+    phoneNumber: Int,
+    priority: Priority,
+    height: Double,
+    firstName: String? = nil,
+    lastName: String? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.dob = dob
       self.date = date

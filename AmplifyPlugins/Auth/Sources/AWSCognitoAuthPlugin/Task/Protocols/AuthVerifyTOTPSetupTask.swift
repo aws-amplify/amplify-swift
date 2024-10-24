@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 protocol AuthVerifyTOTPSetupTask: AmplifyAuthTask where Request == VerifyTOTPSetupRequest, Success == Void, Failure == AuthError {}
 

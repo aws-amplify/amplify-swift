@@ -7,8 +7,8 @@
 
 import Amplify
 import AWSPluginsCore
-import InternalAmplifyCredentials
 import Foundation
+import InternalAmplifyCredentials
 
 struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
 
@@ -18,8 +18,10 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
     let authTokenProvider: AuthTokenProvider
     let isTokenExpired: ((String) -> Bool)?
 
-    init(authTokenProvider: AuthTokenProvider, 
-         isTokenExpired: ((String) -> Bool)? = nil) {
+    init(
+        authTokenProvider: AuthTokenProvider,
+        isTokenExpired: ((String) -> Bool)? = nil
+    ) {
         self.authTokenProvider = authTokenProvider
         self.isTokenExpired = isTokenExpired
     }
@@ -34,10 +36,14 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
         dateFormatter.dateFormat = Self.AWSDateISO8601DateFormat2
         let amzDate = dateFormatter.string(from: date)
 
-        mutableRequest.setValue(amzDate,
-                                forHTTPHeaderField: URLRequestConstants.Header.xAmzDate)
-        mutableRequest.addValue(userAgent,
-                                forHTTPHeaderField: URLRequestConstants.Header.userAgent)
+        mutableRequest.setValue(
+            amzDate,
+            forHTTPHeaderField: URLRequestConstants.Header.xAmzDate
+        )
+        mutableRequest.addValue(
+            userAgent,
+            forHTTPHeaderField: URLRequestConstants.Header.userAgent
+        )
 
         let token: String
         do {
@@ -45,13 +51,15 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
         } catch {
             throw APIError.operationError("Failed to retrieve authorization token.", "", error)
         }
-        
+
         if isTokenExpired?(token) ?? false {
             // If the access token has expired, we send back the underlying "AuthError.sessionExpired" error.
             // Without a more specific AuthError case like "tokenExpired", this is the closest representation.
-            throw APIError.operationError("Auth Token Provider returned a expired token.",
-                                          "Please call `Amplify.Auth.fetchAuthSession()` or sign in again.",
-                                          AuthError.sessionExpired("", "", nil))
+            throw APIError.operationError(
+                "Auth Token Provider returned a expired token.",
+                "Please call `Amplify.Auth.fetchAuthSession()` or sign in again.",
+                AuthError.sessionExpired("", "", nil)
+            )
         }
 
         mutableRequest.setValue(token, forHTTPHeaderField: "authorization")

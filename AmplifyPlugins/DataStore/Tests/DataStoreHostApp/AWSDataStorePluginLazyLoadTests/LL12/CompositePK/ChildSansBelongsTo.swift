@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -9,24 +16,30 @@ public struct ChildSansBelongsTo: Model {
   public var compositePKParentChildrenSansBelongsToContent: String?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
-  public init(childId: String,
+
+  public init(
+      childId: String,
       content: String,
       compositePKParentChildrenSansBelongsToCustomId: String,
-      compositePKParentChildrenSansBelongsToContent: String? = nil) {
-    self.init(childId: childId,
-      content: content,
-      compositePKParentChildrenSansBelongsToCustomId: compositePKParentChildrenSansBelongsToCustomId,
-      compositePKParentChildrenSansBelongsToContent: compositePKParentChildrenSansBelongsToContent,
-      createdAt: nil,
-      updatedAt: nil)
+      compositePKParentChildrenSansBelongsToContent: String? = nil
+  ) {
+    self.init(
+        childId: childId,
+        content: content,
+        compositePKParentChildrenSansBelongsToCustomId: compositePKParentChildrenSansBelongsToCustomId,
+        compositePKParentChildrenSansBelongsToContent: compositePKParentChildrenSansBelongsToContent,
+        createdAt: nil,
+        updatedAt: nil
+    )
   }
-  internal init(childId: String,
+  init(
+      childId: String,
       content: String,
       compositePKParentChildrenSansBelongsToCustomId: String,
       compositePKParentChildrenSansBelongsToContent: String? = nil,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil
+  ) {
       self.childId = childId
       self.content = content
       self.compositePKParentChildrenSansBelongsToCustomId = compositePKParentChildrenSansBelongsToCustomId
@@ -36,12 +49,12 @@ public struct ChildSansBelongsTo: Model {
   }
   public init(from decoder: Decoder) throws {
       let values = try decoder.container(keyedBy: CodingKeys.self)
-      childId = try values.decode(String.self, forKey: .childId)
-      content = try values.decode(String.self, forKey: .content)
-      compositePKParentChildrenSansBelongsToCustomId = try values.decode(String.self, forKey: .compositePKParentChildrenSansBelongsToCustomId)
-      compositePKParentChildrenSansBelongsToContent = try values.decode(String?.self, forKey: .compositePKParentChildrenSansBelongsToContent)
-      createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-      updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+      self.childId = try values.decode(String.self, forKey: .childId)
+      self.content = try values.decode(String.self, forKey: .content)
+      self.compositePKParentChildrenSansBelongsToCustomId = try values.decode(String.self, forKey: .compositePKParentChildrenSansBelongsToCustomId)
+      self.compositePKParentChildrenSansBelongsToContent = try values.decode(String?.self, forKey: .compositePKParentChildrenSansBelongsToContent)
+      self.createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+      self.updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
   }
   public func encode(to encoder: Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)

@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import Foundation
 import AWSAPIPlugin
-@testable import APIHostApp
+import Foundation
+import XCTest
 @testable import Amplify
+@testable import APIHostApp
 
 class AnyModelIntegrationTests: XCTestCase {
     let networkTimeout: TimeInterval = 180.0
@@ -42,9 +42,11 @@ class AnyModelIntegrationTests: XCTestCase {
     func testCreateAsAnyModel() throws {
         let createdAt: Temporal.DateTime = .now()
         let content = "Original post content as of \(createdAt)"
-        let originalPost = Post(title: "Post title",
-                                content: content,
-                                createdAt: createdAt)
+        let originalPost = Post(
+            title: "Post title",
+            content: content,
+            createdAt: createdAt
+        )
         let anyPost = try originalPost.eraseToAnyModel()
 
         let callbackInvoked = expectation(description: "Callback invoked")
@@ -96,9 +98,11 @@ class AnyModelIntegrationTests: XCTestCase {
     func testUpdateAsAnyModel() throws {
         let createdAt: Temporal.DateTime = .now()
         let content = "Original post content as of \(createdAt)"
-        let originalPost = Post(title: "Post title",
-                                content: content,
-                                createdAt: createdAt)
+        let originalPost = Post(
+            title: "Post title",
+            content: content,
+            createdAt: createdAt
+        )
         let originalAnyPost = try originalPost.eraseToAnyModel()
 
         let createCallbackInvoked = expectation(description: "Create callback invoked")
@@ -161,9 +165,11 @@ class AnyModelIntegrationTests: XCTestCase {
     func testDeleteAsAnyModel() throws {
         let createdAt: Temporal.DateTime = .now()
         let content = "Original post content as of \(createdAt)"
-        let originalPost = Post(title: "Post title",
-                                content: content,
-                                createdAt: createdAt)
+        let originalPost = Post(
+            title: "Post title",
+            content: content,
+            createdAt: createdAt
+        )
         let originalAnyPost = try originalPost.eraseToAnyModel()
 
         let createCallbackInvoked = expectation(description: "Create callback invoked")

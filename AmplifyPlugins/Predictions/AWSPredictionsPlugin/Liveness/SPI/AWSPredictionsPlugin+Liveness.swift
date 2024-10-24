@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
-extension AWSPredictionsPlugin {
+public extension AWSPredictionsPlugin {
     @_spi(PredictionsFaceLiveness)
-    public static func startFaceLivenessSession(
+    static func startFaceLivenessSession(
         withID sessionID: String,
         credentialsProvider: AWSCredentialsProvider? = nil,
         region: String,
@@ -45,9 +45,9 @@ extension AWSPredictionsPlugin {
     }
 }
 
-extension FaceLivenessSession {
+public extension FaceLivenessSession {
     @_spi(PredictionsFaceLiveness)
-    public struct Options {
+    struct Options {
         public init() {}
     }
 }

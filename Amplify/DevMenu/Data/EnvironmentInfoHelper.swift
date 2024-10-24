@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 /// Helper class to fetch Developer Environment Information
-struct EnvironmentInfoHelper {
+enum EnvironmentInfoHelper {
 
     static let environmentInfoSourceFileName = "local-env-info"
 

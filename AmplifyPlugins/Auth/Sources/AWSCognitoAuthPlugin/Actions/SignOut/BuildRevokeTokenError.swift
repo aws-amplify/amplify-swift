@@ -20,12 +20,14 @@ struct BuildRevokeTokenError: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let revokeTokenError = AWSCognitoRevokeTokenError(
             refreshToken: signedInData.cognitoUserPoolTokens.refreshToken,
-            error: .service("", "", nil))
+            error: .service("", "", nil)
+        )
         let event = SignOutEvent(eventType: .signOutLocally(
             signedInData,
             hostedUIError: hostedUIError,
             globalSignOutError: globalSignOutError,
-            revokeTokenError: revokeTokenError))
+            revokeTokenError: revokeTokenError
+        ))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         await dispatcher.send(event)
     }

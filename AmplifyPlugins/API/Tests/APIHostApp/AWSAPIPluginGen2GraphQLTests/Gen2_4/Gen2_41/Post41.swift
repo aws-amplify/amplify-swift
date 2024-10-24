@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -6,41 +13,47 @@ public struct Post41: Model {
   public let id: String
   public var title: String
   public var content: String
-  internal var _author: LazyReference<Person41>
+  var _author: LazyReference<Person41>
   public var author: Person41?   {
-      get async throws { 
+      get async throws {
         try await _author.get()
-      } 
+      }
     }
-  internal var _editor: LazyReference<Person41>
+  var _editor: LazyReference<Person41>
   public var editor: Person41?   {
-      get async throws { 
+      get async throws {
         try await _editor.get()
-      } 
+      }
     }
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
-  public init(id: String = UUID().uuidString,
-      title: String,
-      content: String,
-      author: Person41? = nil,
-      editor: Person41? = nil) {
-    self.init(id: id,
+
+  public init(
+    id: String = UUID().uuidString,
+    title: String,
+    content: String,
+    author: Person41? = nil,
+    editor: Person41? = nil
+  ) {
+    self.init(
+      id: id,
       title: title,
       content: content,
       author: author,
       editor: editor,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      title: String,
-      content: String,
-      author: Person41? = nil,
-      editor: Person41? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    title: String,
+    content: String,
+    author: Person41? = nil,
+    editor: Person41? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.title = title
       self.content = content
@@ -50,20 +63,20 @@ public struct Post41: Model {
       self.updatedAt = updatedAt
   }
   public mutating func setAuthor(_ author: Person41? = nil) {
-    self._author = LazyReference(author)
+    _author = LazyReference(author)
   }
   public mutating func setEditor(_ editor: Person41? = nil) {
-    self._editor = LazyReference(editor)
+    _editor = LazyReference(editor)
   }
   public init(from decoder: Decoder) throws {
       let values = try decoder.container(keyedBy: CodingKeys.self)
-      id = try values.decode(String.self, forKey: .id)
-      title = try values.decode(String.self, forKey: .title)
-      content = try values.decode(String.self, forKey: .content)
-      _author = try values.decodeIfPresent(LazyReference<Person41>.self, forKey: .author) ?? LazyReference(identifiers: nil)
-      _editor = try values.decodeIfPresent(LazyReference<Person41>.self, forKey: .editor) ?? LazyReference(identifiers: nil)
-      createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-      updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+      self.id = try values.decode(String.self, forKey: .id)
+      self.title = try values.decode(String.self, forKey: .title)
+      self.content = try values.decode(String.self, forKey: .content)
+      self._author = try values.decodeIfPresent(LazyReference<Person41>.self, forKey: .author) ?? LazyReference(identifiers: nil)
+      self._editor = try values.decodeIfPresent(LazyReference<Person41>.self, forKey: .editor) ?? LazyReference(identifiers: nil)
+      self.createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+      self.updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
   }
   public func encode(to encoder: Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)

@@ -6,8 +6,8 @@
 //
 
 #if canImport(Speech) && canImport(Vision)
-import XCTest
 import CoreMLPredictionsPlugin
+import XCTest
 
 // swiftlint:disable:next type_name
 class CoreMLPredictionsPluginAmplifyVersionableTests: XCTestCase {

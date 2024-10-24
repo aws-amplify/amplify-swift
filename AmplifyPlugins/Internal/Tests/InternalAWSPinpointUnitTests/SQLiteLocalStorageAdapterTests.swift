@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 @testable import Amplify
 @testable import InternalAWSPinpoint
 
@@ -47,7 +47,7 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
                 sessionStopTime, timestamp, dirty, retryCount)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
-            let bindings: [Binding] = [1, "", "", "", 100000, 2, 1000000, 1000000, 100000, 1, 0]
+            let bindings: [Binding] = [1, "", "", "", 100_000, 2, 1_000_000, 1_000_000, 100_000, 1, 0]
             _ = try adapter.executeQuery(insertStatement, bindings)
             result = try adapter.executeQuery(countStatement, []).scalar() as! Int64
             XCTAssertEqual(result, 1)
@@ -68,7 +68,7 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
                 sessionStopTime, timestamp, dirty, retryCount)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
-            let bindings: [Binding] = [1, "", "", "", 100000, 2, 1000000, 1000000, 100000, 1, 0]
+            let bindings: [Binding] = [1, "", "", "", 100_000, 2, 1_000_000, 1_000_000, 100_000, 1, 0]
             _ = try adapter.executeQuery(insertStatement, bindings)
 
             let countStatement = "SELECT COUNT(*) FROM Event"
@@ -97,7 +97,7 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
                 sessionStopTime, timestamp, dirty, retryCount)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
-            let bindings: [Binding] = [123, "", "", "", 100000, 2, 1000000, 1000000, 100000, 0, 0]
+            let bindings: [Binding] = [123, "", "", "", 100_000, 2, 1_000_000, 1_000_000, 100_000, 0, 0]
             _ = try adapter.executeQuery(insertStatement, bindings)
 
             let countStatement = "SELECT COUNT(*) FROM Event WHERE dirty = false"

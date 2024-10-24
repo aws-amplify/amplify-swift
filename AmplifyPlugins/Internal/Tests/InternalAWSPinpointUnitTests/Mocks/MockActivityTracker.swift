@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import InternalAWSPinpoint
 import Foundation
+@testable import InternalAWSPinpoint
 
 class MockActivityTracker: ActivityTrackerBehaviour {
     var backgroundTrackingTimeout: TimeInterval = 0
-    
+
     var beginActivityTrackingCount = 0
     var callback: ((ApplicationState) -> Void)?
 

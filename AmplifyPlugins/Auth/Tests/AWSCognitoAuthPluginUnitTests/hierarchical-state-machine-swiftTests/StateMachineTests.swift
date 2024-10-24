@@ -40,7 +40,7 @@ class StateMachineTests: XCTestCase {
         let taskCompletion = expectation(description: "Completed sending event")
         taskCompletion.expectedFulfillmentCount = 1_000
         Task {
-            for i in 1...1_000 {
+            for i in 1 ... 1_000 {
                 if i.isMultiple(of: 2) {
                     await testMachine.send(increment)
                 } else {

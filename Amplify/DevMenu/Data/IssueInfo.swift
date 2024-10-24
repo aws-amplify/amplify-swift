@@ -76,8 +76,8 @@ struct IssueInfo {
            return infoNotAvailable
         }
 
-        return items.reduce("") {(description, item) -> String in
-            return ("\(description)\(item.displayName) - \(item.information) \n")
+        return items.reduce("") {description, item -> String in
+            return "\(description)\(item.displayName) - \(item.information) \n"
         }
     }
 }

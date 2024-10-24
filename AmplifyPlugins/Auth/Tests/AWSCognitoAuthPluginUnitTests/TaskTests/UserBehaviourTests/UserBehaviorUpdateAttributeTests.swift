@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoIdentityProvider
+import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
-import ClientRuntime
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class UserBehaviorUpdateAttributesTests: BasePluginTest {
@@ -26,9 +26,12 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             UpdateUserAttributesOutput(codeDeliveryDetailsList: [
-                .init(attributeName: "attributeName",
-                      deliveryMedium: .email,
-                      destination: "destination")])
+                .init(
+                    attributeName: "attributeName",
+                    deliveryMedium: .email,
+                    destination: "destination"
+                )
+            ])
         })
 
         let attributes = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))

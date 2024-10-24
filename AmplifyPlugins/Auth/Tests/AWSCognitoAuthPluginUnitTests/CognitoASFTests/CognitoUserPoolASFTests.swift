@@ -5,20 +5,20 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCognitoAuthPlugin
 import XCTest
+@testable import AWSCognitoAuthPlugin
 
 class CognitoUserPoolASFTests: XCTestCase {
     private var userPool: CognitoUserPoolASF!
-   
+
     override func setUp() {
         userPool = CognitoUserPoolASF()
     }
-    
+
     override func tearDown() {
         userPool = nil
     }
-       
+
     /// Given: A CognitoUserPoolASF
     /// When: userContextData is invoked
     /// Then: A non-empty string is returned
@@ -32,7 +32,7 @@ class CognitoUserPoolASFTests: XCTestCase {
         )
         XCTAssertFalse(result.isEmpty)
     }
-    
+
     /// Given: A CognitoUserPoolASF
     /// When: calculateSecretHash is invoked
     /// Then: A non-empty string is returned
@@ -43,7 +43,7 @@ class CognitoUserPoolASFTests: XCTestCase {
         )
         XCTAssertFalse(result.isEmpty)
     }
-    
+
     /// Given: A CognitoUserPoolASF
     /// When: calculateSecretHash is invoked with a clientId that cannot be parsed
     /// Then: A ASFError.hashKey is thrown

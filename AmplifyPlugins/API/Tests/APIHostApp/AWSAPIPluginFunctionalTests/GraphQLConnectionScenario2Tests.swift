@@ -6,8 +6,8 @@
 //
 
 import XCTest
-@testable import AWSAPIPlugin
 @testable import Amplify
+@testable import AWSAPIPlugin
 #if os(watchOS)
 @testable import APIWatchApp
 #else
@@ -62,7 +62,8 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
     func testCreateAndGetProject() async throws {
         guard let team = try await createTeam2(name: "name".withUUID),
               let project2a = try await createProject2(teamID: team.id, team: team),
-              let project2b = try await createProject2(teamID: team.id, team: team) else {
+              let project2b = try await createProject2(teamID: team.id, team: team)
+        else {
             XCTFail("Could not create team and a project")
             return
         }
@@ -94,7 +95,8 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
 
     func testUpdateProjectWithAnotherTeam() async throws {
         guard let team = try await createTeam2(name: "name".withUUID),
-              var project2 = try await createProject2(teamID: team.id, team: team) else {
+              var project2 = try await createProject2(teamID: team.id, team: team)
+        else {
             XCTFail("Could not create team and a project")
             return
         }
@@ -113,10 +115,11 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
         // The team object does not get retrieved from the service and is `nil`, but should be eager loaded to contain the `team`
         //  XCTAssertEqual(updatedProject.team, anotherTeam)
     }
-    
+
     func testDeleteAndGetProject() async throws {
         guard let team = try await createTeam2(name: "name".withUUID),
-              let project2 = try await createProject2(teamID: team.id, team: team) else {
+              let project2 = try await createProject2(teamID: team.id, team: team)
+        else {
             XCTFail("Could not create team and a project")
             return
         }
@@ -142,7 +145,8 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
 
     func testListProjectsByTeamID() async throws {
         guard let team = try await createTeam2(name: "name".withUUID),
-              try await createProject2(teamID: team.id, team: team) != nil else {
+              try await createProject2(teamID: team.id, team: team) != nil
+        else {
             XCTFail("Could not create team and two projects")
             return
         }
@@ -161,7 +165,8 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
     func testPaginatedListProjectsByTeamID() async throws {
         guard let team = try await createTeam2(name: "name".withUUID),
               try await createProject2(teamID: team.id, team: team) != nil,
-              try await createProject2(teamID: team.id, team: team) != nil else {
+              try await createProject2(teamID: team.id, team: team) != nil
+        else {
             XCTFail("Could not create team and two projects")
             return
         }
@@ -186,7 +191,7 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
         }
         XCTAssertEqual(resultsArray.count, 2)
     }
-    
+
     func createTeam2(id: String = UUID().uuidString, name: String) async throws ->  Team2? {
         let team = Team2(id: id, name: name)
         let graphQLResponse = try await Amplify.API.mutate(request: .create(team))
@@ -198,10 +203,12 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
         }
     }
 
-    func createProject2(id: String = UUID().uuidString,
-                        name: String? = nil,
-                        teamID: String,
-                        team: Team2? = nil) async throws -> Project2? {
+    func createProject2(
+        id: String = UUID().uuidString,
+        name: String? = nil,
+        teamID: String,
+        team: Team2? = nil
+    ) async throws -> Project2? {
         let project = Project2(id: id, name: name, teamID: teamID, team: team)
         let graphQLResponse = try await Amplify.API.mutate(request: .create(project))
         switch graphQLResponse {
@@ -214,8 +221,10 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
 }
 
 extension Team2: Equatable {
-    public static func == (lhs: Team2,
-                           rhs: Team2) -> Bool {
+    public static func == (
+        lhs: Team2,
+        rhs: Team2
+    ) -> Bool {
         return lhs.id == rhs.id
         && lhs.name == rhs.name
         && lhs.createdAt == rhs.createdAt

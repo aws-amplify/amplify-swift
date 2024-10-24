@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 /// Provides the concrete implementation for the AWSCloudWatchLoggingFilterBehavior.
 class AWSCloudWatchLoggingFilter: AWSCloudWatchLoggingFilterBehavior {

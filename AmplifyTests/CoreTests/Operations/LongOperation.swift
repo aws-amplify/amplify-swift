@@ -12,12 +12,12 @@ import Combine
 import Amplify
 
 public class LongOperationRequest: AmplifyOperationRequest, RequestIdentifier {
-    public let options: [AnyHashable : Any]
+    public let options: [AnyHashable: Any]
     public let steps: Int
     public let delay: Double
     public let requestID: String
 
-    public init(options: [AnyHashable : Any] = [:], steps: Int, delay: Double) {
+    public init(options: [AnyHashable: Any] = [:], steps: Int, delay: Double) {
         self.options = options
         self.steps = steps
         self.delay = delay
@@ -80,16 +80,21 @@ public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequ
     var count = 0
     var currentProgress: Progress!
 
-    public init(request: LongOperationRequest,
-                progressListener: LongOperationProgressListener? = nil,
-                resultListener: LongOperationResultListener? = nil) {
-        super.init(categoryType: .storage, eventName: "LongOperation",
-                   request: request,
-                   inProcessListener: progressListener,
-                   resultListener: resultListener)
+    public init(
+        request: LongOperationRequest,
+        progressListener: LongOperationProgressListener? = nil,
+        resultListener: LongOperationResultListener? = nil
+    ) {
+        super.init(
+            categoryType: .storage,
+            eventName: "LongOperation",
+            request: request,
+            inProcessListener: progressListener,
+            resultListener: resultListener
+        )
     }
 
-    public override func main() {
+    override public func main() {
         if isCancelled {
             finish()
             return

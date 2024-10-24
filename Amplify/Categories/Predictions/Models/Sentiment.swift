@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Predictions {
+public extension Predictions {
     /// Sentiment Analysis result for Predictions category
-    public struct Sentiment {
+    struct Sentiment {
         public let predominantSentiment: Kind
         public let sentimentScores: [Kind: Double]?
 

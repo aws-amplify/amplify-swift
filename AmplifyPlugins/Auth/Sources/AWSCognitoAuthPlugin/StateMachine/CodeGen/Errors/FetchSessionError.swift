@@ -55,18 +55,21 @@ extension FetchSessionError: AuthErrorConvertible {
         case .noIdentityPool:
             return .configuration(
                 "No identity pool configuration found",
-                AuthPluginErrorConstants.configurationError)
+                AuthPluginErrorConstants.configurationError
+            )
         case .noUserPool:
             return .configuration(
                 "No user pool configuration found",
-                AuthPluginErrorConstants.configurationError)
+                AuthPluginErrorConstants.configurationError
+            )
         case .invalidTokens:
             return .unknown(
                 "Invalid tokens received when refreshing session")
         case .notAuthorized:
             return .notAuthorized(
                 "Not authorized error",
-                AuthPluginErrorConstants.notAuthorizedError)
+                AuthPluginErrorConstants.notAuthorizedError
+            )
         case .invalidIdentityID:
             return .unknown("Invalid identity id received when fetching session")
         case .invalidAWSCredentials:
@@ -74,7 +77,8 @@ extension FetchSessionError: AuthErrorConvertible {
         case .noCredentialsToRefresh:
             return .service(
                 "No credentials found to refresh",
-                AmplifyErrorMessages.reportBugToAWS())
+                AmplifyErrorMessages.reportBugToAWS()
+            )
         case .federationNotSupportedDuringRefresh:
             return .unknown(
                 "Refreshing credentials from federationToIdentityPool is not supported \(AmplifyErrorMessages.reportBugToAWS())")
@@ -85,7 +89,8 @@ extension FetchSessionError: AuthErrorConvertible {
                 return .service(
                     "Service error occurred",
                     AmplifyErrorMessages.reportBugToAWS(),
-                    error)
+                    error
+                )
             }
         }
     }

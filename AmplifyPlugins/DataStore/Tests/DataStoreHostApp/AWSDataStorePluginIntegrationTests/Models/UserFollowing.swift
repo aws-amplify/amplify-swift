@@ -14,9 +14,11 @@ public struct UserFollowing: Model {
   public var user: User?
   public var followingUser: User?
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       user: User? = nil,
-      followingUser: User? = nil) {
+      followingUser: User? = nil
+  ) {
       self.id = id
       self.user = user
       self.followingUser = followingUser

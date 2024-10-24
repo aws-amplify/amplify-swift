@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 /// The high-level status of an StorageEvent
 enum StorageEvent<InitiatedType, InProcessType, CompletedType, ErrorType: AmplifyError> {

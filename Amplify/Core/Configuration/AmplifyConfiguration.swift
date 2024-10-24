@@ -57,16 +57,18 @@ public struct AmplifyConfiguration: Codable {
     let storage: StorageCategoryConfiguration?
 
     /// - Tag: Amplify.init
-    public init(analytics: AnalyticsCategoryConfiguration? = nil,
-                api: APICategoryConfiguration? = nil,
-                auth: AuthCategoryConfiguration? = nil,
-                dataStore: DataStoreCategoryConfiguration? = nil,
-                geo: GeoCategoryConfiguration? = nil,
-                hub: HubCategoryConfiguration? = nil,
-                logging: LoggingCategoryConfiguration? = nil,
-                notifications: NotificationsCategoryConfiguration? = nil,
-                predictions: PredictionsCategoryConfiguration? = nil,
-                storage: StorageCategoryConfiguration? = nil) {
+    public init(
+        analytics: AnalyticsCategoryConfiguration? = nil,
+        api: APICategoryConfiguration? = nil,
+        auth: AuthCategoryConfiguration? = nil,
+        dataStore: DataStoreCategoryConfiguration? = nil,
+        geo: GeoCategoryConfiguration? = nil,
+        hub: HubCategoryConfiguration? = nil,
+        logging: LoggingCategoryConfiguration? = nil,
+        notifications: NotificationsCategoryConfiguration? = nil,
+        predictions: PredictionsCategoryConfiguration? = nil,
+        storage: StorageCategoryConfiguration? = nil
+    ) {
         self.analytics = analytics
         self.api = api
         self.auth = auth

@@ -57,9 +57,11 @@ extension MutationEvent {
         )
     }
 
-    private static func pendingMutationEvents(for modelIds: [(String, String)],
-                                      storageAdapter: StorageEngineAdapter,
-                                      completion: @escaping DataStoreCallback<[MutationEvent]>) {
+    private static func pendingMutationEvents(
+        for modelIds: [(String, String)],
+        storageAdapter: StorageEngineAdapter,
+        completion: @escaping DataStoreCallback<[MutationEvent]>
+    ) {
         Task {
             let fields = MutationEvent.keys
             let predicate = (fields.inProcess == false || fields.inProcess == nil)
@@ -77,11 +79,13 @@ extension MutationEvent {
 
                 do {
                     let mutationEvents = try await withCheckedThrowingContinuation { continuation in
-                        storageAdapter.query(MutationEvent.self,
-                                             predicate: final,
-                                             sort: [sort],
-                                             paginationInput: nil,
-                                             eagerLoad: true) { result in
+                        storageAdapter.query(
+                            MutationEvent.self,
+                            predicate: final,
+                            sort: [sort],
+                            paginationInput: nil,
+                            eagerLoad: true
+                        ) { result in
                             continuation.resume(with: result)
                         }
                     }

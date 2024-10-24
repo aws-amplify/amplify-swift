@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Combine
+import XCTest
 
 // Testable import b/c StateMachine is an internal type
 @testable import AWSDataStorePlugin
@@ -106,12 +106,16 @@ class StateMachineTests: XCTestCase {
             }
         }
 
-        await fulfillment(of: [receivedOneOnSubscribe,
-                               receivedTwoAfterSubscribe,
-                               receivedThreeAfterSubscribe,
-                               receivedOneAfterSubscribe],
-                          timeout: 1,
-                          enforceOrder: true)
+        await fulfillment(
+            of: [
+                receivedOneOnSubscribe,
+                receivedTwoAfterSubscribe,
+                receivedThreeAfterSubscribe,
+                receivedOneAfterSubscribe
+            ],
+            timeout: 1,
+            enforceOrder: true
+        )
 
         listener.cancel()
     }

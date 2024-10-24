@@ -3,9 +3,10 @@
 // All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
+//
 
-import Foundation
 import AWSS3
+import Foundation
 @_spi(SmithyReadWrite) import ClientRuntime
 @_spi(UnknownAWSHTTPServiceError) @_spi(SmithyReadWrite) import AWSClientRuntime
 import Smithy
@@ -22,7 +23,7 @@ extension UploadPartInput {
     ) async throws -> Foundation.URL? {
         let serviceName = "S3"
         let input = self
-        let client: (SmithyHTTPAPI.HTTPRequest, Smithy.Context) async throws -> SmithyHTTPAPI.HTTPResponse = { (_, _) in
+        let client: (SmithyHTTPAPI.HTTPRequest, Smithy.Context) async throws -> SmithyHTTPAPI.HTTPResponse = { _, _ in
             throw Smithy.ClientError.unknownError("No HTTP client configured for presigned request")
         }
         let context = Smithy.ContextBuilder()
@@ -47,10 +48,10 @@ extension UploadPartInput {
             .withUnsignedPayloadTrait(value: true)
             .build()
         let builder = ClientRuntime.OrchestratorBuilder<UploadPartInput, UploadPartOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
-        config.interceptorProviders.forEach { provider in
+        for provider in config.interceptorProviders {
             builder.interceptors.add(provider.create())
         }
-        config.httpInterceptorProviders.forEach { provider in
+        for provider in config.httpInterceptorProviders {
             builder.interceptors.add(provider.create())
         }
         builder.interceptors.add(ClientRuntime.URLPathMiddleware<UploadPartInput, UploadPartOutput>(UploadPartInput.customUrlPathProvider(_:)))
@@ -176,7 +177,8 @@ private struct UploadPartPresignedMiddleware: Smithy.RequestMessageSerializer {
     ) throws {
         builder.withQueryItem(.init(
             name: "x-id",
-            value: "UploadPart")
+            value: "UploadPart"
+        )
         )
 
         guard let partNumber = input.partNumber else {
@@ -184,7 +186,8 @@ private struct UploadPartPresignedMiddleware: Smithy.RequestMessageSerializer {
         }
         builder.withQueryItem(.init(
             name: "partNumber".urlPercentEncoding(),
-            value: Swift.String(partNumber).urlPercentEncoding())
+            value: Swift.String(partNumber).urlPercentEncoding()
+        )
         )
 
         guard let uploadId = input.uploadId else {
@@ -192,7 +195,8 @@ private struct UploadPartPresignedMiddleware: Smithy.RequestMessageSerializer {
         }
         builder.withQueryItem(.init(
             name: "uploadId".urlPercentEncoding(),
-            value: Swift.String(uploadId).urlPercentEncoding())
+            value: Swift.String(uploadId).urlPercentEncoding()
+        )
         )
     }
 }

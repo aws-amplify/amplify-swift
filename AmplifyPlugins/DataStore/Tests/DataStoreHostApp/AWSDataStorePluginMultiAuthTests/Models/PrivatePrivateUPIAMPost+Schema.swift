@@ -9,19 +9,19 @@
 import Amplify
 import Foundation
 
-extension PrivatePrivateUPIAMPost {
+public extension PrivatePrivateUPIAMPost {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case name
     case createdAt
     case updatedAt
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let privatePrivateUPIAMPost = PrivatePrivateUPIAMPost.keys
 
     model.authRules = [

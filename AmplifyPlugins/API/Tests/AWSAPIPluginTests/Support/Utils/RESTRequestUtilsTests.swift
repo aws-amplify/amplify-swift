@@ -23,7 +23,7 @@ class RESTRequestUtilsTests: XCTestCase {
             }
         }
 
-        guard let expected = expected else {
+        guard let expected else {
             return XCTAssertTrue(
                 queryParams.isEmpty,
                 "Test \(testCase): Unexpected query items found \(queryParams)"
@@ -81,7 +81,7 @@ class RESTRequestUtilsTests: XCTestCase {
 
     func testConstructURLRequestFailsWithInvalidQueryParams() throws {
         let baseURL = URL(string: "https://aws.amazon.com")!
-        let validUTF16Bytes: [UInt8] = [0xD8, 0x34, 0xDD, 0x1E] // Surrogate pair for '𝄞'
+        let validUTF16Bytes: [UInt8] = [0xd8, 0x34, 0xdd, 0x1e] // Surrogate pair for '𝄞'
         let paramValue = String(
             bytes: validUTF16Bytes,
             encoding: String.Encoding.utf16BigEndian

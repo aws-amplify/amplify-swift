@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -5,29 +12,35 @@ import Foundation
 public struct Comment4V2: Model {
   public let id: String
   public var content: String
-  internal var _post: LazyReference<Post4V2>
+  var _post: LazyReference<Post4V2>
   public var post: Post4V2?   {
-      get async throws { 
+      get async throws {
         try await _post.get()
-      } 
+      }
     }
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
-  public init(id: String = UUID().uuidString,
-      content: String,
-      post: Post4V2? = nil) {
-    self.init(id: id,
+
+  public init(
+    id: String = UUID().uuidString,
+    content: String,
+    post: Post4V2? = nil
+  ) {
+    self.init(
+      id: id,
       content: content,
       post: post,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      content: String,
-      post: Post4V2? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    content: String,
+    post: Post4V2? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.content = content
       self._post = LazyReference(post)
@@ -35,15 +48,15 @@ public struct Comment4V2: Model {
       self.updatedAt = updatedAt
   }
   public mutating func setPost(_ post: Post4V2? = nil) {
-    self._post = LazyReference(post)
+    _post = LazyReference(post)
   }
   public init(from decoder: Decoder) throws {
       let values = try decoder.container(keyedBy: CodingKeys.self)
-      id = try values.decode(String.self, forKey: .id)
-      content = try values.decode(String.self, forKey: .content)
-      _post = try values.decodeIfPresent(LazyReference<Post4V2>.self, forKey: .post) ?? LazyReference(identifiers: nil)
-      createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-      updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+      self.id = try values.decode(String.self, forKey: .id)
+      self.content = try values.decode(String.self, forKey: .content)
+      self._post = try values.decodeIfPresent(LazyReference<Post4V2>.self, forKey: .post) ?? LazyReference(identifiers: nil)
+      self.createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+      self.updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
   }
   public func encode(to encoder: Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)

@@ -11,8 +11,10 @@ import Foundation
 struct CancelSignIn: Action {
     let identifier = "CancelSignIn"
 
-    func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+    func execute(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let event = AuthenticationEvent(eventType: .cancelSignIn)
         logVerbose("\(#fileID) Sending event \(event)", environment: environment)

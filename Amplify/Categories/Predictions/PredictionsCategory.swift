@@ -7,7 +7,7 @@
 
 public enum Predictions {}
 
-final public class PredictionsCategory: Category {
+public final class PredictionsCategory: Category {
 
     public let categoryType = CategoryType.predictions
 

@@ -10,7 +10,7 @@ import Foundation
 /// - Warning: Although this has `public` access, it is intended for internal use
 /// and should not be used directly by host applications. The behaviors and names of
 /// this type may change without warning.
-extension NSLocking {
+public extension NSLocking {
     /// Execute `block` after obtaining a lock on `lock`.
     ///
     /// - Warning: Although this has `public` access, it is intended for internal use
@@ -18,7 +18,7 @@ extension NSLocking {
     /// this type may change without warning.
     /// - Parameters:
     ///   - block: The block to execute
-    public func execute(
+    func execute(
         _ block: BasicThrowableClosure
     ) rethrows {
         try execute(input: (), block: block)
@@ -32,7 +32,7 @@ extension NSLocking {
     /// this type may change without warning.
     /// - Parameters:
     ///   - block: The block to execute
-    public func execute<Output>(
+    func execute<Output>(
         _ block: () throws -> Output
     ) rethrows -> Output {
         try execute(input: (), block: block)

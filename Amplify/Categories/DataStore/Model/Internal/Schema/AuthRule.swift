@@ -50,14 +50,16 @@ public struct AuthRule {
     public let operations: [ModelOperation]
     public let provider: AuthRuleProvider?
 
-    public init(allow: AuthStrategy,
-                ownerField: String? = nil,
-                identityClaim: String? = nil,
-                groupClaim: String? = nil,
-                groups: [String] = [],
-                groupsField: String? = nil,
-                provider: AuthRuleProvider? = nil,
-                operations: [ModelOperation] = []) {
+    public init(
+        allow: AuthStrategy,
+        ownerField: String? = nil,
+        identityClaim: String? = nil,
+        groupClaim: String? = nil,
+        groups: [String] = [],
+        groupsField: String? = nil,
+        provider: AuthRuleProvider? = nil,
+        operations: [ModelOperation] = []
+    ) {
         self.allow = allow
         self.ownerField = ownerField
         self.identityClaim = identityClaim

@@ -109,14 +109,14 @@ public protocol TimeUnitOperable {
     static func - (left: Self, right: TimeUnit) -> Self
 }
 
-extension TemporalSpec where Self: TimeUnitOperable {
+public extension TemporalSpec where Self: TimeUnitOperable {
 
     /// Add a `TimeUnit` to a `Temporal.Time` or `Temporal.DateTime`
     /// - Parameters:
     ///   - left: `Temporal.Time` or `Temporal.DateTime`
     ///   - right: `TimeUnit` to add to `left`
     /// - Returns: A new `Temporal.Time` or `Temporal.DateTime` the `TimeUnit` was added to.
-    public static func + (left: Self, right: TimeUnit) -> Self {
+    static func + (left: Self, right: TimeUnit) -> Self {
         return left.add(value: right.value, to: right.calendarComponent)
     }
 
@@ -125,7 +125,7 @@ extension TemporalSpec where Self: TimeUnitOperable {
     ///   - left: `Temporal.Time` or `Temporal.DateTime`
     ///   - right: `TimeUnit` to subtract from `left`
     /// - Returns: A new `Temporal.Time` or `Temporal.DateTime` the `TimeUnit` was subtracted from.
-    public static func - (left: Self, right: TimeUnit) -> Self {
+    static func - (left: Self, right: TimeUnit) -> Self {
         return left.add(value: -right.value, to: right.calendarComponent)
     }
 }

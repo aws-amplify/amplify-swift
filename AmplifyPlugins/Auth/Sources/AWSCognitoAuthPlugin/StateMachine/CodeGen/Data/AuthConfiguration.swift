@@ -43,8 +43,10 @@ extension AuthConfiguration: Codable {
 
         guard userConfigData != nil || idpConfigData != nil else {
             throw DecodingError.dataCorrupted(
-                DecodingError.Context(codingPath: values.codingPath,
-                                      debugDescription: "Unable to decode")
+                DecodingError.Context(
+                    codingPath: values.codingPath,
+                    debugDescription: "Unable to decode"
+                )
             )
         }
 

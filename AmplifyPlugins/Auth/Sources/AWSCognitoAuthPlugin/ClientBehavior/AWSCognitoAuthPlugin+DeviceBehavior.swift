@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
 
@@ -14,9 +14,11 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
     -> [AuthDevice] {
         let options = options ?? AuthFetchDevicesRequest.Options()
         let request = AuthFetchDevicesRequest(options: options)
-        let task = AWSAuthFetchDevicesTask(request,
-                                           authStateMachine: authStateMachine,
-                                           userPoolFactory: authEnvironment.cognitoUserPoolFactory)
+        let task = AWSAuthFetchDevicesTask(
+            request,
+            authStateMachine: authStateMachine,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory
+        )
         return try await taskQueue.sync {
             return try await task.value
         } as! [AuthDevice] // swiftlint:disable:this force_cast
@@ -28,9 +30,11 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
     ) async throws {
         let options = options ?? AuthForgetDeviceRequest.Options()
         let request = AuthForgetDeviceRequest(device: device, options: options)
-        let task = AWSAuthForgetDeviceTask(request,
-                                           authStateMachine: authStateMachine,
-                                           environment: authEnvironment)
+        let task = AWSAuthForgetDeviceTask(
+            request,
+            authStateMachine: authStateMachine,
+            environment: authEnvironment
+        )
         _ = try await taskQueue.sync {
             return try await task.value
         }
@@ -39,9 +43,11 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
     public func rememberDevice( options: AuthRememberDeviceRequest.Options? = nil) async throws {
         let options = options ?? AuthRememberDeviceRequest.Options()
         let request = AuthRememberDeviceRequest(options: options)
-        let task = AWSAuthRememberDeviceTask(request,
-                                             authStateMachine: authStateMachine,
-                                             environment: authEnvironment)
+        let task = AWSAuthRememberDeviceTask(
+            request,
+            authStateMachine: authStateMachine,
+            environment: authEnvironment
+        )
         _ = try await taskQueue.sync {
             return try await task.value
         }

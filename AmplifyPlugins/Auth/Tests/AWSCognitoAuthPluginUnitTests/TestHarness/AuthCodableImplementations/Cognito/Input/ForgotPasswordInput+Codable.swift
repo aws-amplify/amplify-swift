@@ -24,7 +24,8 @@ extension ForgotPasswordInput: Decodable {
         self.init(
             clientId: clientId,
             clientMetadata: clientMetadata,
-            username: username)
+            username: username
+        )
 
     }
 }

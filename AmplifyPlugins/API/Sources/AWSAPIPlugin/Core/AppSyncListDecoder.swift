@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 /// This decoder is registered and used to detect various data payloads objects to store
 /// inside an AppSyncListProvider when decoding to the Lazy `List` type as a "not yet loaded" List. If the data payload
@@ -25,7 +25,7 @@ public struct AppSyncListDecoder: ModelListDecoder {
     /// Used by the custom decoder implemented in the `List` type to detect if the payload can be
     /// decoded to an AppSyncListProvider.
     public static func decode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelListProvider<ModelType>? {
-        self.shouldDecodeToAppSyncListProvider(modelType: modelType, decoder: decoder)?.eraseToAnyModelListProvider()
+        shouldDecodeToAppSyncListProvider(modelType: modelType, decoder: decoder)?.eraseToAnyModelListProvider()
     }
 
     static func shouldDecodeToAppSyncListProvider<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AppSyncListProvider<ModelType>? {

@@ -18,26 +18,32 @@ public struct CustomerMultipleSecondaryIndexV2: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      name: String,
-      phoneNumber: String? = nil,
-      age: Int,
-      accountRepresentativeID: String) {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    name: String,
+    phoneNumber: String? = nil,
+    age: Int,
+    accountRepresentativeID: String
+  ) {
+    self.init(
+      id: id,
       name: name,
       phoneNumber: phoneNumber,
       age: age,
       accountRepresentativeID: accountRepresentativeID,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      name: String,
-      phoneNumber: String? = nil,
-      age: Int,
-      accountRepresentativeID: String,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    name: String,
+    phoneNumber: String? = nil,
+    age: Int,
+    accountRepresentativeID: String,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.name = name
       self.phoneNumber = phoneNumber

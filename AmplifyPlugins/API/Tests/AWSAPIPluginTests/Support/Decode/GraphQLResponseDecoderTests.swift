@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSPluginsCore
 import XCTest
 @testable import Amplify
-import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
 
@@ -61,9 +61,11 @@ class GraphQLResponseDecoderTests: XCTestCase {
     }
 
     func testDecodeToGraphQLResponseWhenDataOnly() throws {
-        let request = GraphQLRequest<String>(document: "",
-                                             responseType: String.self,
-                                             decodePath: "getSimpleModel")
+        let request = GraphQLRequest<String>(
+            document: "",
+            responseType: String.self,
+            decodePath: "getSimpleModel"
+        )
         let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
         let graphQLData: [String: JSONValue] = [
             "data": [
@@ -85,9 +87,11 @@ class GraphQLResponseDecoderTests: XCTestCase {
     }
 
     func testDecodeToGraphQLResponseWhenErrorsOnly() throws {
-        let request = GraphQLRequest<String>(document: "",
-                                             responseType: String.self,
-                                             decodePath: "getSimpleModel")
+        let request = GraphQLRequest<String>(
+            document: "",
+            responseType: String.self,
+            decodePath: "getSimpleModel"
+        )
         let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
         let graphQLData: [String: JSONValue] = [
             "errors": [
@@ -101,16 +105,19 @@ class GraphQLResponseDecoderTests: XCTestCase {
         let result = try decoder.decodeToGraphQLResponse()
 
         guard case let .failure(response) = result,
-              case .error = response else {
+              case .error = response
+        else {
             XCTFail("Could not get failure response")
             return
         }
     }
 
     func testDecodeToGraphQLResponseWhenDataAndErrors() throws {
-        let request = GraphQLRequest<String>(document: "",
-                                             responseType: String.self,
-                                             decodePath: "getSimpleModel")
+        let request = GraphQLRequest<String>(
+            document: "",
+            responseType: String.self,
+            decodePath: "getSimpleModel"
+        )
         let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
         let graphQLData: [String: JSONValue] = [
             "data": [
@@ -129,16 +136,19 @@ class GraphQLResponseDecoderTests: XCTestCase {
         let result = try decoder.decodeToGraphQLResponse()
 
         guard case let .failure(response) = result,
-              case .partial = response else {
+              case .partial = response
+        else {
             XCTFail("Could not get failure response")
             return
         }
     }
 
     func testDecodeToGraphQLResponseWhenInvalidResponse() throws {
-        let request = GraphQLRequest<String>(document: "",
-                                             responseType: String.self,
-                                             decodePath: "getSimpleModel")
+        let request = GraphQLRequest<String>(
+            document: "",
+            responseType: String.self,
+            decodePath: "getSimpleModel"
+        )
         let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
         let graphQLData: [String: JSONValue] = [
             "invalidDataKey": [
@@ -168,9 +178,11 @@ class GraphQLResponseDecoderTests: XCTestCase {
     }
 
     func testDecodeToGraphQLResponseWhenPartialAndDataIsNull() throws {
-        let request = GraphQLRequest<String>(document: "",
-                                             responseType: String.self,
-                                             decodePath: "getSimpleModel")
+        let request = GraphQLRequest<String>(
+            document: "",
+            responseType: String.self,
+            decodePath: "getSimpleModel"
+        )
         let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
         let graphQLData: [String: JSONValue] = [
             "data": [
@@ -187,7 +199,8 @@ class GraphQLResponseDecoderTests: XCTestCase {
         let result = try decoder.decodeToGraphQLResponse()
 
         guard case let .failure(response) = result,
-              case .error = response else {
+              case .error = response
+        else {
             XCTFail("Could not get failure response")
             return
         }

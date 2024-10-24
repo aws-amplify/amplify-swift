@@ -34,7 +34,8 @@ struct ConfirmDevice: Action {
             let passwordVerifier = srpClient.generateDevicePasswordVerifier(
                 deviceGroupKey: deviceMetadata.deviceGroupKey,
                 deviceKey: deviceMetadata.deviceKey,
-                password: deviceMetadata.deviceSecret)
+                password: deviceMetadata.deviceSecret
+            )
 
             let deviceName = await DeviceInfo.current.name
 
@@ -42,26 +43,34 @@ struct ConfirmDevice: Action {
             let base64EncodedSalt = passwordVerifier.salt.base64EncodedString()
             let verifier = CognitoIdentityProviderClientTypes.DeviceSecretVerifierConfigType(
                 passwordVerifier: base64EncodedVerifier,
-                salt: base64EncodedSalt)
+                salt: base64EncodedSalt
+            )
             let input = ConfirmDeviceInput(
                 accessToken: signedInData.cognitoUserPoolTokens.accessToken,
                 deviceKey: deviceMetadata.deviceKey,
                 deviceName: deviceName,
-                deviceSecretVerifierConfig: verifier)
+                deviceSecretVerifierConfig: verifier
+            )
 
             let response = try await client.confirmDevice(input: input)
-            logVerbose("Successfully completed device confirmation with result \(response)",
-                       environment: environment)
+            logVerbose(
+                "Successfully completed device confirmation with result \(response)",
+                environment: environment
+            )
 
             // Save the device metadata to keychain
             let credentialStoreClient = (environment as? AuthEnvironment)?.credentialsClient
             _ = try await credentialStoreClient?.storeData(
                 data: .deviceMetadata(signedInData.deviceMetadata, signedInData.username))
-            logVerbose("Successfully stored the device metadata in the keychain ",
-                       environment: environment)
+            logVerbose(
+                "Successfully stored the device metadata in the keychain ",
+                environment: environment
+            )
         } catch {
-            logError("Failed to confirm the device \(error)",
-                     environment: environment)
+            logError(
+                "Failed to confirm the device \(error)",
+                environment: environment
+            )
         }
 
         let event = SignInEvent(eventType: .finalizeSignIn(signedInData))

@@ -8,22 +8,22 @@
 import Amplify
 import Foundation
 
-extension MutationSyncMetadata {
+public extension MutationSyncMetadata {
 
     // MARK: - CodingKeys
 
-    public enum CodingKeys: String, ModelKey {
+    enum CodingKeys: String, ModelKey {
         case id
         case deleted
         case lastChangedAt
         case version
     }
 
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
 
     // MARK: - ModelSchema
 
-    public static let schema = defineSchema { definition in
+    static let schema = defineSchema { definition in
         let sync = MutationSyncMetadata.keys
 
         definition.attributes(.isSystem)

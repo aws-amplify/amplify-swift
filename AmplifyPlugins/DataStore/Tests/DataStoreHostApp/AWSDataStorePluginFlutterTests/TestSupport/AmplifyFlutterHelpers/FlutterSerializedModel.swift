@@ -4,8 +4,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-import Foundation
+
 import Amplify
+import Foundation
 
 /// `FlutterSerializedModel` assists in serializing and deserializing JSON when interacting with the amplify-ios DataStore API.
 /// Taken from [amplify-flutter DataStore category](https://github.com/aws-amplify/amplify-flutter/blob/main/packages/amplify_datastore/ios/Classes/types/model/FlutterSerializedModel.swift)
@@ -22,7 +23,7 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
     public init(from decoder: Decoder) throws {
 
         let y = try decoder.container(keyedBy: CodingKeys.self)
-        id = try y.decode(String.self, forKey: .id)
+        self.id = try y.decode(String.self, forKey: .id)
 
         let json = try JSONValue(from: decoder)
         let typeName = json["__typename"]
@@ -30,9 +31,9 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
 
         if case .object(var v) = modified {
             v["__typename"] = typeName
-            values = v
+            self.values = v
         } else {
-            values = [:]
+            self.values = [:]
         }
     }
 
@@ -147,7 +148,7 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
 
     private func generateSerializedData(modelSchema: ModelSchema) -> [String: Any] {
         var result = [String: Any]()
-        for(key, value) in values {
+        for (key, value) in values {
             let field = modelSchema.field(withName: key)
 
             if value == nil {

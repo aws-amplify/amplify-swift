@@ -11,7 +11,7 @@ import Foundation
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 import Network
 
-extension AWSPinpointAnalyticsPlugin {
+public extension AWSPinpointAnalyticsPlugin {
     /// Configures AWSPinpointAnalyticsPlugin with the specified configuration.
     ///
     /// This method will be invoked as part of the Amplify configuration flow.
@@ -19,7 +19,7 @@ extension AWSPinpointAnalyticsPlugin {
     /// - Parameter configuration: The configuration specified for this plugin
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
-    public func configure(using configuration: Any?) throws {
+    func configure(using configuration: Any?) throws {
         let pluginConfiguration: AWSPinpointAnalyticsPluginConfiguration
         if let config = configuration as? AmplifyOutputsData {
             print(config)
@@ -45,7 +45,7 @@ extension AWSPinpointAnalyticsPlugin {
     }
 
     /// Configure AWSPinpointAnalyticsPlugin programatically using AWSPinpointAnalyticsPluginConfiguration
-    public func configure(using configuration: AWSPinpointAnalyticsPluginConfiguration) throws {
+    func configure(using configuration: AWSPinpointAnalyticsPluginConfiguration) throws {
         let pinpoint = try AWSPinpointFactory.sharedPinpoint(
             appId: configuration.appId,
             region: configuration.region
@@ -82,10 +82,12 @@ extension AWSPinpointAnalyticsPlugin {
     // MARK: Internal
 
     /// Internal configure method to set the properties of the plugin
-    func configure(pinpoint: AWSPinpointBehavior,
-                   networkMonitor: NetworkMonitor,
-                   globalProperties: AtomicDictionary<String, AnalyticsPropertyValue> = [:],
-                   isEnabled: Bool = true) {
+    internal func configure(
+        pinpoint: AWSPinpointBehavior,
+        networkMonitor: NetworkMonitor,
+        globalProperties: AtomicDictionary<String, AnalyticsPropertyValue> = [:],
+        isEnabled: Bool = true
+    ) {
         self.pinpoint = pinpoint
         self.networkMonitor = networkMonitor
         self.globalProperties = globalProperties

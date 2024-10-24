@@ -26,11 +26,13 @@ public struct BasicUserProfile: UserProfile {
     ///   - plan: The plan for the user
     ///   - location: Location data about the user
     ///   - customProperties: Properties of the user profile
-    public init(name: String? = nil,
-                email: String? = nil,
-                plan: String? = nil,
-                location: UserProfileLocation? = nil,
-                customProperties: [String: UserProfilePropertyValue]? = nil) {
+    public init(
+        name: String? = nil,
+        email: String? = nil,
+        plan: String? = nil,
+        location: UserProfileLocation? = nil,
+        customProperties: [String: UserProfilePropertyValue]? = nil
+    ) {
         self.name = name
         self.email = email
         self.plan = plan

@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSPluginsCore
-import AWSCloudWatchLogs
-import AWSClientRuntime
 import Amplify
+import AWSClientRuntime
+import AWSCloudWatchLogs
+import AWSPluginsCore
 import Foundation
 
 class CloudWatchLoggingConsumer {
@@ -77,12 +77,12 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         }
 
         if logStreamName == nil {
-            self.logStreamName = await formatter.formattedStreamName()
+            logStreamName = await formatter.formattedStreamName()
         }
-        
-        let stream = try? await self.client.describeLogStreams(input: DescribeLogStreamsInput(
-            logGroupName: self.logGroupName,
-            logStreamNamePrefix: self.logStreamName
+
+        let stream = try? await client.describeLogStreams(input: DescribeLogStreamsInput(
+            logGroupName: logGroupName,
+            logStreamNamePrefix: logStreamName
         )).logStreams?.first(where: { stream in
             return stream.logStreamName == self.logStreamName
         })
@@ -90,27 +90,27 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             return
         }
 
-        _ = try? await self.client.createLogStream(input: CreateLogStreamInput(
-            logGroupName: self.logGroupName,
-            logStreamName: self.logStreamName
+        _ = try? await client.createLogStream(input: CreateLogStreamInput(
+            logGroupName: logGroupName,
+            logStreamName: logStreamName
         ))
     }
 
     private func sendLogEvents(_ entries: [LogEntry]) async throws {
         let events = convertToCloudWatchInputLogEvents(for: entries)
-        let response = try await self.client.putLogEvents(input: PutLogEventsInput(
+        let response = try await client.putLogEvents(input: PutLogEventsInput(
             logEvents: events,
-            logGroupName: self.logGroupName,
-            logStreamName: self.logStreamName,
+            logGroupName: logGroupName,
+            logStreamName: logStreamName,
             sequenceToken: nil
         ))
         let retriableEntries = retriable(entries: entries, in: response)
         if !retriableEntries.isEmpty {
             let retriableEvents = convertToCloudWatchInputLogEvents(for: retriableEntries)
-            _ = try await self.client.putLogEvents(input: PutLogEventsInput(
+            _ = try await client.putLogEvents(input: PutLogEventsInput(
                 logEvents: retriableEvents,
-                logGroupName: self.logGroupName,
-                logStreamName: self.logStreamName,
+                logGroupName: logGroupName,
+                logStreamName: logStreamName,
                 sequenceToken: nil
             ))
         }
@@ -136,7 +136,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         }
 
         var retriableEntries: [LogEntry] = []
-        for index in tooNewLogEventStartIndex..<totalEntries {
+        for index in tooNewLogEventStartIndex ..< totalEntries {
             retriableEntries.append(entries[index])
         }
         return retriableEntries

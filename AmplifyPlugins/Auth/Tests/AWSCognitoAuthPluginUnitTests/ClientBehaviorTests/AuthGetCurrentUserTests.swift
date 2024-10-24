@@ -33,8 +33,7 @@ class AuthGetCurrentUserTests: XCTestCase {
         do {
             _ = try await plugin.getCurrentUser()
             XCTFail("Should throw AuthError.signedOut")
-        }
-        catch AuthError.signedOut { }
+        } catch AuthError.signedOut { }
         catch {
             XCTFail("Should throw AuthError.signedOut")
         }
@@ -49,8 +48,7 @@ class AuthGetCurrentUserTests: XCTestCase {
         do {
             _ = try await plugin.getCurrentUser()
             XCTFail("Should throw AuthError.configuration")
-        }
-        catch AuthError.configuration { }
+        } catch AuthError.configuration { }
         catch {
             XCTFail("Should throw AuthError.configuration")
         }
@@ -65,8 +63,7 @@ class AuthGetCurrentUserTests: XCTestCase {
         do {
             _ = try await plugin.getCurrentUser()
             XCTFail("Should throw AuthError.invalidState")
-        }
-        catch AuthError.invalidState { }
+        } catch AuthError.invalidState { }
         catch {
             XCTFail("Should throw AuthError.invalidState")
         }
@@ -75,9 +72,11 @@ class AuthGetCurrentUserTests: XCTestCase {
 
 
 
-    private func createPlugin(authState: AuthState,
-                              file: StaticString = #filePath,
-                              line: UInt = #line) throws -> AWSCognitoAuthPlugin {
+    private func createPlugin(
+        authState: AuthState,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws -> AWSCognitoAuthPlugin {
         let plugin = AWSCognitoAuthPlugin()
         plugin.authStateMachine = Defaults.makeDefaultAuthStateMachine(initialState: authState)
 

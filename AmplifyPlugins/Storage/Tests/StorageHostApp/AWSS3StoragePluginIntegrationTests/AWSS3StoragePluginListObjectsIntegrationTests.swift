@@ -10,9 +10,9 @@
 import AWSS3StoragePlugin
 import ClientRuntime
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
+import AWSS3
 import CryptoKit
 import XCTest
-import AWSS3
 
 class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase {
 
@@ -31,8 +31,8 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(firstListResult.items.filter({ $0.path.contains(uniqueStringPath)
-        }).count, 1)
+        XCTAssertEqual(firstListResult.items.filter { $0.path.contains(uniqueStringPath)
+        }.count, 1)
 
         await wait {
             _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/test2"), data: data, options: nil).value
@@ -41,8 +41,8 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
         let secondListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(secondListResult.items.filter({ $0.path.contains(uniqueStringPath)
-        }).count, 2)
+        XCTAssertEqual(secondListResult.items.filter { $0.path.contains(uniqueStringPath)
+        }.count, 2)
 
         // Clean up
         _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath + "/test1"))
@@ -62,35 +62,37 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
 
         await wait {
             _ = try await Amplify.Storage.uploadData(
-                path: .fromIdentityID({ identityId in
+                path: .fromIdentityID { identityId in
                     uniqueStringPath = "protected/\(identityId)/\(key)"
                     return uniqueStringPath + "test1"
-                }),
+                },
                 data: data,
-                options: nil).value
+                options: nil
+            ).value
         }
 
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(firstListResult.items.filter({ $0.path.contains(uniqueStringPath)
-        }).count, 1)
+        XCTAssertEqual(firstListResult.items.filter { $0.path.contains(uniqueStringPath)
+        }.count, 1)
 
         await wait {
             _ = try await Amplify.Storage.uploadData(
-                path: .fromIdentityID({ identityId in
+                path: .fromIdentityID { identityId in
                     uniqueStringPath = "protected/\(identityId)/\(key)"
                     return uniqueStringPath + "test2"
-                }),
+                },
                 data: data,
-                options: nil).value
+                options: nil
+            ).value
         }
 
         let secondListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(secondListResult.items.filter({ $0.path.contains(uniqueStringPath)
-        }).count, 2)
+        XCTAssertEqual(secondListResult.items.filter { $0.path.contains(uniqueStringPath)
+        }.count, 2)
 
         // clean up
         _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath + "test1"))
@@ -111,35 +113,37 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
 
         await wait {
             _ = try await Amplify.Storage.uploadData(
-                path: .fromIdentityID({ identityId in
+                path: .fromIdentityID { identityId in
                     uniqueStringPath = "private/\(identityId)/\(key)"
                     return uniqueStringPath + "test1"
-                }),
+                },
                 data: data,
-                options: nil).value
+                options: nil
+            ).value
         }
 
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(firstListResult.items.filter({ $0.path.contains(uniqueStringPath)
-        }).count, 1)
+        XCTAssertEqual(firstListResult.items.filter { $0.path.contains(uniqueStringPath)
+        }.count, 1)
 
         await wait {
             _ = try await Amplify.Storage.uploadData(
-                path: .fromIdentityID({ identityId in
+                path: .fromIdentityID { identityId in
                     uniqueStringPath = "private/\(identityId)/\(key)"
                     return uniqueStringPath + "test2"
-                }),
+                },
                 data: data,
-                options: nil).value
+                options: nil
+            ).value
         }
 
         let secondListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(secondListResult.items.filter({ $0.path.contains(uniqueStringPath)
-        }).count, 2)
+        XCTAssertEqual(secondListResult.items.filter { $0.path.contains(uniqueStringPath)
+        }.count, 2)
 
         // clean up
         _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath + "test1"))
@@ -156,8 +160,7 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
 
         do {
             _ = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
-        }
-        catch {
+        } catch {
             guard let storageError = error as? StorageError else {
                 XCTFail("Error should be of type StorageError but got \(error)")
                 return
@@ -183,8 +186,7 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
 
         do {
             _ = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
-        }
-        catch {
+        } catch {
             guard let storageError = error as? StorageError else {
                 XCTFail("Error should be of type StorageError but got \(error)")
                 return

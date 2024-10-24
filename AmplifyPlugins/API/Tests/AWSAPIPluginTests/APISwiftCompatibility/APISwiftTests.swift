@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 
 final class APISwiftTests: XCTestCase {
 
@@ -15,12 +15,13 @@ final class APISwiftTests: XCTestCase {
         let input = CreateBlogInput(name: "name", file: file)
         let condition = ModelBlogConditionInput(name: .init(eq: "name"))
         let mutation = CreateBlogMutation(input: input)
-        
+
         let request = GraphQLRequest<CreateBlogMutation.Data>(
             document: CreateBlogMutation.requestString,
             variables: mutation.variables?.jsonObject,
-            responseType: CreateBlogMutation.Data.self)
-        
+            responseType: CreateBlogMutation.Data.self
+        )
+
         var expectedDocument = """
         mutation CreateBlog($input: CreateBlogInput!, $condition: ModelBlogConditionInput) {
           createBlog(input: $input, condition: $condition) {

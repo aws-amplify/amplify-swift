@@ -17,15 +17,19 @@ extension CoreMLPredictionsPlugin {
             let recoverySuggestion = CoreMLPluginErrorString.decodeConfigurationError.recoverySuggestion
             throw PluginError.pluginConfigurationError(errorDescription, recoverySuggestion)
         }
-        configure(naturalLanguageBehavior: CoreMLNaturalLanguageAdapter(),
-                  visionBehavior: CoreMLVisionAdapter(),
-                  speechBehavior: CoreMLSpeechAdapter())
+        configure(
+            naturalLanguageBehavior: CoreMLNaturalLanguageAdapter(),
+            visionBehavior: CoreMLVisionAdapter(),
+            speechBehavior: CoreMLSpeechAdapter()
+        )
     }
 
-    func configure(naturalLanguageBehavior: CoreMLNaturalLanguageBehavior,
-                   visionBehavior: CoreMLVisionBehavior,
-                   speechBehavior: CoreMLSpeechBehavior,
-                   queue: OperationQueue = OperationQueue()) {
+    func configure(
+        naturalLanguageBehavior: CoreMLNaturalLanguageBehavior,
+        visionBehavior: CoreMLVisionBehavior,
+        speechBehavior: CoreMLSpeechBehavior,
+        queue: OperationQueue = OperationQueue()
+    ) {
         coreMLNaturalLanguage = naturalLanguageBehavior
         coreMLVision = visionBehavior
         coreMLSpeech = speechBehavior

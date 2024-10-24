@@ -50,8 +50,10 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
         let project = Project2(teamID: team.id, team: team)
         let syncedTeamReceived = expectation(description: "received team from sync event")
         let syncProjectReceived = expectation(description: "received project from sync event")
-        let hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+        let hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
@@ -72,7 +74,7 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
 
         _ = try await Amplify.DataStore.save(team)
         await fulfillment(of: [syncedTeamReceived], timeout: networkTimeout)
-        
+
         _ = try await Amplify.DataStore.save(project)
 
         await fulfillment(of: [syncProjectReceived], timeout: networkTimeout)
@@ -89,8 +91,10 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
         var project = Project2(teamID: team.id, team: team)
         let expectedUpdatedProject = Project2(id: project.id, name: project.name, teamID: anotherTeam.id)
         let syncUpdatedProjectReceived = expectation(description: "received updated project from sync path")
-        let hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+        let hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
@@ -132,8 +136,10 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
         createReceived.expectedFulfillmentCount = 2 // 1 project and 1 team
         let deleteReceived = expectation(description: "Delete notification received")
         deleteReceived.expectedFulfillmentCount = 2 // 1 project and 1 team
-        let hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+        let hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
@@ -202,7 +208,7 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
                 return
             }
         }
-        
+
         let project2 = try await Amplify.DataStore.query(Project2.self, byId: project.id)
         XCTAssertNotNil(project2)
     }
@@ -235,18 +241,22 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
         return try await Amplify.DataStore.save(team)
     }
 
-    func saveProject(id: String = UUID().uuidString,
-                     name: String? = nil,
-                     teamID: String,
-                     team: Team2? = nil) async throws -> Project2 {
+    func saveProject(
+        id: String = UUID().uuidString,
+        name: String? = nil,
+        teamID: String,
+        team: Team2? = nil
+    ) async throws -> Project2 {
         let project = Project2(id: id, name: name, teamID: teamID, team: team)
         return try await Amplify.DataStore.save(project)
     }
 }
 
 extension Team2: Equatable {
-    public static func == (lhs: Team2,
-                           rhs: Team2) -> Bool {
+    public static func == (
+        lhs: Team2,
+        rhs: Team2
+    ) -> Bool {
         return lhs.id == rhs.id
             && lhs.name == rhs.name
     }

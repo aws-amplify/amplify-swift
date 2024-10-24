@@ -18,13 +18,17 @@ public struct IncludeAssociationDecorator: ModelBasedGraphQLDocumentDecorator {
         self.includedAssociations = includedAssociations
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelType: Model.Type
+    ) -> SingleDirectiveGraphQLDocument {
         return decorate(document, modelSchema: modelType.schema)
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelSchema: ModelSchema
+    ) -> SingleDirectiveGraphQLDocument {
         if includedAssociations.isEmpty {
             return document
         }
@@ -32,7 +36,7 @@ public struct IncludeAssociationDecorator: ModelBasedGraphQLDocumentDecorator {
             return document
         }
 
-        includedAssociations.forEach { association in
+        for association in includedAssociations {
             // we don't include the root reference because it refers to the root model
             // fields in the selection set, only the nested/included ones are needed
             if let associationSelectionSet = association.asSelectionSet(includeRoot: false) {
@@ -82,7 +86,7 @@ extension PropertyContainerPath {
 
         let selectionSets = nodesInPath(node: self).map(getSelectionSet(node:))
         return selectionSets.dropFirst().reduce(selectionSets.first) { partialResult, selectionSet in
-            guard let partialResult = partialResult else {
+            guard let partialResult else {
                 return selectionSet
             }
             selectionSet.replaceChild(partialResult)

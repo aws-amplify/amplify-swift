@@ -13,12 +13,12 @@ type Post16 @model {
 */
 
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 @testable import Amplify
 
-fileprivate struct TestModels: AmplifyModelRegistration {
+private struct TestModels: AmplifyModelRegistration {
     func registerModels(registry: ModelRegistry.Type) {
         ModelRegistry.register(modelType: Post16.self)
     }

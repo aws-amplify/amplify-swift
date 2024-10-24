@@ -12,8 +12,9 @@ enum ConcurrentEffectExecutor: EffectExecutor {
     static func execute(
         _ actions: [Action],
         dispatchingTo eventDispatcher: EventDispatcher,
-        environment: Environment) {
-            actions.forEach { action in
+        environment: Environment
+    ) {
+            for action in actions {
                 Task.detached {
                     await action.execute(withDispatcher: eventDispatcher, environment: environment)
                 }

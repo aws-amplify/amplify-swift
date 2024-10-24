@@ -10,8 +10,10 @@ import AWSPluginsCore
 @testable import AWSDataStorePlugin
 
 extension RemoteSyncReconciler.Disposition: Equatable {
-    public static func == (lhs: RemoteSyncReconciler.Disposition,
-                           rhs: RemoteSyncReconciler.Disposition) -> Bool {
+    public static func == (
+        lhs: RemoteSyncReconciler.Disposition,
+        rhs: RemoteSyncReconciler.Disposition
+    ) -> Bool {
         switch (lhs, rhs) {
         case (.create(let model1), .create(let model2)):
             return model1.model.id == model2.model.id &&
@@ -29,8 +31,10 @@ extension RemoteSyncReconciler.Disposition: Equatable {
 }
 
 extension ReconcileAndLocalSaveOperation.Action: Equatable {
-    public static func == (lhs: ReconcileAndLocalSaveOperation.Action,
-                           rhs: ReconcileAndLocalSaveOperation.Action) -> Bool {
+    public static func == (
+        lhs: ReconcileAndLocalSaveOperation.Action,
+        rhs: ReconcileAndLocalSaveOperation.Action
+    ) -> Bool {
         switch (lhs, rhs) {
         case (.started(let models1), .started(let models2)):
             return models1.count == models2.count
@@ -47,8 +51,10 @@ extension ReconcileAndLocalSaveOperation.Action: Equatable {
 }
 
 extension ReconcileAndLocalSaveOperation.State: Equatable {
-    public static func == (lhs: ReconcileAndLocalSaveOperation.State,
-                           rhs: ReconcileAndLocalSaveOperation.State) -> Bool {
+    public static func == (
+        lhs: ReconcileAndLocalSaveOperation.State,
+        rhs: ReconcileAndLocalSaveOperation.State
+    ) -> Bool {
         switch (lhs, rhs) {
         case (.waiting, .waiting):
             return true

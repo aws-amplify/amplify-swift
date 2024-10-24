@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(InternalAmplifyPluginExtension) import InternalAmplifyCredentials
-import Foundation
 import ClientRuntime
+import Foundation
+@_spi(InternalAmplifyPluginExtension) import InternalAmplifyCredentials
 
-extension AWSCognitoAuthPlugin {
+public extension AWSCognitoAuthPlugin {
     @_spi(InternalAmplifyPluginExtension)
-    public func add(pluginExtension: AWSPluginExtension) {
+    func add(pluginExtension: AWSPluginExtension) {
         if let customHttpEngine = pluginExtension as? HttpClientEngineProxy {
-            self.httpClientEngineProxy = customHttpEngine
+            httpClientEngineProxy = customHttpEngine
         }
     }
 }

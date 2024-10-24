@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 typealias GraphQLInput = [String: Any?]
 
@@ -20,8 +20,10 @@ extension Model {
     private func fieldsForMutation(_ modelSchema: ModelSchema) -> [(ModelField, Any?)] {
         modelSchema.sortedFields.compactMap { field in
             guard !field.isReadOnly,
-                  let fieldValue = getFieldValue(for: field.name,
-                                                 modelSchema: modelSchema) else {
+                  let fieldValue = getFieldValue(
+                      for: field.name,
+                      modelSchema: modelSchema
+                  ) else {
                 return nil
             }
             return (field, fieldValue)
@@ -86,10 +88,12 @@ extension Model {
                 input[name] = (value as? EnumPersistable)?.rawValue
             case .model(let associateModelName):
                 // get the associated model target names and their values
-                let associatedModelIds = associatedModelIdentifierFields(fromModelValue: value,
-                                                                         field: modelField,
-                                                                         associatedModelName: associateModelName,
-                                                                         mutationType: mutationType)
+                let associatedModelIds = associatedModelIdentifierFields(
+                    fromModelValue: value,
+                    field: modelField,
+                    associatedModelName: associateModelName,
+                    mutationType: mutationType
+                )
                 for (fieldName, fieldValue) in associatedModelIds {
                     input.updateValue(fieldValue, forKey: fieldName)
                 }
@@ -113,8 +117,10 @@ extension Model {
     /// Retrieve the custom primary key's value used for the GraphQL input.
     /// Only a subset of data types are applicable as custom indexes such as
     /// `date`, `dateTime`, `time`, `enum`, `string`, `double`, and `int`.
-    func graphQLInputForPrimaryKey(modelFieldName: ModelFieldName,
-                                   modelSchema: ModelSchema) -> String? {
+    func graphQLInputForPrimaryKey(
+        modelFieldName: ModelFieldName,
+        modelSchema: ModelSchema
+    ) -> String? {
 
         guard let modelField = modelSchema.field(withName: modelFieldName) else {
             return nil
@@ -127,10 +133,11 @@ extension Model {
         }
 
         // swiftlint:disable:next syntactic_sugar
+        // swiftformat:disable typeSugar
         guard case .some(Optional<Any>.some(let value)) = fieldValue else {
             return nil
         }
-
+        // swiftformat:enable typeSugar
         switch modelField.type {
         case .date, .dateTime, .time:
             if let date = value as? TemporalSpec {
@@ -157,10 +164,12 @@ extension Model {
     ///   - modelSchema: model schema
     /// - Returns: an array of key-value pairs where `key` is the field name
     ///            and `value` its value in the associated model
-    private func associatedModelIdentifierFields(fromModelValue value: Any,
-                                                 field: ModelField,
-                                                 associatedModelName: String,
-                                                 mutationType: GraphQLMutationType) -> [(String, Persistable?)] {
+    private func associatedModelIdentifierFields(
+        fromModelValue value: Any,
+        field: ModelField,
+        associatedModelName: String,
+        mutationType: GraphQLMutationType
+    ) -> [(String, Persistable?)] {
         guard let associateModelSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
             preconditionFailure("Associated model \(associatedModelName) not found.")
         }
@@ -199,13 +208,13 @@ extension Model {
         } else if let lazyModel = value as? (any _LazyReferenceValue) {
             switch lazyModel._state {
             case .notLoaded(let identifiers):
-                if let identifiers = identifiers {
+                if let identifiers {
                     return identifiers.map { identifier in
                         return identifier.value
                     }
                 }
             case .loaded(let model):
-                if let model = model {
+                if let model {
                     return model.identifier(schema: modelSchema).values
                 }
             }

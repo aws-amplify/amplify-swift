@@ -7,12 +7,12 @@
 
 import Foundation
 
-extension Predictions.Identify {
-    public enum DocumentText {}
+public extension Predictions.Identify {
+    enum DocumentText {}
 }
 
-extension Predictions.Identify.Request where Output == Predictions.Identify.DocumentText.Result {
-    public static func textInDocument(textFormatType: Predictions.TextFormatType) -> Self {
+public extension Predictions.Identify.Request where Output == Predictions.Identify.DocumentText.Result {
+    static func textInDocument(textFormatType: Predictions.TextFormatType) -> Self {
         .init(kind: .detectTextInDocument(textFormatType, .lift))
     }
 }

@@ -11,17 +11,17 @@ import XCTest
 @testable import AWSCloudWatchLoggingPlugin
 
 final class LoggingConstraintsLocalStoreTests: XCTestCase {
-    
+
     override func setUp() async throws {
         UserDefaults.standard.removeObject(forKey: PluginConstants.awsRemoteLoggingConstraintsKey)
         UserDefaults.standard.removeObject(forKey: PluginConstants.awsRemoteLoggingConstraintsTagKey)
     }
-    
+
     override func tearDown() async throws {
         UserDefaults.standard.removeObject(forKey: PluginConstants.awsRemoteLoggingConstraintsKey)
         UserDefaults.standard.removeObject(forKey: PluginConstants.awsRemoteLoggingConstraintsTagKey)
     }
-    
+
     /// Given: no remote constraints are cached in UserDefaults
     /// When: logging constraints are accessed via the LoggingConstraintsLocalStore
     /// Then: the LoggingConstraintsLocalStore returns nil
@@ -30,7 +30,7 @@ final class LoggingConstraintsLocalStoreTests: XCTestCase {
         XCTAssertNil(localStore.getLocalLoggingConstraints())
         XCTAssertNil(localStore.getLocalLoggingConstraintsEtag())
     }
-    
+
     /// Given: UserDefaults contains an etag and a default logging constraints
     /// When: logging constraints are accessed via the LoggingConstraintsLocalStore
     /// Then: the LoggingConstraintsLocalStore returns the cached etag and default LoggingConstraints
@@ -41,13 +41,13 @@ final class LoggingConstraintsLocalStoreTests: XCTestCase {
         localStore.setLocalLoggingConstraintsEtag(etag: "testString")
         let loggingConstraints = LoggingConstraints()
         localStore.setLocalLoggingConstraints(loggingConstraints: loggingConstraints)
-        
+
         XCTAssertEqual(localStore.getLocalLoggingConstraintsEtag(), "testString")
         XCTAssertEqual(localStore.getLocalLoggingConstraints()!.defaultLogLevel.rawValue, LogLevel.error.rawValue)
         XCTAssertTrue(localStore.getLocalLoggingConstraints()!.categoryLogLevel!.isEmpty)
         XCTAssertTrue(localStore.getLocalLoggingConstraints()!.userLogLevel!.isEmpty)
     }
-    
+
     /// Given: UserDefaults contains an etag and a valid logging constraints
     /// When: logging constraints are accessed via the LoggingConstraintsLocalStore
     /// Then: the LoggingConstraintsLocalStore returns the cached etag and valid LoggingConstraints
@@ -58,7 +58,7 @@ final class LoggingConstraintsLocalStoreTests: XCTestCase {
         localStore.setLocalLoggingConstraintsEtag(etag: "testString")
         let loggingConstraints = LoggingConstraints(defaultLogLevel: .warn, categoryLogLevel: ["Auth": .debug])
         localStore.setLocalLoggingConstraints(loggingConstraints: loggingConstraints)
-        
+
         XCTAssertEqual(localStore.getLocalLoggingConstraintsEtag(), "testString")
         XCTAssertEqual(localStore.getLocalLoggingConstraints()?.defaultLogLevel.rawValue, LogLevel.warn.rawValue)
         XCTAssertEqual(localStore.getLocalLoggingConstraints()!.categoryLogLevel!.count, 1)

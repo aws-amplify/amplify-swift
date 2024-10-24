@@ -11,7 +11,7 @@ import Foundation
 
 /// Hold necessary AWS AppSync configuration values to interact with the AppSync API
 public struct AWSAppSyncConfiguration {
-    
+
     /// The region of the AWS AppSync API
     public let region: String
 
@@ -32,13 +32,15 @@ public struct AWSAppSyncConfiguration {
 
         guard let dataCategory = resolvedConfiguration.data else {
             throw ConfigurationError.invalidAmplifyOutputsFile(
-                "Missing data category", "", nil)
+                "Missing data category", "", nil
+            )
         }
 
         self.region = dataCategory.awsRegion
         guard let endpoint = URL(string: dataCategory.url) else {
             throw ConfigurationError.invalidAmplifyOutputsFile(
-                "Missing region from data category", "", nil)
+                "Missing region from data category", "", nil
+            )
         }
         self.endpoint = endpoint
         self.apiKey = dataCategory.apiKey

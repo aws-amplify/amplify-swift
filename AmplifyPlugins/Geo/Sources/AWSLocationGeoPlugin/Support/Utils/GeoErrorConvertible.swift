@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSLocation
+import Foundation
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 protocol GeoErrorConvertible {

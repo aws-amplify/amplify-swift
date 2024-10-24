@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import SwiftUI
+import Amplify
 import AWSAPIPlugin
 import AWSPluginsCore
-import Amplify
+import SwiftUI
 
 public extension AsyncSequence {
     func forEach(_ block: (Element) async throws -> Void) async rethrows {
@@ -19,7 +19,7 @@ public extension AsyncSequence {
 }
 
 class SubscriptionViewModel: ObservableObject {
-    
+
     @Published var todos = [Todo]()
     let apiPlugin = AWSAPIPlugin()
 
@@ -29,12 +29,12 @@ class SubscriptionViewModel: ObservableObject {
             try await subscription.forEach { subscriptionEvent in
                 await self.processSubscription(subscriptionEvent)
             }
-                    
+
         } catch {
             print("Failed to subscribe error: \(error)")
         }
     }
-    
+
     func processSubscription(_ subscriptionEvent: GraphQLSubscriptionEvent<Todo>) async {
         switch subscriptionEvent {
         case .connection(let subscriptionConnectionState):
@@ -49,29 +49,29 @@ class SubscriptionViewModel: ObservableObject {
             }
         }
     }
-    
+
     @MainActor
     func storeTodo(_ todo: Todo) async {
-        self.todos.append(todo)
+        todos.append(todo)
     }
 }
 @available(iOS 14.0, *)
 struct SubscriptionView: View {
     @StateObject var vm = SubscriptionViewModel()
-    
+
     var body: some View {
         if #available(iOS 15.0, *) {
             VStack {
-                
+
             }.task { await vm.subscribe() }
-            
+
         } else {
             // Fallback on earlier versions
             Text("task is on iOS 15.0")
         }
-        
+
     }
-    
+
 }
 
 @available(iOS 14.0, *)
@@ -86,35 +86,38 @@ public struct Todo: Model {
     public var name: String
     public var description: String?
 
-    public init(id: String = UUID().uuidString,
-                name: String,
-                description: String? = nil) {
+    public init(
+        id: String = UUID().uuidString,
+        name: String,
+        description: String? = nil
+    ) {
         self.id = id
         self.name = name
         self.description = description
     }
 }
 
-extension Todo {
+public extension Todo {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case name
     case description
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let todo = Todo.keys
 
     model.listPluralName = "Todos"
     model.syncPluralName = "Todos"
 
     model.fields(
-      .id(),
-      .field(todo.name, is: .required, ofType: .string),
-      .field(todo.description, is: .optional, ofType: .string))
+        .id(),
+        .field(todo.name, is: .required, ofType: .string),
+        .field(todo.description, is: .optional, ofType: .string)
+    )
     }
 }

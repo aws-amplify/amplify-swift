@@ -4,11 +4,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-		
 
-import SwiftUI
 import Amplify
+import SwiftUI
 import UserNotifications
+
 #if os(watchOS)
 typealias ApplicationDelegateAdaptor = WKApplicationDelegateAdaptor
 typealias Application = WKApplication
@@ -39,30 +39,30 @@ extension AppDelegate: ApplicationDelegate {
     func applicationDidFinishLaunching() {
         UNUserNotificationCenter.current().delegate = self
     }
-    
+
     func didRegisterForRemoteNotifications(withDeviceToken deviceToken: Data) {
         registerDevice(deviceToken)
     }
-    
+
     func didFailToRegisterForRemoteNotificationsWithError(_ error: Error) {
         print(#function, "Failed to register for remote notification", error)
     }
 #else
     func application(
         _ application: Application,
-        didFinishLaunchingWithOptions launchOptions: [Application.LaunchOptionsKey : Any]? = nil
+        didFinishLaunchingWithOptions launchOptions: [Application.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         UNUserNotificationCenter.current().delegate = self
         return true
     }
-    
+
     func application(
         _ application: Application,
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
         registerDevice(deviceToken)
     }
-    
+
     func application(
         _ application: Application,
         didFailToRegisterForRemoteNotificationsWithError error: Error
@@ -73,12 +73,12 @@ extension AppDelegate: ApplicationDelegate {
 
     func application(
         _ application: Application,
-        didReceiveRemoteNotification userInfo: [AnyHashable : Any]
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any]
     ) async -> BackgroundFetchResult {
         await recordNotificationReceived(userInfo)
         return .noData
     }
-    
+
     private func registerDevice(_ deviceToken: Data) {
         Task {
             do {
@@ -89,8 +89,8 @@ extension AppDelegate: ApplicationDelegate {
             }
         }
     }
-    
-    private func recordNotificationReceived(_ userInfo: [AnyHashable : Any]) async {
+
+    private func recordNotificationReceived(_ userInfo: [AnyHashable: Any]) async {
         do {
             try await Amplify.Notifications.Push.recordNotificationReceived(userInfo)
             Amplify.Analytics.flushEvents()

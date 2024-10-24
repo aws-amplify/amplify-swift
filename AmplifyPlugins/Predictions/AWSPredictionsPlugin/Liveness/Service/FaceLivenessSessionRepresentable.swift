@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 @_spi(PredictionsFaceLiveness)
 public protocol LivenessService {
-    func send<T>(
-        _ event: LivenessEvent<T>,
+    func send(
+        _ event: LivenessEvent<some Any>,
         eventDate: @escaping () -> Date
     )
 

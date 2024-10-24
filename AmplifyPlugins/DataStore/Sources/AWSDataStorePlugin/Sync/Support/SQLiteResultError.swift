@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import SQLite
 import SQLite3
-import Amplify
 
 /// Checks for specific SQLLite error codes
 /// See https://sqlite.org/rescode.html#primary_result_code_list
@@ -28,7 +28,8 @@ enum SQLiteResultError {
     init?(from dataStoreError: DataStoreError) {
         guard case let .invalidOperation(error) = dataStoreError,
               let resultError = error as? Result,
-              case .error(let message, let code, let statement) = resultError else {
+              case .error(let message, let code, let statement) = resultError
+        else {
             return nil
         }
 

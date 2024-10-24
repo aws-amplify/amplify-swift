@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 import Foundation
 
 @_spi(WebSocket)
@@ -17,7 +16,7 @@ public actor RetryWithJitter {
     let max: UInt
     var retryCount: UInt = 0
 
-    init(base: UInt = 25, max: UInt = 6400) {
+    init(base: UInt = 25, max: UInt = 6_400) {
         self.base = base
         self.max = max
     }
@@ -28,16 +27,16 @@ public actor RetryWithJitter {
     func next() -> UInt {
         let expo = min(max, powerOf2(count: retryCount) * base)
         retryCount += 1
-        return UInt.random(in: 0..<expo)
+        return UInt.random(in: 0 ..< expo)
     }
 
     func reset() {
-        self.retryCount = 0
+        retryCount = 0
     }
 }
 
-extension RetryWithJitter {
-    public static func execute<Output>(
+public extension RetryWithJitter {
+    static func execute<Output>(
         maxRetryCount: UInt = 8,
         shouldRetryOnError: (Swift.Error) -> Bool = { _ in true },
         _ operation: @escaping () async throws -> Output
@@ -51,7 +50,7 @@ extension RetryWithJitter {
             let backoffInterval = retryCount == 0 ? 0 : await retryWithJitter.next()
             do {
                 try await Task.sleep(nanoseconds: UInt64(backoffInterval) * 1_000_000)
-                return .success(try await operation())
+                return try await .success(operation())
             } catch {
                 print("[RetryWithJitter] operation failed with error \(error), retrying(\(retryCount))")
                 if shouldRetryOnError(error) {
@@ -65,7 +64,7 @@ extension RetryWithJitter {
     }
 }
 
-fileprivate func powerOf2(count: UInt) -> UInt {
+private func powerOf2(count: UInt) -> UInt {
     count == 0
     ? 1
     : 2 * powerOf2(count: count - 1)

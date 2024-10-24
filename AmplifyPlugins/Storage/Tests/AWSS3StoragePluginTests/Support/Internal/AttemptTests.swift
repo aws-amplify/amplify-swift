@@ -8,8 +8,8 @@
 import XCTest
 
 import AmplifyTestCommon
-@testable import AWSS3StoragePlugin
 @testable import Amplify
+@testable import AWSS3StoragePlugin
 
 class AttemptTests: XCTestCase {
     let goodNumber = 42
@@ -17,7 +17,7 @@ class AttemptTests: XCTestCase {
 
     func testAttemptWithReturnSomething() throws {
         var error: Error?
-        let result = attempt(try work1(number: goodNumber)) {
+        let result = try attempt(work1(number: goodNumber)) {
             error = $0
         }
         XCTAssertNil(error)
@@ -26,7 +26,7 @@ class AttemptTests: XCTestCase {
 
     func testAttemptWithReturnNothing() throws {
         var error: Error?
-        let result = attempt(try work1(number: badNumber)) {
+        let result = try attempt(work1(number: badNumber)) {
             error = $0
         }
         XCTAssertNotNil(error)
@@ -34,28 +34,32 @@ class AttemptTests: XCTestCase {
     }
 
     func testAttemptNoThrow() throws {
-        let result = attempt(try work2(number: goodNumber)) {
+        let result = try attempt(work2(number: goodNumber)) {
             XCTFail("Error: \($0)")
         }
         XCTAssertEqual(true, result)
     }
 
     func testAttemptThrow() throws {
-        let result = attempt(try work2(number: badNumber)) {
+        let result = try attempt(work2(number: badNumber)) {
             print("Error: \($0)")
         }
         XCTAssertEqual(false, result)
     }
 
     func testAttemptNoFailClosureNoThrow() throws {
-        let result = attempt(try work1(number: badNumber), 
-                             fail: { error in })
+        let result = try attempt(
+            work1(number: badNumber),
+            fail: { error in }
+        )
         XCTAssertNil(result)
     }
 
     func testAttemptNoFailClosureThrow() throws {
-        let result = attempt(try work2(number: badNumber),
-                             fail: { error in })
+        let result = try attempt(
+            work2(number: badNumber),
+            fail: { error in }
+        )
         XCTAssertEqual(false, result)
     }
 

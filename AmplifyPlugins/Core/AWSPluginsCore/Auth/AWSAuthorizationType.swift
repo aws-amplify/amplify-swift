@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 // swiftlint:disable line_length
 
@@ -49,8 +49,8 @@ extension AWSAuthorizationType: CaseIterable { }
 extension AWSAuthorizationType: Codable { }
 
 /// Indicates whether the authotization type requires the auth plugin to operate.
-extension AWSAuthorizationType {
-    public var requiresAuthPlugin: Bool {
+public extension AWSAuthorizationType {
+    var requiresAuthPlugin: Bool {
         switch self {
         case .none, .apiKey, .openIDConnect, .function:
             return false

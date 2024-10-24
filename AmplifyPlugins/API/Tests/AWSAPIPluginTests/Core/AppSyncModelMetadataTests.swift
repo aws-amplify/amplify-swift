@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AmplifyTestCommon
+import XCTest
 @testable import Amplify
 @testable import AWSAPIPlugin
 
@@ -54,9 +54,11 @@ class ModelMetadataTests: XCTestCase {
                 "__typename": "Post4"
             ]
         ]
-        let posts = AppSyncModelMetadataUtils.addMetadata(toModelArray: jsonArray, 
-                                                          apiName: "apiName",
-                                                          authMode: .amazonCognitoUserPools)
+        let posts = AppSyncModelMetadataUtils.addMetadata(
+            toModelArray: jsonArray,
+            apiName: "apiName",
+            authMode: .amazonCognitoUserPools
+        )
         XCTAssertEqual(posts.count, 2)
         for post in posts {
             guard case .object(let associationData) = post["comments"],

@@ -34,111 +34,111 @@ import Foundation
 /// ```
 public protocol ModelKey: CodingKey, CaseIterable, QueryFieldOperation {}
 
-extension CodingKey where Self: ModelKey {
+public extension CodingKey where Self: ModelKey {
 
     // MARK: - attributeExists
-    public func attributeExists(_ value: Bool) -> QueryPredicateOperation {
+    func attributeExists(_ value: Bool) -> QueryPredicateOperation {
         return field(stringValue).attributeExists(value)
     }
 
     // MARK: - beginsWith
-    public func beginsWith(_ value: String) -> QueryPredicateOperation {
+    func beginsWith(_ value: String) -> QueryPredicateOperation {
         return field(stringValue).beginsWith(value)
     }
 
     // MARK: - between
-    public func between(start: Persistable, end: Persistable) -> QueryPredicateOperation {
+    func between(start: Persistable, end: Persistable) -> QueryPredicateOperation {
         return field(stringValue).between(start: start, end: end)
     }
 
     // MARK: - contains
 
-    public func contains(_ value: String) -> QueryPredicateOperation {
+    func contains(_ value: String) -> QueryPredicateOperation {
         return field(stringValue).contains(value)
     }
 
-    public static func ~= (key: Self, value: String) -> QueryPredicateOperation {
+    static func ~= (key: Self, value: String) -> QueryPredicateOperation {
         return key.contains(value)
     }
 
     // MARK: - not contains
-    public func notContains(_ value: String) -> QueryPredicateOperation {
+    func notContains(_ value: String) -> QueryPredicateOperation {
         return field(stringValue).notContains(value)
     }
 
     // MARK: - eq
 
-    public func eq(_ value: Persistable?) -> QueryPredicateOperation {
+    func eq(_ value: Persistable?) -> QueryPredicateOperation {
         return field(stringValue).eq(value)
     }
 
-    public func eq(_ value: EnumPersistable) -> QueryPredicateOperation {
+    func eq(_ value: EnumPersistable) -> QueryPredicateOperation {
         return field(stringValue).eq(value)
     }
 
-    public static func == (key: Self, value: Persistable?) -> QueryPredicateOperation {
+    static func == (key: Self, value: Persistable?) -> QueryPredicateOperation {
         return key.eq(value)
     }
 
-    public static func == (key: Self, value: EnumPersistable) -> QueryPredicateOperation {
+    static func == (key: Self, value: EnumPersistable) -> QueryPredicateOperation {
         return key.eq(value)
     }
 
     // MARK: - ge
 
-    public func ge(_ value: Persistable) -> QueryPredicateOperation {
+    func ge(_ value: Persistable) -> QueryPredicateOperation {
         return field(stringValue).ge(value)
     }
 
-    public static func >= (key: Self, value: Persistable) -> QueryPredicateOperation {
+    static func >= (key: Self, value: Persistable) -> QueryPredicateOperation {
         return key.ge(value)
     }
 
     // MARK: - gt
 
-    public func gt(_ value: Persistable) -> QueryPredicateOperation {
+    func gt(_ value: Persistable) -> QueryPredicateOperation {
         return field(stringValue).gt(value)
     }
 
-    public static func > (key: Self, value: Persistable) -> QueryPredicateOperation {
+    static func > (key: Self, value: Persistable) -> QueryPredicateOperation {
         return key.gt(value)
     }
 
     // MARK: - le
 
-    public func le(_ value: Persistable) -> QueryPredicateOperation {
+    func le(_ value: Persistable) -> QueryPredicateOperation {
         return field(stringValue).le(value)
     }
 
-    public static func <= (key: Self, value: Persistable) -> QueryPredicateOperation {
+    static func <= (key: Self, value: Persistable) -> QueryPredicateOperation {
         return key.le(value)
     }
 
     // MARK: - lt
 
-    public func lt(_ value: Persistable) -> QueryPredicateOperation {
+    func lt(_ value: Persistable) -> QueryPredicateOperation {
         return field(stringValue).lt(value)
     }
 
-    public static func < (key: Self, value: Persistable) -> QueryPredicateOperation {
+    static func < (key: Self, value: Persistable) -> QueryPredicateOperation {
         return key.lt(value)
     }
 
     // MARK: - ne
 
-    public func ne(_ value: Persistable?) -> QueryPredicateOperation {
+    func ne(_ value: Persistable?) -> QueryPredicateOperation {
         return field(stringValue).ne(value)
     }
 
-    public func ne(_ value: EnumPersistable) -> QueryPredicateOperation {
+    func ne(_ value: EnumPersistable) -> QueryPredicateOperation {
         return field(stringValue).ne(value)
     }
 
-    public static func != (key: Self, value: Persistable?) -> QueryPredicateOperation {
+    static func != (key: Self, value: Persistable?) -> QueryPredicateOperation {
         return key.ne(value)
     }
 
-    public static func != (key: Self, value: EnumPersistable) -> QueryPredicateOperation {
+    static func != (key: Self, value: EnumPersistable) -> QueryPredicateOperation {
         return key.ne(value)
     }
 

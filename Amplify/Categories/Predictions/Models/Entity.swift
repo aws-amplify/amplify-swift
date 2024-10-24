@@ -7,10 +7,10 @@
 
 import CoreGraphics
 
-extension Predictions {
+public extension Predictions {
     /// Result returned as part of identify() API call with
     /// `IdentifyAction.detectEntities` type parameter
-    public struct Entity {
+    struct Entity {
         public let boundingBox: CGRect
         public let landmarks: [Landmark]
         public let ageRange: ClosedRange<Int>?

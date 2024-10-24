@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCognitoAuthPlugin
-import AWSPluginsCore
 import Amplify
+import AWSPluginsCore
 import XCTest
+@testable import AWSCognitoAuthPlugin
 
 class AWSAuthCognitoSessionTests: XCTestCase {
 
@@ -24,14 +24,18 @@ class AWSAuthCognitoSessionTests: XCTestCase {
             "exp": String(Date(timeIntervalSinceNow: 121).timeIntervalSince1970)
         ]
         let error = AuthError.unknown("", nil)
-        let tokens = AWSCognitoUserPoolTokens(idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
-                                              accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
-                                              refreshToken: "refreshToken")
+        let tokens = AWSCognitoUserPoolTokens(
+            idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            refreshToken: "refreshToken"
+        )
 
-        let session = AWSAuthCognitoSession(isSignedIn: true,
-                                            identityIdResult: .failure(error),
-                                            awsCredentialsResult: .failure(error),
-                                            cognitoTokensResult: .success(tokens))
+        let session = AWSAuthCognitoSession(
+            isSignedIn: true,
+            identityIdResult: .failure(error),
+            awsCredentialsResult: .failure(error),
+            cognitoTokensResult: .success(tokens)
+        )
         let cognitoTokens = try! session.getCognitoTokens().get() as! AWSCognitoUserPoolTokens
         XCTAssertFalse(cognitoTokens.doesExpire(in: 120))
         XCTAssertTrue(cognitoTokens.doesExpire(in: 122))
@@ -50,14 +54,18 @@ class AWSAuthCognitoSessionTests: XCTestCase {
             "exp": String(Date(timeIntervalSinceNow: 1).timeIntervalSince1970)
         ]
         let error = AuthError.unknown("", nil)
-        let tokens = AWSCognitoUserPoolTokens(idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
-                                              accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
-                                              refreshToken: "refreshToken")
+        let tokens = AWSCognitoUserPoolTokens(
+            idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            refreshToken: "refreshToken"
+        )
 
-        let session = AWSAuthCognitoSession(isSignedIn: true,
-                                            identityIdResult: .failure(error),
-                                            awsCredentialsResult: .failure(error),
-                                            cognitoTokensResult: .success(tokens))
+        let session = AWSAuthCognitoSession(
+            isSignedIn: true,
+            identityIdResult: .failure(error),
+            awsCredentialsResult: .failure(error),
+            cognitoTokensResult: .success(tokens)
+        )
 
         let cognitoTokens = try! session.getCognitoTokens().get() as! AWSCognitoUserPoolTokens
         XCTAssertFalse(cognitoTokens.doesExpire())
@@ -120,14 +128,15 @@ class AWSAuthCognitoSessionTests: XCTestCase {
         )
 
         guard case .failure(let error) = session.getUserSub(),
-              case .unknown(let errorDescription, _) = error else {
+              case .unknown(let errorDescription, _) = error
+        else {
             XCTFail("Expected AuthError.unknown")
             return
         }
 
         XCTAssertEqual(errorDescription, "Could not retreive user sub from the fetched Cognito tokens.")
     }
-    
+
     /// Given: An AWSAuthCognitoSession that is signed out
     /// When: getUserSub is invoked
     /// Then: A .failure with AuthError.signedOut error is returned
@@ -141,7 +150,8 @@ class AWSAuthCognitoSessionTests: XCTestCase {
         )
 
         guard case .failure(let error) = session.getUserSub(),
-              case .signedOut(let errorDescription, let recoverySuggestion, _) = error else {
+              case .signedOut(let errorDescription, let recoverySuggestion, _) = error
+        else {
             XCTFail("Expected AuthError.signedOut")
             return
         }
@@ -149,7 +159,7 @@ class AWSAuthCognitoSessionTests: XCTestCase {
         XCTAssertEqual(errorDescription, AuthPluginErrorConstants.userSubSignOutError.errorDescription)
         XCTAssertEqual(recoverySuggestion, AuthPluginErrorConstants.userSubSignOutError.recoverySuggestion)
     }
-    
+
     /// Given: An AWSAuthCognitoSession that has a service error
     /// When: getUserSub is invoked
     /// Then: A .failure with AuthError.signedOut error is returned
@@ -169,7 +179,7 @@ class AWSAuthCognitoSessionTests: XCTestCase {
 
         XCTAssertEqual(error, serviceError)
     }
-    
+
     /// Given: An AuthAWSCognitoCredentials and an AWSCognitoUserPoolTokens instance
     /// When: Two AWSAuthCognitoSession are created from the same values
     /// Then: The two AWSAuthCognitoSession are considered equal
@@ -211,7 +221,7 @@ class AWSAuthCognitoSessionTests: XCTestCase {
 
         XCTAssertEqual(session1, session2)
         XCTAssertEqual(session1.debugDictionary.count, session2.debugDictionary.count)
-        for key in session1.debugDictionary.keys where (key != "AWS Credentials" && key != "cognitoTokens") {
+        for key in session1.debugDictionary.keys where key != "AWS Credentials" && key != "cognitoTokens" {
             XCTAssertEqual(session1.debugDictionary[key] as? String, session2.debugDictionary[key] as? String)
         }
     }

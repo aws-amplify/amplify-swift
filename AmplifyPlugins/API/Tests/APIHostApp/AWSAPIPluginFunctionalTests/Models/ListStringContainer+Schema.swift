@@ -1,10 +1,17 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension ListStringContainer {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension ListStringContainer {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case id
     case test
     case nullableString
@@ -15,15 +22,15 @@ extension ListStringContainer {
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let listStringContainer = ListStringContainer.keys
-    
+
     model.pluralName = "ListStringContainers"
-    
+
     model.fields(
       .id(),
       .field(listStringContainer.test, is: .required, ofType: .string),

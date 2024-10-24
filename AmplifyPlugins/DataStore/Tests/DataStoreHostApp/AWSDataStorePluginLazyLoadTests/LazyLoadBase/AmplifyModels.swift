@@ -1,12 +1,19 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
 // Contains the set of classes that conforms to the `Model` protocol.
 
-final public class AmplifyModels: AmplifyModelRegistration {
+public final class AmplifyModels: AmplifyModelRegistration {
   public let version: String = "248b0ffa3d44f144554beab3bf489b20"
-  
+
   public func registerModels(registry: ModelRegistry.Type) {
     ModelRegistry.register(modelType: Post4V2.self)
     ModelRegistry.register(modelType: Comment4V2.self)

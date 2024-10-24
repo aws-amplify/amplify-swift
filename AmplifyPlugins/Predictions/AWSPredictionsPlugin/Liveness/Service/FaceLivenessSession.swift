@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 @_spi(PredictionsFaceLiveness)
 public final class FaceLivenessSession: LivenessService {
@@ -20,15 +20,16 @@ public final class FaceLivenessSession: LivenessService {
     var serverDate: Date?
     var savedURLForReconnect: URL?
     var connectingState: ConnectingState = .normal
-    
+
     enum ConnectingState {
         case normal
         case reconnect
     }
-    
+
     private let livenessServiceDispatchQueue = DispatchQueue(
         label: "com.amazon.aws.amplify.liveness.service",
-        qos: .userInteractive)
+        qos: .userInteractive
+    )
 
     init(
         websocket: WebSocketSession,
@@ -49,7 +50,7 @@ public final class FaceLivenessSession: LivenessService {
         websocket.onSocketClosed { [weak self] closeCode in
             self?.onComplete(.unexpectedClosure(closeCode))
         }
-        
+
         websocket.onServerDateReceived { [weak self] serverDate in
             self?.serverDate = serverDate
         }
@@ -139,7 +140,7 @@ public final class FaceLivenessSession: LivenessService {
         // We'll try to decode each of these events
         if let payload = try? JSONDecoder().decode(ServerSessionInformationEvent.self, from: message.payload) {
             let sessionConfiguration = sessionConfiguration(from: payload)
-            self.serverEventListeners[.challenge]?(sessionConfiguration)
+            serverEventListeners[.challenge]?(sessionConfiguration)
         } else if (try? JSONDecoder().decode(DisconnectEvent.self, from: message.payload)) != nil {
             onComplete(.disconnectionEvent)
             return .stopAndInvalidateSession
@@ -151,7 +152,7 @@ public final class FaceLivenessSession: LivenessService {
         switch result {
         case .success(.data(let data)):
             do {
-                let message = try self.eventStreamDecoder.decode(data: data)
+                let message = try eventStreamDecoder.decode(data: data)
 
                 if let eventType = message.headers.first(where: { $0.name == ":event-type" }) {
                     let serverEvent = LivenessEventKind.Server(rawValue: eventType.value)
@@ -181,7 +182,7 @@ public final class FaceLivenessSession: LivenessService {
                         onServiceException(.init(event: exceptionEvent))
                         return .stopAndInvalidateSession
                     }
-                    
+
                     connectingState = .reconnect
                     let signedConnectionURL = signer.sign(
                         url: savedURLForReconnect,

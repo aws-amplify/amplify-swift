@@ -46,8 +46,10 @@ public protocol AWSPinpointBehavior {
     /// the automatic submission is disabled
     /// - Parameter interval: How much to wait between submissions
     /// - Parameter onSubmit: An optional callback to be run after each submission happens
-    func setAutomaticSubmitEventsInterval(_ interval: TimeInterval,
-                                          onSubmit: AnalyticsClientBehaviour.SubmitResult?)
+    func setAutomaticSubmitEventsInterval(
+        _ interval: TimeInterval,
+        onSubmit: AnalyticsClientBehaviour.SubmitResult?
+    )
 
     // MARK: Session
     /// Beings automatically tracking session activity in the device.
@@ -67,8 +69,10 @@ public protocol AWSPinpointBehavior {
     /// Updates the current endpoint with the provided profile
     /// - Parameter endpointProfile: The new endpoint profile
     /// - Parameter source: The source that originates this endpoint update, i.e. analytics or pushNotifications
-    func updateEndpoint(with endpointProfile: PinpointEndpointProfile,
-                        source: AWSPinpointSource) async throws
+    func updateEndpoint(
+        with endpointProfile: PinpointEndpointProfile,
+        source: AWSPinpointSource
+    ) async throws
 }
 
 @_spi(InternalAWSPinpoint)

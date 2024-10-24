@@ -26,34 +26,31 @@ enum StorageUploadPartEvent {
     }
 
     var taskIdentifier: TaskIdentifier? {
-        let result: Int?
-        switch self {
+        let result: Int? = switch self {
         case .started(_, let taskIdentifier),
                 .progressUpdated(_, _, let taskIdentifier),
                 .completed(_, _, let taskIdentifier):
-            result = taskIdentifier
+            taskIdentifier
         default:
-            result = nil
+            nil
         }
         return result
     }
 
     var isCompleted: Bool {
-        let result: Bool
-        if case .completed = self {
-            result = true
+        let result = if case .completed = self {
+            true
         } else {
-            result = false
+            false
         }
         return result
     }
 
     var error: Error? {
-        let result: Error?
-        if case .failed(_, let error) = self {
-            result = error
+        let result: Error? = if case .failed(_, let error) = self {
+            error
         } else {
-            result = nil
+            nil
         }
         return result
     }

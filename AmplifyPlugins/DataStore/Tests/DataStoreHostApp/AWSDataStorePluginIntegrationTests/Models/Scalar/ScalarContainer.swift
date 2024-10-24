@@ -25,7 +25,8 @@ public struct ScalarContainer: Model {
   public var myURL: String?
   public var myIPAddress: String?
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       myString: String? = nil,
       myInt: Int? = nil,
       myDouble: Double? = nil,
@@ -38,7 +39,8 @@ public struct ScalarContainer: Model {
       myJSON: String? = nil,
       myPhone: String? = nil,
       myURL: String? = nil,
-      myIPAddress: String? = nil) {
+      myIPAddress: String? = nil
+  ) {
       self.id = id
       self.myString = myString
       self.myInt = myInt

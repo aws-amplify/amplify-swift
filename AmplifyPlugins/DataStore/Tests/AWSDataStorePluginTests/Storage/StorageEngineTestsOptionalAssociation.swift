@@ -27,11 +27,13 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
             syncEngine = MockRemoteSyncEngine()
-            storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .testDefault(),
-                                          syncEngine: syncEngine,
-                                          validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+            storageEngine = StorageEngine(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .testDefault(),
+                syncEngine: syncEngine,
+                validAPIPluginKey: validAPIPluginKey,
+                validAuthPluginKey: validAuthPluginKey
+            )
             ModelRegistry.register(modelType: Blog8.self)
             ModelRegistry.register(modelType: Post8.self)
             ModelRegistry.register(modelType: Comment8.self)
@@ -56,8 +58,10 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
         }
 
         guard case let .success(queriedComment) =
-            querySingleModelSynchronous(modelType: Comment8.self,
-                                        predicate: Comment8.keys.id == comment.id) else {
+            querySingleModelSynchronous(
+                modelType: Comment8.self,
+                predicate: Comment8.keys.id == comment.id
+            ) else {
                 XCTFail("Failed to query post")
                 return
         }
@@ -73,8 +77,10 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
         }
 
         guard case let .success(queriedPost) =
-            querySingleModelSynchronous(modelType: Post8.self,
-                                        predicate: Post8.keys.id == post.id) else {
+            querySingleModelSynchronous(
+                modelType: Post8.self,
+                predicate: Post8.keys.id == post.id
+            ) else {
                 XCTFail("Failed to query post")
                 return
         }
@@ -92,8 +98,10 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
         }
 
         guard case let .success(queriedBlog) =
-            querySingleModelSynchronous(modelType: Blog8.self,
-                                        predicate: Blog8.keys.id == blog.id) else {
+            querySingleModelSynchronous(
+                modelType: Blog8.self,
+                predicate: Blog8.keys.id == blog.id
+            ) else {
                 XCTFail("Failed to query blog")
                 return
         }
@@ -119,8 +127,10 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             return
         }
         guard case let .success(queriedComment) =
-            querySingleModelSynchronous(modelType: Comment8.self,
-                                        predicate: Comment8.keys.id == comment.id) else {
+            querySingleModelSynchronous(
+                modelType: Comment8.self,
+                predicate: Comment8.keys.id == comment.id
+            ) else {
                 XCTFail("Failed to query post")
                 return
         }
@@ -148,8 +158,10 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
         }
 
         guard case let .success(updatedPost) =
-            querySingleModelSynchronous(modelType: Post8.self,
-                                        predicate: Post8.keys.id == post.id) else {
+            querySingleModelSynchronous(
+                modelType: Post8.self,
+                predicate: Post8.keys.id == post.id
+            ) else {
                 XCTFail("Failed to query post")
                 return
         }
@@ -180,8 +192,10 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
         }
 
         guard case let .success(queriedComment) =
-            querySingleModelSynchronous(modelType: Comment8.self,
-                                        predicate: Comment8.keys.id == comment.id) else {
+            querySingleModelSynchronous(
+                modelType: Comment8.self,
+                predicate: Comment8.keys.id == comment.id
+            ) else {
                 XCTFail("Failed to query comment")
                 return
         }
@@ -203,8 +217,10 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             return
         }
         guard case let .success(queriedComment) =
-            querySingleModelSynchronous(modelType: Comment8.self,
-                                        predicate: Comment8.keys.id == comment.id) else {
+            querySingleModelSynchronous(
+                modelType: Comment8.self,
+                predicate: Comment8.keys.id == comment.id
+            ) else {
                 XCTFail("Failed to query comment")
                 return
         }
@@ -217,8 +233,10 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             return
         }
         guard case let .success(queriedComment) =
-            querySingleModelSynchronous(modelType: Comment8.self,
-                                        predicate: Comment8.keys.id == comment.id) else {
+            querySingleModelSynchronous(
+                modelType: Comment8.self,
+                predicate: Comment8.keys.id == comment.id
+            ) else {
                 XCTFail("Failed to query comment")
                 return
         }
@@ -229,8 +247,10 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             return
         }
         guard case let .success(queriedPost) =
-            querySingleModelSynchronous(modelType: Post8.self,
-                                        predicate: Post8.keys.id == post.id) else {
+            querySingleModelSynchronous(
+                modelType: Post8.self,
+                predicate: Post8.keys.id == post.id
+            ) else {
                 XCTFail("Failed to query post")
                 return
         }
@@ -243,18 +263,22 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             XCTFail("Failed to save post")
             return
         }
-        let statement = SelectStatement(from: Post8.schema,
-                                        predicate: nil,
-                                        sort: nil,
-                                        paginationInput: nil)
+        let statement = SelectStatement(
+            from: Post8.schema,
+            predicate: nil,
+            sort: nil,
+            paginationInput: nil
+        )
         let rows = try connection.prepare(statement.stringValue).run(statement.variables)
         // Eager loading selects all fields and associated fields. The number of columns is the number of fields of
         // Post8 plus it's associated field Blog8. This excludes the association itself, ie. post.blog is excluded
         // and blog.posts is excluded. So there are 6 Post8 fields and 6 Blog8 fields.
         XCTAssertEqual(rows.columnCount, 12)
-        let results: [Post8] = try rows.convert(to: Post8.self,
-                                                withSchema: Post8.schema,
-                                                using: statement)
+        let results: [Post8] = try rows.convert(
+            to: Post8.self,
+            withSchema: Post8.schema,
+            using: statement
+        )
 
         XCTAssertNotNil(results)
         // The result is the single post which was saved and queried
@@ -279,14 +303,18 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             return
         }
 
-        let statement = SelectStatement(from: Post8.schema,
-                                        predicate: nil,
-                                        sort: nil,
-                                        paginationInput: nil)
+        let statement = SelectStatement(
+            from: Post8.schema,
+            predicate: nil,
+            sort: nil,
+            paginationInput: nil
+        )
         let rows = try connection.prepare(statement.stringValue).run(statement.variables)
-        let results: [Post8] = try rows.convert(to: Post8.self,
-                                                withSchema: Post8.schema,
-                                                using: statement)
+        let results: [Post8] = try rows.convert(
+            to: Post8.self,
+            withSchema: Post8.schema,
+            using: statement
+        )
 
         XCTAssertNotNil(results)
         XCTAssertEqual(results.count, 1)

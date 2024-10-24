@@ -9,9 +9,9 @@
 import Amplify
 import Foundation
 
-extension Comment6V2 {
+public extension Comment6V2 {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case post
     case content
@@ -19,10 +19,10 @@ extension Comment6V2 {
     case updatedAt
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let comment6V2 = Comment6V2.keys
 
     model.authRules = [

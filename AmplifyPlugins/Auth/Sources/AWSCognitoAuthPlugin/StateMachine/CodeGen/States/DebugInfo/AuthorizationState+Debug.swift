@@ -19,8 +19,10 @@ extension AuthorizationState: CustomDebugDictionaryConvertible {
                 .deletingUser:
             additionalMetadataDictionary = [:]
         case .refreshingSession(existingCredentials: let credentials, let state):
-            additionalMetadataDictionary = ["existing": credentials.debugDescription,
-                                            "refreshState": state.debugDictionary]
+            additionalMetadataDictionary = [
+                "existing": credentials.debugDescription,
+                "refreshState": state.debugDictionary
+            ]
         case .fetchingUnAuthSession(let state),
                 .fetchingAuthSessionWithUserPool(let state, _),
                 .federatingToIdentityPool(let state, _, _):

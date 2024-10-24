@@ -62,7 +62,8 @@ extension AuthSignInStep: Codable {
             let additionalInfo = try values.decodeIfPresent([String: String].self, forKey: .additionalInfo)
             self = .confirmSignInWithSMSMFACode(
                 codeDeliveryDetails,
-                additionalInfo)
+                additionalInfo
+            )
         } else {
             fatalError("next step type not supported")
         }

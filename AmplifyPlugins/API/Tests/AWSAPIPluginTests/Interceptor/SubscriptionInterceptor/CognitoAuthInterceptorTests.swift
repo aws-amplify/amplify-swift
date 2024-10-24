@@ -5,9 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import XCTest
 import Amplify
+import XCTest
 @testable import AWSAPIPlugin
 @testable @_spi(WebSocket) import AWSPluginsCore
 
@@ -17,7 +16,7 @@ class CognitoAuthInterceptorTests: XCTestCase {
         let authTokenProvider = MockAuthTokenProvider()
         let interceptor = AuthTokenInterceptor(authTokenProvider: authTokenProvider)
 
-        let decoratedURLRequest = await interceptor.interceptConnection(request: URLRequest(url:URL(string: "https://example.com")!))
+        let decoratedURLRequest = await interceptor.interceptConnection(request: URLRequest(url: URL(string: "https://example.com")!))
 
         XCTAssertEqual(authTokenProvider.authToken, decoratedURLRequest.value(forHTTPHeaderField: "Authorization"))
         XCTAssertEqual("example.com", decoratedURLRequest.value(forHTTPHeaderField: "host"))
@@ -27,7 +26,7 @@ class CognitoAuthInterceptorTests: XCTestCase {
         let authTokenProvider = MockAuthTokenProviderFailed()
         let interceptor = AuthTokenInterceptor(authTokenProvider: authTokenProvider)
 
-        let decoratedURLRequest = await interceptor.interceptConnection(request: URLRequest(url:URL(string: "https://example.com")!))
+        let decoratedURLRequest = await interceptor.interceptConnection(request: URLRequest(url: URL(string: "https://example.com")!))
 
         XCTAssertEqual("", decoratedURLRequest.value(forHTTPHeaderField: "Authorization"))
         XCTAssertEqual("example.com", decoratedURLRequest.value(forHTTPHeaderField: "host"))
@@ -78,14 +77,14 @@ class CognitoAuthInterceptorTests: XCTestCase {
     }
 }
 
-fileprivate class MockAuthTokenProvider: AmplifyAuthTokenProvider {
+private class MockAuthTokenProvider: AmplifyAuthTokenProvider {
     let authToken = UUID().uuidString
     func getLatestAuthToken() async throws -> String {
         return authToken
     }
 }
 
-fileprivate class MockAuthTokenProviderFailed: AmplifyAuthTokenProvider {
+private class MockAuthTokenProviderFailed: AmplifyAuthTokenProvider {
     let authToken = UUID().uuidString
     func getLatestAuthToken() async throws -> String {
         throw "Intended"

@@ -20,8 +20,10 @@ public class UserAccount: Model {
     // hasOne(associatedWith: "account")
     public var profile: UserProfile?
 
-    public init(id: String = UUID().uuidString,
-                profile: UserProfile? = nil) {
+    public init(
+        id: String = UUID().uuidString,
+        profile: UserProfile? = nil
+    ) {
         self.id = id
         self.profile = profile
     }

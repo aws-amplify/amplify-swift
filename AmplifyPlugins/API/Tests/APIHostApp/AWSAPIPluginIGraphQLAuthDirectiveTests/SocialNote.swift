@@ -13,27 +13,29 @@ public struct SocialNote: Model {
   public var content: String
   public var owner: String?
 
-  public init(id: String = UUID().uuidString,
-      content: String,
-      owner: String? = nil) {
+  public init(
+    id: String = UUID().uuidString,
+    content: String,
+    owner: String? = nil
+  ) {
       self.id = id
       self.content = content
       self.owner = owner
   }
 }
 
-extension SocialNote {
+public extension SocialNote {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case content
     case owner
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   // MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let socialNote = SocialNote.keys
 
     model.authRules = [

@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Predictions.Convert.TranslateText {
+public extension Predictions.Convert.TranslateText {
     /// Results are mapped to TranslateTextResult when convert() API is
     /// called to translate a text into another language
-    public struct Result {
+    struct Result {
         /// Translated text
         public let text: String
 

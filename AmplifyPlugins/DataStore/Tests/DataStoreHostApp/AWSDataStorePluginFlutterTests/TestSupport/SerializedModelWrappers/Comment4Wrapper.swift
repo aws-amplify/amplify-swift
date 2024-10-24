@@ -5,20 +5,20 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AmplifyTestCommon
+import Foundation
 
 /**
  Creates a convenience wrapper for non-model type instantiations so that tests do not need to directly access json.
- 
+
  Wraps: Comment4
  */
 class Comment4Wrapper: NSCopying {
     var model: FlutterSerializedModel
 
     init(id: String = UUID().uuidString, content: String, post: FlutterSerializedModel) throws {
-        self.model = FlutterSerializedModel(id: UUID().uuidString, map: try FlutterDataStoreRequestUtils.getJSONValue(["content": content, "post": post.toMap(modelSchema: Post4.schema)]))
+        self.model = try FlutterSerializedModel(id: UUID().uuidString, map: FlutterDataStoreRequestUtils.getJSONValue(["content": content, "post": post.toMap(modelSchema: Post4.schema)]))
     }
 
     init(model: FlutterSerializedModel) {
@@ -28,23 +28,23 @@ class Comment4Wrapper: NSCopying {
     init(json: String) throws {
         let data = Data(json.utf8)
         let map = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
-        self.model = FlutterSerializedModel(id: map!["id"] as! String, map: try FlutterDataStoreRequestUtils.getJSONValue(map!))
+        self.model = try FlutterSerializedModel(id: map!["id"] as! String, map: FlutterDataStoreRequestUtils.getJSONValue(map!))
     }
 
     func setPost(post: FlutterSerializedModel) throws {
-        self.model = FlutterSerializedModel(id: self.model.id, map: try FlutterDataStoreRequestUtils.getJSONValue(["content": "content", "post": post.toMap(modelSchema: Post4.schema)]))
+        model = try FlutterSerializedModel(id: model.id, map: FlutterDataStoreRequestUtils.getJSONValue(["content": "content", "post": post.toMap(modelSchema: Post4.schema)]))
     }
 
     func idString() -> String {
-        return self.model.id
+        return model.id
     }
 
     func id() -> JSONValue? {
-        return self.model.values["id"]
+        return model.values["id"]
     }
 
     func post() -> JSONValue? {
-        return self.model.values["post"]
+        return model.values["post"]
     }
 
     func copy(with zone: NSZone? = nil) -> Any {

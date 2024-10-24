@@ -45,15 +45,15 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
     func testListPostEditorByPost() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        
+
         let post = Post5V2(title: "title")
         let user = User5V2(username: "username")
         let postEditor = PostEditor5V2(post5V2: post, user5V2: user)
-        
+
         _ = try await Amplify.DataStore.save(post)
         _ = try await Amplify.DataStore.save(user)
         _ = try await Amplify.DataStore.save(postEditor)
-        
+
         let predicateByPostId = PostEditor5V2.keys.post5V2.eq(post.id)
         let queriedPostEditor = try await Amplify.DataStore.query(PostEditor5V2.self, where: predicateByPostId)
         XCTAssertNotNil(queriedPostEditor)
@@ -65,11 +65,11 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
         let post = Post5V2(title: "title")
         let user = User5V2(username: "username")
         let postEditor = PostEditor5V2(post5V2: post, user5V2: user)
-        
+
         _ = try await Amplify.DataStore.save(post)
         _ = try await Amplify.DataStore.save(user)
         _ = try await Amplify.DataStore.save(postEditor)
-        
+
         let predicateByUserId = PostEditor5V2.keys.user5V2.eq(user.id)
         let queriedPostEditor = try await Amplify.DataStore.query(PostEditor5V2.self, where: predicateByUserId)
         XCTAssertNotNil(queriedPostEditor)
@@ -81,18 +81,18 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
         let post = Post5V2(title: "title")
         let user = User5V2(username: "username")
         let postEditor = PostEditor5V2(post5V2: post, user5V2: user)
-        
+
         _ = try await Amplify.DataStore.save(post)
         _ = try await Amplify.DataStore.save(user)
         _ = try await Amplify.DataStore.save(postEditor)
-        
+
         let queriedPostOptional = try await Amplify.DataStore.query(Post5V2.self, byId: post.id)
         guard let queriedPost = queriedPostOptional else {
             XCTFail("Missing queried post")
             return
         }
         XCTAssertEqual(queriedPost.id, post.id)
-        
+
         guard let editors = queriedPost.editors else {
             XCTFail("Missing editors")
             return
@@ -107,11 +107,11 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
         let post = Post5V2(title: "title")
         let user = User5V2(username: "username")
         let postEditor = PostEditor5V2(post5V2: post, user5V2: user)
-        
+
         _ = try await Amplify.DataStore.save(post)
         _ = try await Amplify.DataStore.save(user)
         _ = try await Amplify.DataStore.save(postEditor)
-        
+
         let queriedUserOptional = try await Amplify.DataStore.query(User5V2.self, byId: user.id)
         guard let queriedUser = queriedUserOptional else {
             XCTFail("Missing queried user")
@@ -132,8 +132,10 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
         let post = Post5V2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
-        let hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+        let hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
@@ -161,8 +163,10 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
         var post = Post5V2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
-        var hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+        var hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
@@ -186,8 +190,10 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
         let updateReceived = expectation(description: "received updated post from sync event")
         let updatedTitle = "updatedTitle"
         post.title = updatedTitle
-        hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+        hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
@@ -202,7 +208,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
                 }
             }
         }
-        
+
         _ = try await Amplify.DataStore.save(post)
         await fulfillment(of: [updateReceived], timeout: TestCommonConstants.networkTimeout)
     }
@@ -213,8 +219,10 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
         let post = Post5V2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
-        var hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+        var hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
@@ -236,8 +244,10 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
         await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let deleteReceived = expectation(description: "received deleted post from sync event")
-        hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+        hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
@@ -270,8 +280,10 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
         let createReceived = expectation(description: "received created from sync event")
         createReceived.expectedFulfillmentCount = 3 // 1 post, 1 user, 1 postEditor
-        var hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+        var hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return
@@ -308,8 +320,10 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
         let deleteReceived = expectation(description: "received deleted from sync event")
         deleteReceived.expectedFulfillmentCount = 2 // 1 post, 1 postEditor
-        hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+        hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Could not cast payload to mutation event")
                 return

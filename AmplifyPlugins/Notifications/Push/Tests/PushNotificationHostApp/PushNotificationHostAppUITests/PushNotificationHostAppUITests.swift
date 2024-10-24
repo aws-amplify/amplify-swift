@@ -4,7 +4,6 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-		
 
 import XCTest
 
@@ -78,8 +77,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
         let firstAlert = firstAlertElement()
         if !firstAlert.waitForExistence(timeout: timeout) ||
-            !anyElementContains(text: "Identified User", scope: firstAlert).waitForExistence(timeout: timeout)
-        {
+            !anyElementContains(text: "Identified User", scope: firstAlert).waitForExistence(timeout: timeout) {
             XCTFail("Failed to identify user")
         }
     }
@@ -103,8 +101,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
         let firstAlert = firstAlertElement()
         if !firstAlert.waitForExistence(timeout: timeout) ||
-            !anyElementContains(text: "Registered Device", scope: firstAlert).waitForExistence(timeout: timeout)
-        {
+            !anyElementContains(text: "Registered Device", scope: firstAlert).waitForExistence(timeout: timeout) {
             XCTFail("Failed to register device")
         }
     }
@@ -276,7 +273,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
         #endif
         }
     }
-    
+
     private func firstAlertElement() -> XCUIElement {
     #if os(watchOS)
         // `SwiftUI.View.alert(isPresented:)` views re matched as tables in watchOS 🤷‍♂️
@@ -285,7 +282,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
         return app.alerts.firstMatch
     #endif
     }
-    
+
     private func notificationElement() -> XCUIElement {
     #if os(watchOS)
         return XCUIApplication.homeScreen.otherElements["PushNotificationsWatchApp"]
@@ -387,7 +384,7 @@ extension XCUIRemote {
                 isEndReached = true
             }
         }
-        
+
         print("Element \(element) was found and has been focused, pressing SELECT")
         press(.select)
     }
@@ -404,7 +401,7 @@ extension XCUIApplication {
         XCUIApplication(bundleIdentifier: "com.apple.Carousel")
     #endif
     }
-    
+
     var focusedElement: XCUIElement {
         descendants(matching: .any).element(matching: NSPredicate(format: "hasFocus == true"))
     }

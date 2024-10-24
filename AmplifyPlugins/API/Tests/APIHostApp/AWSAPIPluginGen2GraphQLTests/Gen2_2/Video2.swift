@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -7,18 +14,24 @@ public struct Video2: Model {
   public var privacySetting: PrivacySetting2?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
-  public init(id: String = UUID().uuidString,
-      privacySetting: PrivacySetting2? = nil) {
-    self.init(id: id,
+
+  public init(
+    id: String = UUID().uuidString,
+    privacySetting: PrivacySetting2? = nil
+  ) {
+    self.init(
+      id: id,
       privacySetting: privacySetting,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      privacySetting: PrivacySetting2? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    privacySetting: PrivacySetting2? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.privacySetting = privacySetting
       self.createdAt = createdAt

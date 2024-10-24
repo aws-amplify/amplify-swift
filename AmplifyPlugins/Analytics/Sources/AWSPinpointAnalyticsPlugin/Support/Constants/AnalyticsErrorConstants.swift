@@ -10,7 +10,7 @@ import Foundation
 
 typealias AnalyticsPluginErrorString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
 
-struct AnalyticsPluginErrorConstant {
+enum AnalyticsPluginErrorConstant {
     static let decodeConfigurationError: AnalyticsPluginErrorString = (
         "Unable to decode configuration",
         "Make sure the plugin configuration is JSONValue"

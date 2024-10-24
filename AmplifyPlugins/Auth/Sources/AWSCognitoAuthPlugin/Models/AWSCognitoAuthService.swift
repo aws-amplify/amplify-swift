@@ -20,6 +20,8 @@ public enum AWSCognitoAuthService {
 
     /// Both AWS Cognito User Pool and AWS Identity Pool  auth services are configured. The associated
     /// value contains the underlying low level clients.
-    case userPoolAndIdentityPool(CognitoIdentityProviderClient,
-                                 CognitoIdentityClient)
+    case userPoolAndIdentityPool(
+        CognitoIdentityProviderClient,
+        CognitoIdentityClient
+    )
 }

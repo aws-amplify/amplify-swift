@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 /// Custom implementation of Codable for AnyModel stores the instance as its JSON string representation and uses the
 /// ModelRegistry utilities to deserialize it

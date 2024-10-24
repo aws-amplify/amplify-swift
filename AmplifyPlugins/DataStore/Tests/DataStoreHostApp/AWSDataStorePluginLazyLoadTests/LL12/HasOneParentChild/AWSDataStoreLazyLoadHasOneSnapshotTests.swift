@@ -5,21 +5,21 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 extension AWSDataStoreLazyLoadHasOneTests {
-    
+
     func testHasOneParentSelectionSets() {
         setUpModelRegistrationOnly(withModels: HasOneModels())
         continueAfterFailure = true
         let child = HasOneChild()
         let parent = HasOneParent(child: child, hasOneParentChildId: child.id)
-        
+
         // Create
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: parent, modelSchema: HasOneParent.schema)
         let createDocument = """
@@ -47,7 +47,7 @@ extension AWSDataStoreLazyLoadHasOneTests {
         }
         """
         XCTAssertEqual(createRequest.document, createDocument)
-        
+
         // Update
         let updateRequest = GraphQLRequest<MutationSyncResult>.updateMutation(of: parent, modelSchema: HasOneParent.schema)
         let updateDocument = """
@@ -75,7 +75,7 @@ extension AWSDataStoreLazyLoadHasOneTests {
         }
         """
         XCTAssertEqual(updateRequest.document, updateDocument)
-        
+
         // Delete
         let deleteRequest = GraphQLRequest<MutationSyncResult>.deleteMutation(of: parent, modelSchema: HasOneParent.schema)
         let deleteDocument = """
@@ -103,7 +103,7 @@ extension AWSDataStoreLazyLoadHasOneTests {
         }
         """
         XCTAssertEqual(deleteRequest.document, deleteDocument)
-        
+
         // onCreate
         let onCreateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: HasOneParent.self, subscriptionType: .onCreate)
         let onCreateDocument = """
@@ -126,7 +126,7 @@ extension AWSDataStoreLazyLoadHasOneTests {
         }
         """
         XCTAssertEqual(onCreateRequest.document, onCreateDocument)
-        
+
         // onUpdate
         let onUpdateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: HasOneParent.self, subscriptionType: .onUpdate)
         let onUpdateDocument = """
@@ -149,7 +149,7 @@ extension AWSDataStoreLazyLoadHasOneTests {
         }
         """
         XCTAssertEqual(onUpdateRequest.document, onUpdateDocument)
-        
+
         // onDelete
         let onDeleteRequest = GraphQLRequest<MutationSyncResult>.subscription(to: HasOneParent.self, subscriptionType: .onDelete)
         let onDeleteDocument = """
@@ -172,7 +172,7 @@ extension AWSDataStoreLazyLoadHasOneTests {
         }
         """
         XCTAssertEqual(onDeleteRequest.document, onDeleteDocument)
-        
+
         // SyncQuery
         let syncRequest = GraphQLRequest<MutationSyncResult>.syncQuery(modelType: HasOneParent.self)
         let syncDocument = """
@@ -200,12 +200,12 @@ extension AWSDataStoreLazyLoadHasOneTests {
         """
         XCTAssertEqual(syncRequest.document, syncDocument)
     }
-    
+
     func testHasOneChildSelectionSets() {
         setUpModelRegistrationOnly(withModels: HasOneModels())
         continueAfterFailure = true
         let child = HasOneChild()
-        
+
         // Create
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: child, modelSchema: HasOneChild.schema)
         let createDocument = """
@@ -223,7 +223,7 @@ extension AWSDataStoreLazyLoadHasOneTests {
         }
         """
         XCTAssertEqual(createRequest.document, createDocument)
-        
+
         // Update
         let updateRequest = GraphQLRequest<MutationSyncResult>.updateMutation(of: child, modelSchema: HasOneChild.schema)
         let updateDocument = """
@@ -241,7 +241,7 @@ extension AWSDataStoreLazyLoadHasOneTests {
         }
         """
         XCTAssertEqual(updateRequest.document, updateDocument)
-        
+
         // Delete
         let deleteRequest = GraphQLRequest<MutationSyncResult>.deleteMutation(of: child, modelSchema: HasOneChild.schema)
         let deleteDocument = """
@@ -259,7 +259,7 @@ extension AWSDataStoreLazyLoadHasOneTests {
         }
         """
         XCTAssertEqual(deleteRequest.document, deleteDocument)
-        
+
         // onCreate
         let onCreateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: HasOneChild.schema, subscriptionType: .onCreate)
         let onCreateDocument = """
@@ -277,7 +277,7 @@ extension AWSDataStoreLazyLoadHasOneTests {
         }
         """
         XCTAssertEqual(onCreateRequest.document, onCreateDocument)
-        
+
         // onUpdate
         let onUpdateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: HasOneChild.self, subscriptionType: .onUpdate)
         let onUpdateDocument = """
@@ -295,7 +295,7 @@ extension AWSDataStoreLazyLoadHasOneTests {
         }
         """
         XCTAssertEqual(onUpdateRequest.document, onUpdateDocument)
-        
+
         // onDelete
         let onDeleteRequest = GraphQLRequest<MutationSyncResult>.subscription(to: HasOneChild.self, subscriptionType: .onDelete)
         let onDeleteDocument = """
@@ -313,7 +313,7 @@ extension AWSDataStoreLazyLoadHasOneTests {
         }
         """
         XCTAssertEqual(onDeleteRequest.document, onDeleteDocument)
-        
+
         // SyncQuery
         let syncRequest = GraphQLRequest<MutationSyncResult>.syncQuery(modelType: HasOneChild.self)
         let syncDocument = """
