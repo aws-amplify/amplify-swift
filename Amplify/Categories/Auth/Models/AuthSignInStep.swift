@@ -39,6 +39,19 @@ public enum AuthSignInStep {
     ///
     case continueSignInWithMFASelection(AllowedMFATypes)
 
+    /// Auth step is for continuing sign in by setting up EMAIL multi factor authentication.
+    ///
+    case continueSignInWithEmailMFASetup
+
+    /// Auth step is for continuing sign in by selecting multi factor authentication type to setup
+    ///
+    case continueSignInWithMFASetupSelection(AllowedMFATypes)
+
+    /// Auth step is for confirming sign in with OTP
+    ///
+    /// OTP for the factor will be sent to the delivery medium.
+    case confirmSignInWithOTP(AuthCodeDeliveryDetails)
+
     /// Auth step required the user to change their password.
     ///
     case resetPassword(AdditionalInfo?)
@@ -51,3 +64,5 @@ public enum AuthSignInStep {
     ///
     case done
 }
+
+extension AuthSignInStep: Equatable { }

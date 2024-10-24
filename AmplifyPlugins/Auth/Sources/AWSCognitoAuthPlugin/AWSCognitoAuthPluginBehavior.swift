@@ -49,6 +49,7 @@ protocol AWSCognitoAuthPluginBehavior: AuthCategoryPlugin {
     ///   - totp: The preference that needs to be updated for TOTP
     func updateMFAPreference(
         sms: MFAPreference?,
-        totp: MFAPreference?
+        totp: MFAPreference?,
+        email: MFAPreference?
     ) async throws
 }

@@ -22,10 +22,20 @@ enum AuthSignInHelper {
         password: String,
         email: String,
         phoneNumber: String? = nil) async throws -> Bool {
+            return try await signUpUserReturningResult(username: username, password: password, email: email, phoneNumber: phoneNumber).isSignUpComplete
+        }
 
-            var userAttributes = [
-                AuthUserAttribute(.email, value: email)
-            ]
+    static func signUpUserReturningResult(
+        username: String,
+        password: String,
+        email: String? = nil,
+        phoneNumber: String? = nil) async throws -> AuthSignUpResult {
+
+            var userAttributes: [AuthUserAttribute] = []
+
+            if let email = email {
+                userAttributes.append(AuthUserAttribute(.email, value: email))
+            }
 
             if let phoneNumber = phoneNumber {
                 userAttributes.append(AuthUserAttribute(.phoneNumber, value: phoneNumber))
@@ -34,7 +44,7 @@ enum AuthSignInHelper {
             let options = AuthSignUpRequest.Options(
                 userAttributes: userAttributes)
             let result = try await Amplify.Auth.signUp(username: username, password: password, options: options)
-            return result.isSignUpComplete
+            return result
         }
 
     static func signInUser(username: String, password: String) async throws -> AuthSignInResult {
@@ -46,7 +56,7 @@ enum AuthSignInHelper {
         password: String,
         email: String,
         phoneNumber: String? = nil) async throws -> Bool {
-            let signedUp = try await AuthSignInHelper.signUpUser(
+            let signedUp: Bool = try await AuthSignInHelper.signUpUser(
                 username: username,
                 password: password,
                 email: email,

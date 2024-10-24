@@ -52,4 +52,17 @@ extension MFAPreference {
             return .init(enabled: false)
         }
     }
+
+    func emailSetting(isCurrentlyPreferred: Bool = false) -> CognitoIdentityProviderClientTypes.EmailMfaSettingsType {
+        switch self {
+        case .enabled:
+            return .init(enabled: true, preferredMfa: isCurrentlyPreferred)
+        case .preferred:
+            return .init(enabled: true, preferredMfa: true)
+        case .notPreferred:
+            return .init(enabled: true, preferredMfa: false)
+        case .disabled:
+            return .init(enabled: false)
+        }
+    }
 }

@@ -22,7 +22,8 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
                 .resolvingChallenge(
                     .waitingForAnswer(
                         .testData(challenge: .selectMfaType),
-                        .apiBased(.userSRP)
+                        .apiBased(.userSRP),
+                        .confirmSignInWithTOTPCode
                     ),
                     .selectMFAType,
                     .apiBased(.userSRP))),

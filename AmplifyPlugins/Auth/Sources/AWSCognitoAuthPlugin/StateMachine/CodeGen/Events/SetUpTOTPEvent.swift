@@ -14,7 +14,7 @@ struct SetUpTOTPEvent: StateMachineEvent {
 
     enum EventType {
 
-        case setUpTOTP(SignInResponseBehavior)
+        case setUpTOTP(RespondToAuthChallenge)
 
         case waitForAnswer(SignInTOTPSetupData)
 
