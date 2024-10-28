@@ -4,6 +4,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
+import enum Amplify.AuthFactorType
 import Foundation
 
 extension WebAuthnSignInState {
@@ -18,10 +20,9 @@ extension WebAuthnSignInState {
             oldState: StateType,
             byApplying event: StateMachineEvent)
         -> StateResolution<StateType> {
-            if let signInEvent = event as? SignInEvent,
-               case .throwAuthError(let error) = signInEvent.eventType {
-                return StateResolution(
-                    newState: WebAuthnSignInState.cancelled(error)
+            if case .error(let error, let challenge) = event.isWebAuthnEvent {
+                return .init(
+                    newState: .error(.webAuthn(error), challenge)
                 )
             }
 
@@ -75,8 +76,23 @@ extension WebAuthnSignInState {
                 }
             case .signedIn:
                 return .from(oldState)
-            case .cancelled(_):
-                return .from(oldState)
+            case .error(_, let challenge):
+                // The WebAuthn flow can be retried on error state when confirming Sign In,
+                // so if we receive a new .verifyChallengeAnswer event for WebAuthn, we'll restart the flow
+                if case .verifyChallengeAnswer(let data) = event.isChallengeEvent,
+                   let authFactorType = AuthFactorType(rawValue: data.answer),
+                   case .webAuthn = authFactorType {
+                    let action = VerifySignInChallenge(
+                        challenge: challenge,
+                        confirmSignEventData: data,
+                        signInMethod: .apiBased(.userAuth),
+                        currentSignInStep: .continueSignInWithFirstFactorSelection([authFactorType])
+                    )
+                    return .init(
+                        newState: .notStarted,
+                        actions: [action]
+                    )
+                }
             }
             return .from(oldState)
         }

@@ -10,21 +10,7 @@ import Foundation
 
 struct WebAuthnSignInData {
     let username: String
-    private(set) var presentationAnchor: AuthUIPresentationAnchor? = nil
-
-    init(
-        username: String,
-        presentationAnchor: AuthUIPresentationAnchor? = nil
-    ) {
-        self.username = username
-        self.presentationAnchor = presentationAnchor
-    }
-}
-
-extension WebAuthnSignInData: Codable {
-    private enum CodingKeys: String, CodingKey {
-        case username
-    }
+    let presentationAnchor: AuthUIPresentationAnchor?
 }
 
 extension WebAuthnSignInData: Equatable {}

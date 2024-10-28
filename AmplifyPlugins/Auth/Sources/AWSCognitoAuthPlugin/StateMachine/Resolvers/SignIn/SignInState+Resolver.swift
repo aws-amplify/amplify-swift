@@ -464,18 +464,44 @@ extension SignInState {
 
                 }
                 return .from(oldState)
-            case .signingInWithWebAuthn(let oldState):
+            case .signingInWithWebAuthn(let webAuthnState):
                 if #available(iOS 17.4, macOS 13.5, *) {
+                    if case .throwAuthError(let error) = event.isSignInEvent {
+                        let action = ThrowSignInError(error: error)
+                        return .init(
+                            newState: .error,
+                            actions: [action]
+                        )
+                    }
+
+                    if case .initiateWebAuthnSignIn(let data, let respondToAuthChallenge) = event.isSignInEvent {
+                        let action = InitializeWebAuthn(
+                            username: data.username,
+                            respondToAuthChallenge: respondToAuthChallenge,
+                            presentationAnchor: data.presentationAnchor
+                        )
+                        return .init(
+                            newState: .signingInWithWebAuthn(.notStarted),
+                            actions: [action]
+                        )
+                    }
+
                     let resolution = WebAuthnSignInState.Resolver().resolve(
-                        oldState: oldState,
+                        oldState: webAuthnState,
                         byApplying: event
                     )
-                    let signInState = SignInState.signingInWithWebAuthn(resolution.newState)
-                    return .init(newState: signInState, actions: resolution.actions)
+                    return .init(
+                        newState: .signingInWithWebAuthn(resolution.newState),
+                        actions: resolution.actions
+                    )
                 } else {
                     // "WebAuthn is not supported in this OS version
                     // It should technically never happen.
-                    return .init(newState: .error)
+                    let error = SignInError.unknown(message: "WebAuthn is not supported in this OS version")
+                    return .init(
+                        newState: .error,
+                        actions: [ThrowSignInError(error: error)]
+                    )
                 }
             }
         }

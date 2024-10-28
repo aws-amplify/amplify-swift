@@ -15,6 +15,7 @@ struct WebAuthnEvent: StateMachineEvent {
         case assertCredentials(CredentialAssertionOptions, Input)
         case verifyCredentialsAndSignIn(String, Input)
         case signedIn(SignedInData)
+        case error(WebAuthnError, RespondToAuthChallenge)
     }
 
     let id: String
@@ -27,6 +28,7 @@ struct WebAuthnEvent: StateMachineEvent {
         case .assertCredentials: return "WebAuthnEvent.assertCredentials"
         case .verifyCredentialsAndSignIn: return "WebAuthnEvent.verifyCredentials"
         case .signedIn: return "WebAuthnEvent.signedIn"
+        case .error: return "WebAuthnEvent.error"
         }
     }
 

@@ -22,8 +22,8 @@ extension WebAuthnSignInState: CustomDebugDictionaryConvertible {
             additionalMetadataDictionary = [:]
         case .verifyingCredentialsAndSigningIn:
             additionalMetadataDictionary = [:]
-        case .cancelled(let error):
-            additionalMetadataDictionary = ["Cancelled": error]
+        case .error(let error, _):
+            additionalMetadataDictionary = ["Error": error]
         case .signedIn(let signedInData):
             additionalMetadataDictionary = ["SignedInData": signedInData.debugDictionary]
         }

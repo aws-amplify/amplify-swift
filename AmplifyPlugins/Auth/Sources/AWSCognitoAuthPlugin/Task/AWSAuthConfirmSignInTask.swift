@@ -74,6 +74,14 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             default:
                 throw invalidStateError
             }
+        } else if case .signingInWithWebAuthn(let webAuthnState) = signInState {
+            switch webAuthnState {
+            case .error:
+                log.verbose("Sending initiate webAuthn signIn event: \(webAuthnState)")
+                await sendConfirmSignInEvent()
+            default:
+                throw invalidStateError
+            }
         }
 
         let stateSequences = await authStateMachine.listen()

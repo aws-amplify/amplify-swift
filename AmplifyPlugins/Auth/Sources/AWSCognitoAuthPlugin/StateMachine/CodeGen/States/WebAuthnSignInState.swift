@@ -11,7 +11,7 @@ enum WebAuthnSignInState: State {
     case assertingCredentials
     case verifyingCredentialsAndSigningIn
     case signedIn(SignedInData)
-    case cancelled(SignInError)
+    case error(SignInError, RespondToAuthChallenge)
 }
 
 extension WebAuthnSignInState {
@@ -22,7 +22,7 @@ extension WebAuthnSignInState {
         case .assertingCredentials: return "WebAuthnSignInState.assertingCredentialsWithAuthenticator"
         case .verifyingCredentialsAndSigningIn: return "WebAuthnSignInState.verifyingCredentials"
         case .signedIn: return "WebAuthnSignInState.signedIn"
-        case .cancelled:  return "WebAuthnSignInState.cancelled"
+        case .error:  return "WebAuthnSignInState.error"
         }
     }
 }

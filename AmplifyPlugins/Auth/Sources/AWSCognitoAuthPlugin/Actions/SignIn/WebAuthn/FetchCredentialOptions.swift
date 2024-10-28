@@ -66,9 +66,9 @@ struct FetchCredentialOptions: Action {
             await dispatcher.send(event)
         } catch {
             logVerbose("\(#fileID) Caught error \(error)", environment: environment)
-            let authError = SignInError.service(error: error)
-            let event = SignInEvent(
-                eventType: .throwAuthError(authError)
+            let webAuthnError = WebAuthnError.service(error: error)
+            let event = WebAuthnEvent(
+                eventType: .error(webAuthnError, respondToAuthChallenge)
             )
             await dispatcher.send(event)
         }

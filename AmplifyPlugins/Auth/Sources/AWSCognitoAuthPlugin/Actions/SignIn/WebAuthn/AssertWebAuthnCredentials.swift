@@ -53,14 +53,15 @@ struct AssertWebAuthnCredentials: Action {
             await dispatcher.send(event)
         } catch let error as WebAuthnError {
             logVerbose("\(#fileID) Raised error \(error)", environment: environment)
-            let event = SignInEvent(
-                eventType: .throwAuthError(.webAuthn(error))
+            let event = WebAuthnEvent(
+                eventType: .error(error, respondToAuthChallenge)
             )
             await dispatcher.send(event)
         } catch {
             logVerbose("\(#fileID) Raised error \(error)", environment: environment)
-            let event = SignInEvent(
-                eventType: .throwAuthError(.service(error: error))
+            let webAuthnError = WebAuthnError.service(error: error)
+            let event = WebAuthnEvent(
+                eventType: .error(webAuthnError, respondToAuthChallenge)
             )
             await dispatcher.send(event)
         }

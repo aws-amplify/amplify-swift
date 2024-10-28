@@ -53,7 +53,7 @@ struct UserPoolSignInHelper: DefaultLogger {
             return .init(nextStep: .continueSignInWithTOTPSetup(
                 .init(sharedSecret: totpSetupData.secretCode, username: totpSetupData.username)))
         } else if case .signingInWithWebAuthn(let webAuthnState) = signInState,
-                  case .cancelled(let signInError) = webAuthnState {
+                  case .error(let signInError, _) = webAuthnState {
             return try validateError(signInError: signInError)
         }
         return nil
