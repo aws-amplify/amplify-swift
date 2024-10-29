@@ -167,7 +167,7 @@ GEM
       trailblazer-option (>= 0.1.1, < 0.2.0)
       uber (< 0.2.0)
     retriable (3.1.2)
-    rexml (3.3.7)
+    rexml (3.3.9)
     rouge (2.0.7)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
@@ -208,6 +208,7 @@ GEM
 PLATFORMS
   arm64-darwin-21
   arm64-darwin-22
+  arm64-darwin-23
   universal-darwin-20
   x86_64-darwin-19
   x86_64-darwin-21
@@ -217,4 +218,4 @@ DEPENDENCIES
   fastlane
 
 BUNDLED WITH
-   2.3.7
+   2.5.22
