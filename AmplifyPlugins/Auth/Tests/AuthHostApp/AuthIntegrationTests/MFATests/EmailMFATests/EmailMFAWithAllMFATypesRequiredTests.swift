@@ -96,7 +96,7 @@ class EmailMFAWithAllMFATypesRequiredTests: AWSAuthBaseTest {
             // Step 1: Set up a subscription to receive MFA codes
             createMFASubscription()
             let uniqueId = UUID().uuidString
-            let username = "\(uniqueId)@integTest.com"
+            let username = randomEmail
             let password = "Pp123@\(uniqueId)"
 
             // Step 2: Sign up a new user with email
@@ -190,7 +190,7 @@ class EmailMFAWithAllMFATypesRequiredTests: AWSAuthBaseTest {
 
             // Step 7: Provide the email address to complete the setup
             confirmSignInResult = try await Amplify.Auth.confirmSignIn(
-                challengeResponse: username + "@integTest.com")
+                challengeResponse: defaultTestEmail)
 
             // Step 8: Verify that the next step is to confirm the Email MFA code
             guard case .confirmSignInWithOTP(let deliveryDetails) = confirmSignInResult.nextStep else {
