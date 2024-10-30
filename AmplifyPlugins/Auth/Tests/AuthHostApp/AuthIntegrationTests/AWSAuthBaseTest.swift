@@ -9,15 +9,17 @@ import XCTest
 @_spi(InternalAmplifyConfiguration) @testable import Amplify
 import AWSCognitoAuthPlugin
 
+fileprivate let internalTestDomain = "@amplify-swift-gamma.awsapps.com"
+
 class AWSAuthBaseTest: XCTestCase {
 
     let networkTimeout = TimeInterval(5)
 
-    var defaultTestEmail = "test-\(UUID().uuidString)@amazon.com"
+    var defaultTestEmail = "test-\(UUID().uuidString)\(internalTestDomain)"
     var defaultTestPassword = UUID().uuidString
 
     var randomEmail: String {
-        "test-\(UUID().uuidString)@amazon.com"
+        "test-\(UUID().uuidString)\(internalTestDomain)"
     }
 
     var randomPhoneNumber: String {

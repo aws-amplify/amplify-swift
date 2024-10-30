@@ -86,7 +86,7 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
 
             // Step 5: Provide the email address to complete MFA setup
             var confirmSignInResult = try await Amplify.Auth.confirmSignIn(
-                challengeResponse: username + "@integTest.com")
+                challengeResponse: defaultTestEmail)
 
             // Step 6: Ensure that the next step is to confirm the Email MFA code
             guard case .confirmSignInWithOTP(let deliveryDetails) = confirmSignInResult.nextStep else {
@@ -121,7 +121,7 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
 
             // Step 9: Verify that the email is associated with the user account
             let attributes = try await Amplify.Auth.fetchUserAttributes()
-            XCTAssertEqual(attributes.first(where: { $0.key == .email })?.value, username + "@integTest.com")
+            XCTAssertEqual(attributes.first(where: { $0.key == .email })?.value, defaultTestEmail)
         } catch {
             XCTFail("Unexpected error: \(error)")
         }
@@ -154,7 +154,7 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
             _ = try await AuthSignInHelper.signUpUserReturningResult(
                 username: username,
                 password: password,
-                email: username + "@integTest.com")
+                email: defaultTestEmail)
 
             let options = AuthSignInRequest.Options()
 
