@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.44.0 (2024-10-31)
+
+### Features
+
+- **auth**: adding support for email mfa (#3862)
+
 ## 2.43.0 (2024-10-22)
 
 ### Features
