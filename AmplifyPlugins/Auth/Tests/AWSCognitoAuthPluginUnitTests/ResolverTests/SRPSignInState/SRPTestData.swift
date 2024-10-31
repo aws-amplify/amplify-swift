@@ -110,12 +110,13 @@ extension RespondToAuthChallengeOutput {
 
     static func testData(
         challenge: CognitoIdentityProviderClientTypes.ChallengeNameType = .smsMfa,
-        challengeParameters: [String: String] = [:]) -> RespondToAuthChallengeOutput {
+        challengeParameters: [String: String] = [:],
+        session: String = "session") -> RespondToAuthChallengeOutput {
             return RespondToAuthChallengeOutput(
                 authenticationResult: nil,
                 challengeName: challenge,
                 challengeParameters: challengeParameters,
-                session: "session")
+                session: session)
         }
 
 }
