@@ -13,6 +13,8 @@ struct InitializeSignInFlow: Action {
     var identifier: String = "IntializeSignInFlow"
 
     let signInEventData: SignInEventData
+    
+    let autoSignIn: Bool
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
@@ -66,7 +68,11 @@ struct InitializeSignInFlow: Action {
         case .custom:
             return .init(eventType: .initiateCustomSignInWithSRP(signInEventData, deviceMetadata))
         case .userAuth:
-            return .init(eventType: .initiateUserAuth(signInEventData, deviceMetadata))
+            if autoSignIn {
+                return .init(eventType: .initiateAutoSignIn(signInEventData, deviceMetadata))
+            } else {
+                return .init(eventType: .initiateUserAuth(signInEventData, deviceMetadata))
+            }
         }
     }
 }

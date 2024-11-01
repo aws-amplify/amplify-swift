@@ -26,7 +26,7 @@ struct ClearFederationToIdentityPool: Action {
                 try await credentialStoreClient?.deleteData(type: .amplifyCredentials)
                 event = AuthenticationEvent.init(eventType: .clearedFederationToIdentityPool)
             } else {
-                let error = AuthenticationError.service(message: "Unable to find credentials to clear for federation.")
+                let error = AuthenticationError.service(message: "Unable to find credentials to clear for federation.", error: nil)
                 event = AuthenticationEvent.init(eventType: .error(error))
                 logError("\(#fileID) Sending event \(event.type) with error \(error)", environment: environment)
             }

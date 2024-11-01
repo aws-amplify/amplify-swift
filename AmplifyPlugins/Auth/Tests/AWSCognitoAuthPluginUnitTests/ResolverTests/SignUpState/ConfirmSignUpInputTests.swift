@@ -32,6 +32,7 @@ class ConfirmSignUpInputTests: XCTestCase {
             clientMetadata: [:],
             asfDeviceId: "asdfDeviceId",
             forceAliasCreation: nil,
+            session: nil,
             environment: environment)
 
         XCTAssertNotNil(confirmSignUpInput.secretHash)
@@ -57,6 +58,7 @@ class ConfirmSignUpInputTests: XCTestCase {
             clientMetadata: [:],
             asfDeviceId: nil,
             forceAliasCreation: nil,
+            session: nil,
             environment: environment)
 
         XCTAssertNil(confirmSignUpInput.secretHash)

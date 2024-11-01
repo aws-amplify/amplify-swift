@@ -65,6 +65,13 @@ extension SignInState {
                     return .init(newState: .signingInWithUserAuth(signInEventData),
                                  actions: [action])
                 }
+                if case .initiateAutoSignIn(let signInEventData, let deviceMetadata) = event.isSignInEvent {
+                    let action = AutoSignIn(
+                        signInEventData: signInEventData,
+                        deviceMetadata: deviceMetadata)
+                    return .init(newState: .autoSigningIn(signInEventData),
+                                 actions: [action])
+                }
                 return .from(oldState)
 
             case .signingInWithHostedUI(let hostedUIState):
@@ -503,6 +510,20 @@ extension SignInState {
                         actions: [ThrowSignInError(error: error)]
                     )
                 }
+            case .autoSigningIn:
+                if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
+                    return .init(newState: .signedIn(signedInData),
+                                 actions: [SignInComplete(signedInData: signedInData)])
+                }
+                if let signInEvent = event as? SignInEvent,
+                   case .throwAuthError(let error) = signInEvent.eventType {
+                    let action = ThrowSignInError(error: error)
+                    return StateResolution(
+                        newState: .error,
+                        actions: [action])
+
+                }
+                return .from(oldState)
             }
         }
 

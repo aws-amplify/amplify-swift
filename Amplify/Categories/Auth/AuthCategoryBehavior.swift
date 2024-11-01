@@ -102,6 +102,10 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
         options: AuthConfirmSignInRequest.Options?
     ) async throws -> AuthSignInResult
 
+    
+    /// Auto signs in the user for passwordless sign up
+    func autoSignIn() async throws -> AuthSignInResult
+    
     /// Sign out the currently logged-in user.
     ///
     /// - Parameters:

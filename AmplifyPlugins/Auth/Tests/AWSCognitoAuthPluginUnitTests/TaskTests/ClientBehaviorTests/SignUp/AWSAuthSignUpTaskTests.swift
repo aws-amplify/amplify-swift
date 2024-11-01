@@ -14,35 +14,28 @@ import ClientRuntime
 
 import AWSCognitoIdentityProvider
 
-class AWSAuthSignUpTaskTests: XCTestCase {
+class AWSAuthSignUpTaskTests: BasePluginTest {
 
-    var queue: OperationQueue?
-
-    let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
-
-    override func setUp() {
-        super.setUp()
-        queue = OperationQueue()
-        queue?.maxConcurrentOperationCount = 1
+    override var initialState: AuthState {
+        AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured, .notStarted)
     }
 
     func testSignUpOperationSuccess() async throws {
-        let functionExpectation = expectation(description: "API call should be invoked")
-
-        let signUp: MockIdentityProvider.MockSignUpResponse = { _ in
-            functionExpectation.fulfill()
-            return .init(codeDeliveryDetails: nil, userConfirmed: true, userSub: UUID().uuidString)
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockSignUpResponse: { _ in
+                return .init(codeDeliveryDetails: nil, 
+                             userConfirmed: true,
+                             userSub: UUID().uuidString)
+            }
+        )
+        let signUpResult = try await plugin.signUp(username: "jeffb",
+                                                   password: "Valid&99",
+                                                   options: AuthSignUpRequest.Options())
+        XCTAssertTrue(signUpResult.isSignUpComplete)
+        guard case .done = signUpResult.nextStep else {
+            XCTFail("Next step should be done")
+            return
         }
-
-        let request = AuthSignUpRequest(username: "jeffb",
-                                        password: "Valid&99",
-                                        options: AuthSignUpRequest.Options())
-        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
-            userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
-        let task = AWSAuthSignUpTask(request, authEnvironment: authEnvironment)
-        let signUpResult = try await task.value
-        print("Sign Up Result: \(signUpResult)")
-        await fulfillment(of: [functionExpectation], timeout: 1)
     }
 
     /// Given: Configured AuthState machine
@@ -50,49 +43,21 @@ class AWSAuthSignUpTaskTests: XCTestCase {
     /// Then: Should complete the signUp flow with an error
     ///
     func testSignUpOperationFailure() async throws {
-        let functionExpectation = expectation(description: "API call should be invoked")
-        let signUp: MockIdentityProvider.MockSignUpResponse = { _ in
-            functionExpectation.fulfill()
-            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
-                httpResponse: MockHttpResponse.ok, message: nil, requestID: nil, typeName: nil
-            )
-        }
-
-        let request = AuthSignUpRequest(username: "jeffb",
-                                        password: "Valid&99",
-                                        options: AuthSignUpRequest.Options())
-
-        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
-            userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
-        let task = AWSAuthSignUpTask(request, authEnvironment: authEnvironment)
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockSignUpResponse: { _ in
+                throw AWSClientRuntime.UnknownAWSHTTPServiceError(
+                    httpResponse: MockHttpResponse.ok, message: nil, requestID: nil, typeName: nil
+                )
+            }
+        )
+        
         do {
-            _ = try await task.value
-            XCTFail("Should not produce success response")
-        } catch {
+            let _ = try await plugin.signUp(username: "jeffb",
+                                                       password: "Valid&99",
+                                                       options: AuthSignUpRequest.Options())
+            XCTFail("Should result in failure")
+        } catch (let error) {
+            XCTAssertNotNil(error)
         }
-        await fulfillment(of: [functionExpectation], timeout: 1)
-    }
-
-    /// Given: Configured AuthState machine with existing signUp flow
-    /// When: A new SignUp operation is added to the queue
-    /// Then: Should cancel the existing signUp flow and start a new flow and complete
-    ///
-    func testCancelExistingSignUp() async throws {
-        Amplify.Logging.logLevel = .verbose
-        let functionExpectation = expectation(description: "API call should be invoked")
-        let signUp: MockIdentityProvider.MockSignUpResponse = { _ in
-            functionExpectation.fulfill()
-            return .init(codeDeliveryDetails: nil, userConfirmed: true, userSub: UUID().uuidString)
-        }
-
-        let request = AuthSignUpRequest(username: "jeffb",
-                                        password: "Valid&99",
-                                        options: AuthSignUpRequest.Options())
-
-        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
-            userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
-        let task = AWSAuthSignUpTask(request, authEnvironment: authEnvironment)
-        _ = try await task.value
-        await fulfillment(of: [functionExpectation], timeout: 1)
     }
 }

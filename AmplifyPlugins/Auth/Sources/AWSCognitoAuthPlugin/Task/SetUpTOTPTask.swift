@@ -55,7 +55,7 @@ class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
         let authUser: AuthUser
 
         let currentState = await authStateMachine.currentState
-        if case .configured(let authNState, _) = currentState,
+        if case .configured(let authNState, _, _) = currentState,
            case .signedIn(let signInData) = authNState {
             authUser = AWSAuthUser(username: signInData.username, userId: signInData.userId)
         } else {

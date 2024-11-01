@@ -14,7 +14,7 @@ struct ClearFederationOperationHelper {
 
         let currentState = await authStateMachine.currentState
 
-        guard case .configured(let authNState, let authZState) = currentState else {
+        guard case .configured(let authNState, let authZState, _) = currentState else {
             let authError = AuthError.invalidState(
                 "Clearing of federation failed.",
                 AuthPluginErrorConstants.invalidStateError, nil)
@@ -38,7 +38,7 @@ struct ClearFederationOperationHelper {
         await authStateMachine.send(event)
         let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
-            guard  case .configured(let authNState, _) = state else {
+            guard  case .configured(let authNState, _, _) = state else {
                 continue
             }
 

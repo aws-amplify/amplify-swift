@@ -14,7 +14,7 @@ import ClientRuntime
 
 class AWSAuthSignInOptionsTestCase: BasePluginTest {
     override var initialState: AuthState {
-        AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
+        AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured, .notStarted)
     }
 
     override func setUp() {
@@ -176,7 +176,7 @@ class AWSAuthSignInOptionsTestCase: BasePluginTest {
 
 fileprivate extension AuthState {
     var authenticationState: AuthenticationState? {
-        if case .configured(let authenticationState, _) = self {
+        if case .configured(let authenticationState, _, _) = self {
             return authenticationState
         }
         return nil

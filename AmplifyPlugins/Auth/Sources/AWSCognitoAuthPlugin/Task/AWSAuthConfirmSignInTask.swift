@@ -47,7 +47,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             "User is not attempting signIn operation",
             AuthPluginErrorConstants.invalidStateError, nil)
 
-        guard case .configured(let authNState, _) = await authStateMachine.currentState,
+        guard case .configured(let authNState, _, _) = await authStateMachine.currentState,
               case .signingIn(let signInState) = authNState else {
             throw invalidStateError
         }
@@ -87,7 +87,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         let stateSequences = await authStateMachine.listen()
         log.verbose("Waiting for response")
         for await state in stateSequences {
-               guard case .configured(let authNState, let authZState) = state else {
+               guard case .configured(let authNState, let authZState, _) = state else {
                    continue
                }
                switch authNState {

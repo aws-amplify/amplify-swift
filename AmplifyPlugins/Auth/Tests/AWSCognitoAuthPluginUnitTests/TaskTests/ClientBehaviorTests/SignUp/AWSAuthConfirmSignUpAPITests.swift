@@ -18,10 +18,13 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
     let options = AuthConfirmSignUpRequest.Options()
 
     override var initialState: AuthState {
-        AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
+        AuthState.configured(
+            .signedOut(.init(lastKnownUserName: nil)),
+            .configured, 
+            .awaitingUserConfirmation(SignUpEventData(username: "jeffb"), .init(.confirmUser())))
     }
 
-    func testSuccessfulSignUp() async throws {
+    func testSuccessfulConfirmSignUp() async throws {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { request in
@@ -43,7 +46,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
     }
 
-    func testSuccessfulSignUpWithOptions() async throws {
+    func testSuccessfulConfirmSignUpWithOptions() async throws {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { request in
@@ -70,7 +73,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
     }
 
-    func testSignUpWithEmptyUsername() async {
+    func testConfirmSignUpWithEmptyUsername() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
@@ -94,7 +97,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         }
     }
 
-    func testSignUpWithEmptyConfirmationCode() async {
+    func testConfirmSignUpWithEmptyConfirmationCode() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
@@ -118,7 +121,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         }
     }
 
-    func testSignUpServiceError() async {
+    func testConfirmSignUpServiceError() async {
 
         let errorsToTest: [(confirmSignUpOutputError: Error, cognitoError: AWSCognitoAuthError)] = [
             (AWSCognitoIdentityProvider.AliasExistsException(), .aliasExists),
@@ -141,7 +144,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         }
     }
 
-    func testSignUpWithNotAuthorizedException() async {
+    func testConfirmSignUpWithNotAuthorizedException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
@@ -173,7 +176,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         }
     }
 
-    func testSignUpWithInternalErrorException() async {
+    func testConfirmSignUpWithInternalErrorException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
@@ -201,7 +204,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         }
     }
 
-    func testSignUpWithUnknownErrorException() async {
+    func testConfirmSignUpWithUnknownErrorException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in

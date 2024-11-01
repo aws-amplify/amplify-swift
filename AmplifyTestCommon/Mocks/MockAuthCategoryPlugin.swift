@@ -61,6 +61,10 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
     public func signOut(options: AuthSignOutRequest.Options? = nil) async -> AuthSignOutResult {
         fatalError()
     }
+    
+    func autoSignIn() async throws -> AuthSignInResult {
+        fatalError()
+    }
 
     public func deleteUser() async throws {
         fatalError()

@@ -48,6 +48,8 @@ extension SignInState: CustomDebugDictionaryConvertible {
             additionalMetadataDictionary = [
                 "SignInTOTPSetupState": signInTOTPSetupState.debugDictionary,
                 "SignInEventData": signInEventData.debugDictionary]
+        case .autoSigningIn(let data):
+            additionalMetadataDictionary = ["SignInData": data.debugDictionary]
         case .error:
             additionalMetadataDictionary = [:]
         case .signingInWithUserAuth(let signInEventData):

@@ -37,7 +37,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testData))
+                AmplifyCredentials.testData),
+            .notStarted)
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
@@ -92,7 +93,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testData))
+                AmplifyCredentials.testData),
+            .notStarted)
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             resultExpectation.fulfill()
             return InitiateAuthOutput(authenticationResult: .init(
@@ -152,7 +154,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedOut(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataIdentityPoolWithExpiredTokens))
+                AmplifyCredentials.testDataIdentityPoolWithExpiredTokens),
+            .notStarted)
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
@@ -206,7 +209,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataWithExpiredTokens))
+                AmplifyCredentials.testDataWithExpiredTokens),
+            .notStarted)
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             throw AWSCognitoIdentityProvider.NotAuthorizedException()
@@ -254,7 +258,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataWithExpiredTokens))
+                AmplifyCredentials.testDataWithExpiredTokens),
+            .notStarted)
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             return InitiateAuthOutput(authenticationResult: .init(accessToken: "accessToken",
@@ -486,7 +491,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataWithExpiredTokens))
+                AmplifyCredentials.testDataWithExpiredTokens),
+            .notStarted)
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             return InitiateAuthOutput(authenticationResult: .init(accessToken: nil,
@@ -539,7 +545,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataWithExpiredTokens))
+                AmplifyCredentials.testDataWithExpiredTokens),
+            .notStarted)
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             return InitiateAuthOutput(authenticationResult: .init(accessToken: "accessToken",
@@ -596,7 +603,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
 
         let initialState = AuthState.configured(
             AuthenticationState.signedOut(.testData),
-            AuthorizationState.error(.sessionError(.service(AuthError.unknown("error")), .noCredentials)))
+            AuthorizationState.error(.sessionError(.service(AuthError.unknown("error")), .noCredentials)),
+            .notStarted)
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
@@ -650,7 +658,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedOut(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataIdentityPoolWithExpiredTokens))
+                AmplifyCredentials.testDataIdentityPoolWithExpiredTokens),
+            .notStarted)
 
         let awsCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
             let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
@@ -702,7 +711,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataWithExpiredTokens))
+                AmplifyCredentials.testDataWithExpiredTokens),
+            .notStarted)
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             throw AWSCognitoIdentityProvider.NotAuthorizedException(message: "NotAuthorized")
@@ -755,7 +765,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signingIn(
                 .resolvingChallenge(challenge, .smsMfa, signInMethod)),
-            AuthorizationState.configured
+            AuthorizationState.configured,
+            .notStarted
         )
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
@@ -802,7 +813,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataWithExpiredTokens))
+                AmplifyCredentials.testDataWithExpiredTokens),
+            .notStarted)
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             return InitiateAuthOutput(authenticationResult: .init(accessToken: "accessToken",

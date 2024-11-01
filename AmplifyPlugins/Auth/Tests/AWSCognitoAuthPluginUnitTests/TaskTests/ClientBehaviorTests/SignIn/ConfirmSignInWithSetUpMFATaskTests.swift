@@ -25,7 +25,8 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
                         session: "session",
                         username: "username")),
                     .testData)),
-            AuthorizationState.sessionEstablished(.testData))
+            AuthorizationState.sessionEstablished(.testData),
+            .notStarted)
     }
 
     /// Test a successful confirmSignIn call with .done as next step

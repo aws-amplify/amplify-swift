@@ -32,6 +32,8 @@ struct SignInEvent: StateMachineEvent {
         case initiateUserAuth(SignInEventData, DeviceMetadata)
 
         case initiateWebAuthnSignIn(WebAuthnSignInData, RespondToAuthChallenge)
+        
+        case initiateAutoSignIn(SignInEventData, DeviceMetadata)
 
         case respondPasswordVerifier(SRPStateData, SignInResponseBehavior, ClientMetadata)
 
@@ -73,6 +75,7 @@ struct SignInEvent: StateMachineEvent {
         case .initiateMigrateAuth: return "SignInEvent.initiateMigrateAuth"
         case .initiateUserAuth: return "SignInEvent.initiateUserAuth"
         case .initiateDeviceSRP: return "SignInEvent.initiateDeviceSRP"
+        case .initiateAutoSignIn: return "SignInEvent.initiateAutoSignIn"
         case .respondDeviceSRPChallenge: return "SignInEvent.respondDeviceSRPChallenge"
         case .respondDevicePasswordVerifier: return "SignInEvent.respondDevicePasswordVerifier"
         case .respondPasswordVerifier: return "SignInEvent.respondPasswordVerifier"

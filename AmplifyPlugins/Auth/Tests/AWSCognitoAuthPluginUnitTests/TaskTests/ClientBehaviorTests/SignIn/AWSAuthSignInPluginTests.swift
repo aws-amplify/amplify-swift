@@ -15,7 +15,7 @@ import ClientRuntime
 class AWSAuthSignInPluginTests: BasePluginTest {
 
     override var initialState: AuthState {
-        AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
+        AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured, .notStarted)
     }
 
     /// Test a signIn with valid inputs

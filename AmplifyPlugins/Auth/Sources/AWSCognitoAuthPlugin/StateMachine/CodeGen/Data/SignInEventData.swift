@@ -16,6 +16,8 @@ struct SignInEventData {
     let clientMetadata: [String: String]
 
     let signInMethod: SignInMethod
+    
+    let session: String?
 
     private(set) var presentationAnchor: AuthUIPresentationAnchor? = nil
 
@@ -24,12 +26,14 @@ struct SignInEventData {
         password: String?,
         clientMetadata: [String: String] = [:],
         signInMethod: SignInMethod,
+        session: String? = nil,
         presentationAnchor: AuthUIPresentationAnchor? = nil
     ) {
         self.username = username
         self.password = password
         self.clientMetadata = clientMetadata
         self.signInMethod = signInMethod
+        self.session = session
         self.presentationAnchor = presentationAnchor
     }
 
@@ -50,7 +54,8 @@ extension SignInEventData: CustomDebugDictionaryConvertible {
             "username": username.masked(),
             "password": password.redacted(),
             "clientMetadata": clientMetadata,
-            "signInMethod": signInMethod
+            "signInMethod": signInMethod,
+            "session": session?.redacted() ?? ""
         ]
     }
 }
@@ -62,6 +67,6 @@ extension SignInEventData: CustomDebugStringConvertible {
 
 extension SignInEventData: Codable {
     private enum CodingKeys: String, CodingKey {
-        case username, password, clientMetadata, signInMethod
+        case username, password, clientMetadata, signInMethod, session
     }
 }

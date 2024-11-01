@@ -14,6 +14,7 @@ extension ConfirmSignUpInput {
          clientMetadata: [String: String]?,
          asfDeviceId: String?,
          forceAliasCreation: Bool?,
+         session: String?,
          environment: UserPoolEnvironment
     ) async {
 
@@ -40,6 +41,7 @@ extension ConfirmSignUpInput {
             confirmationCode: confirmationCode,
             forceAliasCreation: forceAliasCreation,
             secretHash: secretHash,
+            session: session,
             userContextData: userContextData,
             username: username)
     }
