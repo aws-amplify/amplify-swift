@@ -243,4 +243,21 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     func setUserMFAPreference(input: SetUserMFAPreferenceInput) async throws -> SetUserMFAPreferenceOutput {
         return try await mockSetUserMFAPreferenceResponse!(input)
     }
+
+    func listWebAuthnCredentials(input: AWSCognitoIdentityProvider.ListWebAuthnCredentialsInput) async throws -> AWSCognitoIdentityProvider.ListWebAuthnCredentialsOutput {
+        fatalError()
+    }
+
+    func deleteWebAuthnCredential(input: AWSCognitoIdentityProvider.DeleteWebAuthnCredentialInput) async throws -> AWSCognitoIdentityProvider.DeleteWebAuthnCredentialOutput {
+        fatalError()
+    }
+
+    func getWebAuthnRegistrationOptions(input: AWSCognitoIdentityProvider.GetWebAuthnRegistrationOptionsInput) async throws -> AWSCognitoIdentityProvider.GetWebAuthnRegistrationOptionsOutput {
+        fatalError()
+    }
+
+    func verifyWebAuthnRegistrationResult(input: AWSCognitoIdentityProvider.VerifyWebAuthnRegistrationResultInput) async throws -> AWSCognitoIdentityProvider.VerifyWebAuthnRegistrationResultOutput {
+        fatalError()
+    }
+
 }

@@ -16,6 +16,7 @@ class VerifySignInChallengeTests: XCTestCase {
     typealias CognitoFactory = BasicSRPAuthEnvironment.CognitoUserPoolFactory
 
     let mockRespondAuthChallenge = RespondToAuthChallenge(challenge: .smsMfa,
+                                                          availableChallenges: [],
                                                           username: "usernameMock",
                                                           session: "mockSession",
                                                           parameters: [:])
@@ -23,7 +24,8 @@ class VerifySignInChallengeTests: XCTestCase {
         answer: "1233",
         attributes: [:],
         metadata: [:],
-        friendlyDeviceName: nil)
+        friendlyDeviceName: nil,
+        presentationAnchor: nil)
 
     /// Test if valid input are given the service call is made
     ///
