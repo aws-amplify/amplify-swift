@@ -25,19 +25,6 @@ extension MigrateSignInState {
         case .error: return "MigrateSignInState.error"
         }
     }
-
-    static func == (lhs: MigrateSignInState, rhs: MigrateSignInState) -> Bool {
-        switch (lhs, rhs) {
-        case (.notStarted, .notStarted):
-            return true
-        case (.signingIn(let lhsData), .signingIn(let rhsData)):
-            return lhsData == rhsData
-        case (.signedIn(let lhsData), .signedIn(let rhsData)):
-            return lhsData == rhsData
-        case (.error(let lhsData), .error(let rhsData)):
-            return lhsData == rhsData
-        default:
-            return false
-        }
-    }
 }
+
+extension MigrateSignInState: Equatable { }

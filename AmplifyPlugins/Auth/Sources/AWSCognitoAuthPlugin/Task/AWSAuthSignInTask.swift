@@ -79,10 +79,11 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
     }
 
     private func doSignIn(authflowType: AuthFlowType) async throws -> AuthSignInResult {
-        let stateSequences = await authStateMachine.listen()
         log.verbose("Sending signIn event")
         await sendSignInEvent(authflowType: authflowType)
+        
         log.verbose("Waiting for signin to complete")
+        let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
             guard case .configured(let authNState, let authZState, _) = state else { continue }
 

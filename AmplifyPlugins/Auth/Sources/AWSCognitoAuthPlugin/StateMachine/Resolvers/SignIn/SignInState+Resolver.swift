@@ -437,6 +437,22 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
+                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                    let action = ConfirmDevice(signedInData: signedInData)
+                    return .init(newState: .confirmingDevice,
+                                 actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType {
+                    let action = StartDeviceSRPFlow(
+                        username: username,
+                        authResponse: challengeResponse)
+                    return .init(newState: .resolvingDeviceSrpa(.notStarted),
+                                 actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
                    case .receivedChallenge(let challenge) = signInEvent.eventType {
                     let action = InitializeResolveChallenge(challenge: challenge,
                                                             signInMethod: signInEventData.signInMethod)
@@ -460,6 +476,18 @@ extension SignInState {
                         newState: .signingInWithWebAuthn(subState),
                         actions: [action]
                     )
+                }
+
+                if case .respondPasswordVerifier(let srpStateData, let authResponse, let clientMetadata) = event.isSignInEvent {
+                    let action = VerifyPasswordSRP(
+                        stateData: srpStateData,
+                        authResponse: authResponse,
+                        clientMetadata: clientMetadata)
+                    return .init(
+                        newState: .signingInWithSRP(
+                            .respondingPasswordVerifier(srpStateData),
+                            signInEventData),
+                        actions: [action])
                 }
 
                 if let signInEvent = event as? SignInEvent,

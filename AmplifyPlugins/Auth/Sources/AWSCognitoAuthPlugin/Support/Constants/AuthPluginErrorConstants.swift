@@ -257,6 +257,15 @@ extension AuthPluginErrorConstants {
         """
     )
 
+    static let confirmSignInFactorSelectionResponseError: AuthPluginValidationErrorString = (
+        "challengeResponse",
+        "challengeResponse for factor selection can only be one of the `AuthFactorType` values.",
+        """
+        Make sure that a valid challenge response is passed for confirmSignIn.
+        Try using `AuthFactorType.<type>.challengeResponse` as the challenge response.
+        """
+    )
+
     static let confirmResetPasswordUsernameError: AuthPluginValidationErrorString = (
         "username",
         "username is required to confirmResetPassword",

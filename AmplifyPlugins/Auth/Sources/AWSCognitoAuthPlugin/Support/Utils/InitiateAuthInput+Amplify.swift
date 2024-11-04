@@ -56,17 +56,13 @@ extension InitiateAuthInput {
     }
 
     static func userAuth(username: String,
-                         preferredChallenge: String?,
+                         preferredChallengeAuthParams: [String: String],
                          clientMetadata: [String: String],
                          asfDeviceId: String,
                          deviceMetadata: DeviceMetadata,
                          environment: UserPoolEnvironment) async -> InitiateAuthInput {
-        var authParameters = [
-            "USERNAME": username
-        ]
-        if let preferredChallenge {
-            authParameters["PREFERRED_CHALLENGE"] = preferredChallenge
-        }
+        var authParameters = preferredChallengeAuthParams
+        authParameters["USERNAME"] = username
         
         return await buildInput(username: username,
                                 authFlowType: .userAuth,

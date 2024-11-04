@@ -37,29 +37,46 @@ struct InitiateUserAuth: Action {
                 return
             }
 
-            let preferredChallenge: String?
+            let preferredChallengeAuthParams: [String: String]
+            let srpStateData: SRPStateData?
             if case .apiBased(let authFlow) = signInEventData.signInMethod,
-               case .userAuth(let firstFactor) = authFlow {
-                preferredChallenge = firstFactor?.challengeResponse
+               case .userAuth(let firstFactor) = authFlow,
+               let authFactor = firstFactor {
+                let preferredChallengeHelper = PreferredChallengeHelper(
+                    authFactor: authFactor,
+                    password: signInEventData.password,
+                    username: username,
+                    environment: environment)
+                preferredChallengeAuthParams = try preferredChallengeHelper.toCognitoAuthParameters()
+                srpStateData = preferredChallengeHelper.srpStateData
             } else {
-                preferredChallenge = nil
+                preferredChallengeAuthParams = [:]
+                srpStateData = nil
             }
+
 
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
                 credentialStoreClient: authEnv.credentialsClient)
             let request = await InitiateAuthInput.userAuth(
                 username: username,
-                preferredChallenge: preferredChallenge,
+                preferredChallengeAuthParams: preferredChallengeAuthParams,
                 clientMetadata: signInEventData.clientMetadata,
                 asfDeviceId: asfDeviceId,
                 deviceMetadata: deviceMetadata,
                 environment: userPoolEnv)
 
-            let responseEvent = try await sendRequest(
-                request: request,
-                username: username,
-                environment: userPoolEnv)
+            let cognitoClient = try userPoolEnv.cognitoUserPoolFactory()
+            logVerbose("\(#fileID) Starting execution", environment: environment)
+            let response = try await cognitoClient.initiateAuth(input: request)
+            let responseEvent = UserPoolSignInHelper.parseResponse(
+                response,
+                for: username,
+                signInMethod: signInEventData.signInMethod,
+                presentationAnchor: signInEventData.presentationAnchor,
+                srpStateData: srpStateData
+            )
+
             logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
             await dispatcher.send(responseEvent)
 
@@ -75,22 +92,6 @@ struct InitiateUserAuth: Action {
             )
             await dispatcher.send(event)
         }
-    }
-
-    private func sendRequest(request: InitiateAuthInput,
-                             username: String,
-                             environment: UserPoolEnvironment) async throws -> StateMachineEvent {
-
-        let cognitoClient = try environment.cognitoUserPoolFactory()
-        logVerbose("\(#fileID) Starting execution", environment: environment)
-
-        let response = try await cognitoClient.initiateAuth(input: request)
-        return UserPoolSignInHelper.parseResponse(
-            response,
-            for: username,
-            signInMethod: signInEventData.signInMethod,
-            presentationAnchor: signInEventData.presentationAnchor
-        )
     }
 }
 

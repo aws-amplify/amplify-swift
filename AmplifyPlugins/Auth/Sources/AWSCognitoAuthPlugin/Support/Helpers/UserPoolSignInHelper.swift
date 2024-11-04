@@ -85,7 +85,8 @@ struct UserPoolSignInHelper: DefaultLogger {
         _ response: SignInResponseBehavior,
         for username: String,
         signInMethod: SignInMethod,
-        presentationAnchor: AuthUIPresentationAnchor? = nil
+        presentationAnchor: AuthUIPresentationAnchor? = nil,
+        srpStateData: SRPStateData? = nil
     ) -> StateMachineEvent {
 
             if let authenticationResult = response.authenticationResult,
@@ -122,6 +123,15 @@ struct UserPoolSignInHelper: DefaultLogger {
                 switch challengeName {
                 case .smsMfa, .customChallenge, .newPasswordRequired, .softwareTokenMfa, .selectMfaType, .smsOtp, .emailOtp, .selectChallenge:
                     return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
+                case .passwordVerifier:
+                    guard let srpStateData else {
+                        let message = "Unable to extract SRP state data to continue with password verification."
+                        let error = SignInError.invalidServiceResponse(message: message)
+                        return SignInEvent(eventType: .throwAuthError(error))
+                    }
+                    return SignInEvent(
+                        eventType: .respondPasswordVerifier(srpStateData, response, [:])
+                    )
                 case .deviceSrpAuth:
                     return SignInEvent(eventType: .initiateDeviceSRP(username, response))
                 case .webAuthn:
