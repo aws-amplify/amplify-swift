@@ -42,7 +42,7 @@ struct VerifySignInChallenge: Action {
                         username: username,
                         authFactorType: authFactorType)
                     return
-                } else if #available(iOS 17.4, macOS 13.5, *), authFactorType == .webAuthn {
+                } else if isWebAuthn(authFactorType) {
                     let signInData = WebAuthnSignInData(
                         username: username,
                         presentationAnchor: confirmSignEventData.presentationAnchor
@@ -167,7 +167,7 @@ struct VerifySignInChallenge: Action {
             challengeType = .password
         } else if case .passwordSRP = authFactorType {
             challengeType = .passwordSrp
-        } else if case .webAuthn = authFactorType {
+        } else if isWebAuthn(authFactorType) {
             throw SignInError.unknown(
                 message: "This code path only supports password and password SRP. Received: \(challenge.challenge)")
         }
@@ -229,6 +229,14 @@ struct VerifySignInChallenge: Action {
         return error is AWSCognitoIdentityProvider.ResourceNotFoundException
     }
 
+    private func isWebAuthn(_ factorType: AuthFactorType?) -> Bool {
+    #if os(iOS) || os(macOS)
+        if #available(iOS 17.4, macOS 13.5, *) {
+            return .webAuthn == factorType
+        }
+    #endif
+        return false
+    }
 }
 
 extension VerifySignInChallenge: CustomDebugDictionaryConvertible {

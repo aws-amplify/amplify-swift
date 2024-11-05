@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if os(iOS) || os(macOS)
 import Foundation
 import Amplify
 
@@ -46,3 +47,4 @@ struct WebAuthnEvent: StateMachineEvent {
         let presentationAnchor: AuthUIPresentationAnchor?
     }
 }
+#endif

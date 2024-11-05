@@ -154,6 +154,13 @@
 			remoteGlobalIDString = 485CB53927B614CE006CCEC7;
 			remoteInfo = AuthHostApp;
 		};
+		681B76972A3CBA8C004B59D9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 485CB53227B614CE006CCEC7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 681B767F2A3CB86B004B59D9;
+			remoteInfo = AuthWatchApp;
+		};
 		681B769F2A3CBBAE004B59D9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 485CB53227B614CE006CCEC7 /* Project object */;
@@ -569,6 +576,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				681B76982A3CBA8C004B59D9 /* PBXTargetDependency */,
 				485CB5A427B61E04006CCEC7 /* PBXTargetDependency */,
 			);
 			name = AuthIntegrationTests;
@@ -987,6 +995,11 @@
 			isa = PBXTargetDependency;
 			target = 485CB53927B614CE006CCEC7 /* AuthHostApp */;
 			targetProxy = 485CB5A327B61E04006CCEC7 /* PBXContainerItemProxy */;
+		};
+		681B76982A3CBA8C004B59D9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 681B767F2A3CB86B004B59D9 /* AuthWatchApp */;
+			targetProxy = 681B76972A3CBA8C004B59D9 /* PBXContainerItemProxy */;
 		};
 		681B769E2A3CBBAE004B59D9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

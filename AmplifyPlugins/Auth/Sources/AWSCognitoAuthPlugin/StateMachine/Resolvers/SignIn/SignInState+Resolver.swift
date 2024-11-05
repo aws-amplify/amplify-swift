@@ -281,6 +281,7 @@ extension SignInState {
                         actions: [action])
                 }
 
+            #if os(iOS) || os(macOS)
                 if let signInEvent = event as? SignInEvent,
                    case .initiateWebAuthnSignIn(let data, let respondToAuthChallenge) = signInEvent.eventType {
                     let action = InitializeWebAuthn(
@@ -293,6 +294,7 @@ extension SignInState {
                         subState
                     ), actions: [action])
                 }
+            #endif
 
                 let resolution = SignInChallengeState.Resolver().resolve(
                     oldState: challengeState,
@@ -464,6 +466,7 @@ extension SignInState {
                     ), actions: [action])
                 }
 
+            #if os(iOS) || os(macOS)
                 if let signInEvent = event as? SignInEvent,
                    case .initiateWebAuthnSignIn(let data, let respondToAuthChallenge) = signInEvent.eventType {
                     let action = InitializeWebAuthn(
@@ -477,6 +480,7 @@ extension SignInState {
                         actions: [action]
                     )
                 }
+            #endif
 
                 if case .respondPasswordVerifier(let srpStateData, let authResponse, let clientMetadata) = event.isSignInEvent {
                     let action = VerifyPasswordSRP(
@@ -500,6 +504,7 @@ extension SignInState {
                 }
                 return .from(oldState)
             case .signingInWithWebAuthn(let webAuthnState):
+            #if os(iOS) || os(macOS)
                 if #available(iOS 17.4, macOS 13.5, *) {
                     if case .throwAuthError(let error) = event.isSignInEvent {
                         let action = ThrowSignInError(error: error)
@@ -538,6 +543,13 @@ extension SignInState {
                         actions: [ThrowSignInError(error: error)]
                     )
                 }
+            #else
+                let error = SignInError.unknown(message: "WebAuthn is only supported in iOS and macOS")
+                return .init(
+                    newState: .error,
+                    actions: [ThrowSignInError(error: error)]
+                )
+            #endif
             case .autoSigningIn:
                 if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
                     return .init(newState: .signedIn(signedInData),

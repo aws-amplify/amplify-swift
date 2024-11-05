@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if os(iOS) || os(macOS)
 import Amplify
 import Foundation
 
@@ -78,3 +79,4 @@ extension InitializeWebAuthn: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
+#endif

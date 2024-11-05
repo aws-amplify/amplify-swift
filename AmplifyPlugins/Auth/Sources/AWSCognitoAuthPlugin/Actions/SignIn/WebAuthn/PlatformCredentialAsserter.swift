@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if os(iOS) || os(macOS)
 import Amplify
 import AuthenticationServices
 import Foundation
@@ -104,3 +105,4 @@ extension PlatformCredentialAsserter: ASAuthorizationControllerPresentationConte
         return presentationAnchor ?? ASPresentationAnchor()
     }
 }
+#endif

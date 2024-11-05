@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if os(iOS) || os(macOS)
 import Amplify
 import Foundation
 import AWSCognitoIdentityProvider
@@ -92,3 +93,4 @@ extension FetchCredentialOptions: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
+#endif

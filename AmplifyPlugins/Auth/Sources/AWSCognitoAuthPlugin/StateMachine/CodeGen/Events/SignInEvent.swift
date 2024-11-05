@@ -7,7 +7,9 @@
 
 import Foundation
 import AWSCognitoIdentityProvider
+#if os(iOS) || os(macOS)
 import typealias Amplify.AuthUIPresentationAnchor
+#endif
 
 typealias Username = String
 typealias Password = String

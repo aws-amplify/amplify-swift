@@ -20,9 +20,11 @@ extension CognitoIdentityProviderClientTypes.ChallengeNameType {
         case .smsOtp:
             return .smsOTP
         case .webAuthn:
+        #if os(iOS) || os(macOS)
             if #available(iOS 17.4, macOS 13.5, *) {
                 return .webAuthn
             }
+        #endif
             fallthrough
         default:
             // everything else is not supported as an auth factor

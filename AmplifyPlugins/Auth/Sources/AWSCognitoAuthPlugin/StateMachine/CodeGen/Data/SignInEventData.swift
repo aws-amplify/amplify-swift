@@ -5,7 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if os(iOS) || os(macOS)
 import typealias Amplify.AuthUIPresentationAnchor
+#endif
 
 struct SignInEventData {
 

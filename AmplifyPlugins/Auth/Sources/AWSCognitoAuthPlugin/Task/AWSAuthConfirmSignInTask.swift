@@ -188,12 +188,19 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             into: [String: String]()) {
                 $0[attributePrefix + $1.key.rawValue] = $1.value
             } ?? [:]
+        let presentationAnchor: AuthUIPresentationAnchor?
+    #if os(iOS) || os(macOS)
+        presentationAnchor = request.options.presentationAnchorForWebAuthn
+    #else
+        presentationAnchor = nil
+    #endif
+
         return ConfirmSignInEventData(
             answer: self.request.challengeResponse,
             attributes: attributes,
             metadata: pluginOptions?.metadata,
             friendlyDeviceName: pluginOptions?.friendlyDeviceName,
-            presentationAnchor: request.options.presentationAnchorForWebAuthn
+            presentationAnchor: presentationAnchor
         )
     }
 

@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if os(iOS) || os(macOS)
 import enum Amplify.AuthFactorType
 import Foundation
 
@@ -98,3 +99,4 @@ extension WebAuthnSignInState {
         }
     }
 }
+#endif
