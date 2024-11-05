@@ -20,6 +20,10 @@ class AWSAuthSignUpTaskTests: BasePluginTest {
         AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured, .notStarted)
     }
 
+    /// Given: Configured AuthState machine
+    /// When: A new SignUp operation is added to the queue and mock a success failure
+    /// Then: Should complete the signUp flow
+    ///
     func testSignUpOperationSuccess() async throws {
         self.mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in

@@ -61,9 +61,9 @@ class AWSAuthConfirmSignUpTaskTests: BasePluginTest {
         )
         
         do {
-            let confirmSignUpResult = try await plugin.confirmSignUp(for: "jeffb",
-                                                                     confirmationCode: "213",
-                                                                     options: AuthConfirmSignUpRequest.Options())
+            let _ = try await plugin.confirmSignUp(for: "jeffb",
+                                                   confirmationCode: "213",
+                                                   options: AuthConfirmSignUpRequest.Options())
             XCTFail("Should result in failure")
         } catch(let error) {
             XCTAssertNotNil(error)

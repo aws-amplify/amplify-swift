@@ -25,8 +25,7 @@ extension AuthState: Codable {
         if type == "AuthState.Configured" {
             let authenticationState = try values.decode(AuthenticationState.self, forKey: .authenticationState)
             let authorizationState = try values.decode(AuthorizationState.self, forKey: .authorizationState)
-            // TODO: Make SignUpState conform to `Codable`
-            // let signUpState = try values.decode(SignUpState.self, forKey: .signUpState)
+            let signUpState = try values.decode(SignUpState.self, forKey: .signUpState)
             self = .configured(
                 authenticationState,
                 authorizationState,
@@ -42,8 +41,7 @@ extension AuthState: Codable {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(authenticationState, forKey: .authenticationState)
             try container.encode(authorizationState, forKey: .authorizationState)
-            // TODO: Make SignUpState conform to `Codable`
-            // try container.encode(signUpState, forKey: .signUpState)
+            try container.encode(signUpState, forKey: .signUpState)
         default:
             fatalError("not implemented")
         }

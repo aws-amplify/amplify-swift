@@ -56,6 +56,282 @@ class AutoSignInTests: BasePluginTest {
         }
     }
     
+    /// Test auto sign in failure
+    ///
+    /// - Given: Given an auth plugin with mocked service and in `.notStarted` sign up state
+    ///
+    /// - When:
+    ///    - I invoke autoSignIn
+    /// - Then:
+    ///    - I should get a failure with error response
+    ///
+    func testAutoSignInFailureFromNotStartedState() async {
+        let mockIdentityProvider = MockIdentityProvider(
+            mockSignUpResponse: { _ in
+                return .init(
+                    codeDeliveryDetails: .init(
+                        attributeName: "some attribute",
+                        deliveryMedium: .email,
+                        destination: ""
+                    ),
+                    userConfirmed: false,
+                    userSub: "userSub"
+                )
+            },
+            mockInitiateAuthResponse: { input in
+                return InitiateAuthOutput(
+                    authenticationResult: .init(
+                        accessToken: Defaults.validAccessToken,
+                        expiresIn: 300,
+                        idToken: "idToken",
+                        newDeviceMetadata: nil,
+                        refreshToken: "refreshToken",
+                        tokenType: ""))
+            },
+            mockConfirmSignUpResponse: { request in
+                XCTAssertNil(request.clientMetadata)
+                XCTAssertNil(request.forceAliasCreation)
+                return .init(session: "session")
+            }
+        )
+
+        let initialStateNotStarted = AuthState.configured(
+            .signedOut(.init(lastKnownUserName: nil)),
+            .configured,
+            .notStarted)
+        
+        
+        let authPluginNotStarted = configureCustomPluginWith(userPool: { mockIdentityProvider },
+                                                             initialState: initialStateNotStarted)
+        do {
+            let _ = try await authPluginNotStarted.autoSignIn()
+            XCTFail("Auto sign in should not be successful from .notStarted state")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
+    
+    /// Test auto sign in failure
+    ///
+    /// - Given: Given an auth plugin with mocked service and in `.initiatingSignUp` sign up state
+    ///
+    /// - When:
+    ///    - I invoke autoSignIn
+    /// - Then:
+    ///    - I should get a failure with error response
+    ///
+    func testAutoSignInFailureFromInitiatingSignUpState() async {
+        let mockIdentityProvider = MockIdentityProvider(
+            mockSignUpResponse: { _ in
+                return .init(
+                    codeDeliveryDetails: .init(
+                        attributeName: "some attribute",
+                        deliveryMedium: .email,
+                        destination: ""
+                    ),
+                    userConfirmed: false,
+                    userSub: "userSub"
+                )
+            },
+            mockInitiateAuthResponse: { input in
+                return InitiateAuthOutput(
+                    authenticationResult: .init(
+                        accessToken: Defaults.validAccessToken,
+                        expiresIn: 300,
+                        idToken: "idToken",
+                        newDeviceMetadata: nil,
+                        refreshToken: "refreshToken",
+                        tokenType: ""))
+            },
+            mockConfirmSignUpResponse: { request in
+                XCTAssertNil(request.clientMetadata)
+                XCTAssertNil(request.forceAliasCreation)
+                return .init(session: "session")
+            }
+        )
+        
+        let initialStateInitiatingSignUp = AuthState.configured(
+            .signedOut(.init(lastKnownUserName: nil)),
+            .configured,
+            .initiatingSignUp(.init(username: "user")))
+        
+        let authPluginInitiatingSignUp = configureCustomPluginWith(userPool: { mockIdentityProvider },
+                                                                   initialState: initialStateInitiatingSignUp)
+        
+        do {
+            let _ = try await authPluginInitiatingSignUp.autoSignIn()
+            XCTFail("Auto sign in should not be successful from .initiatingSignUp state")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
+    
+    /// Test auto sign in failure
+    ///
+    /// - Given: Given an auth plugin with mocked service and in `.awaitingUserConfirmation` sign up state
+    ///
+    /// - When:
+    ///    - I invoke autoSignIn
+    /// - Then:
+    ///    - I should get a failure with error response
+    ///
+    func testAutoSignInFailureFromAwaitingUserConfirmationState() async {
+        let mockIdentityProvider = MockIdentityProvider(
+            mockSignUpResponse: { _ in
+                return .init(
+                    codeDeliveryDetails: .init(
+                        attributeName: "some attribute",
+                        deliveryMedium: .email,
+                        destination: ""
+                    ),
+                    userConfirmed: false,
+                    userSub: "userSub"
+                )
+            },
+            mockInitiateAuthResponse: { input in
+                return InitiateAuthOutput(
+                    authenticationResult: .init(
+                        accessToken: Defaults.validAccessToken,
+                        expiresIn: 300,
+                        idToken: "idToken",
+                        newDeviceMetadata: nil,
+                        refreshToken: "refreshToken",
+                        tokenType: ""))
+            },
+            mockConfirmSignUpResponse: { request in
+                XCTAssertNil(request.clientMetadata)
+                XCTAssertNil(request.forceAliasCreation)
+                return .init(session: "session")
+            }
+        )
+        
+        let initialStateAwaitingUserConfirmation = AuthState.configured(
+            .signedOut(.init(lastKnownUserName: nil)),
+            .configured,
+            .awaitingUserConfirmation(.init(username: "user"), .init(.completeAutoSignIn("session"))))
+        
+        let authPluginAwaitingUserConfirmation = configureCustomPluginWith(userPool: { mockIdentityProvider },
+                                                                           initialState: initialStateAwaitingUserConfirmation)
+        
+        do {
+            let _ = try await authPluginAwaitingUserConfirmation.autoSignIn()
+            XCTFail("Auto sign in should not be successful from .awaitingUserConfirmation state")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
+    
+    /// Test auto sign in failure
+    ///
+    /// - Given: Given an auth plugin with mocked service and in `.confirmingSignUp` sign up state
+    ///
+    /// - When:
+    ///    - I invoke autoSignIn
+    /// - Then:
+    ///    - I should get a failure with error response
+    ///
+    func testAutoSignInFailureFromConfirmingSignUpState() async {
+        let mockIdentityProvider = MockIdentityProvider(
+            mockSignUpResponse: { _ in
+                return .init(
+                    codeDeliveryDetails: .init(
+                        attributeName: "some attribute",
+                        deliveryMedium: .email,
+                        destination: ""
+                    ),
+                    userConfirmed: false,
+                    userSub: "userSub"
+                )
+            },
+            mockInitiateAuthResponse: { input in
+                return InitiateAuthOutput(
+                    authenticationResult: .init(
+                        accessToken: Defaults.validAccessToken,
+                        expiresIn: 300,
+                        idToken: "idToken",
+                        newDeviceMetadata: nil,
+                        refreshToken: "refreshToken",
+                        tokenType: ""))
+            },
+            mockConfirmSignUpResponse: { request in
+                XCTAssertNil(request.clientMetadata)
+                XCTAssertNil(request.forceAliasCreation)
+                return .init(session: "session")
+            }
+        )
+        
+        let initialStateConfirmingSignUp = AuthState.configured(
+            .signedOut(.init(lastKnownUserName: nil)),
+            .configured,
+            .confirmingSignUp(.init(username: "user")))
+        
+        let authPluginConfirmingSignUp = configureCustomPluginWith(userPool: { mockIdentityProvider },
+                                                                   initialState: initialStateConfirmingSignUp)
+        
+        do {
+            let _ = try await authPluginConfirmingSignUp.autoSignIn()
+            XCTFail("Auto sign in should not be successful from .confirmingSignUp state")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
+    
+    /// Test auto sign in failure
+    ///
+    /// - Given: Given an auth plugin with mocked service and in `.error` sign up state
+    ///
+    /// - When:
+    ///    - I invoke autoSignIn
+    /// - Then:
+    ///    - I should get a failure with error response
+    ///
+    func testAutoSignInFailureFromErrorState() async {
+        let mockIdentityProvider = MockIdentityProvider(
+            mockSignUpResponse: { _ in
+                return .init(
+                    codeDeliveryDetails: .init(
+                        attributeName: "some attribute",
+                        deliveryMedium: .email,
+                        destination: ""
+                    ),
+                    userConfirmed: false,
+                    userSub: "userSub"
+                )
+            },
+            mockInitiateAuthResponse: { input in
+                return InitiateAuthOutput(
+                    authenticationResult: .init(
+                        accessToken: Defaults.validAccessToken,
+                        expiresIn: 300,
+                        idToken: "idToken",
+                        newDeviceMetadata: nil,
+                        refreshToken: "refreshToken",
+                        tokenType: ""))
+            },
+            mockConfirmSignUpResponse: { request in
+                XCTAssertNil(request.clientMetadata)
+                XCTAssertNil(request.forceAliasCreation)
+                return .init(session: "session")
+            }
+        )
+        
+        let initialStateError = AuthState.configured(
+            .signedOut(.init(lastKnownUserName: nil)),
+            .configured,
+            .error(.service(error: AuthError.service("Unknown error", "Unknown error"))))
+        
+        let authPluginError = configureCustomPluginWith(userPool: { mockIdentityProvider },
+                                                        initialState: initialStateError)
+        
+        do {
+            let _ = try await authPluginError.autoSignIn()
+            XCTFail("Auto sign in should not be successful from .error state")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
+    
+    
     // MARK: - Service error for initiateAuth
     
     /// Test a autoSignIn with an `InternalErrorException` from service

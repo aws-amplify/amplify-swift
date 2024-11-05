@@ -45,5 +45,8 @@
                 "expiration": 10690446268
             }
         }
+    },
+    "SignUpState" : {
+        "type": "SignUpState.notStarted"
     }
 }
