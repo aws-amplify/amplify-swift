@@ -20,5 +20,8 @@
     },
     "AuthorizationState": {
         "type": "AuthorizationState.Configured"
+    },
+    "SignUpState" : {
+        "type": "SignUpState.notStarted"
     }
 }
